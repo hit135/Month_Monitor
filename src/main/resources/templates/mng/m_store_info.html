@@ -1,0 +1,290 @@
+<script type="text/javascript" th:src="@{/fs/js/jquery.js}"></script>
+<input id="contextRoot" type="hidden" th:value="${#httpServletRequest.getContextPath()}" />
+<div class="sub-cont w-100">
+  <input id="prm_areacode" type="hidden" th:value="${prm_areacode}"/>
+  <input id="prm_strcode" type="hidden" th:value="${prm_strcode}"/>
+  <input id="prm_snsrid" type="hidden" th:value="${prm_snsrid}"/>
+  <div class="row store-info">
+    <div class="col-4">
+      <div class="store-map" style="width:100%; height:240px; background:#ddd;"></div>
+      <div class="store-img">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators"></ol>
+          <div class="carousel-inner"></div>
+          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+             data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+             data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+      <table class="store-meta w-100">
+        <tr class="store-name">
+          <th>상점명</th>
+          <td class="store-name-cont"></td>
+        </tr>
+        <tr class="store-addr">
+          <th>주소</th>
+          <td class="store-addr-cont"></td>
+        </tr>
+        <tr class="store-tel">
+          <th>연락처</th>
+          <td class="store-tel-cont"></td>
+        </tr>
+        <tr class="store-owntel">
+          <th>상점주</th>
+          <td class="store-owntel-cont"></td>
+        </tr>
+        <tr class="store-owntel">
+          <td class="store-sensor-cont" colspan="2"></td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-8">
+
+      <h3 style="margin:10px 0; border-bottom:2px solid #ddd;">오늘 경보 이력</h3>
+      <div>
+        <div class="row pl-2">
+          <div class="col-12 align-middle">
+            <div class="form-group custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="check-total">
+              <label class="custom-control-label" for="check-total">전체</label>
+            </div>
+            <div class="form-group custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="check-danger" checked="checked">
+              <label class="custom-control-label" for="check-danger">경고</label>
+            </div>
+            <div class="form-group custom-control custom-checkbox custom-control-inline">
+              <input type="checkbox" class="custom-control-input" id="check-warn" checked="checked">
+              <label class="custom-control-label" for="check-warn">주의</label>
+            </div>
+            <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_showDataLog();">조회</button>
+          </div>
+        </div>
+        <div class="store-datalog-list alert alert-info bg-white"></div>
+
+        <h3 style="margin:10px 0; border-bottom:2px solid #ddd;">주간 경보 추이</h3>
+        <div class="store-log-week-stat alert alert-info bg-white mb-0" role="alert">
+          <div class="text-center">
+            <span class="bg-danger-300">&nbsp;&nbsp;&nbsp;</span>
+            <span class="bg-warning-300">&nbsp;&nbsp;&nbsp;</span>
+            지난주
+            <span class="bg-danger ml-3">&nbsp;&nbsp;&nbsp;</span>
+            <span class="bg-warning">&nbsp;&nbsp;&nbsp;</span>
+            이번주
+          </div>
+          <button type="button"
+                  class="btn btn-xs btn-outline-info waves-effect waves-themed position-absolute"
+                  style="right:0;" onclick="">상세보기
+          </button>
+          <table class="tbl-bar">
+            <tr class="tr-bar">
+              <td rowspan="2"><h1>경<br/>고</h1></td>
+              <td><span class="danger-1-prev bg-danger-300 progress-bar"><b>0</b></span></td>
+              <td><span class="danger-1-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="danger-2-prev bg-danger-300 progress-bar"><b>0</b></span></td>
+              <td><span class="danger-2-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="danger-3-prev bg-danger-300 progress-bar"><b>0</b></span></td>
+              <td><span class="danger-3-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="danger-4-prev bg-danger-300 progress-bar"><b>0</b></span></td>
+              <td><span class="danger-4-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="danger-5-prev bg-danger-300 progress-bar"><b>0</b></span></td>
+              <td><span class="danger-5-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="danger-6-prev bg-danger-300 progress-bar"><b>0</b></span></td>
+              <td><span class="danger-6-this bg-danger progress-bar progress-bar-striped progress-bar-animated"><b>0</b></span></td>
+              <td class="bl"><span class="danger-7-prev bg-danger-300 progress-bar"><b>0</b></span></td>
+              <td><span class="danger-7-this bg-danger progress-bar"><b>0</b></span></td>
+            </tr>
+          </table>
+          <table class="tbl-bar w-100">
+            <tr class="tr-bar">
+              <td rowspan="2"><h1>주<br/>의</h1></td>
+              <td><span class="warn-1-prev bg-warning-300 progress-bar"><b>0</b></span></td>
+              <td><span class="warn-1-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="warn-2-prev bg-warning-300 progress-bar"><b>0</b></span></td>
+              <td><span class="warn-2-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="warn-3-prev bg-warning-300 progress-bar"><b>0</b></span></td>
+              <td><span class="warn-3-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="warn-4-prev bg-warning-300 progress-bar"><b>0</b></span></td>
+              <td><span class="warn-4-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="warn-5-prev bg-warning-300 progress-bar"><b>0</b></span></td>
+              <td><span class="warn-5-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="bl"><span class="warn-6-prev bg-warning-300 progress-bar"><b>0</b></span></td>
+              <td><span class="warn-6-this bg-warning progress-bar progress-bar-striped progress-bar-animated"><b>0</b></span></td>
+              <td class="bl"><span class="warn-7-prev bg-warning-300 progress-bar"><b>0</b></span></td>
+              <td><span class="warn-7-this bg-warning progress-bar"><b>0</b></span></td>
+            </tr>
+            <tr>
+              <td colspan="2">일</td>
+              <td colspan="2">월</td>
+              <td colspan="2">화</td>
+              <td colspan="2">수</td>
+              <td colspan="2">목</td>
+              <td colspan="2">금</td>
+              <td colspan="2">토</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=meqwtbwfkw&submodules=visualization"></script>
+  <script type="text/javascript">
+    $(function() {
+      fn_initStoreInfo();
+    });
+
+    function fn_initStoreInfo() {
+      $.template('datalog', '<p class="{{html STATE}}" data-regdate="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}</p>');
+      $('#check-total').on('click', fn_checkDataLog);
+      $('#check-danger').on('click', fn_checkDataLog);
+      $('#check-warn').on('click', fn_checkDataLog);
+      fn_getStoreInfo();
+      fn_getSensorList();
+      fn_getListStoreImg();
+      fn_getDataLog();
+      fn_getLogWeekStat();
+    }
+
+    function fn_refreshStoreInfo() {
+      fn_getDataLog();
+      fn_getLogWeekStat();
+    }
+
+    function fn_checkDataLog() {
+      if ($(this).attr('id') == 'check-total') {
+        $('#check-danger').prop('checked', false);
+        $('#check-warn').prop('checked', false);
+      }
+      if ($('#check-danger:checked').length + $('#check-warn:checked').length == 0)
+        $('#check-total').prop('checked', true);
+      else $('#check-total').prop('checked', false);
+      fn_showDataLog();
+    }
+
+    function fn_showDataLog() {
+      if($('#check-total:checked').length>0) $('.store-datalog-list p').show();
+      else $('.store-datalog-list p').hide();
+      if($('#check-danger:checked').length>0) $('.store-datalog-list p.DANGER').show();
+      if($('#check-warn:checked').length>0) $('.store-datalog-list p.WARN').show();
+    }
+
+    function fn_getStoreInfo() {
+      $.post($('#contextRoot').val()+'/mng/storeInfoAjax'
+        ,{ snsrid:$('#prm_snsrid').val() }
+        ,function(d) {
+          $('.store-name-cont').html(d[0].STRNAME);
+          $('.store-addr-cont').html(d[0].STRADDR);
+          $('.store-tel-cont').html(d[0].STRTEL);
+          $('.store-owntel-cont').html(d[0].STROWNTEL);
+      });
+    }
+
+    var map = null;
+    var marker = [];
+    function fn_setSensor(d) {
+      var markImg = {
+        NORMAL: ['/fs/img/map/normal.png', '<span class="badge badge-success badge-pill">&nbsp;</span>'],
+        DISCON: ['/fs/img/map/disconnection.png', '<span class="badge badge-secondary badge-pill">&nbsp;</span>'],
+        WARNING: ['/fs/img/map/danger.png', '<span class="badge badge-danger badge-pill">&nbsp;</span>'],
+        CAUTION: ['/fs/img/map/warning.png', '<span class="badge badge-warning badge-pill">&nbsp;</span>'],
+        SELECT: ['/fs/img/map/select.png', '<span class="badge badge-success badge-pill">&nbsp;</span>']
+      };
+
+      var markZindex = {NORMAL: 1, DISCON: 0, WARNING: 3, CAUTION: 2};
+      if (!map) {
+        var options = {center: new naver.maps.LatLng(33.450701, 126.570667), zoom: 17};
+        map = new naver.maps.Map($('.store-map')[0], options);
+      }
+      for (var i = 0; i < marker.length; i++) marker[i].setMap(null);
+      $('.store-sensor-cont').html('');
+      if (d.length > 0) {
+        for (var i = 0; i < d.length; i++) {
+          //var lot = d[i].SNSRMGPS.split(',');
+          //var pos = new naver.maps.LatLng(lot[0], lot[1]);
+          var pos = new naver.maps.LatLng(d[i].STRPOSLAT, d[i].STRPOSLON);
+          if (i == 0) map.setCenter(pos);
+          marker.push(new naver.maps.Marker({
+            map: map,
+            title: d[i].SNSRNICK,
+            position: pos,
+            zIndex: markZindex[d[i].STATE],
+            icon: {
+              url: $('#contextRoot').val()+markImg[d[i].STATE][0],
+              size: new naver.maps.Size(26, 35),
+              scaledSize: new naver.maps.Size(26, 35),
+              origin: new naver.maps.Point(0, 0),
+              anchor: new naver.maps.Point(13, 35)
+            }
+          }));
+
+          $('.store-sensor-cont').append('<p>' + markImg[d[i].STATE][1] + ' ' + d[i].PANELNAME + ' >' + d[i].SNSRNICK + ' (' + d[i].SNSRID + ')</p>');
+        }
+      }
+    }
+    function fn_getSensorList() {
+      $.post($('#contextRoot').val()+'/mng/listSensorAjax',
+        { areacode: $('#prm_areacode').val(),
+          strcode: $('#prm_strcode').val() },
+        function (d) {
+          fn_setSensor(d);
+      });
+    }
+
+    function fn_getListStoreImg() {
+      $.post($('#contextRoot').val()+'/mng/storeImgAjax', { strcode: $('#prm_strcode').val() }, function (d) {
+        if (d.length) {
+          $('.carousel-indicators').html('');
+          $('.carousel-inner').html('');
+          for (var i = 0; i < d.length; i++) {
+            $('.carousel-indicators').append('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>');
+            $('.carousel-inner').append('<div class="carousel-item bg-secondary" style="height:200px;">' +
+              '<img class="d-block h-100 m-auto" src="http://1.223.40.19:30080/' + d[i].IMGPATH + d[i].IMGNAME + '" alt="' + d[i].ORINAME + '" data-holder-rendered="true"></div>');
+            if (i == 0) $('.carousel-indicators li, .carousel-inner div').addClass('active');
+          }
+          $('.store-img').removeClass('d-none');
+        } else {
+          $('.carousel-indicators').html('');
+          $('.carousel-inner').html('');
+          $('.store-img').addClass('d-none');
+        }
+      });
+    }
+
+    function fn_getDataLog() {
+      $.post($('#contextRoot').val()+'/mng/dataLogListAjax', { strcode: $('#prm_strcode').val() }, function (d) {
+        $('.store-datalog-list').html('');
+        for(var i=0; i<d.length; i++) {
+          d[i].DATALOG = '전력: '+d[i].SNSRWATT+'kW | 전류: '+d[i].SNSRAMPERE+'mA | 누설전류: '+d[i].SNSRIGO+'mA';
+          if(d[i].STATE) d[i].DATALOG = d[i].LCAUSE;
+          $('.store-datalog-list').append($.tmpl('datalog',d[i]));
+        }
+        fn_showDataLog();
+      });
+    }
+
+    function fn_getLogWeekStat() {
+      $.post($('#contextRoot').val()+'/mng/logWeekStatAjax', { strcode: $('#prm_strcode').val() }, function (d) {
+        var temp = [];
+        for(var i=0; i<d.length; i++) if(d[i].WEEK==1) {
+          temp = d.slice(i); break;
+        }
+        var dmax = Math.max.apply(null,temp.map(function(o){return o.DANGER;}));
+        var wmax = Math.max.apply(null,temp.map(function(o){return o.WARN;}));
+        var a = '-prev';
+        for(var i=0; i<temp.length; i++) {
+          if(i==7) a= '-this';
+          $('.danger-'+d[i].WEEK+a).css('padding-top', 70*d[i].DANGER/dmax+'px');
+          $('.danger-'+d[i].WEEK+a).text(d[i].DANGER);
+          $('.warn-'+d[i].WEEK+a).css('padding-top', 70*d[i].WARN/wmax+'px');
+          $('.warn-'+d[i].WEEK+a).text(d[i].WARN);
+        }
+      });
+    }
+  </script>
+</div>

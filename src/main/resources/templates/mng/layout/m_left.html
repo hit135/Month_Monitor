@@ -1,0 +1,65 @@
+<div class="row">
+  <div class="col-12">
+    <p class="">
+      <span class="name"></span>
+      <span class="danger"><span class="badge badge-danger p-1"><i class="fal fa-siren-on text-white" style="font-size:20px;"></i></span></span>
+      <span class="warn"><span class="badge badge-warning p-1"><i class="fal fa-exclamation-triangle text-white" style="font-size:20px;"></i></span></span>
+    </p>
+  </div>
+  <div class="list-area col-12">
+    <p class="area-lv1">
+      <span class="name">중구</span>
+      <span class="danger">12</span>
+      <span class="warn">23</span>
+    </p>
+    <p class="area-lv2">
+      <span class="name">문창시장</span>
+      <span class="danger">10</span>
+      <span class="warn">20</span>
+    </p>
+    <p class="area-lv2">
+      <span class="name">부사시장</span>
+      <span class="danger">2</span>
+      <span class="warn">3</span>
+    </p>
+    <p class="area-lv1">
+      <span class="name">서구</span>
+      <span class="danger">11</span>
+      <span class="warn">22</span>
+    </p>
+    <p class="area-lv2">
+      <span class="name">도마시장</span>
+      <span class="danger">10</span>
+      <span class="warn">20</span>
+    </p>
+    <p class="area-lv2">
+      <span class="name">한민시장</span>
+      <span class="danger">1</span>
+      <span class="warn">2</span>
+    </p>
+  </div>
+</div>
+<script type="text/javascript">
+  $(function() {
+    fn_initLeft();
+  });
+
+  function fn_initLeft() {
+    $.template('left-area', '<p class="area-lv{{html LEVEL}}" data-code="{{html CODE}}"><span class="name">{{html NAME}}</span><span class="danger">{{html DANGER}}</span><span class="warn">{{html WARN}}</span></p>');
+    fn_getAreaList();
+  }
+
+  function fn_refreshLeft() {
+    fn_getAreaList();
+  }
+
+  function fn_getAreaList() {
+    window.left_area_lv2_on_code = $('.left .area-lv2.on').attr('data-code');
+    $.post($('#contextRoot').val()+'/mng/areaListAjax',{},function(d) {
+      $('.list-area').html('');
+      for(var i=0; i<d.length; i++)
+        if(d[i].LEVEL == 1) $('.list-area').append($.tmpl('left-area', d[i]));
+        else $('.list-area p[data-code="'+d[i].UPCODE+'"]').after($.tmpl('left-area', d[i]));
+    });
+  }
+</script>

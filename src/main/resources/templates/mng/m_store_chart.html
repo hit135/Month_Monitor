@@ -1,0 +1,424 @@
+<script type="text/javascript" th:src="@{/fs/js/jquery.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/fs/css/apexcharts.css}"/>
+<div class="sub-cont">
+  <input type="hidden" id="prm_areacode" th:value="${prm_areacode}"/>
+  <input type="hidden" id="prm_strcode" th:value="${prm_strcode}"/>
+  <input type="hidden" id="prm_snsrid" th:value="${prm_snsrid}"/>
+  <input type="hidden" id="prm_regdate" th:value="${prm_regdate}"/>
+  <input type="hidden" id="prm_almtype" th:value="${prm_almtype}"/>
+  <div class="panel-content p-2">
+
+    <div class="row pl-2">
+      <div class="col-12 position-relative">
+        <div id="chart" style="width:100%;"></div>
+        <div class="loading-chart position-absolute w-100 h-100 bg-white"
+             style="left:0; top:0; text-align:center;">
+          <button class="btn btn-info waves-effect waves-themed align-self-center" type="button"
+                  disabled="" style="margin-top:100px;">
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+            Loading...
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row pl-2 mt-3">
+      <div class="col-4 align-middle">
+        <div class="form-group custom-control-inline">
+          <select class="form-control" id="termtype">
+            <option value="d" selected="selected">일간</option>
+            <option value="m">월간</option>
+          </select>
+        </div>
+        <div class="form-group custom-control-inline">
+          <input class="form-control" id="regdt" type="date"/>
+        </div>
+        <div class="form-group custom-control-inline">
+          <select class="form-control" id="charttype">
+            <option value="line" selected="selected">선차트</option>
+            <option value="bar">막대차트</option>
+          </select>
+        </div>
+        <div class="form-group custom-control-inline">
+          <select class="form-control" id="datatype">
+            <option value="real" selected="selected">기본</option>
+            <option value="h">시간평균</option>
+            <option value="d">일평균</option>
+            <option value="m">월평균</option>
+          </select>
+        </div>
+        <div class="form-group custom-control-inline">
+          <div id="snsrid"></div>
+        </div>
+      </div>
+      <div class="col-7">
+        <div class="row">
+          <div class="col-3" style="color:#d3372d;"><input type="checkbox" name="dataname" value="IGO"/> 누설전류 총합(IGO)
+          </div>
+          <div class="col-3" style="color:#518d45;"><input type="checkbox" name="dataname" value="IGR"/> 저항성 누설전류(IGR)
+          </div>
+          <div class="col-3" style="color:#4475e0;"><input type="checkbox" name="dataname" value="IGC"/> 용량성 누설전류(IGC)
+          </div>
+          <div class="col-3" style="color:#ff6272;"><input type="checkbox" name="dataname" value="KWH"/> 누적전력량(KWH)
+          </div>
+          <div class="col-3" style="color:#ff8040;"><input type="checkbox" name="dataname" value="WATT"/> 일률(WATT)</div>
+          <div class="col-3" style="color:#800000;"><input type="checkbox" name="dataname" value="VOLT"/> 전압(VOLT)</div>
+          <div class="col-3" style="color:#0080ff;"><input type="checkbox" name="dataname" value="AMPERE"/> 전류(AMP)
+          </div>
+          <div class="col-3" style="color:#8000ff;"><input type="checkbox" name="dataname" value="HZ"/> 주파수(HZ)</div>
+          <div class="col-3" style="color:#800080;"><input type="checkbox" name="dataname" value="PF"/> 역률(PF)</div>
+          <div class="col-3" style="color:#ff0080;"><input type="checkbox" name="dataname" value="REG"/> 절연저항</div>
+        </div>
+      </div>
+      <div class="col-1">
+        <button type="button" class="btn btn-sm btn-success waves-effect waves-themed"
+                onclick="fn_getStoreSensorData();">조회
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <link id="contextPathHolder" th:data-contextPath="${#httpServletRequest.getContextPath()}"/>
+
+  <script th:src="@{/fs/js/apexcharts.js}"></script>
+
+  <script type="text/javascript">
+    var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
+
+    $(function () {
+      fn_initStoreChart();
+      $('#termtype').on('change', function (d) {
+        if (this.value == 'm') {
+          $('#regdt').prop('type', 'month');
+          $('#regdt').val(fn_dateToString(new Date()).slice(0, 7));
+        } else {
+          $('#regdt').prop('type', 'date');
+          $('#regdt').val(fn_dateToString(new Date()).slice(0, 10));
+        }
+        fn_getStoreSensorData();
+      });
+      $('#charttype').on('change', function () {
+        fn_getStoreSensorData();
+      });
+      $('#datatype').on('change', function () {
+        fn_getStoreSensorData();
+      });
+      $('#regdt').on('change', function () {
+        fn_getStoreSensorData();
+      });
+      $('#snsrid').on('change', function () {
+        fn_getStoreSensorData();
+      });
+      $('[name=dataname]').on('click', fn_setChart);
+    });
+
+    function fn_initStoreChart() {
+      window.chart1 = null;
+      window.datadt = null;
+      window.dataset = null;
+      window.val = null;
+
+      if ($('#prm_almtype').val()) {
+        $('[name=dataname][value="' + $('#prm_almtype').val() + '"]').prop('checked', true);
+      } else {
+        $('[name=dataname][value="IGO"]').prop('checked', true);
+        $('[name=dataname][value="IGR"]').prop('checked', true);
+        $('[name=dataname][value="IGC"]').prop('checked', true);
+      }
+      $('#regdt').val(fn_dateToString(new Date()).slice(0, 10));
+      fn_getStoreSensor();
+    }
+
+    function fn_dateToString(d) {
+      return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
+        ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+    }
+
+    function fn_prevDate() {
+      if ($('#termtype').val() == 'm') {
+        var temp = new Date($('#regdt').val() + '-01');
+        temp.setMonth(temp.getMonth() - 1);
+        $('#regdt').val(fn_dateToString(temp).slice(0, 7));
+      } else {
+        var temp = new Date($('#regdt').val());
+        temp.setDate(temp.getDate() - 1);
+        $('#regdt').val(fn_dateToString(temp).slice(0, 10));
+      }
+      fn_getStoreSensorData();
+    }
+
+    function fn_getStoreSensor() {
+      var strcode = $('#prm_strcode').val();
+      $.post(contextPath + '/mng/listStoreSensor', {
+        areacode: $('#prm_areacode').val(),
+        strcode: strcode
+      }, function (d) {
+        if (d && d.length > 0) {
+          window.snsr = {};
+          $('#snsrid').html('');
+          var badge = {
+            0: '<span class="badge badge-secondary badge-pill">&nbsp;</span>',
+            1: '<span class="badge badge-success badge-pill">&nbsp;</span>',
+            2: '<span class="badge badge-warning badge-pill">&nbsp;</span>',
+            3: '<span class="badge badge-danger badge-pill">&nbsp;</span>',
+          };
+          for (var i = 0; i < d.length; i++) {
+            if (!d[i].STATE) d[i].STATE = 0;
+            $('#snsrid').append('<div class="radio-' + d[i].SNSRID + '">' + badge[d[i].STATE] + ' ' + d[i].PANELNAME + ' > '
+              + d[i].SNSRNICK + ' (' + d[i].SNSRID + ') <input type="radio" name="snsrid" value="' + d[i].SNSRID + '"/></div>');
+            window.snsr[d[i].SNSRID] = d[i];
+          }
+          var snsrid = $('#prm_snsrid').val();
+          if (snsrid) $('#snsrid input[value="' + snsrid + '"]').prop('checked', true);
+          else $($('#snsrid input')[0]).prop('checked', true);
+          var now = new Date();
+          if ($('#prm_regdate').val()) {
+            now = new Date($('#prm_regdate').val());
+            $('#regdt').val($('#prm_regdate').val());
+          }
+          now.setDate(now.getDate() - 1);
+          fn_getStoreSensorData('d', fn_dateToString(now).slice(0, 10), 2);
+        } else {
+          $('#snsrid').html('센서없음');
+        }
+      });
+    }
+
+    function fn_initDataset() {
+      var dns = $('[name=dataname]');
+      window.val = {};
+      window.datadt = {min: null, max: null};
+      window.dataset = {};
+      for (var i = 0; i < dns.length; i++) {
+        window.val[dns[i].value] = {min: null, max: null};
+        window.dataset[dns[i].value] = [];
+      }
+    }
+
+    function fn_updateDataset(d) {
+      var ret = false; // 데이터 갱신 여부
+      var dns = $('[name=dataname]');
+      var datatype_nulldata = {
+        real: 1000 * 60 * 60 * 2, h: 1000 * 60 * 60 * 2,
+        d: 1000 * 60 * 60 * 24 * 2, m: 1000 * 60 * 60 * 24 * 60
+      };
+      var nulldata = datatype_nulldata[$('#datatype option:selected').val()];
+      for (var i = 0; i < d.length; i++) {
+        var curdt = new Date(d[i].REGDT);
+        for (var j = 0; j < dns.length; j++) {
+          if (window.dataset[dns[j].value].length < 1) {
+            // dataset 비어 있을 때
+            window.datadt.min = curdt;
+            window.datadt.max = curdt;
+            window.val[dns[j].value].min = d[i][dns[j].value];
+            window.val[dns[j].value].max = d[i][dns[j].value];
+            window.dataset[dns[j].value].push([d[i].REGDT, d[i][dns[j].value]]);
+            ret = true;
+          } else {
+            if (window.datadt.min > curdt) {
+              // 이전 데이터가 들어온경우
+              // 이전 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
+              if ((window.datadt.min.getTime() - curdt.getTime()) > nulldata)
+                window.dataset[dns[j].value].unshift([d[i].REGDT + 1, null]);
+              window.dataset[dns[j].value].unshift([d[i].REGDT, d[i][dns[j].value]]);
+              ret = true;
+            } else if (window.datadt.max < curdt) {
+              // 이후 데이터가 들어온경우
+              // 이후 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
+              if ((curdt.getTime() - window.datadt.max.getTime()) > nulldata)
+                window.dataset[dns[j].value].push([d[i].REGDT - 1, null]);
+              window.dataset[dns[j].value].push([d[i].REGDT, d[i][dns[j].value]]);
+              ret = true;
+            }
+            // 최소, 최대값 수정 (차트에서 최소, 최대값 필요)
+            if (window.val[dns[j].value].min > d[i][dns[j].value])
+              window.val[dns[j].value].min = d[i][dns[j].value];
+            if (window.val[dns[j].value].max < d[i][dns[j].value])
+              window.val[dns[j].value].max = d[i][dns[j].value];
+          }
+        }
+        // 데이터 날짜 최소, 최대값 수정
+        if (window.datadt.min > curdt) window.datadt.min = curdt;
+        if (window.datadt.max < curdt) window.datadt.max = curdt;
+      }
+      return ret;
+    }
+
+    function fn_getStoreSensorData(termtype, regdt, dtsize, order, isinit) {
+      fn_onLoading();
+      if ($('.chart-title').length > 0) $('.chart-title').text($('.radio-' + $('[name=snsrid]:checked').val()).text());
+
+      var prm = {
+        strcode: $('#prm_strcode').val(),
+        datatype: $('#datatype option:selected').val(),
+        termtype: $('#termtype option:selected').val(),
+        snsrid: $('[name=snsrid]:checked').val(),
+        regdt: $('#regdt').val()
+      };
+
+      if (termtype) prm.termtype = termtype;
+      if (regdt) prm.regdt = regdt;
+      if (dtsize) prm.dtsize = dtsize;
+      if (order) prm.order = order;
+
+      $.post(contextPath + '/mng/listStoreSensorData', prm, function (d) {
+          if (d && d.length > 0) {
+            if (!isinit) fn_initDataset();
+            if (fn_updateDataset(d)) fn_setChart();
+          } else {
+            if (!order) alert('no data');
+            console.log('no data');
+          }
+          fn_offLoading();
+        }
+      );
+    }
+
+    function fn_setAnnotations() {
+      var a1 = null, a2 = null;
+      var ret = {yaxis: []};
+      if ($('[name=dataname]:checked').length > 1) return ret;
+      var dataname = $('[name=dataname]:checked').val();
+      if (dataname == 'AMPERE') {
+        a1 = 20;
+        a2 = 26;
+      }
+      if (dataname == 'IGO') {
+        a1 = 15;
+        a2 = 18;
+      }
+      if (dataname == 'IGR') {
+        a1 = 3;
+        a2 = 5;
+      }
+      if (a1) ret.yaxis.push({
+        y: a1, y2: a2,
+        borderColor: '#ffa454',
+        fillColor: '#ffa454',
+        opacity: 0.3,
+        label: {
+          style: {color: '#ffa454'}, text: '주의',
+          textAnchor: 'start', position: 'left', offsetY: 50
+        }
+      });
+      if (a2) ret.yaxis.push({
+        y: a2, y2: 65,
+        borderColor: '#ff6272',
+        fillColor: '#ff6272',
+        opacity: 0.3,
+        label: {
+          style: {color: '#ff6272'}, text: '경고',
+          textAnchor: 'start', position: 'left', offsetY: 50
+        }
+      });
+      return ret;
+    }
+
+    function fn_onLoading() {
+      if (!window.loadingcnt) window.loadingcnt = 0;
+      window.loadingcnt++;
+      $('.loading-chart').show();
+    }
+
+    function fn_offLoading() {
+      window.loadingcnt--;
+      if (window.loadingcnt <= 0) {
+        window.loadingcnt = 0;
+        $('.loading-chart').hide();
+      }
+    }
+
+    function fn_getMore(order) {
+      var dt = new Date(window.datadt.max.getTime());
+      if (order == 'desc') {
+        dt = new Date(window.datadt.min.getTime());
+        dt.setMonth(dt.getMonth() - 1);
+      } else dt.setMonth(dt.getMonth() + 1);
+      fn_getStoreSensorData('m', fn_dateToString(dt).slice(0, 7), 2, order, true);
+    }
+
+    function fn_setChart() {
+      var opt = {
+        series: [],
+        chart: {
+          height: 400,
+          type: $('#charttype option:selected').val(),
+          id: 'chart',
+          animations: {enabled: false},
+          events: {
+            zoomed: function (a, b) {
+              if (window.datadt.min > new Date(b.xaxis.min)) fn_getMore("desc");
+              if (window.datadt.max < new Date(b.xaxis.max)) fn_getMore("asc");
+            }
+          }
+        },
+        colors: [],
+        stroke: {width: 3},
+        dataLabels: {enabled: false},
+        annotations: fn_setAnnotations(),
+        tooltip: {
+          enabled: true,
+          marker: {show: true},
+          y: {
+            formatter: function (val) {
+              return val.toFixed(2);
+            }
+          }
+        },
+        xaxis: {
+          type: 'datetime',
+          lines: {show: true},
+          tooltip: {enabled: true},
+          labels: {
+            datetimeUTC: false,
+            datetimeFormatter: {year: 'yyyy년', month: 'yyyy년 MM월', day: 'MM월 dd일', hour: 'HH:mm'}
+          }
+        },
+        yaxis: {
+          lines: {show: true},
+          tooltip: {enabled: true}, min: null, max: null,
+          labels: {
+            formatter: function (val) {
+              return val.toFixed(2);
+            }
+          }
+        },
+      };
+
+      var $dns = $('[name=dataname]:checked');
+      var series = [];
+      var colorset = {
+        IGO: '#d3372d', IGR: '#518d45', IGC: '#4475e0', KWH: '#ff6272',
+        WATT: '#ff8040', VOLT: '#800000', AMPERE: '#0080ff', HZ: '#8000ff', PF: '#800080', REG: '#ff0080'
+      };
+      for (var i = 0; i < $dns.length; i++) {
+        var dns = $dns[i].value;
+        series.push({name: $($dns[i]).parent('div').text().trim(), data: window.dataset[dns]});
+        opt.colors.push(colorset[dns]);
+        var min = window.val[dns].min * 0.95;
+        var max = window.val[dns].max * 1.05;
+        if (!opt.yaxis.min || opt.yaxis.min > min) opt.yaxis.min = min;
+        if (!opt.yaxis.max || opt.yaxis.max < max) opt.yaxis.max = max;
+      }
+      if (window.dataset['IGO'].length < 100) opt.markers = {size: 3, hover: {size: 3}};
+      else opt.markers = {size: 0, hover: {size: 0}};
+
+      if (series.length > 0) {
+        $('#chart').css('visibility', 'visible');
+        if (window.chart1) {
+          opt.chart.type = $('#charttype option:selected').val();
+          opt.annotations = fn_setAnnotations();
+          window.chart1.updateOptions(opt);
+          window.chart1.updateSeries(series);
+        } else {
+          opt.series = series;
+          $('#chart').html('');
+          window.chart1 = new ApexCharts(document.querySelector("#chart"), opt);
+          window.chart1.render();
+        }
+      } else {
+        $('#chart').css('visibility', 'hidden');
+      }
+    }
+  </script>
+</div>

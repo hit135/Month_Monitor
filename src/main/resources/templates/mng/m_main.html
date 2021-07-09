@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <th:block th:replace="mng/layout/m_head"></th:block>
+    <style type="text/css">
+      .top .sensor-stat { text-shadow:1px 1px 5px #000; color:#fff; }
+    </style>
+    <style type="text/css">
+      .left p { padding:7px; margin-bottom:5px; border-radius:4px; }
+      .left span { display:inline-block; text-shadow:1px 1px 5px #fff; }
+      .left .name { width:55%; }
+      .left .danger { width:20%; text-align:right; color:#ff2f44; }
+      .left .warn { width:20%; text-align:right; color:#efaf77; }
+      .left .area-lv1 { font-size:22px; font-weight:bold; background:#ddd; width:90%; margin-left:5%; }
+      .left .area-lv2 { font-size:16px; font-weight:bold; background:#eee; width:85%; margin-left:10%; border-bottom:1px solid #ccc; cursor:pointer; }
+      .left .area-lv2:hover { background:#ccc; }
+      .left .area-lv2.on { background:#2b559b; color:white; text-shadow:1px 1px 5px #000; }
+    </style>
+    <style type="text/css">
+      .right [class^=sensors] { margin-bottom:15px; }
+      .right h3 { text-align:center; color:#fff; padding:8px; font-size:20px; font-weight:bold; text-shadow:1px 1px 5px #000; }
+      .right .list-sensor { height:227px; overflow-y:scroll; padding:5px 10px; }
+      .right .list-sensor p { font-size:14px; }
+    </style>
+    <style type="text/css">
+      .center-top { background:#2b559b; color:#fff; border-radius:4px; margin-bottom:15px; }
+      .center .area-name { font-size:30px; font-weight:bold; }
+      .center .area-stat span { display:inline-block; font-size:18px; font-weight:bold; padding:8px; }
+      .center-left-sensor-list { height:700px; overflow-y:scroll; direction:rtl; padding:10px; }
+      .center-left-sensor-list p { position:relative; padding:5px 10px; border-radius:3px; background:#eee; border-bottom:1px solid #ccc; font-size:14px; font-weight:bold; color:#2b559b; cursor:pointer; margin-bottom:7px; }
+      .center-left-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
+      .center-left-sensor-list p span.cnt2 { display:none; }
+      .center-left-sensor-list p.danger { color:#ff2f44; }
+      .center-left-sensor-list p.warn { color:#efaf77; }
+      .center-left-sensor-list p.danger span { color:#fff; background:#f88; }
+      .center-left-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
+      .center-left-sensor-list p.warn span { color:#fff; background:#fd8; }
+      .center-left-sensor-list p:hover { background:#ccc; }
+      .center-left-sensor-list p.on { background:#2b559b; color:white; text-shadow:1px 1px 5px #000; }
+    </style>
+    <style type="text/css">
+      .center-cont-top { background:#2b559b; color:#fff; height:50px; }
+      .center-cont-top .store-name { font-size:24px; line-height:50px; font-weight:bold; }
+      .center-cont-top-btn { display:inline-block; font-size:16px; padding:10px; margin-top:10px; cursor:pointer; }
+      .center-cont-top-btn:hover { color:#afd9ee; text-decoration:underline; }
+      .center-cont-top-btn.on { background:#fff; color:#2b559b; font-weight:bold; }
+      .center-cont-page { border:1px solid #2b559b; min-height:650px; }
+    </style>
+    <style type="text/css">
+      .store-info .store-meta tr { border-bottom:1px solid #7c91df; margin:0; }
+      .store-info .store-meta th { background:#7c91df; width:60px; padding:0; line-height:35px; text-align:center; color:#fff; font-size:12px; font-weight:bold; border-top:1px solid #fff; }
+      .store-info .store-meta td { padding:0 10px; line-height:35px; font-size:16px; font-weight:bold; }
+      .store-info .store-meta td.store-sensor-cont { font-size:12px; }
+      .store-info .store-meta td.store-sensor-cont p { margin:0; }
+      .store-info .store-datalog-list { height:200px; overflow-y:scroll; }
+      .store-info .store-datalog-list p { font-weight:bold; color:#666; font-size:13px; margin:0; }
+      .store-info .store-datalog-list p.DANGER { color:#ff2f44; }
+      .store-info .store-datalog-list p.WARN { color:#efaf77; }
+      .store-info .store-log-week-stat table { width:100%; table-layout:fixed; }
+      .store-info .tbl-bar td { text-align:center; }
+      .store-info .tbl-bar td.bl { border-left:3px solid #fff; }
+      .store-info .tbl-bar .tr-bar td { position:relative; height:105px; }
+      .store-info .tbl-bar .progress-bar { display:block; position:absolute; bottom:0; width:100%; border-radius:3px 3px 0 0; }
+    </style>
+  </head>
+  <body class="mod-bg-1 mod-nav-link">
+    <div class="top"><th:block th:replace="mng/layout/m_top"></th:block></div>
+    <div class="row">
+      <div class="left col-2" style="margin-top:-100px;"><th:block th:replace="mng/layout/m_left"></th:block></div>
+      <div class="center col-8">
+        <div class="row center-top p-1">
+          <div class="area-name col-3"></div>
+          <div class="area-stat col-9">
+            전체<span class="total" style="color:#afd9ee;"></span> |
+            경고<span class="danger" style="color:#e082ae;"></span> |
+            주의<span class="warn" style="color:#dbc969;"></span> |
+            끊김<span class="discon" style="color:#dddddd;"></span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="center-left col-3">
+            <div class="row">
+              <div class="col-12">
+                <div class="center-left-sensor-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-9 center-cont">
+            <div class="row center-cont-top">
+              <div class="store-name col-4"></div>
+              <div class="cont-btn col-8">
+                <span class="center-cont-top-btn on" data-page="Info">기본정보</span>
+                <span class="center-cont-top-btn" data-page="Log">경보이력</span>
+                <span class="center-cont-top-btn" data-page="Chart">분석차트</span>
+              </div>
+            </div>
+            <div class="row center-cont-page"></div>
+          </div>
+        </div>
+      </div>
+      <div class="right col-2" style="margin-top:-100px;"><th:block th:replace="mng/layout/m_right"></th:block></div>
+    </div>
+    <div class="bottom"></div>
+  </body>
+</html>
+
+<script type="text/javascript">
+  $(function() {
+    fn_init();
+  });
+
+  function fn_init() {
+    $.template('center-left-sensor',
+      '<p class="{{html STATE}}" data-snsrid="{{html SNSRID}}"' +
+      ' data-strname="{{html STRNAME}}">{{html SNSRNICK}} ' +
+      '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span></p>');
+    $('.left').on('click', '.area-lv2', function() {
+      $('.left .area-lv2.on').removeClass('on');
+      $(this).addClass('on');
+      fn_clickAreaLv2($(this).attr('data-code'));
+    });
+    $('.center-left-sensor-list').on('click', 'p', function() {
+      $('.center-left-sensor-list p.on').removeClass('on');
+      $(this).addClass('on');
+      $('.center-cont-top .store-name').text($(this).attr('data-strname'));
+      fn_clickContPage();
+    });
+    $('.center-cont-top').on('click', '.center-cont-top-btn', function() {
+      $('.center-cont-top-btn.on').removeClass('on');
+      $(this).addClass('on');
+      fn_clickContPage();
+    });
+    setInterval(fn_refresh, 1000*60);
+    setTimeout(function() {
+      $('.left .area-lv2')[0].click();
+    }, 800);
+  }
+
+  function fn_refresh() {
+    fn_refreshTop();
+    fn_refreshLeft();
+    fn_refreshRight();
+    fn_refreshStoreInfo();
+    setTimeout(function() {
+      fn_onAreaLv2(window.left_area_lv2_on_code);
+    }, 800);
+  }
+
+  function fn_clickAreaLv2(code) {
+    fn_getAreaSensorCount(code);
+    fn_getAreaSensorList(code);
+  }
+
+  function fn_onAreaLv2(code) {
+    if(code) {
+      $('.left .area-lv2[data-code="'+code+'"]').addClass('on');
+      fn_getAreaSensorCount(code);
+      fn_getAreaSensorList(code);
+    }
+  }
+
+  function fn_getAreaSensorCount(code) {
+    $.post($('#contextRoot').val()+'/mng/areaSensorCountAjax',{areacode: code},
+      function(d) {
+        $('.center .area-name').text(d[0].AREANAME);
+        $('.center .area-stat .total').text(d[0].TOTAL);
+        $('.center .area-stat .danger').text(d[0].DANGER);
+        $('.center .area-stat .warn').text(d[0].WARN);
+        $('.center .area-stat .discon').text(d[0].DISCON);
+      });
+  }
+
+
+  function fn_getAreaSensorList(code) {
+    var on_snsrid = $('.center-left-sensor-list p.on').attr('data-snsrid');
+    $.post($('#contextRoot').val()+'/mng/areaSensorListAjax',{areacode: code},
+      function(d) {
+        $('.center-left-sensor-list').html('');
+        for(var i=0; i<d.length; i++) {
+          d[i].CNT = 0;
+          if(d[i].DANGER > 0) {
+            d[i].STATE = 'danger';
+            d[i].CNT = d[i].DANGER;
+            d[i].CNT2 = d[i].WARN;
+          } else if(d[i].WARN > 0) {
+            d[i].STATE = 'warn';
+            d[i].CNT = d[i].WARN;
+          }
+          $('.center-left-sensor-list').append($.tmpl('center-left-sensor',d[i]));
+        }
+        var on_obj = $('.center-left-sensor-list p[data-snsrid="'+on_snsrid+'"]')[0];
+        if(!on_obj) on_obj = $('.center-left-sensor-list p')[0];
+        $(on_obj).addClass('on');
+        $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
+        if($('#prm_snsrid').val()!=$('.center-left-sensor-list p.on').attr('data-snsrid')) fn_clickContPage();
+      });
+  }
+
+  function fn_clickContPage() {
+    var page = $('.center-cont-top-btn.on').attr('data-page');
+    $.post($('#contextRoot').val()+'/mng/store'+page,
+      { snsrid: $('.center-left-sensor-list p.on').attr('data-snsrid') },
+      function (d) {
+        var $temp = $('<div>');
+        $temp.html(d);
+        $('.center-cont-page').html($temp.find('.sub-cont'));
+    });
+  }
+
+</script>

@@ -1,0 +1,16 @@
+spring:
+  thymeleaf:
+    prefix: classpath:templates/
+    suffix: .html
+    cache: false
+  datasource:
+    platform: mariadb
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://1.223.40.19:13331/ifiresens_v2?autoReconnect=true&useSSL=false
+    username: ifire_usr
+    password: ifU@S12!20
+server:
+  port: 8080
+mybatis:
+  type-aliases-package: kr.fscom.smartCity.monitoring.domain, kr.fscom.smartCity.mobile.domain
+  mapper-locations: classpath:mapper/**/*.xml
