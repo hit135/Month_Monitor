@@ -85,48 +85,48 @@
           <table class="tbl-bar">
             <tr class="tr-bar">
               <td rowspan="2"><h1>경<br/>고</h1></td>
-              <td><span class="danger-1-prev bg-danger-300 progress-bar"><b>0</b></span></td>
-              <td><span class="danger-1-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="danger-1-prev bg-danger-300 progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="danger-1-this bg-danger progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="danger-2-prev bg-danger-300 progress-bar"><b>0</b></span></td>
-              <td><span class="danger-2-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="danger-2-this bg-danger progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="danger-3-prev bg-danger-300 progress-bar"><b>0</b></span></td>
-              <td><span class="danger-3-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="danger-3-this bg-danger progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="danger-4-prev bg-danger-300 progress-bar"><b>0</b></span></td>
-              <td><span class="danger-4-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="danger-4-this bg-danger progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="danger-5-prev bg-danger-300 progress-bar"><b>0</b></span></td>
-              <td><span class="danger-5-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="danger-5-this bg-danger progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="danger-6-prev bg-danger-300 progress-bar"><b>0</b></span></td>
-              <td><span class="danger-6-this bg-danger progress-bar progress-bar-striped progress-bar-animated"><b>0</b></span></td>
+              <td class="w1"><span class="danger-6-this bg-danger progress-bar progress-bar-striped progress-bar-animated"><b>0</b></span></td>
               <td class="bl"><span class="danger-7-prev bg-danger-300 progress-bar"><b>0</b></span></td>
-              <td><span class="danger-7-this bg-danger progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="danger-7-this bg-danger progress-bar"><b>0</b></span></td>
             </tr>
           </table>
           <table class="tbl-bar w-100">
             <tr class="tr-bar">
               <td rowspan="2"><h1>주<br/>의</h1></td>
-              <td><span class="warn-1-prev bg-warning-300 progress-bar"><b>0</b></span></td>
-              <td><span class="warn-1-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="warn-1-prev bg-warning-300 progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="warn-1-this bg-warning progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="warn-2-prev bg-warning-300 progress-bar"><b>0</b></span></td>
-              <td><span class="warn-2-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="warn-2-this bg-warning progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="warn-3-prev bg-warning-300 progress-bar"><b>0</b></span></td>
-              <td><span class="warn-3-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="warn-3-this bg-warning progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="warn-4-prev bg-warning-300 progress-bar"><b>0</b></span></td>
-              <td><span class="warn-4-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="warn-4-this bg-warning progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="warn-5-prev bg-warning-300 progress-bar"><b>0</b></span></td>
-              <td><span class="warn-5-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="warn-5-this bg-warning progress-bar"><b>0</b></span></td>
               <td class="bl"><span class="warn-6-prev bg-warning-300 progress-bar"><b>0</b></span></td>
-              <td><span class="warn-6-this bg-warning progress-bar progress-bar-striped progress-bar-animated"><b>0</b></span></td>
+              <td class="w1"><span class="warn-6-this bg-warning progress-bar progress-bar-striped progress-bar-animated"><b>0</b></span></td>
               <td class="bl"><span class="warn-7-prev bg-warning-300 progress-bar"><b>0</b></span></td>
-              <td><span class="warn-7-this bg-warning progress-bar"><b>0</b></span></td>
+              <td class="w1"><span class="warn-7-this bg-warning progress-bar"><b>0</b></span></td>
             </tr>
             <tr>
-              <td colspan="2">일</td>
-              <td colspan="2">월</td>
-              <td colspan="2">화</td>
-              <td colspan="2">수</td>
-              <td colspan="2">목</td>
-              <td colspan="2">금</td>
-              <td colspan="2">토</td>
+              <td class="w1" colspan="2">일</td>
+              <td class="w1" colspan="2">월</td>
+              <td class="w1" colspan="2">화</td>
+              <td class="w1" colspan="2">수</td>
+              <td class="w1" colspan="2">목</td>
+              <td class="w1" colspan="2">금</td>
+              <td class="w1" colspan="2">토</td>
             </tr>
           </table>
         </div>
@@ -274,15 +274,16 @@
         for(var i=0; i<d.length; i++) if(d[i].WEEK==1) {
           temp = d.slice(i); break;
         }
+        console.log(temp);
         var dmax = Math.max.apply(null,temp.map(function(o){return o.DANGER;}));
         var wmax = Math.max.apply(null,temp.map(function(o){return o.WARN;}));
         var a = '-prev';
         for(var i=0; i<temp.length; i++) {
           if(i==7) a= '-this';
-          $('.danger-'+d[i].WEEK+a).css('padding-top', 70*d[i].DANGER/dmax+'px');
-          $('.danger-'+d[i].WEEK+a).text(d[i].DANGER);
-          $('.warn-'+d[i].WEEK+a).css('padding-top', 70*d[i].WARN/wmax+'px');
-          $('.warn-'+d[i].WEEK+a).text(d[i].WARN);
+          $('.danger-'+temp[i].WEEK+a).css('padding-top', 70*temp[i].DANGER/dmax+'px');
+          $('.danger-'+temp[i].WEEK+a).text(d[i].DANGER);
+          $('.warn-'+temp[i].WEEK+a).css('padding-top', 70*temp[i].WARN/wmax+'px');
+          $('.warn-'+temp[i].WEEK+a).text(d[i].WARN);
         }
       });
     }

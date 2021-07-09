@@ -41,8 +41,8 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/**")
             .addResourceLocations("file:src/main/resources/templates/");
         registry.addResourceHandler("/smartadmin/**")
-            .addResourceLocations("file:src/main/resources/static/smartadmin/");
+            .addResourceLocations("classpath:/static/smartadmin/");
         registry.addResourceHandler("/fs/**")
-            .addResourceLocations("file:src/main/resources/static/fs/");
+            .addResourceLocations("classpath:/static/fs/");
     }
 }
