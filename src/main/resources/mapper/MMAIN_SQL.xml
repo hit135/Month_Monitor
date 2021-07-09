@@ -87,7 +87,7 @@
 
     <select id="SELECT_SENSOR_LIST" parameterType="map" resultType="map">
         <![CDATA[
-        SELECT D.AREANAME, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
+        SELECT D.AREACODE, D.AREANAME, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
         FROM (SELECT A.SNSRID, 'DANGER' AS STATE, COUNT(*) AS CNT
               FROM F_SENSOR_LOG A
               WHERE A.REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')

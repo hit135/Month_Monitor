@@ -20,7 +20,8 @@
       .right [class^=sensors] { margin-bottom:15px; }
       .right h3 { text-align:center; color:#fff; padding:8px; font-size:20px; font-weight:bold; text-shadow:1px 1px 5px #000; }
       .right .list-sensor { height:227px; overflow-y:scroll; padding:5px 10px; }
-      .right .list-sensor p { font-size:14px; margin-bottom:7px; }
+      .right .list-sensor p { font-size:14px; margin-bottom:7px; cursor:pointer; }
+      .right .list-sensor p:hover { background:#e7f0f8; }
     </style>
     <style type="text/css">
       .center-top { background:#2b559b; color:#fff; border-radius:4px; margin-bottom:15px; }
@@ -61,6 +62,8 @@
       .store-info .tbl-bar td.bl { border-left:3px solid #fff; }
       .store-info .tbl-bar .tr-bar td { position:relative; height:105px; }
       .store-info .tbl-bar .progress-bar { display:block; position:absolute; bottom:0; width:100%; border-radius:3px 3px 0 0; }
+      .store-info .tbl-bar .progress-bar.danger-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
+      .store-info .tbl-bar .progress-bar.warn-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
     </style>
   </head>
   <body class="mod-bg-1 mod-nav-link">
@@ -114,11 +117,6 @@
       '<p class="{{html STATE}}" data-snsrid="{{html SNSRID}}"' +
       ' data-strname="{{html STRNAME}}">{{html SNSRNICK}} ' +
       '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span></p>');
-    $('.left').on('click', '.area-lv2', function() {
-      $('.left .area-lv2.on').removeClass('on');
-      $(this).addClass('on');
-      fn_clickAreaLv2($(this).attr('data-code'));
-    });
     $('.center-left-sensor-list').on('click', 'p', function() {
       $('.center-left-sensor-list p.on').removeClass('on');
       $(this).addClass('on');
@@ -151,12 +149,17 @@
     fn_getAreaSensorList(code);
   }
 
-  function fn_onAreaLv2(code) {
+  function fn_onAreaLv2(code, snsrid) {
     if(code) {
+      $('.left .area-lv2').removeClass('on');
       $('.left .area-lv2[data-code="'+code+'"]').addClass('on');
       fn_getAreaSensorCount(code);
-      fn_getAreaSensorList(code);
+      fn_getAreaSensorList(code, snsrid);
     }
+  }
+
+  function fn_clickRightSensor(code, snsrid) {
+    fn_onAreaLv2(code, snsrid);
   }
 
   function fn_getAreaSensorCount(code) {
@@ -170,9 +173,9 @@
       });
   }
 
-
-  function fn_getAreaSensorList(code) {
+  function fn_getAreaSensorList(code, snsrid) {
     var on_snsrid = $('.center-left-sensor-list p.on').attr('data-snsrid');
+    if(snsrid) on_snsrid = snsrid;
     $.post($('#contextRoot').val()+'/mng/areaSensorListAjax',{areacode: code},
       function(d) {
         $('.center-left-sensor-list').html('');
@@ -206,5 +209,4 @@
         $('.center-cont-page').html($temp.find('.sub-cont'));
     });
   }
-
 </script>

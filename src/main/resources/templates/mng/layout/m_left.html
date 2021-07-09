@@ -46,6 +46,11 @@
 
   function fn_initLeft() {
     $.template('left-area', '<p class="area-lv{{html LEVEL}}" data-code="{{html CODE}}"><span class="name">{{html NAME}}</span><span class="danger">{{html DANGER}}</span><span class="warn">{{html WARN}}</span></p>');
+    $('.left').on('click', '.area-lv2', function() {
+      $('.left .area-lv2.on').removeClass('on');
+      $(this).addClass('on');
+      fn_clickAreaLv2($(this).attr('data-code'));
+    });
     fn_getAreaList();
   }
 

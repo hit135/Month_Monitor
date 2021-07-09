@@ -23,7 +23,10 @@
   });
 
   function fn_initRight() {
-    $.template('right-sensor', '<p data-code="{{html SNSRID}}">{{html AREANAME}}_{{html SNSRNICK}} ({{html CNT}})</p>');
+    $.template('right-sensor', '<p class="right-sensor" data-areacode="{{html AREACODE}}" data-code="{{html SNSRID}}">{{html AREANAME}}_{{html SNSRNICK}} ({{html CNT}})</p>');
+    $('.list-sensor').on('click','p',function(){
+      fn_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-code'));
+    });
     fn_getSensorList();
   }
 
