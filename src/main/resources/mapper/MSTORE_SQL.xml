@@ -142,15 +142,21 @@
     </select>
 
     <select id="SELECT_DATA_LOG_LIST" parameterType="map" resultType="map">
-        <![CDATA[
         SELECT A.DSEQ,
                DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME,
                DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d') AS REGDATE,
                A.SNSRID,
+               A.SNSRKWH,
+               A.SNSRVOLT,
                A.SNSRWATT,
                A.SNSRAMPERE,
+               A.SNSRHZ,
+               A.SNSRPF,
+               A.SNSRREG,
+               A.SNSRRSSI,
                A.SNSRIGR,
                A.SNSRIGO,
+               A.SNSRIGC,
                B.OCALM,
                B.IGOALM,
                B.IGRALM,
@@ -164,13 +170,20 @@
                    WHEN IGOALM > 0 THEN 'IGO'
                    WHEN IGRALM > 0 THEN 'IGR'
                    END AS ALMTYPE
-        FROM F_SENSOR_DATA A
-                 LEFT JOIN F_SENSOR_LOG B ON A.SNSRID = B.SNSRID AND SUBSTR(A.DSEQ, 1, 7) = SUBSTR(B.DSEQ, 1, 7)
+        FROM ${tblSensorData} A
+                 LEFT JOIN ${tblSensorLog} B ON A.SNSRID = B.SNSRID
+                           AND <![CDATA[ A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED)-5 AND B.DSEQ+5 ]]>
                  LEFT JOIN F_SENSOR_INFO C ON A.SNSRID = C.SNSRID
-        WHERE A.SNSRRCVTIME > DATE_FORMAT(NOW(), '%Y-%m-%d')
+        WHERE 1=1
+            <if test='regdt != null and regdt != ""'>
+                AND A.SNSRRCVTIME BETWEEN STR_TO_DATE(#{regdt}, '%Y-%m-%d')
+                AND STR_TO_DATE(DATE_ADD(#{regdt}, INTERVAL 1 DAY), '%Y-%m-%d')
+            </if>
+            <if test='regdt == null or regdt == ""'>
+                AND A.SNSRRCVTIME > DATE_FORMAT(NOW(), '%Y-%m-%d')
+            </if>
           AND C.STRCODE = #{strcode}
         ORDER BY A.SNSRRCVTIME DESC
-        ]]>
     </select>
 
     <select id="SELECT_LOG_WEEK_STAT" parameterType="map" resultType="map">

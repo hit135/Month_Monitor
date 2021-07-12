@@ -129,11 +129,6 @@
       fn_getStoreSensor();
     }
 
-    function fn_dateToString(d) {
-      return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
-        ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
-    }
-
     function fn_prevDate() {
       if ($('#termtype').val() == 'm') {
         var temp = new Date($('#regdt').val() + '-01');

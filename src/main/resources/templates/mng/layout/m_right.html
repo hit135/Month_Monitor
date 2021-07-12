@@ -27,14 +27,14 @@
     $('.list-sensor').on('click','p',function(){
       fn_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-code'));
     });
-    fn_getSensorList();
+    fn_getRightSensorList();
   }
 
   function fn_refreshRight() {
-    fn_getSensorList();
+    fn_getRightSensorList();
   }
 
-  function fn_getSensorList() {
+  function fn_getRightSensorList() {
     $.post($('#contextRoot').val()+'/mng/sensorListAjax',{},function(d) {
       $('.list-sensor').html('');
       for(var i=0; i<d.length; i++)

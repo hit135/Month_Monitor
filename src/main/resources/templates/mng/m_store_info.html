@@ -96,7 +96,7 @@
               <td class="w5 bl"><span class="danger-prev bg-danger-100 progress-bar"><b>0</b></span></td>
               <td class="w5"><span class="danger-this bg-danger progress-bar"><b>0</b></span></td>
               <td class="w6 bl"><span class="danger-prev bg-danger-100 progress-bar"><b>0</b></span></td>
-              <td class="w6"><span class="danger-this bg-danger progress-bar progress-bar-striped progress-bar-animated"><b>0</b></span></td>
+              <td class="w6"><span class="danger-this bg-danger progress-bar"><b>0</b></span></td>
               <td class="w7 bl"><span class="danger-prev bg-danger-100 progress-bar"><b>0</b></span></td>
               <td class="w7"><span class="danger-this bg-danger progress-bar"><b>0</b></span></td>
             </tr>
@@ -115,7 +115,7 @@
               <td class="w5 bl"><span class="warn-prev bg-warning-300 progress-bar"><b>0</b></span></td>
               <td class="w5"><span class="warn-this bg-warning progress-bar"><b>0</b></span></td>
               <td class="w6 bl"><span class="warn-prev bg-warning-300 progress-bar"><b>0</b></span></td>
-              <td class="w6"><span class="warn-this bg-warning progress-bar progress-bar-striped progress-bar-animated"><b>0</b></span></td>
+              <td class="w6"><span class="warn-this bg-warning progress-bar"><b>0</b></span></td>
               <td class="w7 bl"><span class="warn-prev bg-warning-300 progress-bar"><b>0</b></span></td>
               <td class="w7"><span class="warn-this bg-warning progress-bar"><b>0</b></span></td>
             </tr>
@@ -141,9 +141,9 @@
 
     function fn_initStoreInfo() {
       $.template('datalog', '<p class="{{html STATE}}" data-regdate="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}</p>');
-      $('#check-total').on('click', fn_checkDataLog);
-      $('#check-danger').on('click', fn_checkDataLog);
-      $('#check-warn').on('click', fn_checkDataLog);
+      $('.store-info #check-total').on('click', fn_checkDataLog);
+      $('.store-info #check-danger').on('click', fn_checkDataLog);
+      $('.store-info #check-warn').on('click', fn_checkDataLog);
       fn_getStoreInfo();
       fn_getSensorList();
       fn_getListStoreImg();
@@ -158,20 +158,20 @@
 
     function fn_checkDataLog() {
       if ($(this).attr('id') == 'check-total') {
-        $('#check-danger').prop('checked', false);
-        $('#check-warn').prop('checked', false);
+        $('.store-info #check-danger').prop('checked', false);
+        $('.store-info #check-warn').prop('checked', false);
       }
-      if ($('#check-danger:checked').length + $('#check-warn:checked').length == 0)
-        $('#check-total').prop('checked', true);
-      else $('#check-total').prop('checked', false);
+      if ($('.store-info #check-danger:checked').length + $('.store-info #check-warn:checked').length == 0)
+        $('.store-info #check-total').prop('checked', true);
+      else $('.store-info #check-total').prop('checked', false);
       fn_showDataLog();
     }
 
     function fn_showDataLog() {
-      if($('#check-total:checked').length>0) $('.store-datalog-list p').show();
+      if($('.store-info #check-total:checked').length>0) $('.store-datalog-list p').show();
       else $('.store-datalog-list p').hide();
-      if($('#check-danger:checked').length>0) $('.store-datalog-list p.DANGER').show();
-      if($('#check-warn:checked').length>0) $('.store-datalog-list p.WARN').show();
+      if($('.store-info #check-danger:checked').length>0) $('.store-datalog-list p.DANGER').show();
+      if($('.store-info #check-warn:checked').length>0) $('.store-datalog-list p.WARN').show();
     }
 
     function fn_getStoreInfo() {
@@ -274,7 +274,6 @@
         for(var i=0; i<d.length; i++) if(d[i].WEEK==1) {
           temp = d.slice(i); break;
         }
-        console.log(temp);
         var dmax = Math.max.apply(null,temp.map(function(o){return o.DANGER;}));
         var wmax = Math.max.apply(null,temp.map(function(o){return o.WARN;}));
         var a = 'prev';
@@ -288,6 +287,10 @@
         var this_week = temp[temp.length-1].WEEK;
         $('.store-log-week-stat td').css('background','transparents');
         $('.store-log-week-stat td.w'+this_week).css('background','#e7f0f8');
+        $('.store-log-week-stat td.w'+this_week+' .danger-this').addClass('progress-bar-striped');
+        $('.store-log-week-stat td.w'+this_week+' .danger-this').addClass('progress-bar-animated');
+        $('.store-log-week-stat td.w'+this_week+' .warn-this').addClass('progress-bar-striped');
+        $('.store-log-week-stat td.w'+this_week+' .warn-this').addClass('progress-bar-animated');
         $('.store-log-week-stat td .danger-this').show();
         $('.store-log-week-stat td .warn-this').show();
         for(var i=this_week+1; i<8; i++) {

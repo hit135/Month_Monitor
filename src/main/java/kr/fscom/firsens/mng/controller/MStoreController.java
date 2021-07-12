@@ -200,6 +200,15 @@ public class MStoreController {
     ) {
         HashMap<String, Object> prm = new HashMap<String, Object>();
         try {
+            String regdt = req.getParameter("regdt");
+            prm.put("tblSensorData", "F_SENSOR_DATA");
+            prm.put("tblSensorLog", "F_SENSOR_LOG");
+            if(!StringUtils.isEmpty(regdt)) {
+                prm.put("regdt", regdt);
+                HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
+                prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
+                prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
+            }
             prm.put("strcode", req.getParameter("strcode"));
             return storeRepo.SELECT_DATA_LOG_LIST(prm);
         } catch (Exception e) {
