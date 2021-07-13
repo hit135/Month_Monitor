@@ -218,6 +218,30 @@ public class MStoreController {
         return null;
     }
 
+    @RequestMapping(value = "/sensorUsekwhMonthAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> sensorUsekwhMonthAjax(
+        HttpServletRequest req
+    ) {
+        HashMap<String, Object> prm = new HashMap<String, Object>();
+        try {
+            String regdt = req.getParameter("regdt");
+            prm.put("tblSensorData", "F_SENSOR_DATA");
+            prm.put("tblSensorLog", "F_SENSOR_LOG");
+            if(!StringUtils.isEmpty(regdt)) {
+                prm.put("regdt", regdt);
+                HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
+                prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
+                prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
+            }
+            prm.put("snsrid", req.getParameter("snsrid"));
+            return storeRepo.SELECT_SENSOR_USEKWH_MONTH(prm);
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
     @RequestMapping(value = "/logWeekStatAjax")
     @ResponseBody
     public List<HashMap<String, Object>> logWeekStatAjax(

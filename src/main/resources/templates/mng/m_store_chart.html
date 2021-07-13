@@ -10,7 +10,7 @@
 
     <div class="row pl-2">
       <div class="col-12 position-relative">
-        <div id="chart" style="width:100%;"></div>
+        <div id="chart" style="width:100%; height:400px;"></div>
         <div class="loading-chart position-absolute w-100 h-100 bg-white"
              style="left:0; top:0; text-align:center;">
           <button class="btn btn-info waves-effect waves-themed align-self-center" type="button"
@@ -23,6 +23,11 @@
     </div>
 
     <div class="row pl-2 mt-3">
+      <div class="col-3 align-middle">
+        <div class="w-100">
+          <div class="store-chart-sensor-list" id="snsrid"></div>
+        </div>
+      </div>
       <div class="col-4 align-middle">
         <div class="form-group custom-control-inline">
           <select class="form-control" id="termtype">
@@ -47,27 +52,24 @@
             <option value="m">월평균</option>
           </select>
         </div>
-        <div class="form-group custom-control-inline">
-          <div id="snsrid"></div>
-        </div>
       </div>
-      <div class="col-7">
+      <div class="col-4">
         <div class="row">
-          <div class="col-3" style="color:#d3372d;"><input type="checkbox" name="dataname" value="IGO"/> 누설전류 총합(IGO)
+          <div class="col-6" style="color:#d3372d;"><input type="checkbox" name="dataname" value="IGO"/> 누설전류 총합(IGO)
           </div>
-          <div class="col-3" style="color:#518d45;"><input type="checkbox" name="dataname" value="IGR"/> 저항성 누설전류(IGR)
+          <div class="col-6" style="color:#518d45;"><input type="checkbox" name="dataname" value="IGR"/> 저항성 누설전류(IGR)
           </div>
-          <div class="col-3" style="color:#4475e0;"><input type="checkbox" name="dataname" value="IGC"/> 용량성 누설전류(IGC)
+          <div class="col-6" style="color:#4475e0;"><input type="checkbox" name="dataname" value="IGC"/> 용량성 누설전류(IGC)
           </div>
-          <div class="col-3" style="color:#ff6272;"><input type="checkbox" name="dataname" value="KWH"/> 누적전력량(KWH)
+          <div class="col-6" style="color:#ff6272;"><input type="checkbox" name="dataname" value="KWH"/> 누적전력량(KWH)
           </div>
-          <div class="col-3" style="color:#ff8040;"><input type="checkbox" name="dataname" value="WATT"/> 일률(WATT)</div>
-          <div class="col-3" style="color:#800000;"><input type="checkbox" name="dataname" value="VOLT"/> 전압(VOLT)</div>
-          <div class="col-3" style="color:#0080ff;"><input type="checkbox" name="dataname" value="AMPERE"/> 전류(AMP)
+          <div class="col-6" style="color:#ff8040;"><input type="checkbox" name="dataname" value="WATT"/> 일률(WATT)</div>
+          <div class="col-6" style="color:#800000;"><input type="checkbox" name="dataname" value="VOLT"/> 전압(VOLT)</div>
+          <div class="col-6" style="color:#0080ff;"><input type="checkbox" name="dataname" value="AMPERE"/> 전류(AMP)
           </div>
-          <div class="col-3" style="color:#8000ff;"><input type="checkbox" name="dataname" value="HZ"/> 주파수(HZ)</div>
-          <div class="col-3" style="color:#800080;"><input type="checkbox" name="dataname" value="PF"/> 역률(PF)</div>
-          <div class="col-3" style="color:#ff0080;"><input type="checkbox" name="dataname" value="REG"/> 절연저항</div>
+          <div class="col-6" style="color:#8000ff;"><input type="checkbox" name="dataname" value="HZ"/> 주파수(HZ)</div>
+          <div class="col-6" style="color:#800080;"><input type="checkbox" name="dataname" value="PF"/> 역률(PF)</div>
+          <div class="col-6" style="color:#ff0080;"><input type="checkbox" name="dataname" value="REG"/> 절연저항</div>
         </div>
       </div>
       <div class="col-1">
@@ -106,7 +108,7 @@
       $('#regdt').on('change', function () {
         fn_getStoreSensorData();
       });
-      $('#snsrid').on('change', function () {
+      $('.store-chart-sensor-list').on('change', 'input', function () {
         fn_getStoreSensorData();
       });
       $('[name=dataname]').on('click', fn_setChart);
@@ -117,6 +119,10 @@
       window.datadt = null;
       window.dataset = null;
       window.val = null;
+      $.template('store-chart-sensor',
+        '<p class="{{html STATE}}">' +
+        '<input type="radio" name="store-chart-sensor" value="{{html SNSRID}}"/> {{html SNSRNICK}}' +
+        '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span><br/>{{html SNSRID}}</p>');
 
       if ($('#prm_almtype').val()) {
         $('[name=dataname][value="' + $('#prm_almtype').val() + '"]').prop('checked', true);
@@ -129,53 +135,34 @@
       fn_getStoreSensor();
     }
 
-    function fn_prevDate() {
-      if ($('#termtype').val() == 'm') {
-        var temp = new Date($('#regdt').val() + '-01');
-        temp.setMonth(temp.getMonth() - 1);
-        $('#regdt').val(fn_dateToString(temp).slice(0, 7));
-      } else {
-        var temp = new Date($('#regdt').val());
-        temp.setDate(temp.getDate() - 1);
-        $('#regdt').val(fn_dateToString(temp).slice(0, 10));
-      }
-      fn_getStoreSensorData();
-    }
-
     function fn_getStoreSensor() {
-      var strcode = $('#prm_strcode').val();
-      $.post(contextPath + '/mng/listStoreSensor', {
-        areacode: $('#prm_areacode').val(),
-        strcode: strcode
-      }, function (d) {
-        if (d && d.length > 0) {
-          window.snsr = {};
-          $('#snsrid').html('');
-          var badge = {
-            0: '<span class="badge badge-secondary badge-pill">&nbsp;</span>',
-            1: '<span class="badge badge-success badge-pill">&nbsp;</span>',
-            2: '<span class="badge badge-warning badge-pill">&nbsp;</span>',
-            3: '<span class="badge badge-danger badge-pill">&nbsp;</span>',
-          };
-          for (var i = 0; i < d.length; i++) {
-            if (!d[i].STATE) d[i].STATE = 0;
-            $('#snsrid').append('<div class="radio-' + d[i].SNSRID + '">' + badge[d[i].STATE] + ' ' + d[i].PANELNAME + ' > '
-              + d[i].SNSRNICK + ' (' + d[i].SNSRID + ') <input type="radio" name="snsrid" value="' + d[i].SNSRID + '"/></div>');
-            window.snsr[d[i].SNSRID] = d[i];
+      $.post($('#contextRoot').val()+'/mng/areaSensorListAjax',
+        { areacode: $('#prm_areacode').val(),
+          strcode: $('#prm_strcode').val() },
+        function(d) {
+          $('.store-chart-sensor-list').html('');
+          for(var i=0; i<d.length; i++) {
+            d[i].CNT = 0;
+            if(d[i].DANGER > 0) {
+              d[i].STATE = 'danger';
+              d[i].CNT = d[i].DANGER;
+              d[i].CNT2 = d[i].WARN;
+            } else if(d[i].WARN > 0) {
+              d[i].STATE = 'warn';
+              d[i].CNT = d[i].WARN;
+            }
+            $('.store-chart-sensor-list').append($.tmpl('store-chart-sensor',d[i]));
           }
           var snsrid = $('#prm_snsrid').val();
-          if (snsrid) $('#snsrid input[value="' + snsrid + '"]').prop('checked', true);
-          else $($('#snsrid input')[0]).prop('checked', true);
+          if (snsrid) $('.store-chart-sensor-list input[value="' + snsrid + '"]').prop('checked', true);
+          else $($('.store-chart-sensor-list input')[0]).prop('checked', true);
           var now = new Date();
           if ($('#prm_regdate').val()) {
             now = new Date($('#prm_regdate').val());
             $('#regdt').val($('#prm_regdate').val());
           }
-          now.setDate(now.getDate() - 1);
-          fn_getStoreSensorData('d', fn_dateToString(now).slice(0, 10), 2);
-        } else {
-          $('#snsrid').html('센서없음');
-        }
+          now.setDate(now.getDate());
+          fn_getStoreSensorData('d', fn_dateToString(now).slice(0, 10), 1);
       });
     }
 
@@ -236,6 +223,19 @@
         if (window.datadt.min > curdt) window.datadt.min = curdt;
         if (window.datadt.max < curdt) window.datadt.max = curdt;
       }
+      // 차트 24시간 보이기
+      if($('#termtype option:selected').val()=='d') {
+        if(new Date(window.datadt.min).getHours()>0) {
+          for(var i=0; i<dns.length; i++) {
+            window.dataset[dns[i].value].unshift([new Date($('#regdt').val()+'T00:00:00').getTime(), null]);
+          }
+        }
+        if(new Date(window.datadt.max).getHours()<23) {
+          for(var i=0; i<dns.length; i++) {
+            window.dataset[dns[i].value].push([new Date($('#regdt').val()+'T23:59:59').getTime(), null]);
+          }
+        }
+      }
       return ret;
     }
 
@@ -247,7 +247,7 @@
         strcode: $('#prm_strcode').val(),
         datatype: $('#datatype option:selected').val(),
         termtype: $('#termtype option:selected').val(),
-        snsrid: $('[name=snsrid]:checked').val(),
+        snsrid: $('[name=store-chart-sensor]:checked').val(),
         regdt: $('#regdt').val()
       };
 
@@ -255,6 +255,8 @@
       if (regdt) prm.regdt = regdt;
       if (dtsize) prm.dtsize = dtsize;
       if (order) prm.order = order;
+
+      console.log(arguments, prm);
 
       $.post(contextPath + '/mng/listStoreSensorData', prm, function (d) {
           if (d && d.length > 0) {
@@ -312,6 +314,7 @@
     function fn_onLoading() {
       if (!window.loadingcnt) window.loadingcnt = 0;
       window.loadingcnt++;
+      $('#chart').css('visibility', 'hidden');
       $('.loading-chart').show();
     }
 
@@ -319,17 +322,26 @@
       window.loadingcnt--;
       if (window.loadingcnt <= 0) {
         window.loadingcnt = 0;
+        $('#chart').css('visibility', 'visible');
         $('.loading-chart').hide();
       }
     }
 
     function fn_getMore(order) {
-      var dt = new Date(window.datadt.max.getTime());
+      var dt = null;
+      var termtype = $('#termtype option:selected').val();
       if (order == 'desc') {
         dt = new Date(window.datadt.min.getTime());
-        dt.setMonth(dt.getMonth() - 1);
-      } else dt.setMonth(dt.getMonth() + 1);
-      fn_getStoreSensorData('m', fn_dateToString(dt).slice(0, 7), 2, order, true);
+        if(termtype == 'd') dt.setDate(dt.getDate() - 1);
+        else dt.setMonth(dt.getMonth() - 1)
+      } else {
+        dt = new Date(window.datadt.max.getTime());
+        if(termtype == 'd') dt.setDate(dt.getDate() - 1);
+        else dt.setMonth(dt.getMonth() - 1)
+      }
+      var regdt = fn_dateToString(dt).slice(0, 10);
+      if(termtype == 'm') regdt = regdt.slice(0,7);
+      fn_getStoreSensorData(termtype, regdt, 1, order, true);
     }
 
     function fn_setChart() {
@@ -354,6 +366,11 @@
         tooltip: {
           enabled: true,
           marker: {show: true},
+          fixed: {
+            enabled: true,
+            position: 'topLeft'
+          },
+          x: { format: 'yyyy년 MM월 dd일 HH:mm:ss' },
           y: {
             formatter: function (val) {
               return val.toFixed(2);
@@ -363,7 +380,7 @@
         xaxis: {
           type: 'datetime',
           lines: {show: true},
-          tooltip: {enabled: true},
+          tooltip: {enabled: true,},
           labels: {
             datetimeUTC: false,
             datetimeFormatter: {year: 'yyyy년', month: 'yyyy년 MM월', day: 'MM월 dd일', hour: 'HH:mm'}
@@ -379,7 +396,6 @@
           }
         },
       };
-
       var $dns = $('[name=dataname]:checked');
       var series = [];
       var colorset = {
@@ -391,9 +407,9 @@
         series.push({name: $($dns[i]).parent('div').text().trim(), data: window.dataset[dns]});
         opt.colors.push(colorset[dns]);
         var min = window.val[dns].min * 0.95;
-        var max = window.val[dns].max * 1.05;
-        if (!opt.yaxis.min || opt.yaxis.min > min) opt.yaxis.min = min;
-        if (!opt.yaxis.max || opt.yaxis.max < max) opt.yaxis.max = max;
+        var max = window.val[dns].max * 1.25;
+        if (opt.yaxis.min == null || opt.yaxis.min > min) opt.yaxis.min = min;
+        if (opt.yaxis.max == null || opt.yaxis.max < max) opt.yaxis.max = max;
       }
       if (window.dataset['IGO'].length < 100) opt.markers = {size: 3, hover: {size: 3}};
       else opt.markers = {size: 0, hover: {size: 0}};

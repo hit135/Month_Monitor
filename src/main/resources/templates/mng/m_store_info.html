@@ -41,7 +41,7 @@
           <td class="store-owntel-cont"></td>
         </tr>
         <tr class="store-owntel">
-          <td class="store-sensor-cont" colspan="2"></td>
+          <td colspan="2"><div class="store-info-sensor-list"></div></td>
         </tr>
       </table>
     </div>
@@ -140,6 +140,9 @@
     });
 
     function fn_initStoreInfo() {
+      $.template('store-info-sensor',
+        '<p class="{{html STATE}}">{{html SNSRNICK}}' +
+        '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span><br/>{{html SNSRID}}</p>');
       $.template('datalog', '<p class="{{html STATE}}" data-regdate="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}</p>');
       $('.store-info #check-total').on('click', fn_checkDataLog);
       $('.store-info #check-danger').on('click', fn_checkDataLog);
@@ -149,6 +152,7 @@
       fn_getListStoreImg();
       fn_getDataLog();
       fn_getLogWeekStat();
+      fn_getStoreInfoSensorList();
     }
 
     function fn_refreshStoreInfo() {
@@ -223,10 +227,11 @@
             }
           }));
 
-          $('.store-sensor-cont').append('<p>' + markImg[d[i].STATE][1] + ' ' + d[i].PANELNAME + ' >' + d[i].SNSRNICK + ' (' + d[i].SNSRID + ')</p>');
+          //$('.store-sensor-cont').append('<p>' + markImg[d[i].STATE][1] + ' ' + d[i].PANELNAME + ' >' + d[i].SNSRNICK + ' (' + d[i].SNSRID + ')</p>');
         }
       }
     }
+
     function fn_getSensorList() {
       $.post($('#contextRoot').val()+'/mng/listSensorAjax',
         { areacode: $('#prm_areacode').val(),
@@ -264,6 +269,11 @@
           if(d[i].STATE) d[i].DATALOG = d[i].LCAUSE;
           $('.store-datalog-list').append($.tmpl('datalog',d[i]));
         }
+        if ($('.store-datalog-list p.DANGER').length > 0) {
+          if ($('.store-info #check-danger:checked').length < 1) $('.store-info #check-danger').click();
+        } else if($('.store-datalog-list p.WARN').length > 0) {
+          if ($('.store-info #check-warn:checked').length < 1) $('.store-info #check-warn').click();
+        } else if ($('.store-info #check-total:checked').length < 1) $('.store-info #check-total').click();
         fn_showDataLog();
       });
     }
@@ -299,5 +309,28 @@
         }
       });
     }
+
+
+    function fn_getStoreInfoSensorList() {
+      $.post($('#contextRoot').val()+'/mng/areaSensorListAjax',
+        { areacode: $('#prm_areacode').val(),
+          strcode: $('#prm_strcode').val() },
+        function(d) {
+          $('.store-info-sensor-list').html('');
+          for(var i=0; i<d.length; i++) {
+            d[i].CNT = 0;
+            if(d[i].DANGER > 0) {
+              d[i].STATE = 'danger';
+              d[i].CNT = d[i].DANGER;
+              d[i].CNT2 = d[i].WARN;
+            } else if(d[i].WARN > 0) {
+              d[i].STATE = 'warn';
+              d[i].CNT = d[i].WARN;
+            }
+            $('.store-info-sensor-list').append($.tmpl('store-info-sensor',d[i]));
+          }
+        });
+    }
+
   </script>
 </div>

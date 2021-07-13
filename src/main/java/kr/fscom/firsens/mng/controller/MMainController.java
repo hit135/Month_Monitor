@@ -102,6 +102,7 @@ public class MMainController {
         HashMap<String, Object> prm = new HashMap<>();
         try {
             prm.put("areacode", req.getParameter("areacode"));
+            prm.put("strcode", req.getParameter("strcode"));
             return mainRepo.SELECT_AREA_SENSOR_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
