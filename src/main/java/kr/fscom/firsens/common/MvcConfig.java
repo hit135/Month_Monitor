@@ -51,15 +51,15 @@ public class MvcConfig implements WebMvcConfigurer {
 
 
         registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/static/");
+                .addResourceLocations("classpath:/public/static/");
         registry.addResourceHandler("/*.js")
-                .addResourceLocations("classpath:/static/");
+                .addResourceLocations("classpath:/public/");
         registry.addResourceHandler("/*.json")
-                .addResourceLocations("classpath:/static/");
+                .addResourceLocations("classpath:/public/");
         registry.addResourceHandler("/*.ico")
-                .addResourceLocations("classpath:/static/");
+                .addResourceLocations("classpath:/public/");
         registry.addResourceHandler("/index.html")
-                .addResourceLocations("classpath:/static/");
+                .addResourceLocations("classpath:/public/");
 
     }
 }
