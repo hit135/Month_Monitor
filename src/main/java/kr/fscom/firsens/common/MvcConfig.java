@@ -3,6 +3,8 @@ package kr.fscom.firsens.common;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
+import java.io.IOException;
+
 /**
  * Spring Boot Mvc 설정
  *
@@ -29,6 +31,7 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("redirect:/mng/main");
+        registry.addViewController("/adm").setViewName("redirect:/index.html");
     }
 
     @Override
@@ -38,11 +41,25 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+
         registry.addResourceHandler("/**")
-            .addResourceLocations("file:src/main/resources/templates/");
+                .addResourceLocations("file:src/main/resources/templates/");
         registry.addResourceHandler("/smartadmin/**")
-            .addResourceLocations("classpath:/static/smartadmin/");
+                .addResourceLocations("classpath:/static/smartadmin/");
         registry.addResourceHandler("/fs/**")
-            .addResourceLocations("classpath:/static/fs/");
+                .addResourceLocations("classpath:/static/fs/");
+
+
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/static/");
+        registry.addResourceHandler("/*.js")
+                .addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/*.json")
+                .addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/*.ico")
+                .addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/index.html")
+                .addResourceLocations("classpath:/static/");
+
     }
 }
