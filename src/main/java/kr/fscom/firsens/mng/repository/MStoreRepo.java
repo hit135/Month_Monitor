@@ -34,4 +34,5 @@ public interface MStoreRepo {
     List<HashMap<String, Object>> SELECT_STORE_IMG(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_DATA_LOG_LIST(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_LOG_WEEK_STAT(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> SELECT_SENSOR_USEKWH_MONTH(Map<String, Object> param) throws Exception;
 }

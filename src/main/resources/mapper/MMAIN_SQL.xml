@@ -150,7 +150,6 @@
     </select>
 
     <select id="SELECT_AREA_SENSOR_LIST" parameterType="map" resultType="map">
-        <![CDATA[
         SELECT E.STRCODE, E.STRNAME, A.SNSRID, A.SNSRNICK, IFNULL(C.DANGER, 0) AS DANGER, IFNULL(D.WARN, 0) AS WARN
         FROM F_SENSOR_INFO A LEFT JOIN F_STORE E ON A.STRCODE = E.STRCODE
                  LEFT JOIN (SELECT SNSRID, COUNT(*) AS DANGER
@@ -165,7 +164,7 @@
                             GROUP BY SNSRID) D ON A.SNSRID = D.SNSRID
         WHERE A.DELYN != 'Y'
           AND A.AREACODE = #{areacode}
-        ORDER BY C.DANGER DESC, D.WARN DESC, A.SNSRNICK
-        ]]>
+          <if test='strcode!=null and strcode!=""'>AND A.STRCODE = #{strcode}</if>
+        ORDER BY C.DANGER DESC, D.WARN DESC, A.SNSRID
     </select>
 </mapper>

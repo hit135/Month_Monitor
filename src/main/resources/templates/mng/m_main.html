@@ -64,18 +64,49 @@
       .store-info .tbl-bar .progress-bar { display:block; position:absolute; bottom:0; width:100%; border-radius:3px 3px 0 0; }
       .store-info .tbl-bar .progress-bar.danger-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
       .store-info .tbl-bar .progress-bar.warn-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
+      .store-info-sensor-list { margin-bottom:20px; height:200px; overflow-y:scroll; }
+      .store-info-sensor-list p { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; line-height:16px; }
+      .store-info-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
+      .store-info-sensor-list p span.cnt2 { display:none; }
+      .store-info-sensor-list p.danger { color:#ff2f44; }
+      .store-info-sensor-list p.warn { color:#efaf77; }
+      .store-info-sensor-list p.danger span { color:#fff; background:#f88; }
+      .store-info-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
+      .store-info-sensor-list p.warn span { color:#fff; background:#fd8; }
     </style>
     <style type="text/css">
       .store-log .store-datalog-meta { width:100%; table-layout:fixed; }
       .store-log .store-datalog-meta tr { border-bottom:1px solid; }
-      .store-log .store-datalog-meta th { color:#666; font-weight:bold; text-align:right; }
-      .store-log .store-datalog-meta td { color:#666; text-align:right; padding:8px; }
-      .store-log .store-datalog-meta td span { color:#000; font-weight:bold; font-size:16px; }
+      .store-log .store-datalog-meta th { color:#666; width:95px; font-weight:bold; text-align:right; }
+      .store-log .store-datalog-meta td { color:#666; padding:8px; }
+      .store-log .store-datalog-meta td span { display:inline-block; text-align:right; width:80px; margin-right:5px; color:#000; font-weight:bold; font-size:16px; }
       .store-log .form-group { margin-bottom:0; }
       .store-log .store-datalog-filtered-list { height:580px; overflow-y:scroll; }
-      .store-log .store-datalog-filtered-list p { font-weight:bold; color:#666; font-size:13px; margin:0; }
+      .store-log .store-datalog-filtered-list p { font-weight:bold; color:#666; font-size:13px; margin:0; cursor:pointer; }
+      .store-log .store-datalog-filtered-list p.on { font-size:14px; margin:5px 0; background:#ddd; }
+      .store-log .store-datalog-filtered-list p:hover { background:#e7f0f8; }
       .store-log .store-datalog-filtered-list p.DANGER { color:#ff2f44; }
       .store-log .store-datalog-filtered-list p.WARN { color:#efaf77; }
+      .store-log-sensor-list { margin-bottom:20px; height:180px; overflow-y:scroll; }
+      .store-log-sensor-list p { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; }
+      .store-log-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
+      .store-log-sensor-list p span.cnt2 { display:none; }
+      .store-log-sensor-list p.danger { color:#ff2f44; }
+      .store-log-sensor-list p.warn { color:#efaf77; }
+      .store-log-sensor-list p.danger span { color:#fff; background:#f88; }
+      .store-log-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
+      .store-log-sensor-list p.warn span { color:#fff; background:#fd8; }
+    </style>
+    <style type="text/css">
+      .store-chart-sensor-list { margin-bottom:20px; height:150px; overflow-y:scroll; }
+      .store-chart-sensor-list p { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; }
+      .store-chart-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
+      .store-chart-sensor-list p span.cnt2 { display:none; }
+      .store-chart-sensor-list p.danger { color:#ff2f44; }
+      .store-chart-sensor-list p.warn { color:#efaf77; }
+      .store-chart-sensor-list p.danger span { color:#fff; background:#f88; }
+      .store-chart-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
+      .store-chart-sensor-list p.warn span { color:#fff; background:#fd8; }
     </style>
   </head>
   <body class="mod-bg-1 mod-nav-link">
