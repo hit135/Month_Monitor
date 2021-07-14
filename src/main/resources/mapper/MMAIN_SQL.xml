@@ -14,9 +14,9 @@
          WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
            AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0)
         UNION
-        (SELECT 'HOUR' AS TERN, 'DANGER' AS TYPE, COUNT(DISTINCT SNSRID) AS CNT
+        (SELECT 'COUNT' AS TERN, 'DANGER' AS TYPE, COUNT(*) AS CNT
          FROM F_SENSOR_LOG
-         WHERE REGDATE > DATE_ADD(NOW(), INTERVAL -1 HOUR)
+         WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
            AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0)
         UNION
         (SELECT 'TODAY' AS TERN, 'WARN' AS TYPE, COUNT(DISTINCT SNSRID) AS CNT
@@ -24,9 +24,9 @@
          WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
            AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
         UNION
-        (SELECT 'HOUR' AS TERM, 'WARN' AS TYPE, COUNT(DISTINCT SNSRID) AS CNT
+        (SELECT 'COUNT' AS TERM, 'WARN' AS TYPE, COUNT(*) AS CNT
          FROM F_SENSOR_LOG
-         WHERE REGDATE > DATE_ADD(NOW(), INTERVAL -1 HOUR)
+         WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
            AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
         UNION
         (SELECT 'TODAY' AS TERM, 'DISCON' AS TYPE, COUNT(DISTINCT SNSRID) AS CNT
@@ -87,7 +87,7 @@
 
     <select id="SELECT_SENSOR_LIST" parameterType="map" resultType="map">
         <![CDATA[
-        SELECT D.AREACODE, D.AREANAME, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
+        SELECT D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
         FROM (SELECT A.SNSRID, 'DANGER' AS STATE, COUNT(*) AS CNT
               FROM F_SENSOR_LOG A
               WHERE A.REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
@@ -147,6 +147,30 @@
                             GROUP BY AREACODE) E ON A.AREACODE = E.AREACODE
         WHERE A.AREACODE=#{areacode}
         ]]>
+    </select>
+
+    <select id="SELECT_AREA_STORE_LIST" parameterType="map" resultType="map">
+        SELECT E.AREACODE,
+               E.STRCODE,
+               E.STRNAME,
+               IFNULL(SUM(C.DANGER), 0) AS DANGER,
+               IFNULL(SUM(D.WARN), 0) AS WARN,
+               COUNT(DISTINCT A.SNSRID) AS SNSRCOUNT
+        FROM F_SENSOR_INFO A LEFT JOIN F_STORE E ON A.STRCODE = E.STRCODE
+        LEFT JOIN (SELECT SNSRID, COUNT(*) AS DANGER
+        FROM F_SENSOR_LOG
+        WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
+        AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
+        GROUP BY SNSRID) C ON A.SNSRID = C.SNSRID
+        LEFT JOIN (SELECT SNSRID, COUNT(*) AS WARN
+        FROM F_SENSOR_LOG
+        WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
+        AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
+        GROUP BY SNSRID) D ON A.SNSRID = D.SNSRID
+        WHERE A.DELYN != 'Y'
+        AND A.AREACODE = #{areacode}
+        GROUP BY E.STRCODE, E.STRNAME
+        ORDER BY 4 DESC, 5 DESC, E.STRNAME
     </select>
 
     <select id="SELECT_AREA_SENSOR_LIST" parameterType="map" resultType="map">

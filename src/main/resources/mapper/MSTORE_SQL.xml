@@ -22,6 +22,15 @@
         ]]>
     </select>
 
+    <select id="SELECT_SENSOR_INFO" parameterType="map" resultType="map">
+        <![CDATA[
+        SELECT A.AREACODE, A.SNSRID
+        FROM F_SENSOR_INFO A
+        WHERE A.STRCODE = #{strcode}
+        ORDER BY A.SNSRID
+        ]]>
+    </select>
+
     <select id="SELECT_LIST_STORE_SENSOR" parameterType="map" resultType="map">
         SELECT C.AREACODE, C.AREANAME,
                C2.AREACODE, C2.AREANAME,
