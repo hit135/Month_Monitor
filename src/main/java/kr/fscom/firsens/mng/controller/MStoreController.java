@@ -53,6 +53,11 @@ public class MStoreController {
             areacode = code[0];
             strcode = code[1];
         }
+        if(StringUtils.isEmpty(snsrid)) {
+            String[] code = getAreaSensorCode(strcode);
+            areacode = code[0];
+            snsrid = code[1];
+        }
         mav.addObject("prm_areacode", areacode);
         mav.addObject("prm_strcode", strcode);
         mav.addObject("prm_snsrid", snsrid);
@@ -86,6 +91,8 @@ public class MStoreController {
         mav.addObject("prm_areacode", areacode);
         mav.addObject("prm_strcode", strcode);
         mav.addObject("prm_snsrid", snsrid);
+        mav.addObject("prm_regdate", req.getParameter("regdate"));
+        mav.addObject("prm_checktype", req.getParameter("checktype"));
         return mav;
     }
 
@@ -99,6 +106,11 @@ public class MStoreController {
             String[] code = getAreaStoreCode(snsrid);
             areacode = code[0];
             strcode = code[1];
+        }
+        if(StringUtils.isEmpty(snsrid)) {
+            String[] code = getAreaSensorCode(strcode);
+            areacode = code[0];
+            snsrid = code[1];
         }
         mav.addObject("prm_areacode", areacode);
         mav.addObject("prm_strcode", strcode);
@@ -266,6 +278,20 @@ public class MStoreController {
             List<HashMap<String, Object>> store = storeRepo.SELECT_STORE_INFO(prm);
             ret[0] = (String) store.get(0).get("AREACODE");
             ret[1] = (String) store.get(0).get("STRCODE");
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+        return ret;
+    }
+
+    private String[] getAreaSensorCode(String strcode) {
+        String[] ret = new String[2];
+        try {
+            HashMap<String, Object> prm = new HashMap<>();
+            prm.put("strcode", strcode);
+            List<HashMap<String, Object>> sensor = storeRepo.SELECT_SENSOR_INFO(prm);
+            ret[0] = (String) sensor.get(0).get("AREACODE");
+            ret[1] = (String) sensor.get(0).get("SNSRID");
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

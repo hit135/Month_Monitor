@@ -46,6 +46,8 @@
       .center-cont-top-btn:hover { color:#afd9ee; text-decoration:underline; }
       .center-cont-top-btn.on { background:#fff; color:#2b559b; font-weight:bold; }
       .center-cont-page { border:1px solid #2b559b; min-height:650px; }
+      .center-cont-page .btn-chart { cursor:pointer; }
+      .center-cont-page .btn-datalog { cursor:pointer; }
     </style>
     <style type="text/css">
       .store-info .store-meta tr { border-bottom:1px solid #7c91df; margin:0; }
@@ -60,7 +62,7 @@
       .store-info .store-log-week-stat table { width:100%; table-layout:fixed; }
       .store-info .tbl-bar td { text-align:center; }
       .store-info .tbl-bar td.bl { border-left:3px solid #fff; }
-      .store-info .tbl-bar .tr-bar td { position:relative; height:105px; }
+      .store-info .tbl-bar .tr-bar td .block { display:block; position:relative; height:105px; }
       .store-info .tbl-bar .progress-bar { display:block; position:absolute; bottom:0; width:100%; border-radius:3px 3px 0 0; }
       .store-info .tbl-bar .progress-bar.danger-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
       .store-info .tbl-bar .progress-bar.warn-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
@@ -87,6 +89,8 @@
       .store-log .store-datalog-filtered-list p:hover { background:#e7f0f8; }
       .store-log .store-datalog-filtered-list p.DANGER { color:#ff2f44; }
       .store-log .store-datalog-filtered-list p.WARN { color:#efaf77; }
+      .store-log .store-datalog-filtered-list p button { display:none; margin-left:10px; }
+      .store-log .store-datalog-filtered-list p.on button { display:inline-block; }
       .store-log-sensor-list { margin-bottom:20px; height:180px; overflow-y:scroll; }
       .store-log-sensor-list p { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; }
       .store-log-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
@@ -147,109 +151,133 @@
       <div class="right col-2" style="margin-top:-100px;"><th:block th:replace="mng/layout/m_right"></th:block></div>
     </div>
     <div class="bottom"></div>
+    <script type="text/javascript">
+      $(function() {
+        fn_init();
+      });
+
+      function fn_init() {
+        $.template('center-left-store',
+          '<p class="{{html STATE}}" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}"' +
+          ' data-strname="{{html STRNAME}}">({{html SNSRCOUNT}}) {{html STRNAME}} ' +
+          '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span></p>');
+        $('.center-left-sensor-list').on('click', 'p', function() {
+          $('.center-left-sensor-list p.on').removeClass('on');
+          $(this).addClass('on');
+          $('.center-cont-top .store-name').text($(this).attr('data-strname'));
+          fn_clickContPage();
+        });
+        $('.center-cont-top').on('click', '.center-cont-top-btn', function() {
+          $('.center-cont-top-btn.on').removeClass('on');
+          $(this).addClass('on');
+          fn_clickContPage();
+        });
+        $('.center-cont-page').on('click', '.btn-chart', function() {
+          $('.center-cont-top-btn.on').removeClass('on');
+          $('.center-cont-top-btn[data-page="Chart"]').addClass('on');
+          fn_clickContPage({
+            areacode:$('#prm_areacode').val(),
+            strcode:$('#prm_strcode').val(),
+            snsrid:$(this).attr('data-snsrid'),
+            regdate:$(this).attr('data-regdate'),
+            almtype:$(this).attr('data-almtype')
+          });
+        });
+        $('.center-cont-page').on('click', '.btn-datalog', function() {
+          $('.center-cont-top-btn.on').removeClass('on');
+          $('.center-cont-top-btn[data-page="Log"]').addClass('on');
+          fn_clickContPage({
+            areacode:$('#prm_areacode').val(),
+            strcode:$('#prm_strcode').val(),
+            snsrid:$(this).attr('data-snsrid'),
+            regdate:$(this).attr('data-regdate'),
+            checktype:$(this).attr('data-checktype')
+          });
+        });
+        setInterval(fn_refresh, 1000*60);
+        setTimeout(function() {
+          $('.left .area-lv2')[0].click();
+        }, 800);
+      }
+
+      function fn_refresh() {
+        fn_refreshTop();
+        fn_refreshLeft();
+        fn_refreshRight();
+        fn_refreshStoreInfo();
+        setTimeout(function() {
+          fn_onAreaLv2(window.left_area_lv2_on_code);
+        }, 800);
+      }
+
+      function fn_clickAreaLv2(code) {
+        fn_getAreaSensorCount(code);
+        fn_getAreaStoreList(code);
+      }
+
+      function fn_onAreaLv2(code, strcode) {
+        if(code) {
+          $('.left .area-lv2').removeClass('on');
+          $('.left .area-lv2[data-code="'+code+'"]').addClass('on');
+          fn_getAreaSensorCount(code);
+          fn_getAreaStoreList(code, strcode);
+        }
+      }
+
+      function fn_clickRightSensor(code, strcode) {
+        fn_onAreaLv2(code, strcode);
+      }
+
+      function fn_getAreaSensorCount(code) {
+        $.post($('#contextRoot').val()+'/mng/areaSensorCountAjax',{areacode: code},
+          function(d) {
+            $('.center .area-name').text(d[0].AREANAME);
+            $('.center .area-stat .total').text(d[0].TOTAL);
+            $('.center .area-stat .danger').text(d[0].DANGER);
+            $('.center .area-stat .warn').text(d[0].WARN);
+            $('.center .area-stat .discon').text(d[0].DISCON);
+          });
+      }
+
+      function fn_getAreaStoreList(code, strcode) {
+        var on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
+        if(strcode) on_strcode = strcode;
+        $.post($('#contextRoot').val()+'/mng/areaStoreListAjax',{areacode: code},
+          function(d) {
+            $('.center-left-sensor-list').html('');
+            for(var i=0; i<d.length; i++) {
+              d[i].CNT = 0;
+              if(d[i].DANGER > 0) {
+                d[i].STATE = 'danger';
+                d[i].CNT = d[i].DANGER;
+                d[i].CNT2 = d[i].WARN;
+              } else if(d[i].WARN > 0) {
+                d[i].STATE = 'warn';
+                d[i].CNT = d[i].WARN;
+              }
+              $('.center-left-sensor-list').append($.tmpl('center-left-store',d[i]));
+            }
+            var on_obj = $('.center-left-sensor-list p[data-strcode="'+on_strcode+'"]')[0];
+            if(!on_obj) on_obj = $('.center-left-sensor-list p')[0];
+            $(on_obj).addClass('on');
+            $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
+            if($('#prm_strcode').val()!=$('.center-left-sensor-list p.on').attr('data-strcode')) fn_clickContPage();
+          });
+      }
+
+      function fn_clickContPage(p) {
+        var prm = {};
+        prm.areacode = $('.center-left-sensor-list p.on').attr('data-areacode');
+        prm.strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
+        if(p) prm = p;
+        var page = $('.center-cont-top-btn.on').attr('data-page');
+        $.post($('#contextRoot').val()+'/mng/store'+page, prm,
+          function (d) {
+            var $temp = $('<div>');
+            $temp.html(d);
+            $('.center-cont-page').html($temp.find('.sub-cont'));
+          });
+      }
+    </script>
   </body>
 </html>
-
-<script type="text/javascript">
-  $(function() {
-    fn_init();
-  });
-
-  function fn_init() {
-    $.template('center-left-sensor',
-      '<p class="{{html STATE}}" data-snsrid="{{html SNSRID}}"' +
-      ' data-strname="{{html STRNAME}}">{{html SNSRNICK}} ' +
-      '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span></p>');
-    $('.center-left-sensor-list').on('click', 'p', function() {
-      $('.center-left-sensor-list p.on').removeClass('on');
-      $(this).addClass('on');
-      $('.center-cont-top .store-name').text($(this).attr('data-strname'));
-      fn_clickContPage();
-    });
-    $('.center-cont-top').on('click', '.center-cont-top-btn', function() {
-      $('.center-cont-top-btn.on').removeClass('on');
-      $(this).addClass('on');
-      fn_clickContPage();
-    });
-    setInterval(fn_refresh, 1000*60);
-    setTimeout(function() {
-      $('.left .area-lv2')[0].click();
-    }, 800);
-  }
-
-  function fn_refresh() {
-    fn_refreshTop();
-    fn_refreshLeft();
-    fn_refreshRight();
-    fn_refreshStoreInfo();
-    setTimeout(function() {
-      fn_onAreaLv2(window.left_area_lv2_on_code);
-    }, 800);
-  }
-
-  function fn_clickAreaLv2(code) {
-    fn_getAreaSensorCount(code);
-    fn_getAreaSensorList(code);
-  }
-
-  function fn_onAreaLv2(code, snsrid) {
-    if(code) {
-      $('.left .area-lv2').removeClass('on');
-      $('.left .area-lv2[data-code="'+code+'"]').addClass('on');
-      fn_getAreaSensorCount(code);
-      fn_getAreaSensorList(code, snsrid);
-    }
-  }
-
-  function fn_clickRightSensor(code, snsrid) {
-    fn_onAreaLv2(code, snsrid);
-  }
-
-  function fn_getAreaSensorCount(code) {
-    $.post($('#contextRoot').val()+'/mng/areaSensorCountAjax',{areacode: code},
-      function(d) {
-        $('.center .area-name').text(d[0].AREANAME);
-        $('.center .area-stat .total').text(d[0].TOTAL);
-        $('.center .area-stat .danger').text(d[0].DANGER);
-        $('.center .area-stat .warn').text(d[0].WARN);
-        $('.center .area-stat .discon').text(d[0].DISCON);
-      });
-  }
-
-  function fn_getAreaSensorList(code, snsrid) {
-    var on_snsrid = $('.center-left-sensor-list p.on').attr('data-snsrid');
-    if(snsrid) on_snsrid = snsrid;
-    $.post($('#contextRoot').val()+'/mng/areaSensorListAjax',{areacode: code},
-      function(d) {
-        $('.center-left-sensor-list').html('');
-        for(var i=0; i<d.length; i++) {
-          d[i].CNT = 0;
-          if(d[i].DANGER > 0) {
-            d[i].STATE = 'danger';
-            d[i].CNT = d[i].DANGER;
-            d[i].CNT2 = d[i].WARN;
-          } else if(d[i].WARN > 0) {
-            d[i].STATE = 'warn';
-            d[i].CNT = d[i].WARN;
-          }
-          $('.center-left-sensor-list').append($.tmpl('center-left-sensor',d[i]));
-        }
-        var on_obj = $('.center-left-sensor-list p[data-snsrid="'+on_snsrid+'"]')[0];
-        if(!on_obj) on_obj = $('.center-left-sensor-list p')[0];
-        $(on_obj).addClass('on');
-        $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
-        if($('#prm_snsrid').val()!=$('.center-left-sensor-list p.on').attr('data-snsrid')) fn_clickContPage();
-      });
-  }
-
-  function fn_clickContPage() {
-    var page = $('.center-cont-top-btn.on').attr('data-page');
-    $.post($('#contextRoot').val()+'/mng/store'+page,
-      { snsrid: $('.center-left-sensor-list p.on').attr('data-snsrid') },
-      function (d) {
-        var $temp = $('<div>');
-        $temp.html(d);
-        $('.center-cont-page').html($temp.find('.sub-cont'));
-    });
-  }
-</script>

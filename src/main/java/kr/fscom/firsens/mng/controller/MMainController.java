@@ -96,6 +96,19 @@ public class MMainController {
         return null;
     }
 
+    @RequestMapping(value="/areaStoreListAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> areaStoreListAjax(HttpServletRequest req) {
+        HashMap<String, Object> prm = new HashMap<>();
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            return mainRepo.SELECT_AREA_STORE_LIST(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
+
     @RequestMapping(value="/areaSensorListAjax")
     @ResponseBody
     public List<HashMap<String,Object>> areaSensorListAjax(HttpServletRequest req) {

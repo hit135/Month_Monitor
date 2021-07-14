@@ -4,6 +4,8 @@
     <input id="prm_areacode" type="hidden" th:value="${prm_areacode}"/>
     <input id="prm_strcode" type="hidden" th:value="${prm_strcode}"/>
     <input id="prm_snsrid" type="hidden" th:value="${prm_snsrid}"/>
+    <input id="prm_regdate" type="hidden" th:value="${prm_regdate}"/>
+    <input id="prm_checktype" type="hidden" th:value="${prm_checktype}"/>
     <div class="col-3">
       <div class="store-log-sensor-list"></div>
       <table class="store-datalog-meta">
@@ -52,10 +54,12 @@
     function fn_initStoreDataLog() {
       $.template('store-log-sensor',
         '<p class="{{html STATE}}">' +
-        '<input type="checkbox" value="{{html SNSRID}}" checked="checked"/> {{html SNSRNICK}}' +
+        '<input type="checkbox" value="{{html SNSRID}}"/> {{html SNSRNICK}}' +
         '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span><br/>{{html SNSRID}}</p>');
-      $.template('datalog', '<p class="{{html STATE}}" data-index="{{html INDEX}}" data-snsrid="{{html SNSRID}}" data-regdt="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">' +
-        '[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}</p>');
+      $.template('datalog', '<p class="{{html STATE}}" data-index="{{html INDEX}}" data-snsrid="{{html SNSRID}}">' +
+        '[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}' +
+        '<button type="button" class="btn-chart btn btn-xs btn-outline-info waves-effect waves-themed"' +
+        ' data-snsrid="{{html SNSRID}}" data-regdt="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">Chart</button></p>');
       $('.store-log #check-total').on('click', fn_checkDataLogFiltered);
       $('.store-log #check-danger').on('click', fn_checkDataLogFiltered);
       $('.store-log #check-warn').on('click', fn_checkDataLogFiltered);
@@ -64,10 +68,14 @@
       $('.store-datalog-filtered-list').on('click', 'p', function(){
         fn_setDataLogMeta($(this).attr('data-index'));
       });
-      $('.store-log #regdt').val(fn_dateToString(new Date()).slice(0, 10));
+      var regdate = $('#prm_regdate').val();
+      if(!regdate) regdate = fn_dateToString(new Date()).slice(0, 10);
+      $('.store-log #regdt').val(regdate);
       fn_getDataLogFiltered();
       fn_getStoreLogSensorList();
     }
+
+    function fn_refreshStoreInfo() {}
 
     function fn_checkDataLogFiltered() {
       if ($(this).attr('id') == 'check-total') {
@@ -106,9 +114,10 @@
             if (d[i].STATE) d[i].DATALOG = d[i].LCAUSE;
             $('.store-datalog-filtered-list').append($.tmpl('datalog', d[i]));
           }
-          if ($('.store-datalog-filtered-list p.DANGER').length > 0) {
+          var checktype = $('.store-log #prm_checktype').val();
+          if (checktype == 'danger') {
             if ($('.store-log #check-danger:checked').length < 1) $('.store-log #check-danger').click();
-          } else if($('.store-datalog-filtered-list p.WARN').length > 0) {
+          } else if(checktype == 'warn') {
             if ($('.store-log #check-warn:checked').length < 1) $('.store-log #check-warn').click();
           } else if ($('.store-log #check-total:checked').length < 1) $('.store-log #check-total').click();
           fn_showDataLogFiltered();
@@ -126,14 +135,16 @@
         $('.store-datalog-meta').show();
         $('.store-datalog-filtered-list p').removeClass('on');
         $($('.store-datalog-filtered-list p')[i]).addClass('on');
-        $.post($('#contextRoot').val()+'/mng/sensorUsekwhMonthAjax', {
-          snsrid: window.datalog[i].SNSRID,
-          regdt: $('.store-log #regdt').val()
-        }, function (d) {
-          $('.store-datalog-meta .monkwh th span').text($('.store-log #regdt').val().substring(0,4)+'년 '
-            +$('.store-log #regdt').val().substring(5,7)+'월');
-          $('.store-datalog-meta .monkwh td span').text(d[0].USEKWH);
-        });
+        if($('.store-log #regdt').val()) {
+          $.post($('#contextRoot').val()+'/mng/sensorUsekwhMonthAjax', {
+            snsrid: window.datalog[i].SNSRID,
+            regdt: $('.store-log #regdt').val()
+          }, function (d) {
+            $('.store-datalog-meta .monkwh th span').text($('.store-log #regdt').val().substring(0,4)+'년 '
+              +$('.store-log #regdt').val().substring(5,7)+'월');
+            $('.store-datalog-meta .monkwh td span').text(d[0].USEKWH);
+          });
+        }
         $('.store-datalog-meta .kw td span').text(window.datalog[i].SNSRWATT.toFixed(3));
         $('.store-datalog-meta .vo td span').text(window.datalog[i].SNSRVOLT.toFixed(3));
         $('.store-datalog-meta .am td span').text(window.datalog[i].SNSRAMPERE.toFixed(3));
@@ -168,6 +179,10 @@
             }
             $('.store-log-sensor-list').append($.tmpl('store-log-sensor',d[i]));
           }
+          var snsrid = $('#prm_snsrid').val();
+          if(snsrid) $('.store-log-sensor-list input[value="'+snsrid+'"]').prop('checked','checked');
+          else $('.store-log-sensor-list input').prop('checked','checked');
+          fn_showDataLogFiltered();
         });
     }
   </script>

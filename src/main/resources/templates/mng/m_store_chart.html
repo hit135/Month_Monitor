@@ -1,6 +1,6 @@
 <script type="text/javascript" th:src="@{/fs/js/jquery.js}"></script>
 <link rel="stylesheet" type="text/css" th:href="@{/fs/css/apexcharts.css}"/>
-<div class="sub-cont">
+<div class="sub-cont w-100">
   <input type="hidden" id="prm_areacode" th:value="${prm_areacode}"/>
   <input type="hidden" id="prm_strcode" th:value="${prm_strcode}"/>
   <input type="hidden" id="prm_snsrid" th:value="${prm_snsrid}"/>
@@ -80,10 +80,9 @@
     </div>
   </div>
 
-  <link id="contextPathHolder" th:data-contextPath="${#httpServletRequest.getContextPath()}"/>
-
+  <!-- IE에서 차트 보이도록 추가 -->
+  <script th:src="@{/fs/js/polyfill.min.js}"></script>
   <script th:src="@{/fs/js/apexcharts.js}"></script>
-
   <script type="text/javascript">
     var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
 
@@ -134,6 +133,8 @@
       $('#regdt').val(fn_dateToString(new Date()).slice(0, 10));
       fn_getStoreSensor();
     }
+
+    function fn_refreshStoreInfo() {}
 
     function fn_getStoreSensor() {
       $.post($('#contextRoot').val()+'/mng/areaSensorListAjax',
@@ -250,25 +251,20 @@
         snsrid: $('[name=store-chart-sensor]:checked').val(),
         regdt: $('#regdt').val()
       };
-
       if (termtype) prm.termtype = termtype;
       if (regdt) prm.regdt = regdt;
       if (dtsize) prm.dtsize = dtsize;
       if (order) prm.order = order;
-
-      console.log(arguments, prm);
-
       $.post(contextPath + '/mng/listStoreSensorData', prm, function (d) {
-          if (d && d.length > 0) {
-            if (!isinit) fn_initDataset();
-            if (fn_updateDataset(d)) fn_setChart();
-          } else {
-            if (!order) alert('no data');
-            console.log('no data');
-          }
-          fn_offLoading();
+        if (d && d.length > 0) {
+          if (!isinit) fn_initDataset();
+          if (fn_updateDataset(d)) fn_setChart();
+        } else {
+          if (!order) alert('no data');
+          console.log('no data');
         }
-      );
+        fn_offLoading();
+      });
     }
 
     function fn_setAnnotations() {
@@ -336,8 +332,8 @@
         else dt.setMonth(dt.getMonth() - 1)
       } else {
         dt = new Date(window.datadt.max.getTime());
-        if(termtype == 'd') dt.setDate(dt.getDate() - 1);
-        else dt.setMonth(dt.getMonth() - 1)
+        if(termtype == 'd') dt.setDate(dt.getDate() + 1);
+        else dt.setMonth(dt.getMonth() + 1)
       }
       var regdt = fn_dateToString(dt).slice(0, 10);
       if(termtype == 'm') regdt = regdt.slice(0,7);
@@ -373,7 +369,8 @@
           x: { format: 'yyyy년 MM월 dd일 HH:mm:ss' },
           y: {
             formatter: function (val) {
-              return val.toFixed(2);
+              if(val) return val.toFixed(2);
+              return null;
             }
           }
         },
@@ -391,7 +388,8 @@
           tooltip: {enabled: true}, min: null, max: null,
           labels: {
             formatter: function (val) {
-              return val.toFixed(2);
+              if(val) return val.toFixed(2);
+              return null;
             }
           }
         },
@@ -407,13 +405,12 @@
         series.push({name: $($dns[i]).parent('div').text().trim(), data: window.dataset[dns]});
         opt.colors.push(colorset[dns]);
         var min = window.val[dns].min * 0.95;
-        var max = window.val[dns].max * 1.25;
+        var max = window.val[dns].max * 1.4;
         if (opt.yaxis.min == null || opt.yaxis.min > min) opt.yaxis.min = min;
         if (opt.yaxis.max == null || opt.yaxis.max < max) opt.yaxis.max = max;
       }
-      if (window.dataset['IGO'].length < 100) opt.markers = {size: 3, hover: {size: 3}};
+      if (window.dataset['IGO'].length < 100) opt.markers = {size:1, strokeWidth:0, hover: {size: 5}};
       else opt.markers = {size: 0, hover: {size: 0}};
-
       if (series.length > 0) {
         $('#chart').css('visibility', 'visible');
         if (window.chart1) {
@@ -425,7 +422,7 @@
           opt.series = series;
           $('#chart').html('');
           window.chart1 = new ApexCharts(document.querySelector("#chart"), opt);
-          window.chart1.render();
+          window.chart1.render().then(function(){});
         }
       } else {
         $('#chart').css('visibility', 'hidden');
