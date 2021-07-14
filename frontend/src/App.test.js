@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme/build'
 import App from './App'
 import ChartLineSimple from './views/charts/ChartLineSimple'
-import Dashboard from './views/dashboard/Dashboard.js'
+import AreaMgr from './views/area/Dashboard.js'
 
 
 it('mounts App without crashing', () => {
@@ -11,7 +11,7 @@ it('mounts App without crashing', () => {
 })
 
 it('mounts Dashboard without crashing', () => {
-  const wrapper = shallow(<Dashboard/>)
+  const wrapper = shallow(<AreaMgr/>)
   wrapper.unmount()
 })
 

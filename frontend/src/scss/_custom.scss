@@ -1,1 +1,10 @@
 // Here you can add other styles
+.c-sidebar {
+  width: 210px;
+}
+
+@media (min-width: 992px) and (min-width: 992px) {
+  html:not([dir=rtl]) .c-sidebar.c-sidebar-lg-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper, html:not([dir=rtl]) .c-sidebar.c-sidebar-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper {
+    margin-left: 210px;
+  }
+}
