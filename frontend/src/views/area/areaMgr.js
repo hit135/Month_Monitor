@@ -1,5 +1,5 @@
 import React, {Component, useEffect, useState} from 'react'
-import {getAreaList, rowEvents, handleClickRegisterArea} from "../../agent/area";
+import {getAreaList, rowEvents} from "../../agent/area";
 
 import {
   CBadge,
@@ -10,6 +10,7 @@ import {
   CRow,
 } from '@coreui/react'
 import PageTableWidget from "../../widget/pageTableWidget";
+import AreaActionModal from "./areaActionModal";
 
 // Y/N 표시 스타일
 const useYnStyleFormatter = (cell) =>
@@ -35,8 +36,9 @@ const columns = [
 ];
 
 const AreaMgr = () => {
-  const [repo, setRepo] = useState([]);
-  const [pageItem, setPageItem] = useState({});
+  const [repo, setRepo] = useState([]);               // 리스트 state
+  const [pageItem, setPageItem] = useState({});       // 페이징 state
+  const [info, setInfo] = useState(false)             // Modal state
 
   useEffect(() => {
     handleInitTable()
@@ -44,7 +46,7 @@ const AreaMgr = () => {
 
   // 초기 테이블 셋팅
   const handleInitTable = (page = 1, sizePerPage = 10) => {
-    getAreaList(page, sizePerPage).then(function(resp) {
+    getAreaList(page, sizePerPage).then(function (resp) {
       setRepo(resp.data["resultList"]);
       setPageItem({page: page, sizePerPage: sizePerPage, totalElementsCount: resp.data["totalElements"]})
     });
@@ -57,6 +59,11 @@ const AreaMgr = () => {
 
     handleInitTable(page, sizePerPage);
   };
+
+  // 등록 버튼 이벤트
+  const handleClickRegisterModal = () => {
+    setInfo(true);
+  }
 
   return (
     <>
@@ -71,7 +78,7 @@ const AreaMgr = () => {
             <CCardBody className={"pt-3"}>
               <CRow className={"mb-3"}>
                 <CCol md="12" xl="12">
-                  <button className={"btn btn-custom float-right mt-0"} onClick={handleClickRegisterArea}>등록</button>
+                  <button className={"btn btn-custom float-right mt-0"} onClick={handleClickRegisterModal}>등록</button>
                 </CCol>
               </CRow>
               <PageTableWidget
@@ -88,9 +95,9 @@ const AreaMgr = () => {
           </CCard>
         </CCol>
       </CRow>
+      <AreaActionModal info={info} setInfo={setInfo}/>
     </>
   )
-
 }
 
 export default AreaMgr
