@@ -1,4 +1,4 @@
-package kr.fscom.firsens.mng.domain;
+package kr.fscom.firsens.sys.domain;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
