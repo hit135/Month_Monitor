@@ -1,5 +1,5 @@
 import React, {Component, useEffect, useState} from 'react'
-import {getAreaList, getData} from "../../agent/area";
+import {getAreaList} from "../../agent/area";
 
 import {
   CCard,
@@ -26,7 +26,7 @@ const AreaMgr = () => {
   const [repo, setRepo] = useState([]);
   const [pageItem, setPageItem] = useState({});
 
-  const handleInitTable = (page = 1, sizePerPage = 5) => {
+  const handleInitTable = (page = 1, sizePerPage = 10) => {
     getAreaList(page, sizePerPage).then(function(resp) {
       setRepo(resp.data["resultList"]);
       setPageItem({page: page, sizePerPage: sizePerPage, totalElementsCount: resp.data["totalElements"]})
@@ -43,7 +43,6 @@ const AreaMgr = () => {
   useEffect(() => {
     handleInitTable()
   }, []);
-
 
   return (
     <>
@@ -63,7 +62,6 @@ const AreaMgr = () => {
                 sizePerPage={pageItem.sizePerPage}
                 totalSize={pageItem.totalElementsCount}
                 onTableChange={handleTableChange}
-                // onSizePerPageChange={handleChangeSizePerPage}
                 viewColumns={columns}
                 // selectRow={selectRowProp}
               />

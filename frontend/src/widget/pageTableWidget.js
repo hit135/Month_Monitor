@@ -26,7 +26,7 @@ function PageTableWidget(props) {
           sizePerPage,
           totalSize,
           paginationSize: (paginationSize) ? paginationSize : 5,
-          showTotal: true,
+          showTotal: false,
           hidePageListOnlyOnePage: true,
           hideSizePerPage: false,
           onSizePerPageChange: onSizePerPageChange,
