@@ -15,22 +15,22 @@ function PageTableWidget(props) {
         keyField={keyField}
         data={data.slice()}
         columns={viewColumns}
-        // onTableChange={onTableChange}
+        onTableChange={onTableChange}
         // rowEvents={selectRow}
         remote
         striped
         hover
         condensed
-        // pagination={paginationFactory({
-        //   page,
-        //   sizePerPage,
-        //   totalSize,
-        //   paginationSize: (paginationSize) ? paginationSize : 5,
-        //   showTotal: false,
-        //   hidePageListOnlyOnePage: true,
-        //   hideSizePerPage: true,
-        //   onSizePerPageChange: onSizePerPageChange,
-        // })}
+        pagination={paginationFactory({
+          page,
+          sizePerPage,
+          totalSize,
+          paginationSize: (paginationSize) ? paginationSize : 5,
+          showTotal: true,
+          hidePageListOnlyOnePage: true,
+          hideSizePerPage: false,
+          onSizePerPageChange: onSizePerPageChange,
+        })}
         noDataIndication={() => <div style={{textAlign: 'center'}}>목록이 없습니다.</div>} />
     </>
   )

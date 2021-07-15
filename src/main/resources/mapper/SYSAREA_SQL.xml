@@ -20,6 +20,7 @@
         ON FA.AREACODE = FS.AREACODE
         WHERE 1 = 1
         ORDER BY FA.AREAORDER, FA.AREACODE
+        LIMIT #{ page }, #{ sizePerPage }
     </select>
 
     <select id="SELECT_CNT_SYS_AREA" parameterType="SYSAreaDomain" resultType="int">
