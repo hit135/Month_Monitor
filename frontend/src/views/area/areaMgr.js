@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {getData} from "../../agent/area";
+import {getAreaList, getData} from "../../agent/area";
 function AreaMgr() {
   const columns = [
     { dataField: 'rowNum',     text: '번호',     headerStyle: {textAlign: 'center', width: '10%', height: '35px'} },
@@ -9,8 +9,8 @@ function AreaMgr() {
 
   const [repo, setRepo] = useState([]);
   useEffect(() => {
-    getData().then(function(data){
-        setRepo(data["data"].str)
+    getAreaList().then(function(resp){
+        console.log(resp);
       }
     );
 
