@@ -4,17 +4,29 @@
     <th:block th:replace="mng/layout/m_head"></th:block>
     <style type="text/css">
       .top .sensor-stat { text-shadow:1px 1px 5px #000; color:#fff; }
+      .top-date { font-size:16px; padding-top:10px; }
+      .top-time { font-size:28px; margin-bottom:-30px; }
+      .top-search { padding-top:10px; }
+      .top-search-text { -webkit-ime-mode:active; -moz-ime-mode:active; -ms-ime-mode:active; ime-mode:active; }
+      .top-search-result { position:absolute; z-index:100; right:0; top:40px; width:300px; max-height:400px; background:#fff; overflow-y:scroll; }
+      .top-search-result p { cursor:pointer; }
+      .top-search-result p:hover { background:#ddd; }
     </style>
     <style type="text/css">
-      .left p { padding:7px; margin-bottom:5px; border-radius:4px; }
+      .left p { padding:3px 7px; margin-bottom:3px; border-radius:4px; }
       .left span { display:inline-block; text-shadow:1px 1px 5px #fff; }
       .left .name { width:55%; }
       .left .danger { width:20%; text-align:right; color:#ff2f44; }
       .left .warn { width:20%; text-align:right; color:#efaf77; }
-      .left .area-lv1 { font-size:22px; font-weight:bold; background:#ddd; width:90%; margin-left:5%; }
-      .left .area-lv2 { font-size:16px; font-weight:bold; background:#eee; width:85%; margin-left:10%; border-bottom:1px solid #ccc; cursor:pointer; }
+      .left .area-lv1 { font-size:20px; font-weight:bold; background:#ddd; width:90%; margin-left:5%; }
+      .left .area-lv2 { font-size:14px; font-weight:bold; background:#eee; width:85%; margin-left:10%; border-bottom:1px solid #ccc; cursor:pointer; }
       .left .area-lv2:hover { background:#ccc; }
       .left .area-lv2.on { background:#2b559b; color:white; text-shadow:1px 1px 5px #000; }
+      .left h3 { text-align:center; color:#fff; padding:8px; font-size:20px; font-weight:bold; text-shadow:1px 1px 5px #000; }
+      .left h3 span { text-shadow:1px 1px 5px #000; }
+      .left-list-sensor { height:213px; overflow-y:scroll; padding:5px 10px; }
+      .left-list-sensor p { font-size:14px; margin-bottom:7px; cursor:pointer; }
+      .left-list-sensor p:hover { background:#e7f0f8; }
     </style>
     <style type="text/css">
       .right [class^=sensors] { margin-bottom:15px; }
@@ -67,14 +79,20 @@
       .store-info .tbl-bar .progress-bar.danger-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
       .store-info .tbl-bar .progress-bar.warn-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
       .store-info-sensor-list { margin-bottom:20px; height:200px; overflow-y:scroll; }
-      .store-info-sensor-list p { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; line-height:16px; }
-      .store-info-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
-      .store-info-sensor-list p span.cnt2 { display:none; }
+      .store-info-sensor-list p.btn-datalog { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; line-height:16px; }
+      .store-info-sensor-list p.btn-datalog span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
+      .store-info-sensor-list p.btn-datalog span.cnt2 { display:none; }
       .store-info-sensor-list p.danger { color:#ff2f44; }
       .store-info-sensor-list p.warn { color:#efaf77; }
       .store-info-sensor-list p.danger span { color:#fff; background:#f88; }
       .store-info-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
       .store-info-sensor-list p.warn span { color:#fff; background:#fd8; }
+      .store-info-sensor-list p.store-info-check { margin-bottom:0; line-height:20px; }
+      .store-info-sensor-list p.store-info-check span { display:inline-block; width:70px; font-weight:bold; font-size:11px; color:#fff; border-radius:10px; text-align:center; cursor:pointer; }
+      .store-info-sensor-list p.store-info-check .btn-check-start { background:#999; }
+      .store-info-sensor-list p.store-info-check .btn-check-end { background:#47b73a; display:none; }
+      .store-info-sensor-list p.store-info-check.CHECKING .btn-check-start { display:none; }
+      .store-info-sensor-list p.store-info-check.CHECKING .btn-check-end { display:inline-block; }
     </style>
     <style type="text/css">
       .store-log .store-datalog-meta { width:100%; table-layout:fixed; }

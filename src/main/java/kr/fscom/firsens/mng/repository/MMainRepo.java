@@ -32,4 +32,6 @@ public interface MMainRepo {
     List<HashMap<String, Object>> SELECT_AREA_SENSOR_COUNT(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_AREA_STORE_LIST(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_AREA_SENSOR_LIST(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> SELECT_STORE_SEARCH(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> SELECT_CHECK_SENSOR_LIST(Map<String, Object> param) throws Exception;
 }

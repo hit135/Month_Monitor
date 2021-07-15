@@ -141,12 +141,46 @@
 
     function fn_initStoreInfo() {
       $.template('store-info-sensor',
+        '<p class="store-info-check {{html CHECK}}"><span class="btn-check-start" data-snsrid="{{html SNSRID}}">점검하기</span>' +
+        '<span class="btn-check-end" data-snsrid="{{html SNSRID}}">점검중...</span></p>' +
         '<p class="btn-datalog {{html STATE}}" data-snsrid="{{html SNSRID}}" data-checktype="{{html STATE}}">{{html SNSRNICK}}' +
         '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span><br/>{{html SNSRID}}</p>');
       $.template('datalog', '<p class="{{html STATE}}" data-regdate="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}</p>');
       $('.store-info #check-total').on('click', fn_checkDataLog);
       $('.store-info #check-danger').on('click', fn_checkDataLog);
       $('.store-info #check-warn').on('click', fn_checkDataLog);
+      $('.store-info').on('click', '.btn-check-start', function() {
+        if(confirm('점검 등록할까요?')) {
+          $.post($('#contextRoot').val()+'/mng/startCheckAjax'
+            ,{ snsrid: $(this).attr('data-snsrid') }
+            ,function(d) {
+              if(d=='success') {
+                alert('점검 등록 되었습니다.');
+                fn_getStoreInfoSensorList();
+                // left function
+                fn_getCheckSensorList();
+              } else {
+                alert('점검 등록을 실패하였습니다.');
+              }
+            });
+        }
+      });
+      $('.store-info').on('click', '.btn-check-end', function() {
+        if(confirm('점검 완료할까요?')) {
+          $.post($('#contextRoot').val()+'/mng/endCheckAjax'
+            ,{ snsrid: $(this).attr('data-snsrid') }
+            ,function(d) {
+              if(d=='success') {
+                alert('점검 완료 되었습니다.');
+                fn_getStoreInfoSensorList();
+                // left function
+                fn_getCheckSensorList();
+              } else {
+                alert('점검 완료를 실패하였습니다.');
+              }
+            });
+        }
+      });
       fn_getStoreInfo();
       fn_getSensorList();
       fn_getListStoreImg();
@@ -262,7 +296,10 @@
     }
 
     function fn_getDataLog() {
-      $.post($('#contextRoot').val()+'/mng/dataLogListAjax', { strcode: $('#prm_strcode').val() }, function (d) {
+      $.post($('#contextRoot').val()+'/mng/dataLogListAjax',
+        { strcode: $('#prm_strcode').val(),
+        areacode: $('#prm_areacode').val() },
+        function (d) {
         $('.store-datalog-list').html('');
         for(var i=0; i<d.length; i++) {
           d[i].DATALOG = '전력: '+d[i].SNSRWATT+'kW | 전류: '+d[i].SNSRAMPERE+'mA | 누설전류: '+d[i].SNSRIGO+'mA';
@@ -279,7 +316,10 @@
     }
 
     function fn_getLogWeekStat() {
-      $.post($('#contextRoot').val()+'/mng/logWeekStatAjax', { strcode: $('#prm_strcode').val() }, function (d) {
+      $.post($('#contextRoot').val()+'/mng/logWeekStatAjax',
+        { strcode: $('#prm_strcode').val(),
+        areacode: $('#prm_areacode').val() },
+        function (d) {
         var temp = [];
         for(var i=0; i<d.length; i++) if(d[i].WEEK==1) {
           temp = d.slice(i); break;
@@ -333,6 +373,7 @@
               d[i].STATE = 'warn';
               d[i].CNT = d[i].WARN;
             }
+            if(d[i].CHK > 0) d[i].CHECK = 'CHECKING';
             $('.store-info-sensor-list').append($.tmpl('store-info-sensor',d[i]));
           }
         });
