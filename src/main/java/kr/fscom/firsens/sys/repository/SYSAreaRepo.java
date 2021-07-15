@@ -1,11 +1,11 @@
 package kr.fscom.firsens.sys.repository;
 
+import kr.fscom.firsens.sys.domain.SYSAreaDomain;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 설명
@@ -26,5 +26,8 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface SYSAreaRepo {
-    List<HashMap<String, Object>> SELECT_SENSOR_COUNT(Map<String, Object> param) throws Exception;
+    // 구역 목록 카운트
+    int SELECT_CNT_SYS_AREA(SYSAreaDomain vo) throws Exception;
+    // 구역 목록
+    List<HashMap<String, Object>> SELECT_LIST_SYS_AREA(SYSAreaDomain vo) throws Exception;
 }
