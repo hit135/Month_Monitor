@@ -7,36 +7,13 @@
     </p>
   </div>
   <div class="list-area col-12">
-    <p class="area-lv1">
-      <span class="name">중구</span>
-      <span class="danger">12</span>
-      <span class="warn">23</span>
-    </p>
-    <p class="area-lv2">
-      <span class="name">문창시장</span>
-      <span class="danger">10</span>
-      <span class="warn">20</span>
-    </p>
-    <p class="area-lv2">
-      <span class="name">부사시장</span>
-      <span class="danger">2</span>
-      <span class="warn">3</span>
-    </p>
-    <p class="area-lv1">
-      <span class="name">서구</span>
-      <span class="danger">11</span>
-      <span class="warn">22</span>
-    </p>
-    <p class="area-lv2">
-      <span class="name">도마시장</span>
-      <span class="danger">10</span>
-      <span class="warn">20</span>
-    </p>
-    <p class="area-lv2">
-      <span class="name">한민시장</span>
-      <span class="danger">1</span>
-      <span class="warn">2</span>
-    </p>
+  </div>
+  <div class="col-12">
+    <div class="sensors-CHECK" style="border:1px solid #6c757d; margin:15px;">
+      <h3 class="bg-secondary"><i class="fal fa-sensor-alert"></i> 점검 <span class="cnt"></span></h3>
+      <div class="left-list-sensor">
+      </div>
+    </div>
   </div>
 </div>
 <script type="text/javascript">
@@ -46,16 +23,22 @@
 
   function fn_initLeft() {
     $.template('left-area', '<p class="area-lv{{html LEVEL}}" data-code="{{html CODE}}"><span class="name">{{html NAME}}</span><span class="danger">{{html DANGER}}</span><span class="warn">{{html WARN}}</span></p>');
+    $.template('left-check-sensor', '<p class="left-check-sensor" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-code="{{html SNSRID}}">{{html AREANAME}}_{{html SNSRNICK}} ({{html CNT}})</p>');
     $('.left').on('click', '.area-lv2', function() {
       $('.left .area-lv2.on').removeClass('on');
       $(this).addClass('on');
       fn_clickAreaLv2($(this).attr('data-code'));
     });
+    $('.left-list-sensor').on('click','p',function(){
+      fn_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
+    });
     fn_getAreaList();
+    fn_getCheckSensorList();
   }
 
   function fn_refreshLeft() {
     fn_getAreaList();
+    fn_getCheckSensorList();
   }
 
   function fn_getAreaList() {
@@ -67,4 +50,14 @@
         else $('.list-area p[data-code="'+d[i].UPCODE+'"]').after($.tmpl('left-area', d[i]));
     });
   }
+
+  function fn_getCheckSensorList() {
+    $.post($('#contextRoot').val()+'/mng/checkSensorListAjax',{},function(d) {
+      $('.left-list-sensor').html('');
+      for(var i=0; i<d.length; i++)
+        $('.sensors-'+d[i].STATE+' .left-list-sensor').append($.tmpl('left-check-sensor', d[i]));
+      $('.sensors-CHECK .cnt').text('('+$('.sensors-CHECK .left-list-sensor p').length+')');
+    });
+  }
+
 </script>

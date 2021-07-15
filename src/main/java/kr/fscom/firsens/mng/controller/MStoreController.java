@@ -54,9 +54,7 @@ public class MStoreController {
             strcode = code[1];
         }
         if(StringUtils.isEmpty(snsrid)) {
-            String[] code = getAreaSensorCode(strcode);
-            areacode = code[0];
-            snsrid = code[1];
+            snsrid = getSensorCode(areacode, strcode);
         }
         mav.addObject("prm_areacode", areacode);
         mav.addObject("prm_strcode", strcode);
@@ -108,9 +106,7 @@ public class MStoreController {
             strcode = code[1];
         }
         if(StringUtils.isEmpty(snsrid)) {
-            String[] code = getAreaSensorCode(strcode);
-            areacode = code[0];
-            snsrid = code[1];
+            snsrid = getSensorCode(areacode, strcode);
         }
         mav.addObject("prm_areacode", areacode);
         mav.addObject("prm_strcode", strcode);
@@ -221,6 +217,7 @@ public class MStoreController {
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
                 prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
             }
+            prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
             return storeRepo.SELECT_DATA_LOG_LIST(prm);
         } catch (Exception e) {
@@ -254,6 +251,7 @@ public class MStoreController {
         }
         return null;
     }
+
     @RequestMapping(value = "/logWeekStatAjax")
     @ResponseBody
     public List<HashMap<String, Object>> logWeekStatAjax(
@@ -261,8 +259,43 @@ public class MStoreController {
     ) {
         HashMap<String, Object> prm = new HashMap<String, Object>();
         try {
+            prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
             return storeRepo.SELECT_LOG_WEEK_STAT(prm);
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/startCheckAjax")
+    @ResponseBody
+    public String startCheckAjax(
+        HttpServletRequest req
+    ) {
+        HashMap<String, Object> prm = new HashMap<String, Object>();
+        try {
+            prm.put("snsrid", req.getParameter("snsrid"));
+            storeRepo.INSERT_SENSOR_CHECK(prm);
+            return "success";
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/endCheckAjax")
+    @ResponseBody
+    public String endCheckAjax(
+        HttpServletRequest req
+    ) {
+        HashMap<String, Object> prm = new HashMap<String, Object>();
+        try {
+            prm.put("snsrid", req.getParameter("snsrid"));
+            storeRepo.UPDATE_SENSOR_CHECK(prm);
+            return "success";
         } catch (Exception e) {
             System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
@@ -284,17 +317,16 @@ public class MStoreController {
         return ret;
     }
 
-    private String[] getAreaSensorCode(String strcode) {
-        String[] ret = new String[2];
+    private String getSensorCode(String areacode, String strcode) {
         try {
             HashMap<String, Object> prm = new HashMap<>();
+            prm.put("areacode", areacode);
             prm.put("strcode", strcode);
             List<HashMap<String, Object>> sensor = storeRepo.SELECT_SENSOR_INFO(prm);
-            ret[0] = (String) sensor.get(0).get("AREACODE");
-            ret[1] = (String) sensor.get(0).get("SNSRID");
+            return (String) sensor.get(0).get("SNSRID");
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
-        return ret;
+        return null;
     }
 }

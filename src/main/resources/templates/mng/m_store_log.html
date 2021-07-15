@@ -59,7 +59,7 @@
       $.template('datalog', '<p class="{{html STATE}}" data-index="{{html INDEX}}" data-snsrid="{{html SNSRID}}">' +
         '[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}' +
         '<button type="button" class="btn-chart btn btn-xs btn-outline-info waves-effect waves-themed"' +
-        ' data-snsrid="{{html SNSRID}}" data-regdt="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">Chart</button></p>');
+        ' data-snsrid="{{html SNSRID}}" data-regdate="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">Chart</button></p>');
       $('.store-log #check-total').on('click', fn_checkDataLogFiltered);
       $('.store-log #check-danger').on('click', fn_checkDataLogFiltered);
       $('.store-log #check-warn').on('click', fn_checkDataLogFiltered);
@@ -102,6 +102,7 @@
         '<button class="btn btn-info waves-effect waves-themed align-self-center" type="button" disabled="" style="margin-top:100px;">' +
         '<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Loading... </button></div>')
       $.post($('#contextRoot').val()+'/mng/dataLogListAjax', {
+        areacode: $('#prm_areacode').val(),
         strcode: $('.store-log #prm_strcode').val(),
         regdt: $('.store-log #regdt').val()
       }, function (d) {

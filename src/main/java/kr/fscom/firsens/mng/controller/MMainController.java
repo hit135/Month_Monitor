@@ -122,4 +122,29 @@ public class MMainController {
         }
         return null;
     }
+
+    @RequestMapping(value="/storeSearchAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> storeSearchAjax(HttpServletRequest req) {
+        HashMap<String, Object> prm = new HashMap<>();
+        try {
+            prm.put("search", req.getParameter("search"));
+            return mainRepo.SELECT_STORE_SEARCH(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
+
+    @RequestMapping(value="/checkSensorListAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> checkSensorListAjax(HttpServletRequest req) {
+        HashMap<String, Object> prm = new HashMap<>();
+        try {
+            return mainRepo.SELECT_CHECK_SENSOR_LIST(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
 }

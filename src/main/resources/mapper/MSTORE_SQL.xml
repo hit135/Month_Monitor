@@ -17,7 +17,8 @@
         <![CDATA[
         SELECT A.AREACODE, A.STRCODE, A.STRNAME, A.STRADDR, A.STRTEL, A.STROWNTEL, A.STRPOSLAT, A.STRPOSLON
         FROM F_STORE A
-                 LEFT JOIN F_SENSOR_INFO B ON A.STRCODE = B.STRCODE
+                 LEFT JOIN F_SENSOR_INFO B ON A.AREACODE = B.AREACODE
+                       AND A.STRCODE = B.STRCODE
         WHERE B.SNSRID = #{snsrid}
         ]]>
     </select>
@@ -26,7 +27,8 @@
         <![CDATA[
         SELECT A.AREACODE, A.SNSRID
         FROM F_SENSOR_INFO A
-        WHERE A.STRCODE = #{strcode}
+        WHERE A.AREACODE = #{areacode}
+        AND A.STRCODE = #{strcode}
         ORDER BY A.SNSRID
         ]]>
     </select>
@@ -191,6 +193,7 @@
             <if test='regdt == null or regdt == ""'>
                 AND A.SNSRRCVTIME > DATE_FORMAT(NOW(), '%Y-%m-%d')
             </if>
+          AND C.AREACODE = #{areacode}
           AND C.STRCODE = #{strcode}
         ORDER BY A.SNSRRCVTIME DESC
     </select>
@@ -211,7 +214,7 @@
                 IGR2ND + IGO2ND + OC2ND                   AS DANGER,
                 IGR1ST + IGO1ST + OC1ST                   AS WARN
          FROM F_CRN_STR_ELEC_DAILY_STAT
-         WHERE STRCODE = #{strcode}
+         WHERE AREACODE = #{areacode} AND STRCODE = #{strcode}
            AND SDATE > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -14 DAY), '%Y-%m-%d'))
         UNION
         (SELECT DATE_FORMAT(A.REGDATE, '%Y-%m-%d')                                        AS SDATE,
@@ -219,9 +222,22 @@
                 SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGER,
                 SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARN
          FROM F_SENSOR_LOG A LEFT JOIN F_SENSOR_INFO B ON A.SNSRID=B.SNSRID
-         WHERE B.STRCODE = #{strcode} GROUP BY 1)
+         WHERE B.AREACODE = #{areacode} AND B.STRCODE = #{strcode} GROUP BY 1)
          ORDER BY SDATE ASC
         ]]>
     </select>
+
+    <insert id="INSERT_SENSOR_CHECK" parameterType="map">
+        INSERT INTO F_SENSOR_CHECK (CHECKSEQ, SNSRID, REGDATE, CHECKSTAT)
+        VALUES (NULL, #{snsrid}, NOW(), 'ING')
+    </insert>
+
+    <update id="UPDATE_SENSOR_CHECK" parameterType="map">
+        UPDATE F_SENSOR_CHECK
+        SET PROCDATE  = NOW(),
+            CHECKSTAT = 'END'
+        WHERE SNSRID = #{snsrid}
+          AND CHECKSTAT = 'ING'
+    </update>
 
 </mapper>
