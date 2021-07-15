@@ -6,7 +6,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 function PageTableWidget(props) {
 //
   const {
-    keyField, data, page, sizePerPage, onTableChange, onSizePerPageChange, totalSize, viewColumns, selectRow, paginationSize, cellEdit,
+    keyField, data, page, sizePerPage, onTableChange, onSizePerPageChange, totalSize, viewColumns, rowEvents, paginationSize
   } = props;
 //
   return (
@@ -16,7 +16,7 @@ function PageTableWidget(props) {
         data={data.slice()}
         columns={viewColumns}
         onTableChange={onTableChange}
-        // rowEvents={selectRow}
+        rowEvents={rowEvents}
         remote
         striped
         hover
