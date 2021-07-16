@@ -16,20 +16,20 @@ const InspMgr = () => {
 
   return (
     <div>
-      <div>
-        {inspSelectSpan('', 'insp1', '1', 'Y', '점검필요')}
-        {inspSelectSpan('ml-2', 'insp2', '2', 'N', '점검완료')}
-        {inspSelectSpan('ml-2', 'insp3', '3', 'N', '점검요청')}
-        {inspSelectSpan('ml-2', 'insp4', '4', 'N', '점검불필요')}
-        {inspSelectSpan('ml-2', 'insp5', '5', 'N', '전체')}
-        <span style={{ marginLeft: "5rem" }}>
+      <div className={'d-flex justify-content-between'}>
+        <span>
+          {inspSelectSpan('', 'insp1', '1', 'Y', '점검필요')}
+          {inspSelectSpan('ml-2', 'insp2', '2', 'N', '점검완료')}
+          {inspSelectSpan('ml-2', 'insp3', '3', 'N', '점검요청')}
+          {inspSelectSpan('ml-2', 'insp4', '4', 'N', '점검불필요')}
+          {inspSelectSpan('ml-2', 'insp5', '5', 'N', '전체')}
+        </span>
+        <span className={'d-flex'}>
           <DatePicker locale={ko} selected={startDate} dateFormat="yyyy-MM-dd" onChange={(date) => setStartDate(date)}/>
+          <span className={'ml-1'}>~</span>
+          <DatePicker className={'ml-1'} locale={ko} selected={endDate} dateFormat="yyyy-MM-dd" onChange={(date) => setEndDate(date)}/>
         </span>
-        <span className={'ml-1'}>~</span>
-        <span className={'ml-1'}>
-          <DatePicker locale={ko} selected={endDate} dateFormat="yyyy-MM-dd" onChange={(date) => setEndDate(date)}/>
-        </span>
-        <span style={{ float: 'right' }}>
+        <span>
           <CSelect>
             <option>전체(시장)</option>
           </CSelect>
@@ -90,7 +90,7 @@ const InspMgr = () => {
         </CRow>
       </div>
     </div>
-  )
+  );
 }
 
 export default InspMgr;
