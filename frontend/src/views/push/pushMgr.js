@@ -88,7 +88,7 @@ const PushMgr = () => {
         <CCardBody>
           <div className={'mt-3'}>
             <PageTableWidget
-              keyField={"toPhone"}
+              keyField={"rowNo"}
               data={repo}
               page={pageItem.page}
               sizePerPage={pageItem.sizePerPage}
