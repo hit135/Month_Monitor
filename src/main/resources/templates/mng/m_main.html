@@ -48,6 +48,7 @@
       .center-left-sensor-list p.danger span { color:#fff; background:#f88; }
       .center-left-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
       .center-left-sensor-list p.warn span { color:#fff; background:#fd8; }
+      .center-left-sensor-list p.discon span { color:#fff; background:#999; }
       .center-left-sensor-list p:hover { background:#ccc; }
       .center-left-sensor-list p.on { background:#2b559b; color:white; text-shadow:1px 1px 5px #000; }
     </style>
@@ -87,6 +88,7 @@
       .store-info-sensor-list p.danger span { color:#fff; background:#f88; }
       .store-info-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
       .store-info-sensor-list p.warn span { color:#fff; background:#fd8; }
+      .store-info-sensor-list p.discon span { color:#fff; background:#999; }
       .store-info-sensor-list p.store-info-check { margin-bottom:0; line-height:20px; }
       .store-info-sensor-list p.store-info-check span { display:inline-block; width:70px; font-weight:bold; font-size:11px; color:#fff; border-radius:10px; text-align:center; cursor:pointer; }
       .store-info-sensor-list p.store-info-check .btn-check-start { background:#999; }
@@ -118,6 +120,7 @@
       .store-log-sensor-list p.danger span { color:#fff; background:#f88; }
       .store-log-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
       .store-log-sensor-list p.warn span { color:#fff; background:#fd8; }
+      .store-log-sensor-list p.discon span { color:#fff; background:#999; }
     </style>
     <style type="text/css">
       .store-chart-sensor-list { margin-bottom:20px; height:150px; overflow-y:scroll; }
@@ -129,13 +132,19 @@
       .store-chart-sensor-list p.danger span { color:#fff; background:#f88; }
       .store-chart-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
       .store-chart-sensor-list p.warn span { color:#fff; background:#fd8; }
+      .store-chart-sensor-list p.discon span { color:#fff; background:#999; }
+    </style>
+    <style type="text/css">
+      @media (min-width: 768px) {
+        .mt-md-n7 { margin-top: -100px !important; }
+      }
     </style>
   </head>
   <body class="mod-bg-1 mod-nav-link">
     <div class="top"><th:block th:replace="mng/layout/m_top"></th:block></div>
     <div class="row">
-      <div class="left col-2" style="margin-top:-100px;"><th:block th:replace="mng/layout/m_left"></th:block></div>
-      <div class="center col-8">
+      <div class="left col-md-2 mt-md-n7 col-sm-12 mt-sm-0"><th:block th:replace="mng/layout/m_left"></th:block></div>
+      <div class="center col-md-8 col-sm-12">
         <div class="row center-top p-1">
           <div class="area-name col-3"></div>
           <div class="area-stat col-9">
@@ -146,14 +155,14 @@
           </div>
         </div>
         <div class="row">
-          <div class="center-left col-3">
+          <div class="center-left col-md-3 col-sm-12">
             <div class="row">
               <div class="col-12">
                 <div class="center-left-sensor-list"></div>
               </div>
             </div>
           </div>
-          <div class="col-9 center-cont">
+          <div class="col-md-9 center-cont col-sm-12">
             <div class="row center-cont-top">
               <div class="store-name col-4"></div>
               <div class="cont-btn col-8">
@@ -166,7 +175,7 @@
           </div>
         </div>
       </div>
-      <div class="right col-2" style="margin-top:-100px;"><th:block th:replace="mng/layout/m_right"></th:block></div>
+      <div class="right col-md-2 mt-md-n7 col-sm-12 mt-sm-0"><th:block th:replace="mng/layout/m_right"></th:block></div>
     </div>
     <div class="bottom"></div>
     <script type="text/javascript">
@@ -272,6 +281,8 @@
               } else if(d[i].WARN > 0) {
                 d[i].STATE = 'warn';
                 d[i].CNT = d[i].WARN;
+              } else if(d[i].CON == 0) {
+                d[i].STATE = 'discon';
               }
               $('.center-left-sensor-list').append($.tmpl('center-left-store',d[i]));
             }
