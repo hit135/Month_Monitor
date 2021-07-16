@@ -51,6 +51,7 @@
     "auto-changelog": "~2.2.1",
     "date-fns": "^2.22.1",
     "react-datepicker": "^4.1.1",
+    "react-hook-form": "^7.11.0",
     "react-scripts": "^4.0.3"
   },
   "scripts": {
