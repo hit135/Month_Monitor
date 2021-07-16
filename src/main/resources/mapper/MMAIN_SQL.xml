@@ -156,23 +156,29 @@
                E.STRCODE,
                E.STRNAME,
                IFNULL(SUM(C.DANGER), 0) AS DANGER,
-               IFNULL(SUM(D.WARN), 0) AS WARN,
+               IFNULL(SUM(D.WARN), 0)   AS WARN,
+               IFNULL(SUM(E.CON), 0)   AS CON,
                COUNT(DISTINCT A.SNSRID) AS SNSRCOUNT
-        FROM F_SENSOR_INFO A LEFT JOIN F_STORE E ON A.STRCODE = E.STRCODE
-        LEFT JOIN (SELECT SNSRID, COUNT(*) AS DANGER
-        FROM F_SENSOR_LOG
-        WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
-        AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
-        GROUP BY SNSRID) C ON A.SNSRID = C.SNSRID
-        LEFT JOIN (SELECT SNSRID, COUNT(*) AS WARN
-        FROM F_SENSOR_LOG
-        WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
-        AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
-        GROUP BY SNSRID) D ON A.SNSRID = D.SNSRID
+        FROM F_SENSOR_INFO A
+                 LEFT JOIN F_STORE E ON A.STRCODE = E.STRCODE
+                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS DANGER
+                            FROM F_SENSOR_LOG
+                            WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
+                              AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
+                            GROUP BY SNSRID) C ON A.SNSRID = C.SNSRID
+                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS WARN
+                            FROM F_SENSOR_LOG
+                            WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
+                              AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
+                            GROUP BY SNSRID) D ON A.SNSRID = D.SNSRID
+                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS CON
+                            FROM F_SENSOR_DATA
+                            WHERE SNSRRCVTIME > DATE_ADD(NOW(), INTERVAL -1 HOUR)
+                            GROUP BY SNSRID) E ON A.SNSRID = E.SNSRID
         WHERE A.DELYN != 'Y'
-        AND A.AREACODE = #{areacode}
+          AND A.AREACODE = #{areacode}
         GROUP BY E.STRCODE, E.STRNAME
-        ORDER BY 4 DESC, 5 DESC, E.STRNAME
+        ORDER BY 4 DESC, 5 DESC, 6 DESC, E.STRNAME
     </select>
 
     <select id="SELECT_AREA_SENSOR_LIST" parameterType="map" resultType="map">
@@ -182,6 +188,7 @@
                A.SNSRNICK,
                IFNULL(C.DANGER, 0) AS DANGER,
                IFNULL(D.WARN, 0) AS WARN,
+               IFNULL(G.CON, 0) AS CON,
                IFNULL(F.CHK, 0) AS CHK
         FROM F_SENSOR_INFO A LEFT JOIN F_STORE E ON A.AREACODE = E.AREACODE
                              AND A.STRCODE = E.STRCODE
@@ -199,10 +206,14 @@
                             FROM F_SENSOR_CHECK
                             WHERE CHECKSTAT = 'ING'
                             GROUP BY SNSRID) F ON A.SNSRID = F.SNSRID
+                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS CON
+                            FROM F_SENSOR_DATA
+                            WHERE SNSRRCVTIME > DATE_ADD(NOW(), INTERVAL -1 HOUR)
+                            GROUP BY SNSRID) G ON A.SNSRID = G.SNSRID
         WHERE A.DELYN != 'Y'
           AND A.AREACODE = #{areacode}
           <if test='strcode!=null and strcode!=""'>AND A.STRCODE = #{strcode}</if>
-        ORDER BY C.DANGER DESC, D.WARN DESC, A.SNSRID
+        ORDER BY C.DANGER DESC, D.WARN DESC, G.CON DESC, A.SNSRID
     </select>
 
     <select id="SELECT_STORE_SEARCH" parameterType="map" resultType="map">

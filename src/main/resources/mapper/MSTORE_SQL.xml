@@ -131,7 +131,7 @@
                             GROUP BY SNSRID) C ON A.SNSRID = C.SNSRID
                  LEFT JOIN (SELECT SNSRID, COUNT(*) AS DATACNT
                             FROM F_SENSOR_DATA
-                            WHERE SNSRRCVTIME > DATE_FORMAT(NOW(), '%Y-%m-%d')
+                            WHERE SNSRRCVTIME > DATE_ADD(NOW(), INTERVAL -1 HOUR)
                             GROUP BY SNSRID) D ON A.SNSRID = D.SNSRID
         WHERE B.STRCODE=#{strcode}
           AND B.AREACODE=#{areacode}
