@@ -28,12 +28,17 @@ public class SYSAreaDomain {
     @JsonProperty("areaCode")       private String areaCode = "";                   // 구역코드
     @JsonProperty("areaName")       private String areaName = "";                   // 구역명
     @JsonProperty("areaOrder")      private String areaOrder = "";                  // 구역 순서
-    @JsonProperty("areaManager")     private String areaManager = "";                // 구역 담당자
-    @JsonProperty("areaTel")         private String areaTel = "";                    // 구역 비상연락
+    @JsonProperty("uPAreaCode")     private String upAreaCode = "";                 // 상위 구역코드
+    @JsonProperty("areaPosLat")     private Double areaPosLat = 0.0;                // 구역 경도
+    @JsonProperty("areaPosLon")     private Double areaPosLon = 0.0;                // 구역 위도
+    @JsonProperty("areaManager")    private String areaManager = "";                // 구역 담당자
+    @JsonProperty("areaTel")        private String areaTel = "";                    // 구역 비상연락
     @JsonProperty("userId")         private String userId = "";                     // 담당자 아이디
     @JsonProperty("useYn")          private String useYn = "";                      // 사용 유무
-    @JsonProperty("delYn")          private String delYn = "N";                       // 삭제여부
+    @JsonProperty("delYn")          private String delYn = "N";                     // 삭제여부
     @JsonProperty("regDate")        private String regDate = "";                    // 등록일시
+    @JsonProperty("areaLevel")      private String areaLevel = "";                  // 구역레벨
+    @JsonProperty("guCode")         private String guCode = "";                     // 구코드
     @JsonProperty("storeCnt")       private int storeCnt = 0;                       // 소속 상점 수
 
     private int page;

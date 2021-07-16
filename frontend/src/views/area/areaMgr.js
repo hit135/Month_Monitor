@@ -24,7 +24,7 @@ const delYnStyleFormatter = (cell) =>
   </h5>;
 
 const columns = [
-  { dataField: 'areaOrder', text: '출력순서', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color : '#fff'}, style : { width: '6%'} },
+  { dataField: 'areaOrder', text: '출력순서', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color : '#fff'}, style : { width: '5rem'} },
   { dataField: 'areaName', text: '구역명', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color : '#fff'},  },
   { dataField: 'areaCode', text: '구역코드', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color : '#fff'}, style: {textAlign: 'center'}},
   { dataField: 'storeCnt', text: '소속상점수', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color : '#fff'}, style: {textAlign: 'center', fontWeight: '900'}},
