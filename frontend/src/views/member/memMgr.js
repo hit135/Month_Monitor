@@ -50,17 +50,16 @@ const storeCountStyleFormatter = (cell) =>
   </h5>;
 
 const columns = [
-  { dataField: 'rowNum', text: '순번', headerStyle: { textAlign: 'center', height: '42px' }, style: {  textAlign: 'right', height: '42px' }, formatter: (cell) => numCommaFormat(cell) },
-  { dataField: 'userId', text: 'ID', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'left' } },
-  { dataField: 'memName', text: '이름', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'left' } },
-  { dataField: 'memLevel', text: '권한', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'center' }, formatter: authStyleFormatter },
-  { dataField: 'memTel', text: '전화번호', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'center' } },
-  { dataField: 'memMobile', text: '휴대폰번호', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'center' } },
-  { dataField: 'strCnt', text: '상점수', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'right' }, formatter: storeCountStyleFormatter },
-  { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'center' }, formatter: memUseStyleFormatter },
-  { dataField: 'memIsLeave', text: '탈퇴유무', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'center' }, formatter: memLeaveStyleFormatter },
-  { dataField: 'delYn', text: '삭제유무', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'center' }, formatter: memDeleteStyleFormatter },
-  { dataField: 'memRsntDate', text: '최근접속일', headerStyle: { textAlign: 'center' }, style: {  textAlign: 'center' } },
+  { dataField: 'rowNum', text: '순번', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px' }, formatter: (cell) => numCommaFormat(cell) },
+  { dataField: 'userId', text: 'ID', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'left' } },
+  { dataField: 'memName', text: '이름', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'left' } },
+  { dataField: 'memLevel', text: '권한', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, formatter: authStyleFormatter },
+  { dataField: 'memTel', text: '전화번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
+  { dataField: 'memMobile', text: '휴대폰번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
+  { dataField: 'strCnt', text: '상점수', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right' }, formatter: storeCountStyleFormatter },
+  { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, formatter: memUseStyleFormatter },
+  { dataField: 'memIsLeave', text: '탈퇴유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, formatter: memLeaveStyleFormatter },
+  { dataField: 'memRsntDate', text: '최근접속일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
 ];
 
 const MemMgr = () => {
@@ -123,7 +122,7 @@ const MemMgr = () => {
           </CCard>
         </CCol>
       </CRow>
-      <MemActionModal info={info} setInfo={setInfo}/>
+      <MemActionModal info={info} setInfo={setInfo} handleInitTable={handleInitTable} />
     </>
   )
 }

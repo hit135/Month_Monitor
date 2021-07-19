@@ -7,6 +7,12 @@ export const getMemList = (page, sizePerPage, values = {searchWrd : "", useYn : 
     .then(response => response);
 }
 
+export const insertMem = (array) => {
+  return axios
+    .post(`${API_ROOT}/insertMem`, array)
+    .then(response => response);
+}
+
 // 행 클릭 시
 export const rowEvents = {
   onClick: (e, row, rowIndex) => {

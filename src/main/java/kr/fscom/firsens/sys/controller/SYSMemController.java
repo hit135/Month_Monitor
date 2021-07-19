@@ -1,15 +1,16 @@
 package kr.fscom.firsens.sys.controller;
 
-import kr.fscom.firsens.sys.domain.SYSAreaDomain;
+import kr.fscom.firsens.common.security.Sha256Encrypt;
 import kr.fscom.firsens.sys.domain.SYSMemDomain;
 import kr.fscom.firsens.sys.repository.SYSMemRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.List;
 public class SYSMemController {
     private static final Logger LOG = LoggerFactory.getLogger(SYSMemController.class);
     private final SYSMemRepo sysMemRepo;
+    Sha256Encrypt sha256Encrypt = new Sha256Encrypt();
 
     @Autowired
     public SYSMemController(SYSMemRepo sysMemRepo) { this.sysMemRepo = sysMemRepo; }
@@ -34,7 +36,6 @@ public class SYSMemController {
             domain.setSearchWrd(searchWrd);
 
             domain.setUseYn(useYn);
-            domain.setDelYn(delYn);
             int resultCnt = sysMemRepo.SELECT_CNT_SYS_MEM(domain);
             memberList = sysMemRepo.SELECT_LIST_SYS_MEM(domain);
 
@@ -49,6 +50,67 @@ public class SYSMemController {
             LOG.error("■■■■■■■■■■■■■■■ 회원목록 요청 오류 : {}", ex.getMessage());
             rtn.put("result", "fail");
         }
+        return rtn;
+    }
+
+    // 회원 중복 체크 (userId)
+    @GetMapping(value = "/dupMemChk")
+    public HashMap<String, Object> dupMemChk(SYSMemDomain domain) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 회원ID 중복검사 시작 : domain(userId : {})", domain.getUserId());
+
+        HashMap<String, Object> rtn = new HashMap<>();
+        int result = 0;
+        try {
+            result = sysMemRepo.SELECT_CHK_MEM_ID(domain);
+            rtn.put("result", result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("■■■■■■■■■■■■■■■ 회원ID 중복검사 오류 : {}", e.getMessage());
+        }
+
+        LOG.info("▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶ 회원ID 중복검사 완료 : (result : {})", result);
+        return rtn;
+    }
+
+    /* 회원등록 */
+    @Transactional
+    @PostMapping(value = "/insertMem")
+    public HashMap<String, Object> insertMem(@RequestBody SYSMemDomain domain, HttpSession session) throws Exception {
+
+        LOG.info("■■■■■■■■■■■■■■■ 회원 등록 시작 ");
+        HashMap<String, Object> rtn = new HashMap<String, Object>();
+
+        try {
+            String sha256MemPwd = sha256Encrypt.getHex(domain.getMemPwd(), domain.getUserId());
+            domain.setMemPwd(sha256MemPwd);
+
+            int result = sysMemRepo.INSERT_SYS_MEM(domain);
+            if(result > 0)
+                rtn.put("result", "success");
+            else
+                rtn.put("result", "fail");
+//
+//            if (domain.getUserId() != null && domain.getUserId().length() > 0) {
+//                // 회원이 소유한 모든 상점 공백 처리
+//                sysMemRepo.UPDATE_SYS_STORE_RESET_OWNER(domain.getUserId());
+//
+//                // 신규로 등록한 상점으로 업데이트
+//                if (domain.getStoreList() != null) {
+//                    for (Map<String, String> m : domain.getStoreList()) {
+//                        Map<String, String> map = new HashMap<>();
+//                        map.put("userId", domain.getUserId());
+//                        map.put("storeCode", m.get("storeCode").toString());
+//                        sysMemRepo.UPDATE_SYS_MEM_WITH_STORE(map);
+//                    }
+//                }
+//            }
+        } catch (SQLException e) {
+            LOG.error("■■■■■■■■■■■■■■■ 회원 등록 요청 SQL 오류 : {}", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("■■■■■■■■■■■■■■■ 회원 등록 오류 : {}", e.getMessage());
+        }
+
         return rtn;
     }
 }

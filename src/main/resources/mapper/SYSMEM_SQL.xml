@@ -13,7 +13,6 @@
                              , FM.REGDATE            AS regDate
                              , FM.MEMRSNTDATE        AS memRsntDate
                              , FM.USEYN              AS useYn
-                             , FM.DELYN              AS delYn
                              , FM.MEMISLEAVE         AS memIsLeave
                              , FM.LOGINFAILCNT       AS loginFailCnt
                           FROM F_MEMBER FM
@@ -41,7 +40,6 @@
                                , DATE_FORMAT(FM.REGDATE, '%Y-%m-%d %H:%i:%s')             AS regDate
                                , DATE_FORMAT(FM.MEMRSNTDATE, '%Y-%m-%d %H:%i:%s')         AS memRsntDate
                                , FM.USEYN               AS useYn
-                               , FM.DELYN               AS delYn
                                , FM.MEMMEMO             AS memMemo
                                , FM.MEMISLEAVE          AS memIsLeave
                                , FM.LOGINFAILCNT        AS loginFailCnt
@@ -55,4 +53,49 @@
             ) Z
       LIMIT #{page}, #{sizePerPage}
     </select>
+
+    <select id="SELECT_CHK_MEM_ID" parameterType="SYSMemDomain" resultType="int">
+        SELECT COUNT(*)
+        FROM F_MEMBER
+        WHERE USERID = #{userId}
+    </select>
+
+    <insert id="INSERT_SYS_MEM" parameterType="SYSMemDomain">
+        INSERT INTO F_MEMBER (
+                    USERID
+                  , MEMPWD
+                  , MEMNAME
+                  , MEMEMAIL
+                  , MEMTEL
+                  , MEMMOBILE
+                  , MEMLEVEL
+                  , MEMRCVSMS
+                  , MEMRCVPUSH
+                  , REGDATE
+                  , MEMRSNTDATE
+                  , MEMISLEAVE
+                  , USEYN
+                  , MEMMEMO
+                  , PWCHANGE
+                  , GROUPUSE
+        ) VALUES (
+                    #{ userId      }
+                  , #{ memPwd      }
+                  , #{ memName     }
+                  , #{ memEmail    }
+                  , #{ memTel      }
+                  , #{ memMobile   }
+                  , 0
+                  , #{ memRcvSms   }
+                  , #{ memRcvPush  }
+                  , NOW()
+                  , NOW()
+                  , #{ memIsLeave }
+                  , #{ useYn }
+                  , #{ memMemo }
+                  , 'Y'
+                  , #{ groupUse }
+                 )
+    </insert>
+
 </mapper>

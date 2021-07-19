@@ -32,4 +32,10 @@ public interface SYSMemRepo {
 
     // 회원 목록
     List<HashMap<String, Object>> SELECT_LIST_SYS_MEM(SYSMemDomain domain) throws Exception;
+
+    // 중복 체크
+    int SELECT_CHK_MEM_ID(SYSMemDomain domain) throws Exception;
+
+    // 회원 등록
+    int INSERT_SYS_MEM(SYSMemDomain domain) throws Exception;
 }

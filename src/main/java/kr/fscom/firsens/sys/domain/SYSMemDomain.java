@@ -49,7 +49,7 @@ public class SYSMemDomain {
     @JsonProperty("memRsntDate")    private String memRsntDate = "";        /* 최근접속일시 */
     @JsonProperty("memIsLeave")     private String memIsLeave = "N";        /* 탈퇴여부 */
     @JsonProperty("useYn")          private String useYn = "Y";             /* 사용여부 */
-    @JsonProperty("delYn")          private String delYn = "N";             /* 삭제여부 */
+//    @JsonProperty("delYn")          private String delYn = "N";             /* 삭제여부 */
     @JsonProperty("memMemo")        private String memMemo = "";            /* 메모 */
     @JsonProperty("memToken")       private String memToken = "";           /* FIREBASE token */
     @JsonProperty("searchSelect")   private int searchSelect = 0;           /* 검색조건선택 */
