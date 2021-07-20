@@ -1,17 +1,17 @@
 <input id="contextRoot" type="hidden" th:value="${#httpServletRequest.getContextPath()}" />
 
 <div class="row">
-  <div class="col-md-2 col-sm-12">
+  <div class="col-md-2 col-12">
     <a th:href="@{/mng/main}"><img th:src="@{/fs/img/logo.png}" alt="SmartAdmin WebApp"/></a>
   </div>
-  <div class="col-md-8 col-sm-12">
+  <div class="col-md-8 col-12">
     <div class="row">
-      <div class="col-4 d-md-block d-sm-none">
+      <div class="col-md-4 col-12 d-md-block d-none">
         <div class="top-date"></div>
         <div class="top-time"></div>
       </div>
-      <div class="col-md-4 col-sm-6" style="font-weight:900; font-size:30px; color:#0b3251; text-shadow:1px 1px 3px #000; text-align:center;">Firesens 전체 관제</div>
-      <div class="col-md-4 col-sm-6 text-right position-relative">
+      <div class="col-md-4 col-6" style="font-weight:900; font-size:30px; color:#0b3251; text-shadow:1px 1px 3px #000; text-align:center;">Firesens 전체 관제</div>
+      <div class="col-md-4 col-6 text-right position-relative">
         <div class="top-search form-group custom-control-inline position-relative m-0" role="content">
           <input type="text" class="top-search-text form-control bg-subtlelight" placeholder="상점 검색">
           <button type="button" class="btn btn-sm btn-success waves-effect waves-themed">
@@ -23,7 +23,7 @@
     </div>
     <div style="font-weight:900; font-size:20px; text-align:center; margin-top:20px; border-bottom:2px solid #000;">오늘 센서 현황</div>
     <div class="row sensor-stat">
-      <div class="col-md-3 col-sm-6 p-1">
+      <div class="col-md-3 col-6 p-1">
         <div class="bg-primary rounded overflow-hidden position-relative">
           <div class="text-center">
             <h3 class="display-4 d-block l-h-n m-0 fw-500">
@@ -35,7 +35,7 @@
           <i class="fal fa-sensor position-absolute pos-top opacity-15" style="font-size:4rem"></i>
         </div>
       </div>
-      <div class="col-md-3 col-sm-6 p-1">
+      <div class="col-md-3 col-6 p-1">
         <div class="bg-danger rounded overflow-hidden position-relative">
           <div class="text-center">
             <h3 class="display-4 d-block l-h-n m-0 fw-500">
@@ -47,7 +47,7 @@
           <i class="fal fa-siren-on position-absolute pos-top opacity-15" style="font-size:4rem"></i>
         </div>
       </div>
-      <div class="col-md-3 col-sm-6 p-1">
+      <div class="col-md-3 col-6 p-1">
         <div class="bg-warning rounded overflow-hidden position-relative">
           <div class="text-center">
             <h3 class="display-4 d-block l-h-n m-0 fw-500">
@@ -59,7 +59,7 @@
           <i class="fal fa-exclamation-triangle position-absolute pos-top opacity-15" style="font-size:4rem"></i>
         </div>
       </div>
-      <div class="col-md-3 col-sm-6 p-1">
+      <div class="col-md-3 col-6 p-1">
         <div class="bg-secondary rounded overflow-hidden position-relative">
           <div class="text-center">
             <h3 class="display-4 d-block l-h-n m-0 fw-500">
@@ -73,7 +73,7 @@
       </div>
     </div>
   </div>
-  <div class="col-2 d-md-block d-sm-none">
+  <div class="col-md-2 col-12 d-md-block d-none">
     <img th:src="@{/fs/img/logo-morit.png}" style="width:55px;" alt="morit"/>
     <img th:src="@{/fs/img/logo-daejeon.png}" style="width:55px; margin-left:20px;" alt="daejeon"/>
     <img th:src="@{/fs/img/logo-dicia.png}" style="width:55px; margin-left:20px;" alt="dicia"/>
