@@ -12,7 +12,7 @@ import {
 import React from "react";
 import {useForm} from "react-hook-form";
 import axios from "axios";
-import {insertMem} from "../../agent/member";
+import {convertPhoneNumber, insertMem} from "../../agent/member";
 
 const MemActionModal = (props) => {
   const API_ROOT = 'http://localhost:8081/api';    // 로컬
@@ -53,6 +53,12 @@ const MemActionModal = (props) => {
     setValue(e.target.id, value);
   }
 
+  const handleChangePhoneNumber = (e) => {
+    e = e || window.e;
+    let _val = e.target.value.trim();
+    e.target.value = convertPhoneNumber(_val) ;
+  }
+
   return (
     <>
       <CModal
@@ -66,7 +72,6 @@ const MemActionModal = (props) => {
           <CModalTitle>회원 등록</CModalTitle>
         </CModalHeader>
         <CModalBody>
-
            <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="userId">아이디</CLabel>
@@ -125,15 +130,16 @@ const MemActionModal = (props) => {
           <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="userId">전화번호</CLabel>
-              <input className={errors.memTel && "is-invalid form-control" || !errors.memTel && "form-control is-valid"}
-                     {...register("memTel", { pattern: {value: /^\d{2,3}-\d{3,4}-\d{4}$/, message : "전화번호 형식에 맞게 입력해주세요."} })} />
+
+              <input className={errors.memTel && "is-invalid form-control" || !errors.memTel && "form-control is-valid"} onKeyUp={handleChangePhoneNumber}
+                     {...register("memTel", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요."} })} />
               {errors.memTel && errors.memTel.type === "pattern" && <span className={"invalid-feedback"}>{errors.memTel.message}</span>}
             </CCol>
 
             <CCol md="6">
               <CLabel htmlFor="memPwd">휴대폰번호</CLabel>
-              <input className={errors.memMobile && "is-invalid form-control" || !errors.memMobile && "form-control is-valid"}
-                     {...register("memMobile", { pattern: {value: /^\d{2,3}-\d{3,4}-\d{4}$/, message : "휴대폰번호 형식에 맞게 입력해주세요."} })} />
+              <input className={errors.memMobile && "is-invalid form-control" || !errors.memMobile && "form-control is-valid"} onKeyUp={handleChangePhoneNumber}
+                     {...register("memMobile", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요."} })} />
               {errors.memMobile && errors.memMobile.type === "pattern" && <span className={"invalid-feedback"}>{errors.memMobile.message}</span>}
             </CCol>
           </CFormGroup>
