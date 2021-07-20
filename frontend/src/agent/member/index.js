@@ -1,9 +1,9 @@
 const axios = require('axios');
 const API_ROOT = 'http://localhost:8081/api';    // 로컬
 
-export const getMemList = (page, sizePerPage, values = {searchWrd : "", useYn : "", delYn : ""}) => {
+export const getMemList = (page, sizePerPage, searchItem) => {
   return axios
-    .get(`${API_ROOT}/mems?page=${page}&size=${sizePerPage}&searchWrd=${values.searchWrd}&useYn=${values.useYn}&delYn=${values.delYn}`)
+    .get(`${API_ROOT}/mems?page=${page}&size=${sizePerPage}&searchWrd=${searchItem.searchWrd}&useYn=${searchItem.useYn}&delYn=${searchItem.delYn}&smsYn=${searchItem.smsYn}&leaveYn=${searchItem.leaveYn}`)
     .then(response => response);
 }
 

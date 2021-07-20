@@ -15,18 +15,27 @@ table tr {
 
 .btn-custom {
   color: #fff;
-  background-image: linear-gradient(
-      310deg
-    ,#141727,#3a416f);
+  background-image: linear-gradient(310deg,#141727,#3a416f);
   font-weight: bold;
   font-size: 0.825rem;
 }
 
-.btn-custom:hover {
+.btn-custom-info {
+  color: #fff;
+  background-image: linear-gradient(310deg,#2152ff,#21d4fd);
+  font-weight: bold;
+  font-size: 0.825rem;
+}
+
+.btn-custom:hover, .btn-custom-info:hover{
   color: #fff;
 }
 
 .textarea-height {
   height: 20vh !important;
+}
+
+.ct-mt {
+  margin-top: 0.3rem;
 }
 

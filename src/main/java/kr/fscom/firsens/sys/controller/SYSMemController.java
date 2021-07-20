@@ -27,15 +27,18 @@ public class SYSMemController {
     public SYSMemController(SYSMemRepo sysMemRepo) { this.sysMemRepo = sysMemRepo; }
 
     @GetMapping("/mems")
-    public HashMap<String, Object> listPageMems(SYSMemDomain domain, int page, int size, String searchWrd, String useYn, String delYn) throws Exception {
+    public HashMap<String, Object> listPageMems(SYSMemDomain domain, int page, int size, String searchWrd, String useYn, String delYn, String smsYn, String leaveYn) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         List<HashMap<String, Object>> memberList = new ArrayList<>();
         try {
             domain.setSizePerPage(size);
             domain.setPage((page -1) * domain.getSizePerPage());
             domain.setSearchWrd(searchWrd);
-
+            domain.setMemIsLeave(leaveYn);
             domain.setUseYn(useYn);
+            domain.setMemRcvSms(smsYn);
+            domain.setDelYn(delYn);
+
             int resultCnt = sysMemRepo.SELECT_CNT_SYS_MEM(domain);
             memberList = sysMemRepo.SELECT_LIST_SYS_MEM(domain);
 

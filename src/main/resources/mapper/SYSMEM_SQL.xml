@@ -13,11 +13,21 @@
                              , FM.REGDATE            AS regDate
                              , FM.MEMRSNTDATE        AS memRsntDate
                              , FM.USEYN              AS useYn
+                             , FM.DELYN              AS delYn
                              , FM.MEMISLEAVE         AS memIsLeave
                              , FM.LOGINFAILCNT       AS loginFailCnt
                           FROM F_MEMBER FM
                          WHERE 1 = 1
-
+                         <if test='searchWrd != null and searchWrd !=""'>
+                           AND ( FM.USERID  LIKE CONCAT('%', #{searchWrd}, '%') OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%') )
+                         </if>
+                         AND FM.USEYN = #{useYn}
+                         AND FM.DELYN = #{delYn}
+                         AND FM.MEMISLEAVE = #{memIsLeave}
+                         AND FM.MEMRCVSMS = #{memRcvSms}
+<!--                         <if test="#fn=chkNotEmpty, #fn(useYn)">-->
+<!--                           -->
+<!--                         </if>-->
                       ) A,
                 ( SELECT @ROWNUM := 0 ) R
             ) Z
@@ -46,6 +56,13 @@
                                , (SELECT COUNT(*) FROM F_STORE WHERE USERID = FM.USERID)  AS strCnt
                             FROM F_MEMBER FM
                            WHERE 1 = 1
+                           <if test='searchWrd != null and searchWrd !=""'>
+                             AND ( FM.USERID  LIKE CONCAT('%', #{searchWrd}, '%') OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%') )
+                           </if>
+                             AND FM.USEYN = #{useYn}
+                             AND FM.DELYN = #{delYn}
+                             AND FM.MEMISLEAVE = #{memIsLeave}
+                             AND FM.MEMRCVSMS = #{memRcvSms}
                         ORDER BY FM.REGDATE DESC, FM.MEMNAME ASC
                         ) A,
                         ( SELECT @ROWNUM := 0 ) R
