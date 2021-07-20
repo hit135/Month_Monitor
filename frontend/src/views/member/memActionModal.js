@@ -7,7 +7,7 @@ import {
   CModalFooter,
   CModalHeader,
   CModalTitle,
-  CCol, CSwitch, CTextarea
+  CCol, CSwitch
 } from "@coreui/react";
 import React from "react";
 import {useForm} from "react-hook-form";
@@ -16,13 +16,14 @@ import {convertPhoneNumber, insertMem} from "../../agent/member";
 
 const MemActionModal = (props) => {
   const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  const { info, setInfo, handleInitTable } = props
+  const { modal, setModal, handleInitTable } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, setError } = useForm(
     {
       defaultValues: {
         useYn : "Y",
         memIsLeave: "N",
         memRcvSms: "Y",
+        delYn : "N",
         groupUse: "N",
       }, mode: "all"
     }
@@ -44,7 +45,7 @@ const MemActionModal = (props) => {
   };
 
   const closeModal = () => {
-    setInfo(!info);
+    setModal(!modal);
     reset();
   }
 
@@ -62,7 +63,7 @@ const MemActionModal = (props) => {
   return (
     <>
       <CModal
-        show={info}
+        show={modal}
         onClose={() => closeModal()}
         color="info"
         size="lg"
@@ -150,11 +151,15 @@ const MemActionModal = (props) => {
               <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
-              <CLabel htmlFor="exampleInputName2" className="pr-1">탈퇴유무</CLabel>
+              <CLabel htmlFor="memIsLeave" className="pr-1">탈퇴유무</CLabel>
               <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memIsLeave"} onChange={setSwitchValue} />
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
-              <CLabel htmlFor="exampleInputName2" className="pr-1">SMS수신여부</CLabel>
+              <CLabel htmlFor="delYn" className="pr-1">삭제유무</CLabel>
+              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"delYn"} onChange={setSwitchValue} />
+            </CFormGroup>
+            <CFormGroup className="pr-3 d-inline-flex">
+              <CLabel htmlFor="memRcvSms" className="pr-1">SMS수신여부</CLabel>
               <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memRcvSms"} onChange={setSwitchValue} defaultChecked />
             </CFormGroup>
           </CRow>

@@ -92,6 +92,7 @@
                   , MEMRSNTDATE
                   , MEMISLEAVE
                   , USEYN
+                  , DELYN
                   , MEMMEMO
                   , PWCHANGE
                   , GROUPUSE
@@ -109,10 +110,39 @@
                   , NOW()
                   , #{ memIsLeave }
                   , #{ useYn }
+                  , #{ delYn }
                   , #{ memMemo }
                   , 'Y'
                   , #{ groupUse }
                  )
     </insert>
+
+    <!-- 단일 회원 정보 조회 -->
+    <select id="SELECT_SYS_MEM" parameterType="SYSMemDomain" resultType="SYSMemDomain">
+        SELECT FM.USERID           AS userId
+             , FM.MEMNAME          AS memName
+             , FM.MEMEMAIL         AS memEmail
+             , FM.MEMTEL           AS memTel
+             , FM.MEMMOBILE        AS memMobile
+             , FM.GRPCODE          AS grpCode
+             , FG.GRPNAME          AS grpName
+             , FM.GROUPUSE         AS groupUse
+             , FM.MEMLEVEL         AS memLevel
+             , FM.MEMRCVEMAIL      AS memRcvEmail
+             , FM.MEMRCVSMS        AS memRcvSms
+             , FM.MEMRCVPUSH       AS memRcvPush
+             , DATE_FORMAT(FM.REGDATE, '%Y-%m-%d %H:%i:%s')          AS regDate
+             , DATE_FORMAT(FM.MEMRSNTDATE, '%Y-%m-%d %H:%i:%s')      AS memRsntDate
+             , FM.USEYN            AS useYn
+             , FM.DELYN            AS delYn
+             , FM.MEMISLEAVE       AS memIsLeave
+             , FM.MEMMEMO          AS memMemo
+             , FM.LOGINFAILCNT     AS loginFailCnt
+        FROM F_MEMBER FM
+                 LEFT JOIN F_GROUP FG
+                           ON FM.GRPCODE = FG.GRPCODE
+        WHERE FM.USERID = #{userId}
+        GROUP BY userId
+    </select>
 
 </mapper>

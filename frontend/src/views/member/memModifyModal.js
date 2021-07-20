@@ -9,47 +9,63 @@ import {
   CModalTitle,
   CCol, CSwitch, CTextarea
 } from "@coreui/react";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import axios from "axios";
 import {convertPhoneNumber, insertMem} from "../../agent/member";
 
-const MemActionModal = (props) => {
+const MemModifyModal = (props) => {
   const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  const { info, setInfo, handleInitTable } = props
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, setError } = useForm(
+  const { modal, setModal, userContent } = props
+  const [useYn, setUseYn] = useState(false);
+  const [delYn, setDelYn] = useState(false);
+  const [leaveYn, setLeaveYn] = useState(false);
+  const [smsYn, setSmsYn] = useState(false);
+
+  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm(
     {
-      defaultValues: {
-        useYn : "Y",
-        memIsLeave: "N",
-        memRcvSms: "Y",
-        groupUse: "N",
-      }, mode: "all"
+      mode: "all"
     }
   );
-  const { onBlur, ...rest } = register("userId", { required: true, minLength: 5, maxLength: 20, pattern: {value: /^[a-z]+[a-z0-9]{4,19}$/g,
-      message: "아이디는 영문자로 시작하는 5~20자 영문자 또는 숫자이어야 합니다."}});
+
+  useEffect(() => {
+    userContent.useYn === "Y" ? setUseYn(true) : setUseYn(false);
+    userContent.delYn === "Y" ? setDelYn(true) : setDelYn(false);
+    userContent.memIsLeave === "Y" ? setLeaveYn(true) : setLeaveYn(false);
+    userContent.memRcvSms === "Y" ? setSmsYn(true) : setSmsYn(false);
+
+    console.log(userContent);
+    reset(userContent);
+  }, [userContent]);
 
   const onSubmit = (data, e) => {
-    insertMem(data).then(resp => {
-      if(resp.data["result"] === "success") {
-        alert("회원 등록을 완료했습니다.");
-        closeModal();
-        handleInitTable();
-      } else {
-        alert("회원 등록에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-        closeModal();
-      }
-    });
+    if(userContent.userId === data.userId) {
+      console.log(data);
+    } else {
+      alert("악의적으로 아이디가 수정됐습니다. 잠시 후 다시 시도해주세요.");
+      return false;
+    }
+
+    // insertMem(data).then(resp => {
+    //   if(resp.data["result"] === "success") {
+    //     alert("회원 등록을 완료했습니다.");
+    //     closeModal();
+    //     handleInitTable();
+    //   } else {
+    //     alert("회원 등록에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+    //     closeModal();
+    //   }
+    // });
   };
 
   const closeModal = () => {
-    setInfo(!info);
+    setModal(!modal);
     reset();
   }
 
   const setSwitchValue = (e) => {
     const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
+    value === "Y" ? setUseYn(true) : setUseYn(false);
     setValue(e.target.id, value);
   }
 
@@ -62,46 +78,29 @@ const MemActionModal = (props) => {
   return (
     <>
       <CModal
-        show={info}
+        show={modal}
         onClose={() => closeModal()}
         color="info"
         size="lg"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
         <CModalHeader>
-          <CModalTitle>회원 등록</CModalTitle>
+          <CModalTitle>회원 수정</CModalTitle>
         </CModalHeader>
         <CModalBody>
            <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="userId">아이디</CLabel>
-              <input className={errors.userId && "is-invalid form-control" || !errors.userId && "form-control is-valid"}
-                onBlur={(e) => {
-                  if(!errors.userId) {
-                    axios
-                      .get(`${API_ROOT}/dupMemChk?userId=${e.target.value}`)
-                      .then(resp => {if(resp.data["result"] !== 0) {
-                        setValue("userId", "");
-                        setError("userId", {type: "dupUserId", message: "중복되는 아이디가 존재합니다. 다른 아이디로 등록해주세요."})
-                        setFocus("userId");
-                      }});
-                  }
-                }}
-                {...rest}
+              <input readOnly={true} className={"form-control"}
+              {...register("userId")}
               />
-              {errors.userId && errors.userId.type === "required" && <span className={"invalid-feedback"}>아이디를 입력해주세요.</span>}
-              {errors.userId && errors.userId.type === "pattern" && <span className={"invalid-feedback"}>{errors.userId.message}</span>}
-              {errors.userId && errors.userId.type === "minLength" && <span className={"invalid-feedback"}>아이디를 5글자 이상으로 입력해주세요.</span>}
-              {errors.userId && errors.userId.type === "maxLength" && <span className={"invalid-feedback"}>아이디를 20글자 이하로 입력해주세요.</span>}
-              {errors.userId && errors.userId.type === "dupUserId" && <span className={"invalid-feedback"}>{errors.userId.message}</span>}
             </CCol>
 
             <CCol md="6">
               <CLabel htmlFor="memPwd">비밀번호</CLabel>
               <input className={errors.memPwd && "is-invalid form-control" || !errors.memPwd && "form-control is-valid"}
-                     {...register("memPwd", { required: true, minLength: 8, maxLength: 15, pattern: {value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/,
+                     {...register("memPwd", { minLength: 8, maxLength: 15, pattern: {value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/,
                          message: "특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} })} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} type={"password"}/>
-              {errors.memPwd && errors.memPwd.type === "required" && <span className={"invalid-feedback"}>비밀번호를 입력해주세요.</span>}
               {errors.memPwd && errors.memPwd.type === "minLength" && <span className={"invalid-feedback"}>비밀번호를 8글자 이상으로 입력해주세요.</span>}
               {errors.memPwd && errors.memPwd.type === "maxLength" && <span className={"invalid-feedback"}>비밀번호를 15글자 이하로 입력해주세요.</span>}
               {errors.memPwd && errors.memPwd.type === "pattern" && <span className={"invalid-feedback"}>비밀번호 형식에 맞게 입력해주세요. (특수문자 / 문자 / 숫자 포함 8~15자리)</span>}
@@ -110,7 +109,7 @@ const MemActionModal = (props) => {
 
           <CFormGroup row>
             <CCol md="6">
-              <CLabel htmlFor="userId">사용자 이름</CLabel>
+              <CLabel htmlFor="memName">사용자 이름</CLabel>
               <input className={errors.memName && "is-invalid form-control" || !errors.memName && "form-control is-valid"} placeholder={"최소 2글자 최대 50글자"}
                      {...register("memName", { required: true, minLength: 2, maxLength: 20})} />
               {errors.memName && errors.memName.type === "required" && <span className={"invalid-feedback"}>이름을 입력해주세요.</span>}
@@ -147,15 +146,23 @@ const MemActionModal = (props) => {
           <CRow className={"pl-3 pr-3"}>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
+              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"useYn"} onChange={setSwitchValue}
+                       checked={ useYn } />
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="exampleInputName2" className="pr-1">탈퇴유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memIsLeave"} onChange={setSwitchValue} />
+              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memIsLeave"} onChange={setSwitchValue}
+                       checked={leaveYn} />
+            </CFormGroup>
+            <CFormGroup className="pr-3 d-inline-flex">
+              <CLabel htmlFor="delYn" className="pr-1">삭제유무</CLabel>
+              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"delYn"} onChange={setSwitchValue}
+                       checked={delYn}/>
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="exampleInputName2" className="pr-1">SMS수신여부</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memRcvSms"} onChange={setSwitchValue} defaultChecked />
+              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memRcvSms"} onChange={setSwitchValue}
+                       checked={smsYn}/>
             </CFormGroup>
           </CRow>
 
@@ -175,8 +182,9 @@ const MemActionModal = (props) => {
 
         </CModalBody>
         <CModalFooter>
+          <CButton color="danger" className={"float-left"} onClick={() => closeModal()}>취소</CButton>
           <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>
-          <CButton color="info" type="submit">등록</CButton>
+          <CButton color="info" type="submit">수정</CButton>
         </CModalFooter>
       </form>
       </CModal>
@@ -184,4 +192,4 @@ const MemActionModal = (props) => {
   )
 }
 
-export default MemActionModal
+export default MemModifyModal

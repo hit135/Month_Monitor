@@ -4,21 +4,17 @@ const API_ROOT = 'http://localhost:8081/api';    // 로컬
 export const getMemList = (page, sizePerPage, searchItem) => {
   return axios
     .get(`${API_ROOT}/mems?page=${page}&size=${sizePerPage}&searchWrd=${searchItem.searchWrd}&useYn=${searchItem.useYn}&delYn=${searchItem.delYn}&smsYn=${searchItem.smsYn}&leaveYn=${searchItem.leaveYn}`)
-    .then(response => response);
 }
 
 export const insertMem = (array) => {
   return axios
     .post(`${API_ROOT}/insertMem`, array)
-    .then(response => response);
 }
 
-// 행 클릭 시
-export const rowEvents = {
-  onClick: (e, row, rowIndex) => {
-    console.log(row);
-  }
-};
+export const getMem = (id) => {
+  return axios
+    .post(`${API_ROOT}/selectMem`, { 'userId' : id } )
+}
 
 export const convertPhoneNumber = (str) => {
     str = str.replace(/[^0-9]/g, '');

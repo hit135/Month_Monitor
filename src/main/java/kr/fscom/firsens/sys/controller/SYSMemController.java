@@ -116,4 +116,23 @@ public class SYSMemController {
 
         return rtn;
     }
+
+    /* 회원상세조회 */
+    @PostMapping("/selectMem")
+    public HashMap<String, Object> selectMem(@RequestBody SYSMemDomain domain) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 회원 상세목록 요청 시작 : domain(userId : {})", domain.getUserId());
+        HashMap<String, Object> rtn = new HashMap<>();
+
+        try {
+            rtn.put("content", sysMemRepo.SELECT_SYS_MEM(domain));
+            rtn.put("result", "success");
+        } catch (Exception e){
+            LOG.error("■■■■■■■■■■■■■■■ 회원 목록 요청 오류 : {}", e.getMessage());
+            rtn.put("result", "fail");
+            e.printStackTrace();
+        }
+
+        LOG.info("▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶ 회원 상세목록 요청 완료");
+        return rtn;
+    }
 }

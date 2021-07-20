@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react'
 import {CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
 import PageTableWidget from "../../widget/pageTableWidget";
 import MemActionModal from "../member/memActionModal";
-import {getMemList, rowEvents} from "../../agent/member";
+import {getMem, getMemList, rowEvents} from "../../agent/member";
+import MemModifyModal from "./memModifyModal";
 
 export const numCommaFormat = value => (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
 
@@ -72,7 +73,9 @@ const MemMgr = () => {
     smsYn : "Y",
   });
 
-  const [info, setInfo] = useState(false)             // Modal hook
+  const [userContent, setUserContent] = useState({});
+  const [actionModal, setActionModal] = useState(false)             // Modal hook
+  const [modifyModal, setModifyModal] = useState(false)             // Modal hook
 
   useEffect(() => {
     handleInitTable();
@@ -107,8 +110,22 @@ const MemMgr = () => {
 
   // 등록 버튼 이벤트
   const handleClickRegisterModal = () => {
-    setInfo(true);
+    setActionModal(true);
   }
+
+  // 행 클릭 시
+  const rowEvents = {
+    onClick: (e, row, rowIndex) => {
+      getMem(row.userId).then(function (resp){
+        if(resp.data["result"] === "success") {
+          setUserContent(resp.data["content"]);
+          setModifyModal(true);
+        } else {
+          alert("통신에 오륙가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        }
+      });
+    }
+  };
 
   return (
     <>
@@ -165,7 +182,8 @@ const MemMgr = () => {
           </CCard>
         </CCol>
       </CRow>
-      <MemActionModal info={info} setInfo={setInfo} handleInitTable={handleInitTable} />
+      <MemActionModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
+      <MemModifyModal modal={modifyModal} setModal={setModifyModal} userContent={userContent}/>
     </>
   )
 }

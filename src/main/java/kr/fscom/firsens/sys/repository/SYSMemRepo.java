@@ -38,4 +38,7 @@ public interface SYSMemRepo {
 
     // 회원 등록
     int INSERT_SYS_MEM(SYSMemDomain domain) throws Exception;
+
+    // 회원 선택
+    SYSMemDomain SELECT_SYS_MEM(SYSMemDomain domain) throws Exception;
 }
