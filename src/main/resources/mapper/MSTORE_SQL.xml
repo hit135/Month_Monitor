@@ -209,25 +209,34 @@
 
     <select id="SELECT_LOG_WEEK_STAT" parameterType="map" resultType="map">
         <![CDATA[
+        SELECT A.SDATE,
+               DAYOFWEEK(A.SDATE) AS WEEK,
+               IFNULL(IFNULL(C.DANGER, B.DANGER),0) AS DANGER,
+               IFNULL(IFNULL(C.WARN, B.WARN),0) AS WARN
+        FROM ( SELECT DATE_FORMAT(NOW() - INTERVAL (A.A) DAY, '%Y-%m-%d') AS SDATE
+         FROM (SELECT 0 AS A UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+               UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+               UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 ) AS A) A
+        LEFT JOIN
         (SELECT SDATE,
-                DAYOFWEEK(STR_TO_DATE(SDATE, '%Y-%m-%d')) AS WEEK,
                 IGR2ND + IGO2ND + OC2ND                   AS DANGER,
                 IGR1ST + IGO1ST + OC1ST                   AS WARN
          FROM F_CRN_STR_ELEC_DAILY_STAT
          WHERE AREACODE = #{areacode} AND STRCODE = #{strcode}
-           AND SDATE > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -13 DAY), '%Y-%m-%d'))
-        UNION
+           AND SDATE > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -13 DAY), '%Y-%m-%d')) B
+        ON A.SDATE = B.SDATE
+        LEFT JOIN
         (SELECT DATE_FORMAT(A.REGDATE, '%Y-%m-%d')                                        AS SDATE,
-                DAYOFWEEK(A.REGDATE)                                                      AS WEEK,
                 SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGER,
                 SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARN
          FROM F_SENSOR_LOG A LEFT JOIN F_SENSOR_INFO B ON A.SNSRID=B.SNSRID
          WHERE B.AREACODE = #{areacode}
            AND B.STRCODE = #{strcode}
-           AND A.REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
-         GROUP BY 1)
-         ORDER BY SDATE ASC
-        ]]>
+           AND A.REGDATE > NOW() - INTERVAL 13 DAY
+         GROUP BY 1) C
+        ON A.SDATE = C.SDATE
+         ORDER BY A.SDATE ASC
+         ]]>
     </select>
 
     <insert id="INSERT_SENSOR_CHECK" parameterType="map">

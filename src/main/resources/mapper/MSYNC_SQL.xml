@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.fscom.firsens.mng.repository.MSyncRepo">
+
+    <select id="SELECT_DATA_CNT_LIST" parameterType="map" resultType="map">
+        <![CDATA[
+            SELECT DATE_FORMAT(A.DATE,'%Y-%m-%d') AS DATE, IFNULL(B.SNSRCNT,0) AS SNSRCNT, IFNULL(B.CNT,0) AS DATACNT
+            FROM
+            (SELECT A.DATE
+            FROM ( SELECT LAST_DAY(CONCAT(#{regdt},'-01')) - INTERVAL (A.A + (10 * B.A)) DAY AS DATE
+                     FROM (SELECT 0 AS A UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                           UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS A
+                          CROSS JOIN (SELECT 0 AS A UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3) AS B ) A
+                    WHERE A.DATE BETWEEN CONCAT(#{regdt},'-01') AND LAST_DAY(CONCAT(#{regdt},'-01'))) A
+                LEFT JOIN (SELECT DATE_FORMAT(SNSRRCVTIME,'%Y-%m-%d') AS DATE, COUNT(DISTINCT SNSRID) AS SNSRCNT, COUNT(*) AS CNT
+                    FROM ${tblSensorData}
+                    WHERE SNSRRCVTIME BETWEEN CONCAT(#{regdt},'-01') AND LAST_DAY(CONCAT(#{regdt},'-01')) GROUP BY 1) B
+                ON A.DATE = B.DATE
+            ORDER BY A.DATE
+        ]]>
+    </select>
+
+    <select id="SELECT_SENSOR_DATA_CNT_LIST" parameterType="map" resultType="map">
+        <![CDATA[
+        SELECT C.AREACODE,
+               C.AREANAME,
+               A.SNSRID,
+               A.SNSRNICK,
+               IFNULL(B.CNT, 0)  AS DAY,
+               IFNULL(B1.CNT, 0) AS DAY1,
+               IFNULL(B2.CNT, 0) AS DAY2,
+               E.CHECKSTAT,
+               E.REQCONT,
+               DATE_FORMAT(E.PROCDATE,'%Y-%m-%d') AS PROCDATE,
+               DATE_FORMAT(#{regdt},'%Y|%m|%d') AS SDATE
+        FROM F_SENSOR_INFO A
+                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS CNT
+                            FROM ${tblSensorData}
+                            WHERE SNSRRCVTIME BETWEEN #{regdt} AND #{regdt} + INTERVAL 1 DAY
+                            GROUP BY SNSRID) B ON A.SNSRID = B.SNSRID
+                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS CNT
+                            FROM ${tblSensorData}
+                            WHERE SNSRRCVTIME BETWEEN #{regdt} - INTERVAL 1 DAY AND #{regdt}
+                            GROUP BY SNSRID) B1 ON A.SNSRID = B1.SNSRID
+                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS CNT
+                            FROM ${tblSensorData}
+                            WHERE SNSRRCVTIME BETWEEN #{regdt} - INTERVAL 2 DAY AND #{regdt} - INTERVAL 1 DAY
+                            GROUP BY SNSRID) B2 ON A.SNSRID = B2.SNSRID
+                 LEFT JOIN F_AREA C ON A.AREACODE = C.AREACODE
+                 LEFT JOIN (SELECT SNSRID, MAX(CHECKSEQ) AS CHECKSEQ
+                            FROM F_SENSOR_CHECK
+                            WHERE CHECKSTAT IN ('SYNC','SYNC_END')
+                            GROUP BY SNSRID) D ON A.SNSRID = D.SNSRID
+                 LEFT JOIN (SELECT CHECKSEQ, CHECKSTAT, REQCONT, PROCDATE
+                            FROM F_SENSOR_CHECK) E ON D.CHECKSEQ = E.CHECKSEQ
+        ORDER BY E.CHECKSTAT DESC, C.AREANAME, A.SNSRNICK
+        ]]>
+    </select>
+
+    <insert id="INSERT_SENSOR_CHECK" parameterType="map">
+        INSERT INTO F_SENSOR_CHECK (CHECKSEQ, SNSRID, REGDATE, CHECKSTAT, REQCONT)
+        VALUES (NULL, #{snsrid}, NOW(), 'SYNC', #{reqcont})
+    </insert>
+
+</mapper>
