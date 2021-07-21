@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Class Name : SYSAreaDomain.java
  * @Description : 구역관리
@@ -40,6 +43,11 @@ public class SYSAreaDomain {
     @JsonProperty("areaLevel")      private String areaLevel = "";                  // 구역레벨
     @JsonProperty("guCode")         private String guCode = "";                     // 구코드
     @JsonProperty("storeCnt")       private int storeCnt = 0;                       // 소속 상점 수
+
+    private List<SYSAreaDomain> children = new ArrayList<>();
+    private String title = "";
+    private String icon = "";
+    @JsonProperty("key")  private String key = "";
 
     private int page;
     private int sizePerPage;

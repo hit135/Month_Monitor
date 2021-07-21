@@ -27,7 +27,7 @@ import java.util.List;
 @Repository
 public interface SYSAreaRepo {
     // 구역 목록 카운트
-    int SELECT_CNT_SYS_AREA(SYSAreaDomain vo) throws Exception;
+//    int SELECT_CNT_SYS_AREA(SYSAreaDomain vo) throws Exception;
     // 구역 목록
-    List<HashMap<String, Object>> SELECT_LIST_SYS_AREA(SYSAreaDomain vo) throws Exception;
+    List<SYSAreaDomain> SELECT_LIST_SYS_AREA(SYSAreaDomain vo) throws Exception;
 }

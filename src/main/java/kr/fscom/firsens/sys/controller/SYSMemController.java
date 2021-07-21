@@ -165,4 +165,27 @@ public class SYSMemController {
 
         return rtn;
     }
+
+    @PostMapping("/deleteMem")
+    public HashMap<String, Object> deleteMem(@RequestBody SYSMemDomain domain) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 회원 영구 삭제 요청 시작 : domain(userId : {})", domain.getUserId());
+        HashMap<String, Object> rtn = new HashMap<>();
+        try {
+            int result = 0;
+            if(domain.getUserId() != null) {
+                result = sysMemRepo.DELETE_SYS_MEM(domain);
+            }
+
+            if(result > 0)
+                rtn.put("result", "success");
+            else
+                rtn.put("result", "fail");
+        } catch (Exception ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 회원 영구 삭제 요청 오류 : {}", ex.getMessage());
+            rtn.put("result", "fail");
+            ex.printStackTrace();
+        }
+
+        return rtn;
+    }
 }

@@ -12,7 +12,7 @@ import {
 import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import axios from "axios";
-import {convertPhoneNumber, insertMem, updateMem} from "../../agent/member";
+import {convertPhoneNumber, deleteMem, insertMem, updateMem} from "../../agent/member";
 
 const MemModifyModal = (props) => {
   const API_ROOT = 'http://localhost:8081/api';    // 로컬
@@ -77,6 +77,22 @@ const MemModifyModal = (props) => {
     e = e || window.e;
     let _val = e.target.value.trim();
     e.target.value = convertPhoneNumber(_val) ;
+  }
+
+  const handleConfirmDelUser = (id) => {
+    console.log(id);
+    if(window.confirm("회원을 영구 삭제하시겠습니까?")) {
+      deleteMem(id).then(function(resp) {
+        if(resp.data["result"] === "success") {
+          alert("회원 영구삭제를 완료했습니다.");
+          closeModal();
+          handleInitTable();
+        } else {
+          alert("회원 영구삭제에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+          closeModal();
+        }
+      });
+    }
   }
 
   return (
@@ -186,7 +202,7 @@ const MemModifyModal = (props) => {
         <CModalFooter style={{ display: "block" }}>
           <div className={'d-flex'}>
             <div className={"mr-auto"}>
-              <CButton color="danger" className={"mr-auto"} onClick={() => closeModal()}>삭제</CButton>
+              <CButton color="danger" className={"mr-auto"} onClick={() => handleConfirmDelUser(userContent.userId)}>영구삭제</CButton>
             </div>
             <div>
               <CButton className={"mr-2"} color="secondary" onClick={() => closeModal()}>취소</CButton>

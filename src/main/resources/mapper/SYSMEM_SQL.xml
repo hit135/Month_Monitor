@@ -166,4 +166,9 @@
          WHERE USERID = #{ userId }
     </update>
 
+    <delete id="DELETE_SYS_MEM" parameterType="SYSMemDomain">
+        DELETE FROM F_MEMBER
+         WHERE USERID = #{userId}
+    </delete>
+
 </mapper>

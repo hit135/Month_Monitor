@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
 import PageTableWidget from "../../widget/pageTableWidget";
 import MemActionModal from "../member/memActionModal";
-import {getMem, getMemList, rowEvents} from "../../agent/member";
+import {getMem, getMemList} from "../../agent/member";
 import MemModifyModal from "./memModifyModal";
 
 export const numCommaFormat = value => (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
