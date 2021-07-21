@@ -39,3 +39,9 @@ table tr {
   margin-top: 0.3rem;
 }
 
+.c-switch-label .c-switch-input:checked ~ .c-switch-slider::before {
+  transform: translateX(35px);
+}
+
+.c-switch-label {width: 65px;}
+

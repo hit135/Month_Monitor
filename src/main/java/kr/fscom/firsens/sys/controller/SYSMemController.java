@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
@@ -86,8 +86,11 @@ public class SYSMemController {
         try {
             String sha256MemPwd = sha256Encrypt.getHex(domain.getMemPwd(), domain.getUserId());
             domain.setMemPwd(sha256MemPwd);
+            int result = 0;
+            if(domain.getUserId() != null || domain.getMemPwd() != null) {
+                result = sysMemRepo.INSERT_SYS_MEM(domain);
+            }
 
-            int result = sysMemRepo.INSERT_SYS_MEM(domain);
             if(result > 0)
                 rtn.put("result", "success");
             else
@@ -133,6 +136,33 @@ public class SYSMemController {
         }
 
         LOG.info("▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶ 회원 상세목록 요청 완료");
+        return rtn;
+    }
+    
+    /* 회원 수정 */
+    @PostMapping("/updateMem")
+    public HashMap<String, Object> updateMem(@RequestBody SYSMemDomain domain) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 회원 수정 요청 시작 : domain(userId : {})", domain.getUserId());
+        HashMap<String, Object> rtn = new HashMap<>();
+
+        try {
+            if (!StringUtils.isEmpty(domain.getMemPwd())) {
+                String sha256MemPwd = sha256Encrypt.getHex(domain.getMemPwd(), domain.getUserId());
+                domain.setMemPwd(sha256MemPwd);
+            }
+
+            int result = sysMemRepo.UPDATE_SYS_MEM(domain);
+            if(result > 0)
+                rtn.put("result", "success");
+            else
+                rtn.put("result", "fail");
+
+        } catch (Exception ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 회원 수정 요청 오류 : {}", ex.getMessage());
+            rtn.put("result", "fail");
+            ex.printStackTrace();
+        }
+
         return rtn;
     }
 }

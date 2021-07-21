@@ -41,4 +41,8 @@ public interface SYSMemRepo {
 
     // 회원 선택
     SYSMemDomain SELECT_SYS_MEM(SYSMemDomain domain) throws Exception;
+
+    // 회원 수정
+    int UPDATE_SYS_MEM(SYSMemDomain domain) throws Exception;
+
 }

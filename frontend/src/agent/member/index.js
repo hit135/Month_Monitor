@@ -16,6 +16,11 @@ export const getMem = (id) => {
     .post(`${API_ROOT}/selectMem`, { 'userId' : id } )
 }
 
+export const updateMem = (array) => {
+  return axios
+    .post(`${API_ROOT}/updateMem`, array)
+}
+
 export const convertPhoneNumber = (str) => {
     str = str.replace(/[^0-9]/g, '');
 

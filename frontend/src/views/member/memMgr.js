@@ -46,7 +46,7 @@ const storeCountStyleFormatter = (cell) =>
   </h5>;
 
 const columns = [
-  { dataField: 'rowNum', text: '순번', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px' }, formatter: (cell) => numCommaFormat(cell) },
+  { dataField: 'rowNum', text: '순번', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px', width: '5rem' }, formatter: (cell) => numCommaFormat(cell) },
   { dataField: 'userId', text: 'ID', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'left' } },
   { dataField: 'memName', text: '이름', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'left' } },
   { dataField: 'memLevel', text: '권한', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, formatter: authStyleFormatter },
@@ -150,19 +150,19 @@ const MemMgr = () => {
 
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt pl-3">
                     <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-                    <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"useYn"} onChange={handleClickSearchType} defaultChecked/>
+                    <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={handleClickSearchType} defaultChecked/>
                   </CFormGroup>
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt">
                     <CLabel htmlFor="memIsLeave" className="pr-1">탈퇴유무</CLabel>
-                    <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} onChange={handleClickSearchType} id={"leaveYn"} />
+                    <CSwitch className={'mx-1'} color={'danger'} labelOn={'탈퇴'} labelOff={'미탈퇴'} onChange={handleClickSearchType} id={"leaveYn"} />
                   </CFormGroup>
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt">
                     <CLabel htmlFor="exampleInputName2" className="pr-1">삭제유무</CLabel>
-                    <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} onChange={handleClickSearchType} id={"delYn"} />
+                    <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} onChange={handleClickSearchType} id={"delYn"} />
                   </CFormGroup>
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt">
                     <CLabel htmlFor="exampleInputName2" className="pr-1">SMS수신여부</CLabel>
-                    <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} onChange={handleClickSearchType} id={"smsYn"} />
+                    <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} onChange={handleClickSearchType} id={"smsYn"} defaultChecked />
                   </CFormGroup>
 
                   <button className={"btn btn-custom float-right mt-0"} onClick={handleClickRegisterModal}>등록</button>
@@ -183,7 +183,7 @@ const MemMgr = () => {
         </CCol>
       </CRow>
       <MemActionModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
-      <MemModifyModal modal={modifyModal} setModal={setModifyModal} userContent={userContent}/>
+      <MemModifyModal modal={modifyModal} setModal={setModifyModal} userContent={userContent} handleInitTable={handleInitTable}/>
     </>
   )
 }

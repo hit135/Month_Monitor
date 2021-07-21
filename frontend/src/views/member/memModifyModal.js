@@ -12,15 +12,17 @@ import {
 import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import axios from "axios";
-import {convertPhoneNumber, insertMem} from "../../agent/member";
+import {convertPhoneNumber, insertMem, updateMem} from "../../agent/member";
 
 const MemModifyModal = (props) => {
   const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  const { modal, setModal, userContent } = props
-  const [useYn, setUseYn] = useState(false);
-  const [delYn, setDelYn] = useState(false);
-  const [leaveYn, setLeaveYn] = useState(false);
-  const [smsYn, setSmsYn] = useState(false);
+  const { modal, setModal, userContent, handleInitTable } = props
+  const [appSwitch, setAppSwitch] = useState({
+    useYn : false,
+    delYn : false,
+    memIsLeave: false,
+    memRcvSms: false
+  });
 
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm(
     {
@@ -29,12 +31,11 @@ const MemModifyModal = (props) => {
   );
 
   useEffect(() => {
-    userContent.useYn === "Y" ? setUseYn(true) : setUseYn(false);
-    userContent.delYn === "Y" ? setDelYn(true) : setDelYn(false);
-    userContent.memIsLeave === "Y" ? setLeaveYn(true) : setLeaveYn(false);
-    userContent.memRcvSms === "Y" ? setSmsYn(true) : setSmsYn(false);
+    appSwitch.useYn = (userContent.useYn === "Y");
+    appSwitch.delYn = (userContent.delYn === "Y");
+    appSwitch.memIsLeave = (userContent.memIsLeave === "Y");
+    appSwitch.memRcvSms = (userContent.memRcvSms === "Y");
 
-    console.log(userContent);
     reset(userContent);
   }, [userContent]);
 
@@ -46,26 +47,29 @@ const MemModifyModal = (props) => {
       return false;
     }
 
-    // insertMem(data).then(resp => {
-    //   if(resp.data["result"] === "success") {
-    //     alert("회원 등록을 완료했습니다.");
-    //     closeModal();
-    //     handleInitTable();
-    //   } else {
-    //     alert("회원 등록에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-    //     closeModal();
-    //   }
-    // });
+    updateMem(data).then(resp => {
+      if(resp.data["result"] === "success") {
+        alert("회원 수정을 완료했습니다.");
+        closeModal();
+        handleInitTable();
+      } else {
+        alert("회원 수정에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+        closeModal();
+      }
+    });
   };
 
   const closeModal = () => {
+    reset({});
     setModal(!modal);
-    reset();
   }
 
   const setSwitchValue = (e) => {
     const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
-    value === "Y" ? setUseYn(true) : setUseYn(false);
+    setAppSwitch(data => ({
+      ...data,
+      [e.target.id]: (value === "Y")
+    }));
     setValue(e.target.id, value);
   }
 
@@ -100,7 +104,7 @@ const MemModifyModal = (props) => {
               <CLabel htmlFor="memPwd">비밀번호</CLabel>
               <input className={errors.memPwd && "is-invalid form-control" || !errors.memPwd && "form-control is-valid"}
                      {...register("memPwd", { minLength: 8, maxLength: 15, pattern: {value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/,
-                         message: "특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} })} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} type={"password"}/>
+                         message: "특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} })} placeholder={"비밀번호 입력 시 변경됩니다."} type={"password"}/>
               {errors.memPwd && errors.memPwd.type === "minLength" && <span className={"invalid-feedback"}>비밀번호를 8글자 이상으로 입력해주세요.</span>}
               {errors.memPwd && errors.memPwd.type === "maxLength" && <span className={"invalid-feedback"}>비밀번호를 15글자 이하로 입력해주세요.</span>}
               {errors.memPwd && errors.memPwd.type === "pattern" && <span className={"invalid-feedback"}>비밀번호 형식에 맞게 입력해주세요. (특수문자 / 문자 / 숫자 포함 8~15자리)</span>}
@@ -146,23 +150,23 @@ const MemModifyModal = (props) => {
           <CRow className={"pl-3 pr-3"}>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"useYn"} onChange={setSwitchValue}
-                       checked={ useYn } />
+              <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue}
+                       checked={ appSwitch.useYn } />
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="exampleInputName2" className="pr-1">탈퇴유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memIsLeave"} onChange={setSwitchValue}
-                       checked={leaveYn} />
+              <CSwitch className={'mx-1'} color={'danger'} labelOn={'탈퇴'} labelOff={'미탈퇴'} id={"memIsLeave"} onChange={setSwitchValue}
+                       checked={ appSwitch.memIsLeave } />
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="delYn" className="pr-1">삭제유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"delYn"} onChange={setSwitchValue}
-                       checked={delYn}/>
+              <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} id={"delYn"} onChange={setSwitchValue}
+                       checked={ appSwitch.delYn }/>
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="exampleInputName2" className="pr-1">SMS수신여부</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memRcvSms"} onChange={setSwitchValue}
-                       checked={smsYn}/>
+              <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"memRcvSms"} onChange={setSwitchValue}
+                       checked={ appSwitch.memRcvSms }/>
             </CFormGroup>
           </CRow>
 
@@ -178,13 +182,17 @@ const MemModifyModal = (props) => {
               />
             </CCol>
           </CFormGroup>
-
-
         </CModalBody>
-        <CModalFooter>
-          <CButton color="danger" className={"float-left"} onClick={() => closeModal()}>취소</CButton>
-          <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>
-          <CButton color="info" type="submit">수정</CButton>
+        <CModalFooter style={{ display: "block" }}>
+          <div className={'d-flex'}>
+            <div className={"mr-auto"}>
+              <CButton color="danger" className={"mr-auto"} onClick={() => closeModal()}>삭제</CButton>
+            </div>
+            <div>
+              <CButton className={"mr-2"} color="secondary" onClick={() => closeModal()}>취소</CButton>
+              <CButton color="info" type="submit">수정</CButton>
+            </div>
+          </div>
         </CModalFooter>
       </form>
       </CModal>

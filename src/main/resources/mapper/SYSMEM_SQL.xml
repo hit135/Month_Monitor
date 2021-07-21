@@ -145,4 +145,25 @@
         GROUP BY userId
     </select>
 
+    <!-- 회원 수정 -->
+    <update id="UPDATE_SYS_MEM" parameterType="SYSMemDomain">
+        UPDATE F_MEMBER
+           SET MEMNAME    = #{ memName   }
+             , MEMTEL       = #{ memTel    }
+             , MEMMOBILE    = #{ memMobile }
+             , MEMEMAIL     = #{ memEmail  }
+             , MEMLEVEL     = #{ memLevel  }
+             , MEMRCVSMS    = #{ memRcvSms  }
+             , MEMRCVPUSH   = #{ memRcvPush  }
+             , MEMISLEAVE   = #{ memIsLeave  }
+             , USEYN        = #{ useYn  }
+             , DELYN        = #{ delYn  }
+             , GROUPUSE     = #{ groupUse  }
+             , MEMMEMO      = #{ memMemo  }
+           <if test='memPwd != ""'>
+             , MEMPWD = #{memPwd}
+           </if>
+         WHERE USERID = #{ userId }
+    </update>
+
 </mapper>

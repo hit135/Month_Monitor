@@ -148,19 +148,19 @@ const MemActionModal = (props) => {
           <CRow className={"pl-3 pr-3"}>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
+              <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="memIsLeave" className="pr-1">탈퇴유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memIsLeave"} onChange={setSwitchValue} />
+              <CSwitch className={'mx-1'} color={'danger'} labelOn={'탈퇴'} labelOff={'미탈퇴'} id={"memIsLeave"} onChange={setSwitchValue} />
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="delYn" className="pr-1">삭제유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"delYn"} onChange={setSwitchValue} />
+              <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} id={"delYn"} onChange={setSwitchValue} />
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="memRcvSms" className="pr-1">SMS수신여부</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'\u2713'} labelOff={'\u2715'} id={"memRcvSms"} onChange={setSwitchValue} defaultChecked />
+              <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"memRcvSms"} onChange={setSwitchValue} defaultChecked />
             </CFormGroup>
           </CRow>
 
