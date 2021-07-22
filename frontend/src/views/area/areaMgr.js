@@ -9,7 +9,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
-  CCol,
+  CCol, CInput,
   CRow,
 } from '@coreui/react'
 import AreaActionModal from "./areaActionModal";
@@ -50,14 +50,16 @@ const AreaMgr = () => {
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [searchValue, setSearchValue] = useState("");
+  const [inPutSearchValue, setInputSearchValue] = useState("");
 
   const onExpand = (expandedKeys) => {
     setExpandedKeys(expandedKeys);
     setAutoExpandParent(false);
   };
 
-  const onChange = (e) => {
-    const { value } = e.target;
+  const clickSearchTree = (e) => {
+    const value = inPutSearchValue;
+    console.log(value);
     const expandedKeys = dataList
       .map((item) => {
         if (item.title.indexOf(value) > -1) {
@@ -84,7 +86,11 @@ const AreaMgr = () => {
   };
 
   useEffect(() => {
-    handleInitTable().then(r => generateList(gData));
+    handleInitTable().then(r => {
+      generateList(gData);
+      clickSearchTree();
+    });
+
   }, []);
 
   // 초기 테이블 셋팅
@@ -124,12 +130,10 @@ const AreaMgr = () => {
       };
     });
 
-
-
   return (
     <>
       <CRow>
-        <CCol md={3}>
+        <CCol md={5}>
           <CCard>
             <CCardHeader>
               <CCol md="12" xl="12" className={"pl-0 pr-0"}>
@@ -138,6 +142,7 @@ const AreaMgr = () => {
                     <h5 className={"mb-0 ml-0"}>전체 시장 목록</h5>
                   </div>
                   <div>
+                    <button className={"btn btn-custom float-right mt-0 ml-2"} onClick={handleClickRegisterLv1Item}>하위 레벨 등록</button>
                     <button className={"btn btn-custom float-right mt-0"} onClick={handleClickRegisterLv1Item}>상위 레벨 등록</button>
                   </div>
                 </div>
@@ -145,8 +150,12 @@ const AreaMgr = () => {
               </CCol>
             </CCardHeader>
             <CCardBody className={"pt-3"}>
-              <CCol>
-                <Search className={"mb-0"} placeholder="시장명 검색" onClick={onChange}/>
+              <CCol className={"pl-0"}>
+                {/*<Search className={"mb-0"} placeholder="시장명 검색" onClick={onChange}/>*/}
+                <CCol sm="4" className={"float-left pl-0"}>
+                  <CInput placeholder="검색어 입력" onChange={(e) => setInputSearchValue(e.target.value)}  />
+                </CCol>
+                <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
               </CCol>
               <CRow className={"mb-3"}>
                 {/*<CCol md="12" xl="12">*/}
@@ -165,7 +174,7 @@ const AreaMgr = () => {
             </CCardBody>
           </CCard>
         </CCol>
-        <CCol md={9}>
+        <CCol md={7} className={"fixed-right-form"}>
           <CCard>
             <CCardHeader>
               <CCol md="12" xl="12" className={"pl-0 pr-0"}>
