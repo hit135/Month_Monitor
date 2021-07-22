@@ -100,8 +100,7 @@ const MemActionModal = (props) => {
             <CCol md="6">
               <CLabel htmlFor="memPwd">비밀번호</CLabel>
               <input className={errors.memPwd && "is-invalid form-control" || !errors.memPwd && "form-control is-valid"}
-                     {...register("memPwd", { required: true, minLength: 8, maxLength: 15, pattern: {value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/,
-                         message: "특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} })} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} type={"password"}/>
+                     {...register("memPwd", { required: true, minLength: 8, maxLength: 15, pattern: {value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/} })} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} type={"password"}/>
               {errors.memPwd && errors.memPwd.type === "required" && <span className={"invalid-feedback"}>비밀번호를 입력해주세요.</span>}
               {errors.memPwd && errors.memPwd.type === "minLength" && <span className={"invalid-feedback"}>비밀번호를 8글자 이상으로 입력해주세요.</span>}
               {errors.memPwd && errors.memPwd.type === "maxLength" && <span className={"invalid-feedback"}>비밀번호를 15글자 이하로 입력해주세요.</span>}

@@ -1,11 +1,10 @@
 import React, {Component, useEffect, useState} from 'react'
-import {getAreaList} from "../../agent/area";
+import {getAreaList, generateList, getParentKey, dataList} from "../../agent/area";
 import 'antd/dist/antd.css';
 import { Tree, Input } from 'antd';
 // import { CarryOutOutlined, FormOutlined } from '@ant-design/icons';
 
 import {
-  CBadge,
   CCard,
   CCardBody,
   CCardHeader,
@@ -13,37 +12,9 @@ import {
   CRow,
 } from '@coreui/react'
 import AreaActionModal from "./areaActionModal";
-// import Search from "antd/es/input/Search";
+import AreaModifyMgr from "./areaModifyMgr";
 
-const { Search } = Input;
 let gData = [];
-const dataList = [];
-const generateList = (data) => {
-  for (let i = 0; i < data.length; i++) {
-    const node = data[i];
-    const { key } = node;
-    dataList.push({ key, title: node.title });
-    if (node.children) {
-      generateList(node.children);
-    }
-  }
-};
-
-const getParentKey = (key, tree) => {
-  let parentKey;
-  for (let i = 0; i < tree.length; i++) {
-    const node = tree[i];
-    if (node.children) {
-      if (node.children.some((item) => item.key === key)) {
-        parentKey = node.key;
-      } else if (getParentKey(key, node.children)) {
-        parentKey = getParentKey(key, node.children);
-      }
-    }
-  }
-  return parentKey;
-};
-
 const AreaMgr = () => {
   const [info, setInfo] = useState(false)             // Modal state
   const [treeData, setTreeData] = useState([]);
@@ -59,7 +30,6 @@ const AreaMgr = () => {
 
   const clickSearchTree = (e) => {
     const value = inPutSearchValue;
-    console.log(value);
     const expandedKeys = dataList
       .map((item) => {
         if (item.title.indexOf(value) > -1) {
@@ -90,19 +60,22 @@ const AreaMgr = () => {
       generateList(gData);
       clickSearchTree();
     });
-
   }, []);
 
   // 초기 테이블 셋팅
   const handleInitTable = async (page = 1, sizePerPage = 10) => {
     await getAreaList(page, sizePerPage).then(function (resp) {
-      // setTreeData(resp.data["resultList"]);
       gData = resp.data["resultList"];
     });
   }
 
   const handleClickRegisterLv1Item = () => {
 
+  }
+
+  const nodeClick = (e, node) => {
+    console.log(e);
+    console.log(node);
   }
 
   const loop = (data) =>
@@ -151,16 +124,16 @@ const AreaMgr = () => {
             </CCardHeader>
             <CCardBody className={"pt-3"}>
               <CCol className={"pl-0"}>
-                {/*<Search className={"mb-0"} placeholder="시장명 검색" onClick={onChange}/>*/}
                 <CCol sm="4" className={"float-left pl-0"}>
-                  <CInput placeholder="검색어 입력" onChange={(e) => setInputSearchValue(e.target.value)}  />
+                  <CInput placeholder="검색어 입력" onChange={(e) => { setInputSearchValue(e.target.value);}} onKeyUp={(e) => {
+                    if(e.key === "Enter")
+                      clickSearchTree();
+                  }}  />
                 </CCol>
                 <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
               </CCol>
               <CRow className={"mb-3"}>
-                {/*<CCol md="12" xl="12">*/}
-                {/*  */}
-                {/*</CCol>*/}
+
               </CRow>
               {/*/>*/}
               <Tree
@@ -168,32 +141,14 @@ const AreaMgr = () => {
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}
                 autoExpandParent={autoExpandParent}
+                onClick={nodeClick}
                 treeData={loop(gData)}
                 filterTreeNode={filterTreeNode}
               />
             </CCardBody>
           </CCard>
         </CCol>
-        <CCol md={7} className={"fixed-right-form"}>
-          <CCard>
-            <CCardHeader>
-              <CCol md="12" xl="12" className={"pl-0 pr-0"}>
-                <div className={"d-flex align-item-center"}>
-                  <div className={"mr-auto"}>
-                    <h5 className={"mb-0 ml-0"}>시장 상세 및 수정</h5>
-                  </div>
-                  {/*<div>*/}
-                  {/*  <button className={"btn btn-custom float-right mt-0"} onClick={handleClickRegisterLv1Item}>상위 레벨 등록</button>*/}
-                  {/*</div>*/}
-                </div>
-
-              </CCol>
-            </CCardHeader>
-            <CCardBody className={"pt-3"}>
-
-            </CCardBody>
-          </CCard>
-        </CCol>
+        <AreaModifyMgr />
       </CRow>
       <AreaActionModal info={info} setInfo={setInfo}/>
     </>
