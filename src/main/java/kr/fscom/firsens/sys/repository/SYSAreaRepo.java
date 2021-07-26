@@ -30,4 +30,8 @@ public interface SYSAreaRepo {
 //    int SELECT_CNT_SYS_AREA(SYSAreaDomain vo) throws Exception;
     // 구역 목록
     List<SYSAreaDomain> SELECT_LIST_SYS_AREA(SYSAreaDomain vo) throws Exception;
+    int INSERT_SYS_AREA_ITEM(SYSAreaDomain vo) throws Exception;
+    int INSERT_SYS_LEVEL_AREA_ITEM(SYSAreaDomain vo) throws Exception;
+    int CHECK_SYS_AREA_CODE(String areaCode) throws Exception;
+
 }

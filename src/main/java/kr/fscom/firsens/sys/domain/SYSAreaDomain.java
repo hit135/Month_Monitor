@@ -43,6 +43,7 @@ public class SYSAreaDomain {
     @JsonProperty("areaLevel")      private String areaLevel = "";                  // 구역레벨
     @JsonProperty("guCode")         private String guCode = "";                     // 구코드
     @JsonProperty("storeCnt")       private int storeCnt = 0;                       // 소속 상점 수
+    @JsonProperty("type")           private String type = "";                       // 레벨타입
 
     private List<SYSAreaDomain> children = new ArrayList<>();
     private String title = "";

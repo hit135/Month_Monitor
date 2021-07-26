@@ -3,43 +3,48 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSAreaRepo">
     <select id="SELECT_LIST_SYS_AREA" parameterType="SYSAreaDomain" resultType="SYSAreaDomain">
---         SELECT A.AREACODE                                                  AS 'key'
---              , A.AREANAME                                                  AS areaName
---              , A.AREANAME                                                  AS title
---              , A.AREAORDER                                                 AS areaOrder
---              , A.UPAREACODE                                                AS upAreaCode
---              , A.USEYN                                                     AS useYn
---              , A.DELYN                                                     AS delYn
---              , A.AREALEVEL                                                 AS areaLevel
---              , IFNULL(FS.STORECNT, 0)                                    AS storeCnt
---         FROM F_LEVEL_AREA A
---                  LEFT JOIN (SELECT AREACODE, COUNT(AREACODE) AS STORECNT FROM F_STORE GROUP BY AREACODE) FS
---                            ON A.AREACODE = FS.AREACODE
---         WHERE 1 = 1
---         ORDER BY areaLevel, areaOrder
-            WITH RECURSIVE t AS (
-                SELECT AREACODE AS top_wr_no
-                     , AREACODE
-                     , AREANAME
-                     , UPAREACODE
-                     , USEYN
-                FROM F_LEVEL_AREA
-                WHERE UPAREACODE = '0'
-
-                UNION ALL
-
-                SELECT t.top_wr_no
-                     , a.AREACODE
-                     , a.AREANAME
-                     , a.UPAREACODE
-                     , a.USEYN
-                FROM F_LEVEL_AREA a
-                         JOIN t
-                              ON a.UPAREACODE = t.AREACODE
-            )
-            SELECT AREACODE as 'key', AREACODE as areaCode,  UPAREACODE as upAreaCode, AREANAME AS title
-            FROM t
-            WHERE 1 = 1
-              AND USEYN = 'Y'
+        SELECT AREACODE as 'key'
+             , AREACODE as areaCode
+             , UPAREACODE as upAreaCode
+             , AREANAME AS title
+             , IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE), 0) AS storeCnt
+        FROM F_LEVEL_AREA A
+        WHERE 1 = 1
+          AND USEYN = 'Y'
     </select>
+
+    <insert id="INSERT_SYS_AREA_ITEM" parameterType="SYSAreaDomain" >
+        INSERT INTO F_AREA (
+            AREACODE
+          , AREANAME
+          , USEYN
+          , AREAORDER
+          , REGDATE
+       ) VALUES (
+            CONCAT('AREA_', LPAD(IFNULL((SELECT COUNT(FA.AREACODE) FROM F_AREA FA), 0) + 1, '6', '0'))
+           , 'temp'
+           , 'Y'
+           , (SELECT IFNULL(MAX(FA.AREAORDER), 0) + 1 FROM F_AREA FA)
+           , NOW()
+       )
+    </insert>
+
+    <insert id="INSERT_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">
+        INSERT INTO F_LEVEL_AREA (
+               AREACODE
+             , UPAREACODE
+             , AREANAME
+             , USEYN
+             , AREAORDER
+             , REGDATE
+        )
+        VALUES (
+               CONCAT('AREA_', LPAD(IFNULL((SELECT COUNT(FA.AREACODE) FROM F_AREA FA), 0) + 1, '6', '0'))
+             , '0'
+             , 'temp'
+             , 'Y'
+             , (SELECT IFNULL(MAX(FA.AREAORDER), 0) + 1 FROM F_LEVEL_AREA FA WHERE UPAREACODE = '0')
+             , NOW()
+        );
+    </insert>
 </mapper>

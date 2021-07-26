@@ -29,19 +29,8 @@ public class SYSAreaController {
         HashMap<String, Object> rtn = new HashMap<>();
         List<SYSAreaDomain> areaList = new ArrayList<>();
         try {
-//            domain.setSizePerPage(size);
-//            domain.setPage((page - 1) * domain.getSizePerPage());
-//            domain.setSearchWrd(searchWrd);
-//            domain.setIsUse(isUse);
-//            domain.setDelYn(delYn);
-
-//            int resultCnt = sysAreaRepo.SELECT_CNT_SYS_AREA(domain);            // 구역 목록 카운트
-//            areaList = sysAreaRepo.SELECT_LIST_SYS_AREA(domain);    // 구역 목록
             JSONArray jsonList = JSONArray.fromObject( getAreaListTree( sysAreaRepo.SELECT_LIST_SYS_AREA(domain), "0") );
-//            getAreaListTree(areaList, "0");
             rtn.put("resultList", jsonList);
-//            rtn.put("totalElements", resultCnt);
-//            rtn.put("result", "success");
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 구역목록 요청 SQL 오류 : {}", ex.getMessage());
             rtn.put("result", "fail");
@@ -53,6 +42,40 @@ public class SYSAreaController {
         return rtn;
     }
 
+    @PostMapping("/insertLvAreaItem")
+    public HashMap<String, Object> insertLvAreaItem(@RequestBody SYSAreaDomain domain) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+
+        try {
+            if(domain.getType().equals("lv1Node")) {
+                int insertArea = sysAreaRepo.INSERT_SYS_AREA_ITEM(domain);
+                int insertLevelArea = sysAreaRepo.INSERT_SYS_LEVEL_AREA_ITEM(domain);
+                if(insertArea > 0 && insertLevelArea > 0)
+                    rtn.put("result", "success");
+                else
+                    rtn.put("result", "fail");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            rtn.put("result", "fail");
+        }
+
+        return rtn;
+    }
+
+    @PostMapping
+    public HashMap<String, Object> checkDuplicateAreaCode() throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        try {
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            rtn.put("result", "fail");
+        }
+
+        return rtn;
+    }
+
     // 트리구조 형태 파싱
     public List<SYSAreaDomain> getAreaListTree(List<SYSAreaDomain> models, String parentCode ) throws MalformedURLException {
         List<SYSAreaDomain> list = new ArrayList<>();
@@ -60,12 +83,6 @@ public class SYSAreaController {
         for( SYSAreaDomain model : models ) {
             if( model.getUpAreaCode().equals( parentCode )) {
                 List<SYSAreaDomain> children = getAreaListTree( models, model.getAreaCode());
-//                String getParent = model.getUpAreaCode();
-
-
-
-//                model.setIcon( url + "/img/department.png" );
-
                 if( children.size() > 0 ) {
                     model.setChildren( children );
                 }

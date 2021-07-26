@@ -1,8 +1,7 @@
-import React, {Component, useEffect, useState} from 'react'
-import {getAreaList, generateList, getParentKey, dataList} from "../../agent/area";
+import React, {useEffect, useState} from 'react'
+import {getAreaList, generateList, getParentKey, dataList, insertAreaItem} from "../../agent/area";
 import 'antd/dist/antd.css';
-import { Tree, Input } from 'antd';
-// import { CarryOutOutlined, FormOutlined } from '@ant-design/icons';
+import { Tree } from 'antd';
 
 import {
   CCard,
@@ -17,7 +16,6 @@ import AreaModifyMgr from "./areaModifyMgr";
 let gData = [];
 const AreaMgr = () => {
   const [info, setInfo] = useState(false)             // Modal state
-  const [treeData, setTreeData] = useState([]);
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [searchValue, setSearchValue] = useState("");
@@ -56,21 +54,33 @@ const AreaMgr = () => {
   };
 
   useEffect(() => {
-    handleInitTable().then(r => {
+    handleInitTree().then(r => {
       generateList(gData);
       clickSearchTree();
     });
   }, []);
 
   // 초기 테이블 셋팅
-  const handleInitTable = async (page = 1, sizePerPage = 10) => {
+  const handleInitTree = async (page = 1, sizePerPage = 10) => {
     await getAreaList(page, sizePerPage).then(function (resp) {
+      console.log(resp);
       gData = resp.data["resultList"];
     });
   }
 
-  const handleClickRegisterLv1Item = () => {
-
+  const handleClickRegisterItem = async (type) => {
+    await insertAreaItem(type).then(function (resp) {
+      console.log(resp.data);
+      if(resp.data["result"] === "success") {
+        handleInitTree().then(r => {
+          alert("상위레벨 등록을 완료했습니다.");
+          generateList(gData);
+          clickSearchTree();
+        });
+      } else {
+        alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.")
+      }
+    });
   }
 
   const nodeClick = (e, node) => {
@@ -115,11 +125,11 @@ const AreaMgr = () => {
                     <h5 className={"mb-0 ml-0"}>전체 시장 목록</h5>
                   </div>
                   <div>
-                    <button className={"btn btn-custom float-right mt-0 ml-2"} onClick={handleClickRegisterLv1Item}>하위 레벨 등록</button>
-                    <button className={"btn btn-custom float-right mt-0"} onClick={handleClickRegisterLv1Item}>상위 레벨 등록</button>
+                    <button className={"btn btn-custom float-right mt-0 ml-2"} id={"lv2Node"} disabled={true}
+                            onClick={(e) => handleClickRegisterItem(e.target.id)}>하위 레벨 등록</button>
+                    <button className={"btn btn-custom float-right mt-0"} id={"lv1Node"} onClick={(e) => handleClickRegisterItem(e.target.id)}>상위 레벨 등록</button>
                   </div>
                 </div>
-
               </CCol>
             </CCardHeader>
             <CCardBody className={"pt-3"}>
@@ -135,7 +145,6 @@ const AreaMgr = () => {
               <CRow className={"mb-3"}>
 
               </CRow>
-              {/*/>*/}
               <Tree
                 showLine={true}
                 onExpand={onExpand}

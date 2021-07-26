@@ -5,16 +5,8 @@ const API_ROOT = 'http://localhost:8081/api';    // 로컬
 
 export const getAreaList = (page, sizePerPage, values = {searchWrd : "", useYn : "", delYn : ""}) => {
   return axios
-    .get(`${API_ROOT}/areas?page=${page}&size=${sizePerPage}&searchWrd=${values.searchWrd}&useYn=${values.useYn}&delYn=${values.delYn}`)
-    .then(response => response);
+    .get(`${API_ROOT}/areas?page=${page}&size=${sizePerPage}&searchWrd=${values.searchWrd}&useYn=${values.useYn}&delYn=${values.delYn}`);
 }
-
-// 행 클릭 시
-export const rowEvents = {
-  onClick: (e, row, rowIndex) => {
-    console.log(row);
-  }
-};
 
 export let dataList = [];
 
@@ -43,3 +35,12 @@ export const getParentKey = (key, tree) => {
   }
   return parentKey;
 };
+
+export const insertAreaItem = (type) => {
+  return axios
+    .post(`${API_ROOT}/insertLvAreaItem`, {type: type});
+}
+
+export const rowEvents = () => {
+
+}
