@@ -3,6 +3,14 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSInsprRepo">
 
+    <select id="LIST_SYS_INSPRAREA" resultType="map">
+        SELECT AREACODE AS areaCode
+             , AREANAME AS areaName
+          FROM F_LEVEL_AREA
+         WHERE AREALEVEL = 1 AND USEYN = 'Y' AND DELYN = 'N'
+         ORDER BY AREACODE
+    </select>
+
     <select id="LIST_SYS_INSPECTORS" parameterType="map" resultType="map">
         SELECT INSPID AS inspId
              , INSPNAME As inspName

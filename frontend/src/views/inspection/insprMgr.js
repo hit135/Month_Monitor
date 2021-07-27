@@ -3,7 +3,7 @@ import {CCard, CCardHeader, CCardBody, CRow, CCol, CButton, CInput, CSelect, CFo
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import { ko } from "date-fns/esm/locale";
-import {getInspectorList} from "../../agent/inspection";
+import { getInsprAreaList, getInspectorList } from "../../agent/inspection";
 import PageTableWidget from "../../widget/pageTableWidget";
 
 const columns = [
@@ -25,15 +25,32 @@ const InsprMgr = () => {
   });
 
   useEffect(() => {
+    handleInitListInsprArea();
     handleInitTable();
   }, []);
 
-  const handleInitTable = () => {
-    getInspectorList(pageItem.page, pageItem.sizePerPage, searchItem).then(function (resp) {
-      setRepo(resp.data["resultList"]);
-      setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
+  const handleInitListInsprArea = () => {
+
+    getInsprAreaList().then(resp => {
+      if (resp.data['result']) {
+        let html = '';
+
+        for (let item of resp.data['resultList'])
+          html += '<option value="' + item['areaCode'] + '">' + item['areaName'] + '</option>';
+
+        document.getElementById("insprAreaCode").innerHTML += html;
+      }
     });
   }
+
+  const handleInitTable = () => {
+    getInspectorList(pageItem.page, pageItem.sizePerPage, searchItem).then(resp => {
+      if (resp.data['result']) {
+        setRepo(resp.data["resultList"]);
+        setPageItem({ page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"] });
+      }
+    });
+  };
 
   return (
     <div>
@@ -60,10 +77,13 @@ const InsprMgr = () => {
                 <CSwitch className={'mx-1'} color={'info'} labelOn={'예'} labelOff={'아니오'} id={"loginLock"}/>
               </CFormGroup>
 
-              <div className={"ml-4"}>
-                <CSelect id={'inspAreaCode'}>
-                  <option value={'0'}>시장 전체</option>
-                </CSelect>
+              <div className={"ml-4 d-flex align-items-center"}>
+                <span>소속</span>
+                <div className={'ml-2'}>
+                  <CSelect id={'insprAreaCode'}>
+                    <option value={'0'}>시장 전체</option>
+                  </CSelect>
+                </div>
               </div>
             </div>
             <div>

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +28,25 @@ public class SYSInsprController {
 
     @Autowired
     public SYSInsprController(SYSInsprRepo sysInsprRepo) { this.sysInsprRepo = sysInsprRepo; }
+
+    @PostMapping("/listInsprArea")
+    public HashMap<String, Object> listPageInspectors() throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        List<HashMap<String, Object>> resultList = new ArrayList<>();
+        boolean result = false;
+
+        try {
+            resultList = sysInsprRepo.LIST_SYS_INSPRAREA();
+            result = true;
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        } finally {
+            rtn.put("result", result);
+            rtn.put("resultList", resultList);
+        }
+
+        return rtn;
+    }
 
     @GetMapping("/insprs")
     public HashMap<String, Object> listPageInspectors(
