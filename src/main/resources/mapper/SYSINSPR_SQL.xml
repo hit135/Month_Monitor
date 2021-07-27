@@ -27,7 +27,7 @@
            AND (    INSPID LIKE CONCAT('%', #{searchWrd}, '%')
                  OR INSPNAME LIKE CONCAT('%', #{searchWrd}, '%') )
            </if>
-           <if test='inspAreaCode != "0"'>AND INSPAREACODE = #{inspAreaCode}</if>
+           <if test='inspAreaCode != ""'>AND INSPAREACODE = #{inspAreaCode}</if>
          ORDER BY REGDATE DESC
          LIMIT #{page}, #{sizePerPage}
     </select>
@@ -42,7 +42,7 @@
            AND (    INSPID LIKE CONCAT('%', #{searchWrd}, '%')
                  OR INSPNAME LIKE CONCAT('%', #{searchWrd}, '%') )
            </if>
-           <if test='inspAreaCode != "0"'>AND INSPAREACODE = #{inspAreaCode}</if>
+           <if test='inspAreaCode != ""'>AND INSPAREACODE = #{inspAreaCode}</if>
     </select>
 
 </mapper>
