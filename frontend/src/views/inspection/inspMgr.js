@@ -40,15 +40,15 @@ const InspMgr = () => {
           </div>
         </CCardHeader>
         <CCardBody className={'p-0'}>
-          <CRow className={'pl-0 pr-0'}>
-            <CCol xs={12} sm={8} lg={8} style={{ backgroundColor: '#FFFFFF', border: '1px solid #000000' }}>
+          <CRow className={'ml-0 mr-0'}>
+            <CCol xs={12} sm={8} lg={8} style={{ backgroundColor: '#FFFFFF', border: '1px solid #bfbfbf' }}>
               <div>● [점검대상] [2021-06-21 11:15:11] 000000000222 - 수연주단(4)</div>
               <div>● [점검대상] [2021-06-21 11:15:07] 000000000221 - 황제맞춤(4)</div>
               <div>● [점검대상] [2021-06-21 11:14:59] 000000000225 - 일성사(4)</div>
               <div>● [점검대상] [2021-06-21 11:14:54] 000000000227 - 수각사(4)</div>
               <div>● [점검대상] [2021-06-21 11:14:34] 000000000229 - 수선사(4)</div>
             </CCol>
-            <CCol xs={12} sm={4} lg={4} style={{ backgroundColor: '#FFFFFF', border: '1px solid #000000' }}>
+            <CCol xs={12} sm={4} lg={4} style={{ backgroundColor: '#FFFFFF', border: '1px solid #bfbfbf' }}>
               <div className={'d-flex justify-content-between mt-2'}>
                 <span style={{ fontSize: '2.5vh' }}>수연주단</span>
                 <CButton color={'success'}>알림보내기</CButton>

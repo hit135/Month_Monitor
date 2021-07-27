@@ -1,16 +1,67 @@
 spring:
+  profiles:
+    active: "dev"
+  main:
+    banner-mode: "off"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
   thymeleaf:
     prefix: classpath:templates/
     suffix: .html
     cache: false
+  devtools:
+    livereload:
+      enabled: true
   datasource:
-    platform: mariadb
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://1.223.40.19:13331/ifiresens_v2?autoReconnect=true&useSSL=false
     username: ifire_usr
     password: ifU@S12!20
+  sql:
+    init:
+      platform: mariadb
 server:
   port: 8081
 mybatis:
   type-aliases-package: kr.fscom.firsens.sys.domain
   mapper-locations: classpath:mapper/**/*.xml
+globals:
+  naver:
+    clientId: 'meqwtbwfkw'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  thymeleaf:
+    prefix: classpath:templates/
+    suffix: .html
+    cache: false
+  devtools:
+    livereload:
+      enabled: true
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://1.223.40.19:13331/ifiresens_v2?autoReconnect=true&useSSL=false
+    username: ifire_usr
+    password: ifU@S12!20
+  sql:
+    init:
+      platform: mariadb
+server:
+  port: 8081
+logging:
+  file:
+    name: app
+    path: ./logs/ss_firsens_mng/
+mybatis:
+  type-aliases-package: kr.fscom.firsens.sys.domain
+  mapper-locations: classpath:mapper/**/*.xml
+globals:
+  naver:
+    clientId: 'meqwtbwfkw'

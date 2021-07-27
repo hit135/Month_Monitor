@@ -139,17 +139,19 @@
     </select>
 
     <select id="SELECT_STORE_IMG" parameterType="map" resultType="map">
-        SELECT SEQ,
-               STRCODE,
-               IMGNAME,
-               IMGPATH,
-               IMGSIZE,
-               IMGNUM,
-               ORINAME,
-               REGDATE
-        FROM F_STORE_IMG
-       WHERE STRCODE = #{strcode}
-       ORDER BY SEQ DESC
+        SELECT SEQ
+             , STRCODE
+             , IMGNAME
+             , IMGPATH
+             , IMGSIZE
+             , IMGNUM
+             , ORINAME
+             , REGDATE
+          FROM F_AREA_IMG
+         WHERE IMGLEVEL = 'store'
+           AND AREACODE = #{areacode}
+           AND STRCODE = #{strcode}
+         ORDER BY SEQ DESC
     </select>
 
     <select id="SELECT_DATA_LOG_LIST" parameterType="map" resultType="map">
@@ -219,11 +221,13 @@
                UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 ) AS A) A
         LEFT JOIN
         (SELECT SDATE,
-                IGR2ND + IGO2ND + OC2ND                   AS DANGER,
-                IGR1ST + IGO1ST + OC1ST                   AS WARN
-         FROM F_CRN_STR_ELEC_DAILY_STAT
+                SUM(IGR2ND + IGO2ND + OC2ND)                   AS DANGER,
+                SUM(IGR1ST + IGO1ST + OC1ST)                   AS WARN
+         FROM F_ELEC_SENSOR_STAT
          WHERE AREACODE = #{areacode} AND STRCODE = #{strcode}
-           AND SDATE > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -13 DAY), '%Y-%m-%d')) B
+           AND SDATE > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -13 DAY), '%Y-%m-%d')
+          GROUP BY AREACODE, STRCODE
+        ) B
         ON A.SDATE = B.SDATE
         LEFT JOIN
         (SELECT DATE_FORMAT(A.REGDATE, '%Y-%m-%d')                                        AS SDATE,

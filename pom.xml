@@ -56,6 +56,11 @@
       <version>2.4</version>
       <classifier>jdk15</classifier>
     </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
+    </dependency>
   </dependencies>
 
   <build>

@@ -192,6 +192,7 @@ public class MStoreController {
     ) {
         HashMap<String, Object> prm = new HashMap<String, Object>();
         try {
+            prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
             return storeRepo.SELECT_STORE_IMG(prm);
         } catch (Exception e) {

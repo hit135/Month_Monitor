@@ -5,6 +5,7 @@ const Area = React.lazy(() => import('./views/area/areaMgr'));
 const Member = React.lazy(() => import('./views/member/memMgr'))
 const Sensor = React.lazy(() => import('./views/sensor/snsrMgr'))
 const Store = React.lazy(() => import('./views/store/strMgr'))
+const Inspr = React.lazy(() => import('./views/inspection/insprMgr'))
 const Insp = React.lazy(() => import('./views/inspection/inspMgr'))
 const Push = React.lazy(() => import('./views/push/pushMgr'))
 const Stat = React.lazy(() => import('./views/stat/statMgr'))
@@ -50,7 +51,8 @@ const routes = [
   { path: '/mem', name: '회원관리', component: Member },
   { path: '/str', name: '상점관리', component: Sensor },
   { path: '/snsr', name: '센서관리', component: Store },
-  { path: '/insp', name: '경보이력', component: Insp },
+  { path: '/inspr', name: '점검자관리', component: Inspr },
+  { path: '/insp', name: '점검관리', component: Insp },
   { path: '/push', name: '발송이력', component: Push },
   { path: '/stat', name: '통계', component: Stat },
 

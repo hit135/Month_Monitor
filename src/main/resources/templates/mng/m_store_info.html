@@ -272,7 +272,7 @@
     }
 
     function fn_getListStoreImg() {
-      $.post($('#contextRoot').val()+'/mng/storeImgAjax', { strcode: $('#prm_strcode').val() }, function (d) {
+      $.post($('#contextRoot').val()+'/mng/storeImgAjax', { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() }, function (d) {
         if (d.length) {
           $('.carousel-indicators').html('');
           $('.carousel-inner').html('');
