@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="10 seconds">
+  <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+  <springProfile name="dev">
+    <include resource="appenders/appender-console.xml" />
+
+    <logger name="kr.fscom.firsens" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.hibernate" level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.hibernate.SQL" level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.springframework.web" level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.quartz.core" level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <!--<root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>-->
+  </springProfile>
+
+  <springProfile name="prod">
+    <include resource="appenders/appender-file.xml" />
+
+    <logger name="kr.fscom.firsens" level="DEBUG" additivity="false">
+      <appender-ref ref="FILE" />
+    </logger>
+    <logger name="org.hibernate" level="DEBUG">
+      <appender-ref ref="FILE" />
+    </logger>
+    <logger name="org.hibernate.SQL" level="DEBUG">
+      <appender-ref ref="FILE" />
+    </logger>
+    <logger name="org.springframework.web" level="DEBUG">
+      <appender-ref ref="FILE" />
+    </logger>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE">
+      <appender-ref ref="FILE" />
+    </logger>
+    <logger name="org.quartz.core" level="DEBUG">
+      <appender-ref ref="FILE" />
+    </logger>
+
+    <!--
+    <root level="ERROR">
+      <appender-ref ref="FILE" />
+    </root>
+    -->
+
+  </springProfile>
+</configuration>
