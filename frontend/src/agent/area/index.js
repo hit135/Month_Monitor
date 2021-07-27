@@ -14,7 +14,7 @@ export const generateList = (data) => {
   for (let i = 0; i < data.length; i++) {
     const node = data[i];
     const { key } = node;
-    dataList.push({ key, title: node.title });
+    dataList.push({ key, title: node.title, areaLevel: node.areaLevel });
     if (node.children) {
       generateList(node.children);
     }
@@ -36,9 +36,19 @@ export const getParentKey = (key, tree) => {
   return parentKey;
 };
 
-export const insertAreaItem = (type) => {
+export const insertAreaItem = (type, upAreaCode, areaLevel) => {
   return axios
-    .post(`${API_ROOT}/insertLvAreaItem`, {type: type});
+    .post(`${API_ROOT}/insertLvAreaItem`, {type: type, upAreaCode: upAreaCode, areaLevel: areaLevel});
+}
+
+export const selectAreaItem = (areaCode) => {
+  return axios
+    .get(`${API_ROOT}/selectAreaItem?areaCode=${areaCode}`);
+}
+
+export const deleteAreaItem = (areaCode) => {
+  return axios
+    .post(`${API_ROOT}/deleteAreaItem`, {areaCode: areaCode});
 }
 
 export const rowEvents = () => {
