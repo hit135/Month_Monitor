@@ -45,7 +45,7 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: '점검자관리',
-    to: '/insps',
+    to: '/inspr',
     icon: <CIcon name="cil-user" customClasses="c-sidebar-nav-icon"/>,
     // badge: {
     //   color: 'info',

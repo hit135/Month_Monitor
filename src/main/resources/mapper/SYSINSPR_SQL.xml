@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.fscom.firsens.sys.repository.SYSInsprRepo">
+
+    <select id="LIST_SYS_INSPECTORS" parameterType="map" resultType="map">
+        SELECT INSPID AS inspId
+             , INSPNAME As inspName
+             , INSPEMAIL AS inspEmail
+             , INSPTEL AS inspTel
+             , INSPMOBILE AS inspMobile
+             , INSPAREACODE AS inspAreaCode
+             , INSPSHOPNAME AS inspShopName
+          FROM F_INSPECTOR
+         WHERE USEYN = #{useYn}
+           AND ALARMUSE = #{alarmUse}
+           <if test='loginLock == "Y"'>AND LOGINFAILCNT >= 5</if>
+           <if test='searchWrd != null and searchWrd != ""'>
+           AND (    INSPID LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR INSPNAME LIKE CONCAT('%', #{searchWrd}, '%') )
+           </if>
+           <if test='inspAreaCode != "0"'>AND INSPAREACODE = #{inspAreaCode}</if>
+         ORDER BY REGDATE DESC
+         LIMIT #{page}, #{sizePerPage}
+    </select>
+
+    <select id="CNT_SYS_INSPECTORS" parameterType="map" resultType="int">
+        SELECT COUNT(INSPID)
+          FROM F_INSPECTOR
+         WHERE USEYN = #{useYn}
+           AND ALARMUSE = #{alarmUse}
+           <if test='loginLock == "Y"'>AND LOGINFAILCNT >= 5</if>
+           <if test='searchWrd != null and searchWrd != ""'>
+           AND (    INSPID LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR INSPNAME LIKE CONCAT('%', #{searchWrd}, '%') )
+           </if>
+           <if test='inspAreaCode != "0"'>AND INSPAREACODE = #{inspAreaCode}</if>
+    </select>
+
+</mapper>
