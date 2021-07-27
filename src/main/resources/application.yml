@@ -3,10 +3,6 @@ spring:
     active: "dev"
   main:
     banner-mode: "off"
-logging:
-  file:
-    name: app
-    path: d:/dev/logs/ss_firsens_web_mng
 
 ---
 spring:
@@ -30,10 +26,6 @@ spring:
       platform: mariadb
 server:
   port: 8081
-logging:
-  file:
-    name: app
-    path: d:/dev/logs/ss_firsens_mng
 mybatis:
   type-aliases-package: kr.fscom.firsens.sys.domain
   mapper-locations: classpath:mapper/**/*.xml
@@ -66,7 +58,7 @@ server:
 logging:
   file:
     name: app
-    path: ./logs/ss_firsens_mng
+    path: ./logs/ss_firsens_mng/
 mybatis:
   type-aliases-package: kr.fscom.firsens.sys.domain
   mapper-locations: classpath:mapper/**/*.xml

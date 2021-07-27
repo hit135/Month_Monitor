@@ -44,7 +44,17 @@ const _nav =  [
   },
   {
     _tag: 'CSidebarNavItem',
-    name: '점검이력',
+    name: '점검자관리',
+    to: '/insps',
+    icon: <CIcon name="cil-user" customClasses="c-sidebar-nav-icon"/>,
+    // badge: {
+    //   color: 'info',
+    //   text: 'NEW',
+    // }
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: '점검관리',
     to: '/insp',
     icon: <CIcon name="cil-list" customClasses="c-sidebar-nav-icon"/>,
     // badge: {
