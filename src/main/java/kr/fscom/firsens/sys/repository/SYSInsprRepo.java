@@ -13,5 +13,6 @@ public interface SYSInsprRepo {
     List<HashMap<String, Object>> LIST_SYS_INSPRAREA() throws Exception;
     List<HashMap<String, Object>> LIST_SYS_INSPECTORS(HashMap<String, Object> map) throws Exception;
     int CNT_SYS_INSPECTORS(HashMap<String, Object> map) throws Exception;
+    int CNT_SYS_DUPCHK_INSPID(String param) throws Exception;
 
 }

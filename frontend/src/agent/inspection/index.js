@@ -18,6 +18,10 @@ export const getInspectorList = (page, size, searchItem) => {
     ].join('&'));
 }
 
+export const getDupChkInspId = (inspId) => {
+  return axios.post(`${API_ROOT}/selectDupChkInspId`, inspId );
+}
+
 
 export const axiosTest = () => {
   axios.get(`${API_ROOT}` + '/hello')

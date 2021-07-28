@@ -45,4 +45,10 @@
            <if test='inspAreaCode != ""'>AND INSPAREACODE = #{inspAreaCode}</if>
     </select>
 
+    <select id="CNT_SYS_DUPCHK_INSPID" parameterType="string" resultType="int">
+        SELECT COUNT(INSPID)
+          FROM F_INSPECTOR
+         WHERE USEYN = #{inspId}
+    </select>
+
 </mapper>

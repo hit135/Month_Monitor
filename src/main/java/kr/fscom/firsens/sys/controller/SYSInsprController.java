@@ -82,4 +82,23 @@ public class SYSInsprController {
         return rtn;
     }
 
+    @PostMapping(value = "selectDupChkInspId")
+    public HashMap<String, Object> selectDupChkInspId(String inspId) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        boolean dupChk = false;
+        boolean result = false;
+
+        try {
+            dupChk = sysInsprRepo.CNT_SYS_DUPCHK_INSPID(inspId) > 0;
+            result = true;
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        } finally {
+            rtn.put("result", result);
+            rtn.put("dupChk", dupChk);
+        }
+
+        return rtn;
+    }
+
 }

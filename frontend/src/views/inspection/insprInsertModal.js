@@ -1,9 +1,8 @@
 import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSelect } from "@coreui/react";
-import React, {useEffect} from "react";
-import {useForm} from "react-hook-form";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
 
-import {getInspectorList, getInsprAreaList} from "../../agent/inspection";
-import {insertMem} from "../../agent/member";
+import { getDupChkInspId, getInsprAreaList } from "../../agent/inspection";
 
 const InsprInsertModal = (props) => {
   const API_ROOT = 'http://localhost:8081/api';
@@ -25,6 +24,16 @@ const InsprInsertModal = (props) => {
           html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
 
         document.getElementById("modalInsInspAreaCode").innerHTML += html;
+      }
+    });
+  }
+
+  const handleDupChkInspId = () => {
+    getDupChkInspId(document.getElementById("modalInsInspId").value).then(resp => {
+      if (resp['result']) {
+        if (resp['dupChk']) {
+
+        }
       }
     });
   }
@@ -54,8 +63,18 @@ const InsprInsertModal = (props) => {
             <CFormGroup row>
               <CCol md="6">
                 <CLabel>점검자 ID</CLabel>
-                <input className={"form-control"} type={"text"}
-                       {...register("inspId", { })} />
+                <input className={ errors.inspId && "is-invalid form-control"
+                                  || (!errors.inspId && getValues("inspId") !== "") && "form-control is-valid"
+                                  || (!errors.inspId && getValues("inspId") === "") && "form-control" }
+                       id="modalInsInspId" type={"text"} placeholder={"5~20자 내로 입력하세요."}
+                       { ...register("inspId", {
+                           required: { value: true, message: 'ID는 필수입니다.' }
+                         , minLength: { value: 5, message: '5자 이상 입력하세요.' }
+                         , maxLength: { value: 20, message: '20자 내로 입력하세요.' }
+                         , pattern: { value: /^[a-z]+[a-z0-9]{4,19}$/g, message: 'ID는 영문자로 시작하는 5~20자 영문자/숫자 조합이어야 합니다.' }
+                         , validate: { checkUrl: async () => await handleDupChkInspId() }
+                       } )} />
+                { errors.inspId && <span className={"invalid-feedback"}>{errors.inspId.message}</span> }
               </CCol>
               <CCol md="6">
                 <CLabel>점검자 비밀번호</CLabel>
