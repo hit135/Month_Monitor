@@ -6,7 +6,7 @@
         SELECT A.AREACODE as 'key'
              , A.AREACODE as areaCode
              , A.UPAREACODE as upAreaCode
-             , A.AREANAME AS title
+             , CONCAT(A.AREANAME, ' ', '(',IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE), 0), ')') AS title
              , A.AREALEVEL as areaLevel
              , IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE), 0) AS storeCnt
          FROM F_LEVEL_AREA A

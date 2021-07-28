@@ -3,6 +3,8 @@ import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import axios from "axios";
 import {updateAreaItem} from "../../agent/area";
+import PageUserTableModalWidget from "../../widget/pageUserTableModalWidget";
+import {getMem} from "../../agent/member";
 
 const AreaModifyMgr = (props) => {
   const API_ROOT = 'http://localhost:8081/api';    // 로컬
@@ -12,6 +14,7 @@ const AreaModifyMgr = (props) => {
   });
 
   const [appSwitch, setAppSwitch] = useState({useYn : false});
+  const [onMemModal, setOnMemModal] = useState(false)             // Modal hook
 
   useEffect(() => {
     if(nodeLv2Btn) {
@@ -54,6 +57,16 @@ const AreaModifyMgr = (props) => {
   const onSubmit = (data, e) => {
     handleClickUpdateItem(data);
   };
+
+  const rowEvents = {
+    onClick: (e, row, rowIndex) => {
+      setValue("userId", row["userId"]);
+    }
+  };
+
+  const initUserId = () => {
+    setValue("userId", "");
+  }
 
   return (
     <>
@@ -154,12 +167,19 @@ const AreaModifyMgr = (props) => {
                 {errors.areaPosLon && errors.areaPosLon.type === "pattern" && <span className={"invalid-feedback"}>{errors.areaPosLon.message}</span>}
               </CCol>
             </CFormGroup>
-            <CRow className={"pl-3 pr-3 mt-2"}>
-              <CFormGroup className="pr-3 d-inline-flex">
-                <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-                <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue}
-                         checked={ appSwitch.useYn } />
-              </CFormGroup>
+            <CRow className={"pl-3 pr-3 mt-4"}>
+              <CCol md="6" className={"pl-0"}>
+                <CFormGroup className="pr-3 d-inline-flex">
+                  <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
+                  <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue}
+                           checked={ appSwitch.useYn } />
+                </CFormGroup>
+              </CCol>
+              <CCol md="6" className={"pr-0"}>
+                <CLabel htmlFor="areaPosLon">회원선택</CLabel>
+                <input className={"form-control"} {...register("userId") } readOnly={true}
+                       placeholder={"회원을 선택해주세요."} onClick={(e) => setOnMemModal(true)} />
+              </CCol>
             </CRow>
             <div className={'d-flex'}>
               <div className={"ml-auto mt-4"}>
@@ -170,9 +190,9 @@ const AreaModifyMgr = (props) => {
           </CCardBody>
         </CCard>
       </CCol>
+      <PageUserTableModalWidget onMemModal={onMemModal} setOnMemModal={setOnMemModal} memClickEvent={rowEvents} initUserId={initUserId} />
     </>
   )
-
 }
 
 export default AreaModifyMgr;

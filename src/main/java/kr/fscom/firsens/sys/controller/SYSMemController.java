@@ -56,6 +56,26 @@ public class SYSMemController {
         return rtn;
     }
 
+    @GetMapping("/modalMem")
+    public HashMap<String, Object> listPageModalMem(String searchWrd) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        try {
+            List<HashMap<String, Object>> resultList = sysMemRepo.SELECT_MODAL_SYS_MEM(searchWrd);
+            rtn.put("resultList", resultList);
+            rtn.put("result", "success");
+        } catch (SQLException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 회원 모달목록 요청 SQL 오류 : {}", ex.getMessage());
+            rtn.put("result", "fail");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            LOG.error("■■■■■■■■■■■■■■■ 회원 모달목록 요청 오류 : {}", ex.getMessage());
+            rtn.put("result", "fail");
+        }
+
+        return rtn;
+    }
+
     // 회원 중복 체크 (userId)
     @GetMapping(value = "/dupMemChk")
     public HashMap<String, Object> dupMemChk(SYSMemDomain domain) throws Exception {

@@ -71,6 +71,16 @@
       LIMIT #{page}, #{sizePerPage}
     </select>
 
+    <select id="SELECT_MODAL_SYS_MEM" parameterType="String" resultType="SYSMemDomain">
+        SELECT FM.USERID, FM.MEMNAME
+          FROM F_MEMBER FM
+         WHERE 1 = 1
+        <if test='searchWrd != null and searchWrd !=""'>
+            AND ( FM.USERID  LIKE CONCAT('%', #{searchWrd}, '%') OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%') )
+        </if>
+        ORDER BY FM.REGDATE DESC, FM.MEMNAME ASC
+    </select>
+
     <select id="SELECT_CHK_MEM_ID" parameterType="SYSMemDomain" resultType="int">
         SELECT COUNT(*)
         FROM F_MEMBER
