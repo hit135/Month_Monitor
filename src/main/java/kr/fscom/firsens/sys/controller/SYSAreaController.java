@@ -27,7 +27,6 @@ public class SYSAreaController {
     public HashMap<String, Object> listPageArea(SYSAreaDomain domain, int page, int size, String searchWrd, String isUse,
                                                 String delYn) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
-        List<SYSAreaDomain> areaList = new ArrayList<>();
         try {
             JSONArray jsonList = JSONArray.fromObject( getAreaListTree( sysAreaRepo.SELECT_LIST_SYS_AREA(domain), "0") );
             rtn.put("resultList", jsonList);
@@ -45,16 +44,48 @@ public class SYSAreaController {
     @PostMapping("/insertLvAreaItem")
     public HashMap<String, Object> insertLvAreaItem(@RequestBody SYSAreaDomain domain) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
+        try {
+            int insertLevelArea = sysAreaRepo.INSERT_SYS_LEVEL_AREA_ITEM(domain);
+            if(insertLevelArea > 0)
+                rtn.put("result", "success");
+            else
+                rtn.put("result", "fail");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            rtn.put("result", "fail");
+        }
+
+        return rtn;
+    }
+
+    @GetMapping("/selectAreaItem")
+    public HashMap<String, Object> selectAreaItem(SYSAreaDomain sysAreaDomain) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
 
         try {
-            if(domain.getType().equals("lv1Node")) {
-                int insertArea = sysAreaRepo.INSERT_SYS_AREA_ITEM(domain);
-                int insertLevelArea = sysAreaRepo.INSERT_SYS_LEVEL_AREA_ITEM(domain);
-                if(insertArea > 0 && insertLevelArea > 0)
-                    rtn.put("result", "success");
-                else
-                    rtn.put("result", "fail");
+            if(!sysAreaDomain.getAreaCode().equals("")) {
+                rtn.put("content", sysAreaRepo.SELECT_ONE_SYS_AREA_ITEM(sysAreaDomain.getAreaCode()));
+                rtn.put("result", "success");
+            } else {
+                rtn.put("result", "fail");
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            rtn.put("result", "fail");
+        }
+
+        return rtn;
+    }
+
+    @PostMapping("/deleteAreaItem")
+    public HashMap<String, Object> deleteAreaItem(@RequestBody SYSAreaDomain domain) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        try {
+            int deleteLevelArea = sysAreaRepo.DELETE_SYS_LEVEL_AREA_ITEM(domain);
+            if(deleteLevelArea > 0)
+                rtn.put("result", "success");
+            else
+                rtn.put("result", "fail");
         } catch (Exception ex) {
             ex.printStackTrace();
             rtn.put("result", "fail");

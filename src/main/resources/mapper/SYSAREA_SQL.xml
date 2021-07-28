@@ -3,31 +3,16 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSAreaRepo">
     <select id="SELECT_LIST_SYS_AREA" parameterType="SYSAreaDomain" resultType="SYSAreaDomain">
-        SELECT AREACODE as 'key'
-             , AREACODE as areaCode
-             , UPAREACODE as upAreaCode
-             , AREANAME AS title
+        SELECT A.AREACODE as 'key'
+             , A.AREACODE as areaCode
+             , A.UPAREACODE as upAreaCode
+             , A.AREANAME AS title
+             , A.AREALEVEL as areaLevel
              , IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE), 0) AS storeCnt
         FROM F_LEVEL_AREA A
         WHERE 1 = 1
           AND USEYN = 'Y'
     </select>
-
-    <insert id="INSERT_SYS_AREA_ITEM" parameterType="SYSAreaDomain" >
-        INSERT INTO F_AREA (
-            AREACODE
-          , AREANAME
-          , USEYN
-          , AREAORDER
-          , REGDATE
-       ) VALUES (
-            CONCAT('AREA_', LPAD(IFNULL((SELECT COUNT(FA.AREACODE) FROM F_AREA FA), 0) + 1, '6', '0'))
-           , 'temp'
-           , 'Y'
-           , (SELECT IFNULL(MAX(FA.AREAORDER), 0) + 1 FROM F_AREA FA)
-           , NOW()
-       )
-    </insert>
 
     <insert id="INSERT_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">
         INSERT INTO F_LEVEL_AREA (
@@ -36,15 +21,62 @@
              , AREANAME
              , USEYN
              , AREAORDER
+             , AREALEVEL
              , REGDATE
         )
         VALUES (
-               CONCAT('AREA_', LPAD(IFNULL((SELECT COUNT(FA.AREACODE) FROM F_AREA FA), 0) + 1, '6', '0'))
-             , '0'
+               CONCAT('AREA_', LPAD(IFNULL((SELECT COUNT(FA.AREACODE) FROM F_LEVEL_AREA FA), 0) + 1, '6', '0'))
+             , #{upAreaCode}
              , 'temp'
              , 'Y'
-             , (SELECT IFNULL(MAX(FA.AREAORDER), 0) + 1 FROM F_LEVEL_AREA FA WHERE UPAREACODE = '0')
+             , (SELECT IFNULL(MAX(FA.AREAORDER), 0) + 1 FROM F_LEVEL_AREA FA WHERE UPAREACODE = #{upAreaCode})
+             , #{areaLevel}
              , NOW()
         );
     </insert>
+
+    <select id="SELECT_ONE_SYS_AREA_ITEM" parameterType="String" resultType="SYSAreaDomain">
+        SELECT FA.AREANAME                                      AS areaName
+             , FA.AREACODE                                      AS areaCode
+             , FA.UPAREACODE                                    AS upAreaCode
+             , FA.USEYN                                         AS useYn
+             , FA.DELYN                                         AS delYn
+             , DATE_FORMAT( FA.REGDATE, '%Y-%m-%d %H:%i:%s' )   AS regDate
+             , FA.AREAORDER                                     AS areaOrder
+             , FA.AREAADDR                                      AS areaAddr
+             , FA.AREAPOSLAT                                    AS areaPosLat
+             , FA.AREAPOSLON                                    AS areaPosLon
+             , FA.AREAMANAGER                                   AS areaManager
+             , FA.AREATEL                                       AS areaTel
+             , FA.GUCODE                                        AS guCode
+        FROM F_LEVEL_AREA FA
+        WHERE 1 = 1
+          AND FA.AREACODE = #{areaCode}
+    </select>
+
+    <delete id="DELETE_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">
+        DELETE FROM F_LEVEL_AREA
+              WHERE AREACODE = #{areaCode}
+    </delete>
+
+<!--    <insert id="INSERT_SYS_LEVEL2_AREA_ITEM" parameterType="SYSAreaDomain">-->
+<!--        INSERT INTO F_LEVEL_AREA (-->
+<!--               AREACODE-->
+<!--             , UPAREACODE-->
+<!--             , AREANAME-->
+<!--             , USEYN-->
+<!--             , AREAORDER-->
+<!--             , REGDATE-->
+<!--        ) VALUES (-->
+<!--                   CONCAT('AREA_', LPAD(IFNULL((SELECT COUNT(FA.AREACODE) FROM F_AREA FA), 0) + 1, '6', '0'))-->
+<!--               , #[]-->
+<!--               , 'temp'-->
+<!--               , 'Y'-->
+<!--               , (SELECT IFNULL(MAX(FA.AREAORDER), 0) + 1 FROM F_LEVEL_AREA FA WHERE UPAREACODE = '0')-->
+<!--               , NOW()-->
+<!--       );-->
+<!--    </insert>-->
+
+
+
 </mapper>
