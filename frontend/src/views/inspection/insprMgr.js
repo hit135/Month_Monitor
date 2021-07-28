@@ -63,7 +63,7 @@ const InsprMgr = () => {
   const handleClickShowUpdateModal = () => { setUpdateModal(true); }
 
   return (
-    <div>
+    <>
       <CCard>
         <CCardHeader>
           <h5 className={"mb-0"}>전체 점검자 목록</h5>
@@ -108,7 +108,7 @@ const InsprMgr = () => {
       </CCard>
       <InsprInsertModal modal={insertModal} setModal={setInsertModal} />
       <InsprUpdateModal modal={updateModal} setModal={setUpdateModal} />
-    </div>
+    </>
   );
 };
 

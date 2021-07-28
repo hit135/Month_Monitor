@@ -47,7 +47,7 @@ const InsprUpdateModal = (props) => {
   };
 
   return (
-    <div>
+    <>
       <CModal show={modal} onClose={() => closeModal()} color="info" size="lg">
         <CModalHeader>
           <CModalTitle style={{ width: '100%' }}>
@@ -112,7 +112,7 @@ const InsprUpdateModal = (props) => {
           <CButton color="info">수정</CButton>
         </CModalFooter>
       </CModal>
-    </div>
+    </>
   );
 };
 

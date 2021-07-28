@@ -8,7 +8,9 @@ import {insertMem} from "../../agent/member";
 const InsprInsertModal = (props) => {
   const API_ROOT = 'http://localhost:8081/api';
   const { modal, setModal } = props;
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, setError } = useForm({ mode: "all" } );
+  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
+    { defaultValues: {}, mode: "all" }
+  );
 
   useEffect(() => {
     handleInitListInsprArea();
@@ -37,7 +39,7 @@ const InsprInsertModal = (props) => {
   };
 
   return (
-    <div>
+    <>
       <CModal show={modal} onClose={() => closeModal()} color="info" size="lg">
         <form onSubmit={handleSubmit(onSubmit)}>
           <CModalHeader>
@@ -51,59 +53,112 @@ const InsprInsertModal = (props) => {
           <CModalBody>
             <CFormGroup row>
               <CCol md="6">
-                <CLabel htmlFor={"modalInsInspId"}>점검자 ID</CLabel>
-                <input className={"form-control"} id={"modalInsInspId"}
+                <CLabel>점검자 ID</CLabel>
+                <input className={"form-control"} type={"text"}
                        {...register("inspId", { })} />
               </CCol>
               <CCol md="6">
-                <CLabel htmlFor={"modalInsInspPass"}>점검자 비밀번호</CLabel>
-                <input className={"form-control"} id={"modalInsInspPass"}
-                       {...register("inspPass", { })} />
+                <CLabel>점검자 비밀번호</CLabel>
+                <input className={ errors.inspPass && "is-invalid form-control"
+                                  || (!errors.inspPass && getValues("inspPass") !== "") && "form-control is-valid"
+                                  || (!errors.inspPass && getValues("inspPass") === "") && "form-control" }
+                       type={"password"} placeholder={"숫자/문자/특수문자 포함 8~15자 내로 입력하세요."}
+                       { ...register("inspPass", {
+                           required: { value: true, message: '비밀번호는 필수입니다.' }
+                         , minLength: { value: 8, message: '8자 이상 입력하세요.' }
+                         , maxLength: { value: 15, message: '15자 내로 입력하세요.' }
+                         , pattern: { value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/, message: '숫자/문자/특수문자 포함 8~15자 내로 입력하세요.' }
+                       }) } />
+                { errors.inspPass && <span className={"invalid-feedback"}>{errors.inspPass.message}</span> }
               </CCol>
             </CFormGroup>
             <CFormGroup row>
               <CCol md="6">
-                <CLabel htmlFor={"modalInsInspName"}>점검자 이름</CLabel>
-                <input className={"form-control"} id={"modalInsInspName"}
-                       {...register("inspName", { })} />
+                <CLabel>점검자 이름</CLabel>
+                <input className={ errors.inspName && "is-invalid form-control"
+                                  || (!errors.inspName && getValues("inspName") !== "") && "form-control is-valid"
+                                  || (!errors.inspName && getValues("inspName") === "") && "form-control" }
+                       type={"text"} placeholder={"2~50자 내로 입력하세요."}
+                       { ...register("inspName", {
+                           required: { value: true, message: '이름은 필수입니다.' }
+                         , minLength: { value: 2, message: '2자 이상 입력하세요.' }
+                         , maxLength: { value: 50, message: '50자 내로 입력하세요.' }
+                         , pattern: { value: /^[가-힣]{2,50}[0-9]*$|[a-zA-Z]{2,25}\s[a-zA-Z]{2,25}$/, message: '이름 형식에 맞게 입력하세요.' }
+                       }) } />
+                { errors.inspName && <span className={"invalid-feedback"}>{errors.inspName.message}</span> }
               </CCol>
               <CCol md="6">
-                <CLabel htmlFor={"modalInsInspEmail"}>점검자 이메일</CLabel>
-                <input className={"form-control"} id={"modalInsInspEmail"}
-                       {...register("inspEmail", { })} />
+                <CLabel>점검자 이메일</CLabel>
+                <input className={ errors.inspEmail && "is-invalid form-control"
+                                  || (!errors.inspEmail && getValues("inspEmail") !== "") && "form-control is-valid"
+                                  || (!errors.inspEmail && getValues("inspEmail") === "") && "form-control" }
+                       type={"text"} placeholder={"이메일 형식에 맞게 입력하세요."}
+                       { ...register("inspEmail", {
+                         pattern: {
+                             value: /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
+                           , message: "이메일 형식에 맞게 입력해주세요."
+                         }
+                       }) } />
+                { errors.inspEmail && <span className={"invalid-feedback"}>{errors.inspEmail.message}</span> }
               </CCol>
             </CFormGroup>
             <CFormGroup row>
               <CCol md="6">
-                <CLabel htmlFor={"modalInsInspTel"}>점검자 연락처</CLabel>
-                <input className={"form-control"} id={"modalInsInspTel"}
-                       {...register("inspTel", { })} />
+                <CLabel>점검자 연락처</CLabel>
+                <input className={ errors.inspTel && "is-invalid form-control"
+                                  || (!errors.inspTel && getValues("inspTel") !== "") && "form-control is-valid"
+                                  || (!errors.inspTel && getValues("inspTel") === "") && "form-control" }
+                       type={"text"} placeholder={"연락처 형식에 맞게 입력하세요."}
+                       { ...register("inspTel", {
+                         pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요." }
+                       }) } />
+                { errors.inspTel && <span className={"invalid-feedback"}>{errors.inspTel.message}</span> }
               </CCol>
               <CCol md="6">
-                <CLabel htmlFor={"modalInsInspMobile"}>점검자 휴대폰</CLabel>
-                <input className={"form-control"} id={"modalInsInspMobile"}
-                       {...register("inspMobile", { })} />
+                <CLabel>점검자 휴대폰 번호</CLabel>
+                <input className={ errors.inspMobile && "is-invalid form-control"
+                                  || (!errors.inspMobile && getValues("inspMobile") !== "") && "form-control is-valid"
+                                  || (!errors.inspMobile && getValues("inspMobile") === "") && "form-control" }
+                       type={"text"} placeholder={"휴대폰 번호 형식에 맞게 입력하세요."}
+                       { ...register("inspMobile", {
+                         pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰 번호 형식에 맞게 입력하세요." }
+                       }) } />
               </CCol>
+              { errors.inspMobile && <span className={"invalid-feedback"}>{errors.inspMobile.message}</span> }
             </CFormGroup>
             <CFormGroup row>
               <CCol md="6">
-                <CLabel htmlFor={"modalInsInspAreaCode"}>점검자 소속 시장</CLabel>
-                <CSelect id={'modalInsInspAreaCode'}>
+                <CLabel htmlFor={"inspAreaCode"}>점검자 소속 시장</CLabel>
+                <CSelect id={"modalInsInspAreaCode"} {...register("inspAreaCode")}>
                   <option value={''}>없음</option>
                 </CSelect>
               </CCol>
               <CCol md="6">
-                <CLabel htmlFor={"modalInsInspShopName"}>점검자 소속 업체</CLabel>
-                <input className={"form-control"} id={"modalInsInspShopName"}
-                       {...register("inspShopName", { })} />
+                <CLabel htmlFor={"inspShopName"}>점검자 소속 업체</CLabel>
+                <input className={ errors.inspShopName && "is-invalid form-control"
+                                  || (!errors.inspShopName && getValues("inspShopName") !== "") && "form-control is-valid"
+                                  || (!errors.inspShopName && getValues("inspShopName") === "") && "form-control" }
+                       type={"text"} placeholder={"2~100자 내로 입력하세요."}
+                       { ...register("inspShopName", {
+                           minLength: { value: 2, message: "2자 이상 입력하세요." }
+                         , maxLength: { value: 100, message: "100자 내로 입력하세요." }
+                       }) } />
+                { errors.inspShopName && <span className={"invalid-feedback"}>{errors.inspShopName.message}</span> }
               </CCol>
             </CFormGroup>
             <CFormGroup row>
               <CCol md="12">
-                <CLabel htmlFor={"modalInsInspAddr"}>점검자 주소</CLabel>
-                <input className={"form-control"} id={"modalInsInspAddr"}
-                       {...register("inspAddr", { })} />
+                <CLabel htmlFor={"inspAddr"}>점검자 주소</CLabel>
+                <input className={ errors.inspAddr && "is-invalid form-control"
+                                  || (!errors.inspAddr && getValues("inspAddr") !== "") && "form-control is-valid"
+                                  || (!errors.inspAddr && getValues("inspAddr") === "") && "form-control" }
+                       type={"text"} placeholder={"200자 내로 입력하세요."}
+                       { ...register("inspAddr", {
+                           minLength: { value: 2, message: "2자 이상 입력하세요." }
+                         , maxLength: { value: 200, message: "200자 내로 입력하세요." }
+                       }) } />
               </CCol>
+              { errors.inspAddr && <span className={"invalid-feedback"}>{errors.inspAddr.message}</span> }
             </CFormGroup>
           </CModalBody>
           <CModalFooter>
@@ -112,7 +167,7 @@ const InsprInsertModal = (props) => {
           </CModalFooter>
         </form>
       </CModal>
-    </div>
+    </>
   );
 };
 
