@@ -42,13 +42,16 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations("file:src/main/resources/templates/");
-        registry.addResourceHandler("/smartadmin/**").addResourceLocations("classpath:/static/smartadmin/");
-        registry.addResourceHandler("/fs/**").addResourceLocations("classpath:/static/fs/");
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/public/static/");
-        registry.addResourceHandler("/*.js").addResourceLocations("classpath:/public/");
-        registry.addResourceHandler("/*.json").addResourceLocations("classpath:/public/");
-        registry.addResourceHandler("/*.ico").addResourceLocations("classpath:/public/");
         registry.addResourceHandler("/index.html").addResourceLocations("classpath:/public/");
+
+        registry.addResourceHandler("/smartadmin/**", "/fs/**", "/static/**")
+                .addResourceLocations("classpath:/static/smartadmin/", "classpath:/static/fs/", "classpath:/public/static/");
+
+        registry.addResourceHandler("/*.js", "/*.json", "/*.ico")
+                .addResourceLocations("classpath:/public/", "classpath:/public/", "classpath:/public/");
+
+        registry.addResourceHandler("/imgstore/**", "/imgarea/**")
+                .addResourceLocations("file:/home/apps/img/imgstore/", "file:/home/apps/img/imgarea/");
     }
 
 }

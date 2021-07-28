@@ -42,7 +42,7 @@ const InsprInsertModal = (props) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <CModalHeader>
             <CModalTitle style={{ width: '100%' }}>
-              <div className={'w-100 d-flex justify-content-between'} style={{ width: '100%' }}>
+              <div className={'d-flex justify-content-between'} style={{ width: '100%' }}>
                 <div>점검자 정보 등록</div>
                 <div style={{ cursor: 'pointer' }} onClick={() => closeModal()}>X</div>
               </div>
