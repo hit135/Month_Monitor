@@ -35,9 +35,9 @@
         );
     </insert>
 
-    <update id="UPDATE_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomian">
+<!--    <update id="UPDATE_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomian">-->
 
-    </update>
+<!--    </update>-->
 
     <select id="CHECK_SYS_AREA_CODE" parameterType="String" resultType="int">
         SELECT IFNULL(COUNT(AREACODE), 0) AS cnt FROM F_LEVEL_AREA WHERE AREACODE = #{areaCode}
