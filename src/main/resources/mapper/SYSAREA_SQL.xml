@@ -11,7 +11,7 @@
              , IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE), 0) AS storeCnt
          FROM F_LEVEL_AREA A
         WHERE 1 = 1
-          AND USEYN = 'Y'
+--           AND USEYN = 'Y'
      ORDER BY AREALEVEL, AREAORDER
     </select>
 
@@ -35,9 +35,19 @@
         );
     </insert>
 
-<!--    <update id="UPDATE_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomian">-->
-
-<!--    </update>-->
+    <update id="UPDATE_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">
+        UPDATE F_LEVEL_AREA
+           SET AREACODE       = #{areaCode}
+             , AREANAME       = #{areaName}
+             , USERID         = #{userId}
+             , USEYN          = #{useYn}
+             , AREAORDER      = #{areaOrder}
+             , AREAMANAGER    = #{areaManager}
+             , AREAADDR       = #{areaAddr}
+             , AREAPOSLAT     = #{areaPosLat}
+             , AREAPOSLON     = #{areaPosLon}
+         WHERE AREACODE     = #{areaCode}
+    </update>
 
     <select id="CHECK_SYS_AREA_CODE" parameterType="String" resultType="int">
         SELECT IFNULL(COUNT(AREACODE), 0) AS cnt FROM F_LEVEL_AREA WHERE AREACODE = #{areaCode}

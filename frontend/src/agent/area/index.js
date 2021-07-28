@@ -51,6 +51,11 @@ export const deleteAreaItem = (areaCode) => {
     .post(`${API_ROOT}/deleteAreaItem`, {areaCode: areaCode});
 }
 
+export const updateAreaItem = (array) => {
+  return axios
+    .post(`${API_ROOT}/updateAreaItem`, array);
+}
+
 export const rowEvents = () => {
 
 }

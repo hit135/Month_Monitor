@@ -2,10 +2,11 @@ import {CCard, CCardBody, CCardHeader, CCol, CLabel, CFormGroup, CButton, CSwitc
 import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import axios from "axios";
+import {updateAreaItem} from "../../agent/area";
 
 const AreaModifyMgr = (props) => {
   const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  let { areaContent, nodeLv2Btn } = props
+  let { areaContent, nodeLv2Btn, handleClickUpdateItem } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm({
     mode: "all"
   });
@@ -31,12 +32,14 @@ const AreaModifyMgr = (props) => {
     }
     if(areaContent !== undefined) {
       appSwitch.useYn = (areaContent.useYn === "Y");
+      setValue("prevAreaCode", areaContent.areaCode);
     } else {
       setAppSwitch(data => ({
         ...data,
         ["useYn"]: false
       }));
     }
+
   }, [areaContent]);
 
   const setSwitchValue = (e) => {
@@ -49,7 +52,7 @@ const AreaModifyMgr = (props) => {
   }
 
   const onSubmit = (data, e) => {
-    console.log(data);
+    handleClickUpdateItem(data);
   };
 
   return (
@@ -88,6 +91,7 @@ const AreaModifyMgr = (props) => {
                   {errors.areaCode && errors.areaCode.type === "required" && <span className={"invalid-feedback"}>구역코드를 입력해주세요.</span>}
                   {errors.areaCode && errors.areaCode.type === "minLength" && <span className={"invalid-feedback"}>구역코드를 11글자 이상으로 입력해주세요.</span>}
                   {errors.areaCode && errors.areaCode.type === "maxLength" && <span className={"invalid-feedback"}>구역코드를 11글자 이하으로 입력해주세요.</span>}
+                  {errors.areaCode && errors.areaCode.type === "dupAreaCode" && <span className={"invalid-feedback"}>{errors.areaCode.message}</span>}
                 </CCol>
                 <CCol md="6">
                   <CLabel htmlFor="upAreaCode">상위구역코드</CLabel>

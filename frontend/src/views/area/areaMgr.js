@@ -6,7 +6,7 @@ import {
   dataList,
   insertAreaItem,
   deleteAreaItem,
-  selectAreaItem
+  selectAreaItem, updateAreaItem
 } from "../../agent/area";
 import 'antd/dist/antd.css';
 import { Tree } from 'antd';
@@ -90,12 +90,31 @@ const AreaMgr = () => {
           setNodeLv2Btn(true);
         });
       } else if(resp.data["result"] === "duplicate") {
-        alert("중복되는 구역코드가 있습니다. 잠시 후 다시 시도해주세요.")
+        alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.")
       } else {
         alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
       }
     });
   }
+
+  const handleClickUpdateItem = (data) => {
+    updateAreaItem(data).then((resp) => {
+      if(resp.data["result"] === "duplicate") {
+        alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.");
+      } else if(resp.data["result"] === "success") {
+        handleInitTree().then(r => {
+          alert("구역 수정을 완료했습니다.");
+          generateList(gData);
+          clickSearchTree();
+        });
+      } else {
+        alert("구역 수정에 오류가 발생했습니다.");
+        return false;
+      }
+    });
+  }
+
+
 
   // 노드 선택 이벤트
   const nodeClick = async (e, node) => {
@@ -209,7 +228,7 @@ const AreaMgr = () => {
             </CCardBody>
           </CCard>
         </CCol>
-        <AreaModifyMgr areaContent={areaContent} nodeLv2Btn={nodeLv2Btn}/>
+        <AreaModifyMgr areaContent={areaContent} nodeLv2Btn={nodeLv2Btn} handleClickUpdateItem={handleClickUpdateItem}/>
       </CRow>
     </>
   )
