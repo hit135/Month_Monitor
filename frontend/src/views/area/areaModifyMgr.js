@@ -1,18 +1,52 @@
-import {CCard, CCardBody, CCardHeader, CCol, CLabel, CFormGroup, CButton} from "@coreui/react";
-import React, {useEffect} from "react";
+import {CCard, CCardBody, CCardHeader, CCol, CLabel, CFormGroup, CButton, CSwitch, CRow} from "@coreui/react";
+import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
-import {updateMem} from "../../agent/member";
+import axios from "axios";
 
 const AreaModifyMgr = (props) => {
-  const { areaContent } = props
+  const API_ROOT = 'http://localhost:8081/api';    // 로컬
+  let { areaContent, nodeLv2Btn } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm({
     mode: "all"
   });
 
+  const [appSwitch, setAppSwitch] = useState({useYn : false});
+
   useEffect(() => {
-    reset(areaContent);
-    console.log( areaContent );
+    if(nodeLv2Btn) {
+      areaContent = undefined;
+      reset({
+        areaCode: "",
+        areaName : "",
+        areaPosLat: null,
+        areaPosLon: null,
+        areaAddr: "",
+        areaManager: "",
+        areaOrder: 0,
+        useYn : "N",
+      });
+
+    } else {
+      reset(areaContent);
+    }
+    if(areaContent !== undefined) {
+      appSwitch.useYn = (areaContent.useYn === "Y");
+    } else {
+      setAppSwitch(data => ({
+        ...data,
+        ["useYn"]: false
+      }));
+    }
   }, [areaContent]);
+
+  const setSwitchValue = (e) => {
+    const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
+    setAppSwitch(data => ({
+      ...data,
+      [e.target.id]: (value === "Y")
+    }));
+    setValue(e.target.id, value);
+  }
 
   const onSubmit = (data, e) => {
     console.log(data);
@@ -26,7 +60,7 @@ const AreaModifyMgr = (props) => {
             <CCol md="12" xl="12" className={"pl-0 pr-0"}>
               <div className={"d-flex align-item-center"}>
                 <div className={"mr-auto"}>
-                  <h5 className={"mb-0 ml-0"}>시장 상세 및 수정</h5>
+                  <h5 className={"mb-0 ml-0"}>{areaContent === undefined ? "" : areaContent.areaName} 상세 및 수정</h5>
                 </div>
               </div>
 
@@ -38,7 +72,19 @@ const AreaModifyMgr = (props) => {
                 <CCol md="6">
                   <CLabel htmlFor="areaCode">구역코드<span className={"required-span"}> *</span></CLabel>
                   <input className={errors.areaCode && "is-invalid form-control" || (!errors.areaCode && getValues("areaCode") !== "") && "form-control is-valid" || (!errors.areaCode && getValues("areaCode") === "") && "form-control"}
-                         {...register("areaCode", { required: true, minLength: 11, maxLength: 11})} placeholder={"AREA_000000"} />
+                         {...register("areaCode", { required: true, minLength: 11, maxLength: 11})} placeholder={"AREA_000000"}
+                         onBlur={(e) => {
+                           if(!errors.areaCode && areaContent.areaCode !== e.target.value) {
+                             axios
+                               .get(`${API_ROOT}/dupAreaChk?areaCode=${e.target.value}`)
+                               .then(resp => {if(resp.data["result"] !== 0) {
+                                 setValue("areaCode", "");
+                                 setError("areaCode", {type: "dupAreaCode", message: "중복되는 구역코드가 존재합니다. 다른 코드로 등록해주세요."})
+                                 setFocus("areaCode");
+                               }});
+                           }
+                         }}
+                  />
                   {errors.areaCode && errors.areaCode.type === "required" && <span className={"invalid-feedback"}>구역코드를 입력해주세요.</span>}
                   {errors.areaCode && errors.areaCode.type === "minLength" && <span className={"invalid-feedback"}>구역코드를 11글자 이상으로 입력해주세요.</span>}
                   {errors.areaCode && errors.areaCode.type === "maxLength" && <span className={"invalid-feedback"}>구역코드를 11글자 이하으로 입력해주세요.</span>}
@@ -61,8 +107,12 @@ const AreaModifyMgr = (props) => {
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor="memPwd">구역순번<span className={"required-span"}> *</span></CLabel>
-                <select className={"form-control"}>
-                  <option>1</option>
+                <select className={"form-control"} {...register("areaOrder")}>
+                  {
+                    Array.from(Array(areaContent === undefined ? 0 : areaContent.orderCnt), (e, i) => {
+                      return <option key={i} value={i + 1}>{i + 1}</option>
+                    })
+                  }
                 </select>
               </CCol>
             </CFormGroup>
@@ -87,22 +137,29 @@ const AreaModifyMgr = (props) => {
             <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="areaPosLat">구역위도</CLabel>
-                <input className={errors.areaPosLat && "is-invalid form-control" || (!errors.areaPosLat && getValues("areaPosLat") !== "") && "form-control is-valid" || (!errors.areaPosLat && getValues("areaPosLat") === "") && "form-control"}
+                <input className={errors.areaPosLat && "is-invalid form-control" || (!errors.areaPosLat && getValues("areaPosLat") !== null && areaContent !== undefined) && "form-control is-valid" || (!errors.areaPosLat && getValues("areaPosLat") === null || areaContent === undefined) && "form-control"}
                        {...register("areaPosLat", {pattern: {value:  /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000"}})}
                        placeholder={"구역 위도를 입력해주세요."} />
                 {errors.areaPosLat && errors.areaPosLat.type === "pattern" && <span className={"invalid-feedback"}>{errors.areaPosLat.message}</span>}
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor="areaPosLon">구역경도</CLabel>
-                <input className={errors.areaPosLon && "is-invalid form-control" || (!errors.areaPosLon && getValues("areaPosLon") !== "") && "form-control is-valid" || (!errors.areaPosLon && getValues("areaPosLon") === "") && "form-control"}
+                <input className={errors.areaPosLon && "is-invalid form-control" || (!errors.areaPosLon && getValues("areaPosLon") !== null && areaContent !== undefined) && "form-control is-valid" || (!errors.areaPosLon && getValues("areaPosLon") === null || areaContent === undefined) && "form-control"}
                        {...register("areaPosLon", {pattern: {value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"}}) }
                        placeholder={"구역 경도를 입력해주세요."} />
                 {errors.areaPosLon && errors.areaPosLon.type === "pattern" && <span className={"invalid-feedback"}>{errors.areaPosLon.message}</span>}
               </CCol>
             </CFormGroup>
+            <CRow className={"pl-3 pr-3 mt-2"}>
+              <CFormGroup className="pr-3 d-inline-flex">
+                <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
+                <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue}
+                         checked={ appSwitch.useYn } />
+              </CFormGroup>
+            </CRow>
             <div className={'d-flex'}>
               <div className={"ml-auto mt-4"}>
-                <CButton color="info" type="submit">수정</CButton>
+                <CButton color="info" type="submit" disabled={nodeLv2Btn}>수정</CButton>
               </div>
             </div>
           </form>

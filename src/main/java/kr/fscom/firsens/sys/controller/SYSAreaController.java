@@ -45,11 +45,16 @@ public class SYSAreaController {
     public HashMap<String, Object> insertLvAreaItem(@RequestBody SYSAreaDomain domain) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         try {
-            int insertLevelArea = sysAreaRepo.INSERT_SYS_LEVEL_AREA_ITEM(domain);
-            if(insertLevelArea > 0)
-                rtn.put("result", "success");
-            else
-                rtn.put("result", "fail");
+            int dupCnt = sysAreaRepo.CHECK_SYS_AREA_CODE(domain.getAreaCode());
+            if(dupCnt > 0) {
+                rtn.put("result", "duplicate");
+            } else {
+                int insertLevelArea = sysAreaRepo.INSERT_SYS_LEVEL_AREA_ITEM(domain);
+                if(insertLevelArea > 0)
+                    rtn.put("result", "success");
+                else
+                    rtn.put("result", "fail");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             rtn.put("result", "fail");
@@ -94,18 +99,23 @@ public class SYSAreaController {
         return rtn;
     }
 
-    @PostMapping
-    public HashMap<String, Object> checkDuplicateAreaCode() throws Exception {
-        HashMap<String, Object> rtn = new HashMap<>();
-        try {
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            rtn.put("result", "fail");
-        }
-
-        return rtn;
-    }
+//    @GetMapping("/dupAreaChk")
+//    public HashMap<String, Object> checkDuplicateAreaCode(SYSAreaDomain domain) throws Exception {
+//        LOG.info("■■■■■■■■■■■■■■■ 구역코드 중복검사 시작 : domain(areaCode : {})", domain.getAreaCode());
+//
+//        HashMap<String, Object> rtn = new HashMap<>();
+//        int result = 0;
+//        try {
+//            result = sysAreaRepo.CHECK_SYS_AREA_CODE(domain.getAreaCode());
+//            rtn.put("result", result);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            LOG.error("■■■■■■■■■■■■■■■ 구역코드 중복검사 오류 : {}", e.getMessage());
+//        }
+//
+//        LOG.info("▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶ 구역코드 중복검사 완료 : (result : {})", result);
+//        return rtn;
+//    }
 
     // 트리구조 형태 파싱
     public List<SYSAreaDomain> getAreaListTree(List<SYSAreaDomain> models, String parentCode ) throws MalformedURLException {

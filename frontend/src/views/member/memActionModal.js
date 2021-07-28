@@ -75,7 +75,7 @@ const MemActionModal = (props) => {
         <CModalBody>
            <CFormGroup row>
             <CCol md="6">
-              <CLabel htmlFor="userId">아이디</CLabel>
+              <CLabel htmlFor="userId">아이디<span className={"required-span"}> *</span></CLabel>
               <input className={errors.userId && "is-invalid form-control" || (!errors.userId && getValues("userId") !== "") && "form-control is-valid" || (!errors.userId && getValues("userId") === "") && "form-control"}
                 onBlur={(e) => {
                   if(!errors.userId) {
@@ -98,7 +98,7 @@ const MemActionModal = (props) => {
             </CCol>
 
             <CCol md="6">
-              <CLabel htmlFor="memPwd">비밀번호</CLabel>
+              <CLabel htmlFor="memPwd">비밀번호<span className={"required-span"}> *</span></CLabel>
               <input className={errors.memPwd && "is-invalid form-control" || (!errors.memPwd && getValues("memPwd") !== "") && "form-control is-valid" || (!errors.memPwd && getValues("memPwd") === "") && "form-control"}
                      {...register("memPwd", { required: true, minLength: 8, maxLength: 15, pattern: {value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/} })} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} type={"password"}/>
               {errors.memPwd && errors.memPwd.type === "required" && <span className={"invalid-feedback"}>비밀번호를 입력해주세요.</span>}
@@ -110,7 +110,7 @@ const MemActionModal = (props) => {
 
           <CFormGroup row>
             <CCol md="6">
-              <CLabel htmlFor="userId">사용자 이름</CLabel>
+              <CLabel htmlFor="userId">사용자 이름<span className={"required-span"}> *</span></CLabel>
               <input className={errors.memName && "is-invalid form-control" || (!errors.memName && getValues("memName") !== "") && "form-control is-valid" || (!errors.memName && getValues("memName") === "") && "form-control"}
                      placeholder={"최소 2글자 최대 50글자"}
                      {...register("memName", { required: true, minLength: 2, maxLength: 20})} />

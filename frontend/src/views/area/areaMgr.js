@@ -38,11 +38,6 @@ const AreaMgr = () => {
     setAutoExpandParent(false);
   };
 
-  let onLoad = (loadedKeys, info) => {
-    debugger;
-    console.log("loadedKeys");
-  };
-
   const clickSearchTree = (e) => {
     const value = inPutSearchValue;
     const expandedKeys = dataList
@@ -94,8 +89,10 @@ const AreaMgr = () => {
           clickSearchTree();
           setNodeLv2Btn(true);
         });
+      } else if(resp.data["result"] === "duplicate") {
+        alert("중복되는 구역코드가 있습니다. 잠시 후 다시 시도해주세요.")
       } else {
-        alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
       }
     });
   }
@@ -106,10 +103,10 @@ const AreaMgr = () => {
     setNodeUpCode(node.key);                            // 상위 코드 set
     setNodeLevel(node.areaLevel + 1);            // 노드 레벨 set
     setNodeArray(node);
+
     await selectAreaItem(node.key).then(function(resp) {
       if(resp.data["result"] === "success") {
         setAreaContent(resp.data["content"]);
-        console.log(areaContent);
       } else {
         alert("상세 조회에 오류가 발생했습니다.");
       }
@@ -212,7 +209,7 @@ const AreaMgr = () => {
             </CCardBody>
           </CCard>
         </CCol>
-        <AreaModifyMgr areaContent={areaContent}/>
+        <AreaModifyMgr areaContent={areaContent} nodeLv2Btn={nodeLv2Btn}/>
       </CRow>
     </>
   )

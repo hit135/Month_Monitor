@@ -32,8 +32,8 @@ public class SYSAreaDomain {
     @JsonProperty("areaName")       private String areaName = "";                   // 구역명
     @JsonProperty("areaOrder")      private String areaOrder = "";                  // 구역 순서
     @JsonProperty("upAreaCode")     private String upAreaCode = "";                 // 상위 구역코드
-    @JsonProperty("areaPosLat")     private Double areaPosLat = 0.0;                // 구역 경도
-    @JsonProperty("areaPosLon")     private Double areaPosLon = 0.0;                // 구역 위도
+    @JsonProperty("areaPosLat")     private Double areaPosLat;                      // 구역 경도
+    @JsonProperty("areaPosLon")     private Double areaPosLon;                      // 구역 위도
     @JsonProperty("areaManager")    private String areaManager = "";                // 구역 담당자
     @JsonProperty("areaTel")        private String areaTel = "";                    // 구역 비상연락
     @JsonProperty("areaAddr")       private String areaAddr = "";                   // 구역 주소
@@ -45,6 +45,7 @@ public class SYSAreaDomain {
     @JsonProperty("guCode")         private String guCode = "";                     // 구코드
     @JsonProperty("storeCnt")       private int storeCnt = 0;                       // 소속 상점 수
     @JsonProperty("type")           private String type = "";                       // 레벨타입
+    @JsonProperty("orderCnt")       private int orderCnt = 0;                       // 정렬갯수
 
     private List<SYSAreaDomain> children = new ArrayList<>();
     private String title = "";

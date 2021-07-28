@@ -41,22 +41,20 @@ const MemModifyModal = (props) => {
 
   const onSubmit = (data, e) => {
     if(userContent.userId === data.userId) {
-      console.log(data);
+      updateMem(data).then(resp => {
+        if(resp.data["result"] === "success") {
+          alert("회원 수정을 완료했습니다.");
+          closeModal();
+          handleInitTable();
+        } else {
+          alert("회원 수정에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+          closeModal();
+        }
+      });
     } else {
       alert("악의적으로 아이디가 수정됐습니다. 잠시 후 다시 시도해주세요.");
       return false;
     }
-
-    updateMem(data).then(resp => {
-      if(resp.data["result"] === "success") {
-        alert("회원 수정을 완료했습니다.");
-        closeModal();
-        handleInitTable();
-      } else {
-        alert("회원 수정에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-        closeModal();
-      }
-    });
   };
 
   const closeModal = () => {
@@ -129,7 +127,7 @@ const MemModifyModal = (props) => {
 
           <CFormGroup row>
             <CCol md="6">
-              <CLabel htmlFor="memName">사용자 이름</CLabel>
+              <CLabel htmlFor="memName">사용자 이름<span className={"required-span"}> *</span></CLabel>
               <input className={errors.memName && "is-invalid form-control" || (!errors.memName && getValues("memName") !== "") && "form-control is-valid" || (!errors.memName && getValues("memName") === "") && "form-control"} placeholder={"최소 2글자 최대 50글자"}
                      {...register("memName", { required: true, minLength: 2, maxLength: 20})} />
               {errors.memName && errors.memName.type === "required" && <span className={"invalid-feedback"}>이름을 입력해주세요.</span>}

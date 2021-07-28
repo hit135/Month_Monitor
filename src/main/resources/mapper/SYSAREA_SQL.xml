@@ -9,9 +9,10 @@
              , A.AREANAME AS title
              , A.AREALEVEL as areaLevel
              , IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE), 0) AS storeCnt
-        FROM F_LEVEL_AREA A
+         FROM F_LEVEL_AREA A
         WHERE 1 = 1
           AND USEYN = 'Y'
+     ORDER BY AREALEVEL, AREAORDER
     </select>
 
     <insert id="INSERT_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">
@@ -23,9 +24,8 @@
              , AREAORDER
              , AREALEVEL
              , REGDATE
-        )
-        VALUES (
-               CONCAT('AREA_', LPAD(IFNULL((SELECT COUNT(FA.AREACODE) FROM F_LEVEL_AREA FA), 0) + 1, '6', '0'))
+        ) VALUES (
+               CONCAT('AREA_', LPAD(IFNULL((SELECT MAX(SEQ) FROM F_LEVEL_AREA FA), 0) + 1, '6', '0'))
              , #{upAreaCode}
              , 'temp'
              , 'Y'
@@ -34,6 +34,14 @@
              , NOW()
         );
     </insert>
+
+    <update id="UPDATE_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomian">
+
+    </update>
+
+    <select id="CHECK_SYS_AREA_CODE" parameterType="String" resultType="int">
+        SELECT IFNULL(COUNT(AREACODE), 0) AS cnt FROM F_LEVEL_AREA WHERE AREACODE = #{areaCode}
+    </select>
 
     <select id="SELECT_ONE_SYS_AREA_ITEM" parameterType="String" resultType="SYSAreaDomain">
         SELECT FA.AREANAME                                      AS areaName
@@ -49,6 +57,7 @@
              , FA.AREAMANAGER                                   AS areaManager
              , FA.AREATEL                                       AS areaTel
              , FA.GUCODE                                        AS guCode
+             , IFNULL((SELECT COUNT(AREACODE) FROM F_LEVEL_AREA B WHERE B.UPAREACODE = FA.UPAREACODE ), 0) AS orderCnt
         FROM F_LEVEL_AREA FA
         WHERE 1 = 1
           AND FA.AREACODE = #{areaCode}
@@ -58,25 +67,5 @@
         DELETE FROM F_LEVEL_AREA
               WHERE AREACODE = #{areaCode}
     </delete>
-
-<!--    <insert id="INSERT_SYS_LEVEL2_AREA_ITEM" parameterType="SYSAreaDomain">-->
-<!--        INSERT INTO F_LEVEL_AREA (-->
-<!--               AREACODE-->
-<!--             , UPAREACODE-->
-<!--             , AREANAME-->
-<!--             , USEYN-->
-<!--             , AREAORDER-->
-<!--             , REGDATE-->
-<!--        ) VALUES (-->
-<!--                   CONCAT('AREA_', LPAD(IFNULL((SELECT COUNT(FA.AREACODE) FROM F_AREA FA), 0) + 1, '6', '0'))-->
-<!--               , #[]-->
-<!--               , 'temp'-->
-<!--               , 'Y'-->
-<!--               , (SELECT IFNULL(MAX(FA.AREAORDER), 0) + 1 FROM F_LEVEL_AREA FA WHERE UPAREACODE = '0')-->
-<!--               , NOW()-->
-<!--       );-->
-<!--    </insert>-->
-
-
 
 </mapper>
