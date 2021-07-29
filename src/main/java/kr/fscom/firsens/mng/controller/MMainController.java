@@ -47,6 +47,16 @@ public class MMainController {
         return mav;
     }
 
+    @RequestMapping(value="/mainArea")
+    public ModelAndView mainArea(HttpServletRequest req) {
+        ModelAndView mav = new ModelAndView("mng/m_main_area");
+        String panel_index = req.getParameter("panel_index");
+        String areacode = req.getParameter("areacode");
+        mav.addObject("prm_panel_index", panel_index);
+        mav.addObject("prm_areacode", areacode);
+        return mav;
+    }
+
     @RequestMapping(value="/sensorCountAjax")
     @ResponseBody
     public List<HashMap<String,Object>> sensorCountAjax(HttpServletRequest req) {
@@ -147,4 +157,57 @@ public class MMainController {
         }
         return null;
     }
+
+    @RequestMapping(value="/mainAreaDataChartAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> mainAreaDataChartAjax(HttpServletRequest req) {
+        HashMap<String, Object> prm = new HashMap<>();
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            return mainRepo.SELECT_MAIN_AREA_DATA_CHART(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
+
+    @RequestMapping(value="/mainAreaLogChartAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> mainAreaLogChartAjax(HttpServletRequest req) {
+        HashMap<String, Object> prm = new HashMap<>();
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            return mainRepo.SELECT_MAIN_AREA_LOG_CHART(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
+
+    @RequestMapping(value="/mainAreaDataChartWeekAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> mainAreaDataChartWeekAjax(HttpServletRequest req) {
+        HashMap<String, Object> prm = new HashMap<>();
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            return mainRepo.SELECT_MAIN_AREA_DATA_CHART_WEEK(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
+
+    @RequestMapping(value="/mainAreaLogChartWeekAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> mainAreaLogChartWeekAjax(HttpServletRequest req) {
+        HashMap<String, Object> prm = new HashMap<>();
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            return mainRepo.SELECT_MAIN_AREA_LOG_CHART_WEEK(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
+
 }

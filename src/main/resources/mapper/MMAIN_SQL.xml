@@ -42,13 +42,16 @@
         (SELECT 1                        AS LEVEL,
                A.GUCODE                 AS CODE,
                A.GUNAME                 AS NAME,
+               IFNULL(COUNT(DISTINCT C.SNSRID), 0) AS SENSOR,
+               IFNULL(COUNT(DISTINCT C.STRCODE), 0) AS STORE,
                IFNULL(SUM(D.DANGER), 0) AS DANGER,
                IFNULL(SUM(E.WARN), 0)   AS WARN,
+               COUNT(DISTINCT CASE WHEN F.SNSRID IS NULL THEN C.SNSRID END) AS DISCON,
                NULL AS UPCODE,
                IFNULL(SUM(D.DANGER), 0)*10000+IFNULL(SUM(E.WARN), 0) AS ORDERNUM
         FROM F_GUCODE A
-                 LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1) B ON A.GUCODE = B.GUCODE
-                 LEFT JOIN F_SENSOR_INFO C ON B.AREACODE = C.AREACODE
+                 LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN != 'Y') B ON A.GUCODE = B.GUCODE
+                 LEFT JOIN (SELECT * FROM F_SENSOR_INFO WHERE DELYN != 'Y') C ON B.AREACODE = C.AREACODE
                  LEFT JOIN (SELECT SNSRID, 1 AS DANGER
                             FROM F_SENSOR_LOG
                             WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
@@ -59,18 +62,25 @@
                             WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
                               AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
                             GROUP BY SNSRID) E ON C.SNSRID = E.SNSRID
+                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS CONCOUNT
+                            FROM F_SENSOR_DATA
+                            WHERE SNSRRCVTIME > NOW() - INTERVAL 1 HOUR
+                            GROUP BY SNSRID) F ON C.SNSRID = F.SNSRID
         GROUP BY A.GUCODE,
                  A.GUNAME)
         UNION
         (SELECT 2                        AS LEVEL,
                B.AREACODE                 AS CODE,
                B.AREANAME                 AS NAME,
+               IFNULL(COUNT(DISTINCT C.SNSRID), 0) AS SENSOR,
+               IFNULL(COUNT(DISTINCT C.STRCODE), 0) AS STORE,
                IFNULL(SUM(D.DANGER), 0) AS DANGER,
                IFNULL(SUM(E.WARN), 0)   AS WARN,
+               COUNT(DISTINCT CASE WHEN F.SNSRID IS NULL THEN C.SNSRID END) AS DISCON,
                B.GUCODE AS UPCODE,
                0-(IFNULL(SUM(D.DANGER), 0)*10000+IFNULL(SUM(E.WARN), 0)) AS ORDERNUM
-        FROM (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1) B
-                 LEFT JOIN F_SENSOR_INFO C ON B.AREACODE = C.AREACODE
+        FROM (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN != 'Y') B
+                 LEFT JOIN (SELECT * FROM F_SENSOR_INFO WHERE DELYN != 'Y') C ON B.AREACODE = C.AREACODE
                  LEFT JOIN (SELECT SNSRID, 1 AS DANGER
                             FROM F_SENSOR_LOG
                             WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
@@ -81,6 +91,10 @@
                             WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
                               AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
                             GROUP BY SNSRID) E ON C.SNSRID = E.SNSRID
+                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS CONCOUNT
+                            FROM F_SENSOR_DATA
+                            WHERE SNSRRCVTIME > NOW() - INTERVAL 1 HOUR
+                            GROUP BY SNSRID) F ON C.SNSRID = F.SNSRID
         GROUP BY B.AREACODE,
                  B.AREANAME)
         ORDER BY LEVEL, ORDERNUM DESC
@@ -237,4 +251,99 @@
         ORDER BY A.STATE, A.CNT DESC
         ]]>
     </select>
+
+    <select id="SELECT_MAIN_AREA_DATA_CHART" parameterType="map" resultType="map">
+        <![CDATA[
+        SELECT '1YDAY' AS TYPE, CONCAT(SUBSTR(DATE_FORMAT(A.SNSRRCVTIME, '%H:%i'),1,4),'0') AS RCVTIME, COUNT(*) AS CNT
+        FROM F_SENSOR_DATA A
+                 LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+        WHERE A.SNSRRCVTIME < DATE_FORMAT(NOW(), '%Y-%m-%d')
+          AND A.SNSRRCVTIME > DATE_FORMAT(NOW() - INTERVAL 1 DAY, '%Y-%m-%d')
+          AND B.DELYN != 'Y'
+          AND B.AREACODE = #{areacode}
+        GROUP BY 2
+        UNION
+        SELECT '2TDAY' AS TYPE, CONCAT(SUBSTR(DATE_FORMAT(A.SNSRRCVTIME, '%H:%i'),1,4),'0') AS RCVTUNE, COUNT(*) AS CNT
+        FROM F_SENSOR_DATA A
+                 LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+        WHERE A.SNSRRCVTIME > DATE_FORMAT(NOW(), '%Y-%m-%d')
+          AND B.DELYN != 'Y'
+          AND B.AREACODE = #{areacode}
+        GROUP BY 2
+        ORDER BY 1,2
+        ]]>
+    </select>
+
+    <select id="SELECT_MAIN_AREA_LOG_CHART" parameterType="map" resultType="map">
+        <![CDATA[
+        SELECT '1YDAY' AS TYPE, CONCAT(SUBSTR(DATE_FORMAT(A.REGDATE, '%H:%i'),1,4),'0') AS RCVTIME, COUNT(*) AS CNT
+        FROM F_SENSOR_LOG A
+                 LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+        WHERE A.REGDATE < DATE_FORMAT(NOW(), '%Y-%m-%d')
+          AND A.REGDATE > DATE_FORMAT(NOW() - INTERVAL 1 DAY, '%Y-%m-%d')
+          AND B.DELYN != 'Y'
+          AND B.AREACODE = #{areacode}
+        GROUP BY 2
+        UNION
+        SELECT '2TDAY' AS TYPE, CONCAT(SUBSTR(DATE_FORMAT(A.REGDATE, '%H:%i'),1,4),'0') AS RCVTUNE, COUNT(*) AS CNT
+        FROM F_SENSOR_LOG A
+                 LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+        WHERE A.REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
+          AND B.DELYN != 'Y'
+          AND B.AREACODE = #{areacode}
+        GROUP BY 2
+        ORDER BY 1,2
+        ]]>
+    </select>
+
+
+    <select id="SELECT_MAIN_AREA_DATA_CHART_WEEK" parameterType="map" resultType="map">
+        <![CDATA[
+        SELECT '1' AS DATETYPE, SDATE AS RCVTIME, DAYOFWEEK(SDATE) AS WEEK, SUM(SNSRKWHDAILY) AS CNT
+        FROM F_CRN_AREA_ELEC_DAILY_STAT
+        WHERE SDATE < DATE_FORMAT(NOW() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY, '%Y-%m-%d')
+          AND SDATE > DATE_FORMAT(NOW() - INTERVAL (7 + DAYOFWEEK(NOW())) DAY, '%Y-%m-%d')
+          AND AREACODE = #{areacode}
+        GROUP BY SDATE, AREACODE
+        UNION
+        SELECT '2' AS TYPE, SDATE AS RCVTIME, DAYOFWEEK(SDATE) AS WEEK, SUM(SNSRKWHDAILY) AS CNT
+        FROM F_CRN_AREA_ELEC_DAILY_STAT
+        WHERE SDATE > DATE_FORMAT(NOW() - INTERVAL DAYOFWEEK(NOW()) DAY, '%Y-%m-%d')
+          AND AREACODE = #{areacode}
+        GROUP BY SDATE, AREACODE
+        UNION
+        SELECT '2' AS TYPE, DATE_FORMAT(NOW(), '%Y-%m-%d') AS RCVTIME, DAYOFWEEK(NOW()) AS WEEK, SUM(USEKWH) AS CNT
+        FROM (SELECT A.SNSRID, MAX(A.SNSRKWH) - MIN(A.SNSRKWH) AS USEKWH
+              FROM F_SENSOR_DATA A
+                       LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+              WHERE B.DELYN != 'Y'
+                AND B.AREACODE = #{areacode}
+                AND A.SNSRRCVTIME > DATE_FORMAT(NOW(), '%Y-%m-%d')
+              GROUP BY A.SNSRID) Z
+        ORDER BY 1, 2
+        ]]>
+    </select>
+
+    <select id="SELECT_MAIN_AREA_LOG_CHART_WEEK" parameterType="map" resultType="map">
+        <![CDATA[
+        SELECT '1' AS TYPE, DATE_FORMAT(A.REGDATE, '%Y-%m-%d') AS RCVTIME, DAYOFWEEK(A.REGDATE) AS WEEK, COUNT(*) AS CNT
+        FROM F_SENSOR_LOG A
+                 LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+        WHERE A.REGDATE < DATE_FORMAT(NOW() - INTERVAL (DAYOFWEEK(NOW())-1) DAY, '%Y-%m-%d')
+          AND A.REGDATE > DATE_FORMAT(NOW() - INTERVAL (7+(DAYOFWEEK(NOW())-1)) DAY, '%Y-%m-%d')
+          AND B.DELYN != 'Y'
+          AND B.AREACODE = #{areacode}
+        GROUP BY 2
+        UNION
+        SELECT '2' AS TYPE, DATE_FORMAT(A.REGDATE, '%Y-%m-%d') AS RCVTUNE, DAYOFWEEK(A.REGDATE) AS WEEK, COUNT(*) AS CNT
+        FROM F_SENSOR_LOG A
+                 LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+        WHERE A.REGDATE > DATE_FORMAT(NOW() - INTERVAL (DAYOFWEEK(NOW())-1) DAY, '%Y-%m-%d')
+          AND B.DELYN != 'Y'
+          AND B.AREACODE = #{areacode}
+        GROUP BY 2
+        ORDER BY 1,2
+        ]]>
+    </select>
+
 </mapper>
