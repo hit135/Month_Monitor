@@ -34,6 +34,6 @@ public interface SYSAreaRepo {
     SYSAreaDomain SELECT_ONE_SYS_AREA_ITEM(String areaCode) throws Exception;
     int UPDATE_SYS_LEVEL_AREA_ITEM(SYSAreaDomain vo) throws Exception;
     int DELETE_SYS_LEVEL_AREA_ITEM(SYSAreaDomain vo) throws Exception;
-    
+    int UPDATE_SYS_AREA_ORDER(SYSAreaDomain vo) throws Exception;
     int CHECK_SYS_AREA_CODE(String areaCode) throws Exception;
 }

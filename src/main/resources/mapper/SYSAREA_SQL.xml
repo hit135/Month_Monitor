@@ -46,6 +46,7 @@
              , AREAADDR       = #{areaAddr}
              , AREAPOSLAT     = #{areaPosLat}
              , AREAPOSLON     = #{areaPosLon}
+             , UPDATEDATE     = NOW()
          WHERE AREACODE     = #{areaCode}
     </update>
 
@@ -79,5 +80,12 @@
         DELETE FROM F_LEVEL_AREA
               WHERE AREACODE = #{areaCode}
     </delete>
+
+    <update id="UPDATE_SYS_AREA_ORDER" parameterType="SYSAreaDomain">
+        UPDATE   F_LEVEL_AREA A
+          JOIN     (SELECT @rank := 0) r
+           SET      A.AREAORDER = @rank:= (@rank+1)
+         WHERE A.UPAREACODE = #{upAreaCode} ORDER BY A.AREAORDER
+    </update>
 
 </mapper>
