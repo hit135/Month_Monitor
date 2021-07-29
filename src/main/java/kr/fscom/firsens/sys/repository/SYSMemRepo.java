@@ -51,4 +51,6 @@ public interface SYSMemRepo {
     // 회원 삭제
     int DELETE_SYS_MEM(SYSMemDomain domain) throws Exception;
 
+    // 회원 areaCode update
+    int UPDATE_SYS_MEM_AREACODE(SYSMemDomain domain) throws Exception;
 }

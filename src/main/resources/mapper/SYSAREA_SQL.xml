@@ -68,7 +68,9 @@
              , FA.AREATEL                                       AS areaTel
              , FA.GUCODE                                        AS guCode
              , IFNULL((SELECT COUNT(AREACODE) FROM F_LEVEL_AREA B WHERE B.UPAREACODE = FA.UPAREACODE ), 0) AS orderCnt
+             , FM.USERID as userId
         FROM F_LEVEL_AREA FA
+        LEFT JOIN F_MEMBER FM ON FA.AREACODE = FM.MEMAREACODE
         WHERE 1 = 1
           AND FA.AREACODE = #{areaCode}
     </select>

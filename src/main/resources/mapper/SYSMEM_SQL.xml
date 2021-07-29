@@ -181,4 +181,10 @@
          WHERE USERID = #{userId}
     </delete>
 
+    <update id="UPDATE_SYS_MEM_AREACODE" parameterType="SYSMemDomain">
+        UPDATE F_MEMBER
+           SET MEMAREACODE = #{MEMAREACODE}
+         WHERE USERID = #{userId}
+    </update>
+
 </mapper>

@@ -28,6 +28,7 @@ const AreaModifyMgr = (props) => {
         areaManager: "",
         areaOrder: 0,
         useYn : "N",
+        memUpdAreaCodeType: false
       });
 
     } else {
@@ -42,7 +43,6 @@ const AreaModifyMgr = (props) => {
         ["useYn"]: false
       }));
     }
-
   }, [areaContent]);
 
   const setSwitchValue = (e) => {
@@ -55,6 +55,10 @@ const AreaModifyMgr = (props) => {
   }
 
   const onSubmit = (data, e) => {
+
+    if(areaContent.userId !== data.userId || areaContent.userId === "" && data.userId !== "") {
+      data.memUpdAreaCodeType = true;
+    }
     handleClickUpdateItem(data);
   };
 

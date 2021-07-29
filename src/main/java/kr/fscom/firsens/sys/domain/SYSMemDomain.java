@@ -36,8 +36,8 @@ public class SYSMemDomain {
     @JsonProperty("memEmail")       private String memEmail = "";           /* 사용자 이메일 */
     @JsonProperty("memTel")         private String memTel = "";             /* 전화번호 */
     @JsonProperty("memMobile")      private String memMobile = "";          /* 휴대폰번호 */
+    @JsonProperty("memAreaCode")    private String memAreaCode = "";        /* 구역코드 */
     @JsonProperty("grpCode")        private String grpCode = "";            /* 지역코드 */
-    @JsonProperty("areaCode")       private String areaCode = "";           /* 구역코드 */
     @JsonProperty("strCode")        private String strCode = "";            /* 상점코드 */
     @JsonProperty("grpName")        private String grpName = "";            /* 지역명 */
     @JsonProperty("areaName")       private String areaName = "";           /* 구역명 */
@@ -53,7 +53,7 @@ public class SYSMemDomain {
     @JsonProperty("memMemo")        private String memMemo = "";            /* 메모 */
     @JsonProperty("memToken")       private String memToken = "";           /* FIREBASE token */
     @JsonProperty("searchSelect")   private int searchSelect = 0;           /* 검색조건선택 */
-    @JsonProperty("loginFailCnt")   private int loginFailCnt = 0;           /* 로그인 실패 푓수 */
+    @JsonProperty("loginFailCnt")   private int loginFailCnt = 0;           /* 로그인 실패 횟수 */
     @JsonProperty("pwChange")       private String pwChange = "";           /* 최초 로그인 비밀번호 변경 여부 */
     @JsonProperty("groupUse")       private String groupUse = "";           /* 구역사용여부 (기존:그룹 사용 여부) */
     @JsonProperty("arrStrCode")     private String[] arrStrCode = null;     // 그룹코드배열

@@ -1,7 +1,9 @@
 package kr.fscom.firsens.sys.controller;
 
 import kr.fscom.firsens.sys.domain.SYSAreaDomain;
+import kr.fscom.firsens.sys.domain.SYSMemDomain;
 import kr.fscom.firsens.sys.repository.SYSAreaRepo;
+import kr.fscom.firsens.sys.repository.SYSMemRepo;
 import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +21,10 @@ import java.util.List;
 public class SYSAreaController {
     private static final Logger LOG = LoggerFactory.getLogger(SYSAreaController.class);
     private final SYSAreaRepo sysAreaRepo;
+    private final SYSMemRepo sysMemRepo;
 
     @Autowired
-    public SYSAreaController(SYSAreaRepo sysAreaRepo) { this.sysAreaRepo = sysAreaRepo; }
+    public SYSAreaController(SYSAreaRepo sysAreaRepo, SYSMemRepo sysMemRepo) { this.sysAreaRepo = sysAreaRepo; this.sysMemRepo = sysMemRepo; }
 
     @GetMapping("/areas")
     public HashMap<String, Object> listPageArea(SYSAreaDomain domain, int page, int size, String searchWrd, String isUse,
@@ -98,6 +101,18 @@ public class SYSAreaController {
                     rtn.put("result", "success");
                 else
                     rtn.put("result", "fail");
+
+                if(domain.isMemUpdAreaCodeType()) {
+                    SYSMemDomain vo = new SYSMemDomain();
+                    vo.setMemAreaCode(domain.getAreaCode());
+                    vo.setUserId(domain.getUserId());
+
+                    int updateMemAreaCode = sysMemRepo.UPDATE_SYS_MEM_AREACODE(vo);
+                    if (updateMemAreaCode > 0)
+                        LOG.info("■■■■■■■■■■■■■■■ 회원 areaCode 업데이트 완료 : domain(areaCode : {})", domain.getUserId());
+                    else
+                        LOG.info("■■■■■■■■■■■■■■■ 회원 areaCode 업데이트 실패 : domain(areaCode : {})", domain.getUserId());
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();

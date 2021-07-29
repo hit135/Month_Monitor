@@ -64,7 +64,7 @@ function PageUserTableModalWidget(props) {
         </CModalBody>
         <CModalFooter>
           <CButton color="primary" onClick={initUserId}>초기화</CButton>
-          <CButton color="secondary" onClick={() => setOnMemModal(!onMemModal)}>취소</CButton>
+          <CButton color="secondary" onClick={() => setOnMemModal(!onMemModal)}>확인</CButton>
         </CModalFooter>
       </CModal>
     </>
