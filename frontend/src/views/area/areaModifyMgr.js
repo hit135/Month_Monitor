@@ -55,10 +55,6 @@ const AreaModifyMgr = (props) => {
   }
 
   const onSubmit = (data, e) => {
-
-    if(areaContent.userId !== data.userId || areaContent.userId === "" && data.userId !== "") {
-      data.memUpdAreaCodeType = true;
-    }
     handleClickUpdateItem(data);
   };
 
@@ -179,11 +175,11 @@ const AreaModifyMgr = (props) => {
                            checked={ appSwitch.useYn } />
                 </CFormGroup>
               </CCol>
-              <CCol md="6" className={"pr-0"}>
-                <CLabel htmlFor="areaPosLon">회원선택</CLabel>
-                <input className={"form-control"} {...register("userId") } readOnly={true}
-                       placeholder={"회원을 선택해주세요."} onClick={(e) => setOnMemModal(true)} />
-              </CCol>
+              {/*<CCol md="6" className={"pr-0"}>*/}
+              {/*  <CLabel htmlFor="areaPosLon">회원선택</CLabel>*/}
+              {/*  <input className={"form-control"} {...register("userId") } readOnly={true}*/}
+              {/*         placeholder={"회원을 선택해주세요."} onClick={(e) => setOnMemModal(true)} />*/}
+              {/*</CCol>*/}
             </CRow>
             <div className={'d-flex'}>
               <div className={"ml-auto mt-4"}>
@@ -194,7 +190,7 @@ const AreaModifyMgr = (props) => {
           </CCardBody>
         </CCard>
       </CCol>
-      <PageUserTableModalWidget onMemModal={onMemModal} setOnMemModal={setOnMemModal} memClickEvent={rowEvents} initUserId={initUserId} />
+      {/*<PageUserTableModalWidget onMemModal={onMemModal} setOnMemModal={setOnMemModal} memClickEvent={rowEvents} initUserId={initUserId} />*/}
     </>
   )
 }
