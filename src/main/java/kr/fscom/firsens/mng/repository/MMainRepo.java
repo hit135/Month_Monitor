@@ -34,4 +34,8 @@ public interface MMainRepo {
     List<HashMap<String, Object>> SELECT_AREA_SENSOR_LIST(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_STORE_SEARCH(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_CHECK_SENSOR_LIST(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> SELECT_MAIN_AREA_DATA_CHART(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> SELECT_MAIN_AREA_LOG_CHART(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> SELECT_MAIN_AREA_DATA_CHART_WEEK(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> SELECT_MAIN_AREA_LOG_CHART_WEEK(Map<String, Object> param) throws Exception;
 }
