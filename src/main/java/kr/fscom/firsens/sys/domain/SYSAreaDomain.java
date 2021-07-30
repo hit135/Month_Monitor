@@ -47,6 +47,8 @@ public class SYSAreaDomain {
     @JsonProperty("type")               private String type = "";                       // 레벨타입
     @JsonProperty("orderCnt")           private int orderCnt = 0;                       // 정렬갯수
     @JsonProperty("prevAreaCode")       private String prevAreaCode = "";               // 수정 전 areaCode
+    @JsonProperty("areaOrderUpdate")    private Boolean areaOrderUpdate = false;        // 구역 순서 수정체크
+    @JsonProperty("areaOrderType")      private Boolean areaOrderType = false;          // 구역 순서 타입
 
     private List<SYSAreaDomain> children = new ArrayList<>();
     private String title = "";

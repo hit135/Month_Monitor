@@ -28,7 +28,8 @@ const AreaModifyMgr = (props) => {
         areaManager: "",
         areaOrder: 0,
         useYn : "N",
-        memUpdAreaCodeType: false
+        areaOrderUpdate: false,
+        areaOrderType: false,
       });
 
     } else {
@@ -55,18 +56,15 @@ const AreaModifyMgr = (props) => {
   }
 
   const onSubmit = (data, e) => {
+    if(areaContent.areaOrder !== data.areaOrder) {
+      data.areaOrderUpdate = true;
+      // setValue("areaOrderUpdate", true);
+      if(parseInt(data.areaOrder) === data.orderCnt)
+        data.areaOrderType = true;
+    }
+    console.log(data);
     handleClickUpdateItem(data);
   };
-
-  const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      setValue("userId", row["userId"]);
-    }
-  };
-
-  const initUserId = () => {
-    setValue("userId", "");
-  }
 
   return (
     <>

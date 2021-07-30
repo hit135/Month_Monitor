@@ -96,7 +96,10 @@ public class SYSAreaController {
                 rtn.put("result", "duplicate");
             } else {
                 int updateLevelArea = sysAreaRepo.UPDATE_SYS_LEVEL_AREA_ITEM(domain);
-                sysAreaRepo.UPDATE_SYS_AREA_ORDER(domain);   // area 재정렬
+                if(domain.getAreaOrderUpdate()) {
+                    sysAreaRepo.UPDATE_SYS_AREA_ORDER(domain);   // area 재정렬
+                }
+
                 if (updateLevelArea > 0)
                     rtn.put("result", "success");
                 else

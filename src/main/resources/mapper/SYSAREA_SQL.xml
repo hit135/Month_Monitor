@@ -85,7 +85,13 @@
         UPDATE   F_LEVEL_AREA A
           JOIN     (SELECT @rank := 0) r
            SET      A.AREAORDER = @rank:= (@rank+1)
-         WHERE A.UPAREACODE = #{upAreaCode} ORDER BY A.AREAORDER
+         WHERE A.UPAREACODE = #{upAreaCode}
+        <if test="!areaOrderType">
+            ORDER BY A.AREAORDER, UPDATEDATE DESC
+        </if>
+        <if test="areaOrderType">
+            ORDER BY A.AREAORDER
+        </if>
     </update>
 
 </mapper>
