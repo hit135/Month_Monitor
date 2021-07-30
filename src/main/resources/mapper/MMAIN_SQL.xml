@@ -383,7 +383,7 @@
         WHERE A.DELYN != 'Y'
           AND B.DELYN != 'Y'
           AND A.AREACODE = #{areacode}
-        ORDER BY E.CNT DESC, B.STRNAME
+        ORDER BY C.CNT DESC, D.CNT DESC, E.CNT DESC, B.STRNAME
         ]]>
     </select>
 
