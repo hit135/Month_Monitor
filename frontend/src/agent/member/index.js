@@ -6,11 +6,6 @@ export const getMemList = (page, sizePerPage, searchItem) => {
     .get(`${API_ROOT}/mems?page=${page}&size=${sizePerPage}&searchWrd=${searchItem.searchWrd}&useYn=${searchItem.useYn}&delYn=${searchItem.delYn}&smsYn=${searchItem.smsYn}&leaveYn=${searchItem.leaveYn}`)
 }
 
-export const getModalMemList = (searchWrd) => {
-  return axios
-    .get(`${API_ROOT}/modalMem?searchWrd=${searchWrd}`)
-}
-
 export const insertMem = (array) => {
   return axios
     .post(`${API_ROOT}/insertMem`, array)

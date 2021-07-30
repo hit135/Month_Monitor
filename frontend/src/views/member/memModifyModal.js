@@ -7,16 +7,16 @@ import {
   CModalFooter,
   CModalHeader,
   CModalTitle,
-  CCol, CSwitch, CTextarea
+  CCol, CSwitch
 } from "@coreui/react";
 import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
-import axios from "axios";
-import {convertPhoneNumber, deleteMem, insertMem, updateMem} from "../../agent/member";
+import {convertPhoneNumber, deleteMem, updateMem} from "../../agent/member";
+import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
 
 const MemModifyModal = (props) => {
-  const API_ROOT = 'http://localhost:8081/api';    // 로컬
   const { modal, setModal, userContent, handleInitTable } = props
+  const [onAreaModal, setOnAreaModal] = useState();
   const [appSwitch, setAppSwitch] = useState({
     useYn : false,
     delYn : false,
@@ -36,6 +36,7 @@ const MemModifyModal = (props) => {
     appSwitch.memIsLeave = (userContent.memIsLeave === "Y");
     appSwitch.memRcvSms = (userContent.memRcvSms === "Y");
 
+    console.log(userContent);
     reset(userContent);
   }, [userContent]);
 
@@ -91,6 +92,10 @@ const MemModifyModal = (props) => {
         }
       });
     }
+  }
+
+  const nodeClick = (e, node) => {
+    setValue("memAreaCode", node["key"])
   }
 
   return (
@@ -160,8 +165,15 @@ const MemModifyModal = (props) => {
               {errors.memMobile && errors.memMobile.type === "pattern" && <span className={"invalid-feedback"}>{errors.memMobile.message}</span>}
             </CCol>
           </CFormGroup>
+          <CFormGroup row>
+            <CCol md="6">
+              <CLabel htmlFor="memAreaCode">구역선택</CLabel>
+              <input className={"form-control"} {...register("memAreaCode") } readOnly={true}
+                     placeholder={"구역을 선택해주세요."} onClick={(e) => setOnAreaModal(true)} />
+            </CCol>
+          </CFormGroup>
 
-          <CRow className={"pl-3 pr-3"}>
+          <CRow className={"pl-3 pr-3 mt-4"}>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
               <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue}
@@ -210,6 +222,8 @@ const MemModifyModal = (props) => {
         </CModalFooter>
       </form>
       </CModal>
+
+      <PageAreaTreeModalWidget onAreaModal={onAreaModal} setOnAreaModal={setOnAreaModal} nodeClick={nodeClick} />
     </>
   )
 }

@@ -2,9 +2,6 @@ import {CCard, CCardBody, CCardHeader, CCol, CLabel, CFormGroup, CButton, CSwitc
 import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import axios from "axios";
-import {updateAreaItem} from "../../agent/area";
-import PageUserTableModalWidget from "../../widget/pageUserTableModalWidget";
-import {getMem} from "../../agent/member";
 
 const AreaModifyMgr = (props) => {
   const API_ROOT = 'http://localhost:8081/api';    // 로컬
@@ -173,11 +170,6 @@ const AreaModifyMgr = (props) => {
                            checked={ appSwitch.useYn } />
                 </CFormGroup>
               </CCol>
-              {/*<CCol md="6" className={"pr-0"}>*/}
-              {/*  <CLabel htmlFor="areaPosLon">회원선택</CLabel>*/}
-              {/*  <input className={"form-control"} {...register("userId") } readOnly={true}*/}
-              {/*         placeholder={"회원을 선택해주세요."} onClick={(e) => setOnMemModal(true)} />*/}
-              {/*</CCol>*/}
             </CRow>
             <div className={'d-flex'}>
               <div className={"ml-auto mt-4"}>
@@ -188,7 +180,6 @@ const AreaModifyMgr = (props) => {
           </CCardBody>
         </CCard>
       </CCol>
-      {/*<PageUserTableModalWidget onMemModal={onMemModal} setOnMemModal={setOnMemModal} memClickEvent={rowEvents} initUserId={initUserId} />*/}
     </>
   )
 }

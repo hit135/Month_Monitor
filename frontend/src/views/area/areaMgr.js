@@ -114,8 +114,6 @@ const AreaMgr = () => {
     });
   }
 
-
-
   // 노드 선택 이벤트
   const nodeClick = async (e, node) => {
     setNodeLv2Btn((node.selected));                     // 하위 레벨 버튼 disabled
