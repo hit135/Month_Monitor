@@ -210,4 +210,17 @@ public class MMainController {
         return null;
     }
 
+    @RequestMapping(value="/mainAreaMapSensorListAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> mainAreaMapSensorListAjax(HttpServletRequest req) {
+        HashMap<String, Object> prm = new HashMap<>();
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            return mainRepo.SELECT_MAIN_AREA_MAP_SENSOR_LIST(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+        return null;
+    }
+
 }
