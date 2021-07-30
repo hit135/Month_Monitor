@@ -287,7 +287,7 @@
           }
         });
         $('.center-main-cont').on('click', '.center-main-cont-top-btn', function() {
-          $('.panel-fullscreen .center-main-cont-top-btn.on').removeClass('on');
+          $('.panel.panel-fullscreen .center-main-cont-top-btn.on').removeClass('on');
           $(this).addClass('on');
           fn_tapCenterMainPage();
         });
@@ -586,9 +586,9 @@
       }
 
       function fn_tapCenterMainPage() {
-        var page_name = $('.panel-fullscreen .center-main-cont-top-btn.on').attr('data-page');
-        $('.panel-fullscreen [class^=center-main-page]').removeClass('on');
-        $('.panel-fullscreen .center-main-page-'+page_name).addClass('on');
+        var page_name = $('.panel.panel-fullscreen .center-main-cont-top-btn.on').attr('data-page');
+        $('.panel.panel-fullscreen [class^=center-main-page]').removeClass('on');
+        $('.panel.panel-fullscreen .center-main-page-'+page_name).addClass('on');
         if(page_name=='map') fn_getMainAreaMap();
       }
 
