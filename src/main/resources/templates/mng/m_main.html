@@ -51,6 +51,7 @@
       .center-left-sensor-list p.discon span { color:#fff; background:#999; }
       .center-left-sensor-list p:hover { background:#ccc; }
       .center-left-sensor-list p.on { background:#2b559b; color:white; text-shadow:1px 1px 5px #000; }
+      .center-main-cont { height:770px; overflow-x:hidden; overflow-y:scroll; }
       .center-main-cont .panel { margin-bottom:0; }
       .center-main-cont .panel-hdr { background:#2b559b; }
       .center-main-cont .panel-hdr * { color:#ffffff; }
@@ -65,7 +66,9 @@
       .center-main-cont .panel-hdr .center-main-area-count-discon { font-size:16px; font-weight:bold; color:#dddddd; }
       .center-main-cont .panel-container { height:250px; overflow:hidden; }
       .center-main-area-tab { height:49px; }
-      .panel-fullscreen .center-main-cont-top-btn { display:inline-block; }
+      .center-main-cont .panel-fullscreen .center-main-cont-top-btn { display:inline-block; }
+      .center-main-cont .panel-fullscreen [class^=center-main-page] { display:none; }
+      .center-main-cont .panel-fullscreen [class^=center-main-page].on { display:block; }
       .center-main-cont-top-btn { display:none; font-size:20px; padding:10px 15px; margin-top:20px; line-height:20px; cursor:pointer; }
       .center-main-cont-top-btn:hover { color:#afd9ee; text-decoration:underline; }
       .center-main-cont-top-btn.on { background:#fff; color:#2b559b; font-weight:bold; }
@@ -211,6 +214,7 @@
     <div class="bottom"><th:block th:replace="mng/layout/m_bottom"></th:block></div>
     <script th:src="@{/fs/js/polyfill.min.js}"></script>
     <script th:src="@{/fs/js/apexcharts.js}"></script>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=meqwtbwfkw&submodules=visualization"></script>
     <script type="text/javascript">
       $(function() {
         fn_init();
@@ -282,6 +286,12 @@
             fn_getMainAreaWeek();
           }
         });
+        $('.center-main-cont').on('click', '.center-main-cont-top-btn', function() {
+          $('.center-main-cont-top-btn.on').removeClass('on');
+          $(this).addClass('on');
+          fn_tapCenterMainPage();
+        });
+
         setInterval(fn_refresh, 1000*60);
         //setTimeout(function() { $('.left .area-lv2')[0].click(); }, 800);
       }
@@ -458,59 +468,33 @@
       function fn_setChart(title, target, data, colors) {
         var opt = {
           series: [],
-          chart: {
-            height: 250,
-            type: 'line',
-            id: target,
-            animations: {enabled: false},
-          },
-          title: {
-            text: title,
-            align: 'left'
-          },
+          chart: { height: 250, type: 'line', id: target, animations: {enabled: false}, },
+          title: { text: title, align: 'left' },
           colors: colors,
           stroke: {width: 2},
           dataLabels: {enabled: false},
           tooltip: {
             enabled: true,
             marker: {show: true},
-            fixed: {
-              enabled: true,
-              position: 'topLeft'
-            },
-            y: {
-              formatter: function (val) {
-                if(val) return val.toFixed(0);
-                return null;
-              }
-            }
+            fixed: { enabled: true, position: 'topLeft' },
+            y: { formatter: function (val) { if(val) return val.toFixed(0); return null; } }
           },
-          xaxis: {
-            categories: window.min_category,
-            tickAmount: 11,
-            labels: { rotate:0 }
-          },
-          yaxis: {
-            lines: {show: true},
-            tooltip: {enabled: true},
-            labels: {
-              formatter: function (val) {
-                if(val) return val.toFixed(0);
-                return null;
-              }
-            }
+          xaxis: { categories: window.min_category, tickAmount: 11, labels: { rotate:0 } },
+          yaxis: { lines: {show: true}, tooltip: {enabled: true},
+            labels: { formatter: function (val) { if(val) return val.toFixed(0); return null; } }
           },
           legend: { position:'top' }
         };
         var series = [{name:'어제', data:[]},{name:'오늘', data:[]}];
         var j = 0;
-        for (var i = 0; j < data.length-1 && i < window.min_category.length; i++) {
-          if(data[j].RCVTIME==window.min_category[i]) series[0].data.push(data[j++].CNT);
-          else series[0].data.push(0);
+        var now_time = fn_dateToString(new Date()).slice(11,15)+'0';
+        for (var i = 0; i < window.min_category.length; i++) {
+          if(j < data.length-1 && data[j].RCVTIME==window.min_category[i]) series[0].data.push(data[j++].CNT);
+          else if(window.min_category[i]) series[0].data.push(0);
         }
-        for (var i = 0; j < data.length-1 && i < window.min_category.length; i++) {
-          if(data[j].RCVTIME==window.min_category[i]) series[1].data.push(data[j++].CNT);
-          else series[1].data.push(1);
+        for (var i = 0; i < window.min_category.length; i++) {
+          if(j < data.length-1 && data[j].RCVTIME==window.min_category[i]) series[1].data.push(data[j++].CNT);
+          else if(window.min_category[i] < now_time) series[1].data.push(0);
         }
         opt.markers = { size: 0, hover: {size: 0} };
         var target_id = target.replace(/ /g,'-');
@@ -534,12 +518,12 @@
             { areacode:window.area[idx].CODE },
             function (data) {
               fn_setChartWeek('전력사용량 현황', '#panel-'+idx+' .center-main-data-chart-week', data, ['#99ccff','#003399']);
-          });
+            });
           $.post($('#contextRoot').val()+'/mng/mainAreaLogChartWeekAjax',
             { areacode:window.area[idx].CODE },
             function (data) {
               fn_setChartWeek('경보 발생 현황', '#panel-'+idx+' .center-main-log-chart-week', data, ['#ff9966','#cc3300']);
-          });
+            });
         }
       }
 
@@ -547,77 +531,33 @@
       function fn_setChartWeek(title, target, data, colors) {
         var opt = {
           series: [],
-          chart: {
-            height: 250,
-            type: 'bar',
-            id: target,
-            animations: {enabled: false},
-          },
-          title: {
-            text: title,
-            align: 'left'
-          },
+          chart: { height: 250, type: 'bar', id: target, animations: {enabled: false}, },
+          title: { text: title, align: 'left' },
           colors: colors,
           plotOptions: {
-            bar: {
-              horizontal: false,
-              borderRadius: 10,
-              dataLabels: { position: 'bottom' }
-            }
+            bar: { horizontal: false, borderRadius: 10, dataLabels: { position: 'bottom' } }
           },
-          dataLabels: {
-            enabled: true,
-            style: { colors:['#fff'] },
-            dropShadow: { enabled:true },
-            formatter: function (val) {
-              if(val) return val.toFixed(0);
-              return null;
-            }
+          dataLabels: { enabled: true, style: { colors:['#fff'] }, dropShadow: { enabled:true },
+            formatter: function (val) { if(val) return val.toFixed(0); return 0; }
           },
           annotations: {
             points: [{
-              x: window.week_category[data.length-8],
+              x: window.week_category[new Date().getDay()],
               seriesIndex: 1,
-              label: {
-                borderColor: '#775DD0',
-                textAnchor: 'start',
-                offsetX: 10,
-                style: {
-                  color: '#fff',
-                  background: '#775DD0',
-                },
+              label: { borderColor: '#775DD0', textAnchor: 'start', offsetY:-15, offsetX: 10,
+                style: { color: '#ddd', background: '#775DD0', },
                 text: '오늘',
               },
               marker: { size:0 }
             }]
           },
-          tooltip: {
-            enabled: true,
-            marker: {show: true},
-            fixed: {
-              enabled: true,
-              position: 'topLeft'
-            },
-            y: {
-              formatter: function (val) {
-                if(val) return val.toFixed(0);
-                return null;
-              }
-            }
+          tooltip: { enabled: true, marker: {show: true},
+            fixed: { enabled: true, position: 'topLeft' },
+            y: { formatter: function (val) { if(val) return val.toFixed(0); return 0; } }
           },
-          xaxis: {
-            categories: window.week_category,
-            tickAmount: 11,
-            labels: { rotate:0 }
-          },
-          yaxis: {
-            lines: {show: true},
-            tooltip: {enabled: true},
-            labels: {
-              formatter: function (val) {
-                if(val) return val.toFixed(0);
-                return null;
-              }
+          xaxis: { categories: window.week_category, tickAmount: 11, labels: { rotate:0 } },
+          yaxis: { lines: {show: true}, tooltip: {enabled: true},
+            labels: { formatter: function (val) { if(val) return val.toFixed(0); return 0; }
             }
           },
           legend: { position:'top' }
@@ -642,6 +582,61 @@
           $(target).html('');
           window['chart-'+target_id] = new ApexCharts(document.querySelector(target), opt);
           window['chart-'+target_id].render().then(function(){});
+        }
+      }
+
+      function fn_tapCenterMainPage() {
+        var page_name = $('.center-main-cont-top-btn.on').attr('data-page');
+        $('[class^=center-main-page]').removeClass('on');
+        $('.center-main-page-'+page_name).addClass('on');
+        if(page_name=='map') fn_getMainAreaMap();
+      }
+
+      function fn_getMainAreaMap() {
+        var show_panel = $('.center-main-cont .panel-fullscreen .panel-container .center-main-page-map.on');
+        for(var i = 0; i < show_panel.length; i++) {
+          var idx = $(show_panel[i]).attr('data-id').replace('panel-','');
+          $.post($('#contextRoot').val()+'/mng/mainAreaMapSensorListAjax',
+            { areacode:window.area[idx].CODE },
+            function (data) {
+              fn_setMapMarker('#panel-'+idx+' .center-main-page-map', data);
+            });
+        }
+      }
+
+      function fn_setMapMarker(target, data) {
+        var target_id = target.replace(/ /g,'-');
+        var mark = {
+          normal: ['/fs/img/map/normal.png', 1],
+          discon: ['/fs/img/map/disconnection.png', 0],
+          danger: ['/fs/img/map/danger.png', 3],
+          warning: ['/fs/img/map/warning.png', 2],
+          select: ['/fs/img/map/select.png', 4]
+        };
+        if (!window['map-'+target_id]) {
+          var options = {center: new naver.maps.LatLng(33.450701, 126.570667), zoom: 19};
+          window['map-'+target_id] = new naver.maps.Map($(target)[0], options);
+          window['map-'+target_id].marker=[];
+        }
+        for (var i = 0; i < window['map-'+target_id].marker.length; i++) window['map-'+target_id].marker[i].setMap(null);
+        if (data.length > 0) {
+          for (var i = 0; i < data.length; i++) {
+            var pos = new naver.maps.LatLng(data[i].STRPOSLAT, data[i].STRPOSLON);
+            if (i == 0) window['map-'+target_id].setCenter(pos);
+            window['map-'+target_id].marker.push(new naver.maps.Marker({
+              map: window['map-'+target_id],
+              title: data[i].STRNAME+' > '+data[i].SNSRNICK,
+              position: pos,
+              zIndex: mark[data[i].STATE][1],
+              icon: {
+                url: $('#contextRoot').val()+mark[data[i].STATE][0],
+                size: new naver.maps.Size(26, 35),
+                scaledSize: new naver.maps.Size(26, 35),
+                origin: new naver.maps.Point(0, 0),
+                anchor: new naver.maps.Point(13, 35)
+              }
+            }));
+          }
         }
       }
 

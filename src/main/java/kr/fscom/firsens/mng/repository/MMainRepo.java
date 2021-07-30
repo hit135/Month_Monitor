@@ -38,4 +38,5 @@ public interface MMainRepo {
     List<HashMap<String, Object>> SELECT_MAIN_AREA_LOG_CHART(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_MAIN_AREA_DATA_CHART_WEEK(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_MAIN_AREA_LOG_CHART_WEEK(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> SELECT_MAIN_AREA_MAP_SENSOR_LIST(Map<String, Object> param) throws Exception;
 }
