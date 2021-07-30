@@ -98,6 +98,10 @@ const MemModifyModal = (props) => {
     setValue("memAreaCode", node["key"])
   }
 
+  const initAreaCode = () => {
+    setValue("memAreaCode", "");
+  }
+
   return (
     <>
       <CModal
@@ -223,7 +227,7 @@ const MemModifyModal = (props) => {
       </form>
       </CModal>
 
-      <PageAreaTreeModalWidget onAreaModal={onAreaModal} setOnAreaModal={setOnAreaModal} nodeClick={nodeClick} />
+      <PageAreaTreeModalWidget onAreaModal={onAreaModal} setOnAreaModal={setOnAreaModal} nodeClick={nodeClick} initAreaCode={initAreaCode} />
     </>
   )
 }

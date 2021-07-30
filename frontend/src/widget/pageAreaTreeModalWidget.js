@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import {CButton, CCol, CInput, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CRow} from "@coreui/react";
 import {Tree} from "antd";
-import {dataList, generateList, getAreaList, getParentKey, selectAreaItem} from "../agent/area";
+import {dataList, generateList, getAreaList, getParentKey} from "../agent/area";
 import 'antd/dist/antd.css';
 let gData = [];
 
 function PageAreaTreeModalWidget(props) {
-  const {onAreaModal, setOnAreaModal, nodeClick} = props;
+  const {onAreaModal, setOnAreaModal, nodeClick, initAreaCode} = props;
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [searchValue, setSearchValue] = useState("");
@@ -119,7 +119,7 @@ function PageAreaTreeModalWidget(props) {
           />
         </CModalBody>
         <CModalFooter>
-          {/*<CButton color="primary" onClick={initUserId}>초기화</CButton>*/}
+          <CButton color="primary" onClick={initAreaCode}>초기화</CButton>
           <CButton color="secondary" onClick={() => setOnAreaModal(!onAreaModal)}>확인</CButton>
         </CModalFooter>
       </CModal>
