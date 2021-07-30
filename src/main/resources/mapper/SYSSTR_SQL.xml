@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.fscom.firsens.sys.repository.SYSStrRepo">
+    <select id="SELECT_CNT_SYS_STR" parameterType="SYSStrDomain" resultType="int">
+        SELECT COUNT(*)
+                  FROM F_STORE FS
+                    LEFT OUTER JOIN F_MEMBER FM
+                        ON FM.USERID = FS.USERID
+                 WHERE 1 = 1
+                <if test='searchWrd != null and searchWrd !=""'>
+                   AND (
+                         FS.STRNAME LIKE CONCAT('%', #{searchWrd}, '%')
+                         OR FS.STRCODE LIKE CONCAT('%', #{searchWrd}, '%')
+                         OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%')
+                        )
+                </if>
+                  AND FS.USEYN = #{useYn}
+    </select>
+
+    <select id="SELECT_LIST_SYS_STR" parameterType="SYSStrDomain" resultType="SYSStrDomain">
+        SELECT Z.*
+          FROM ( SELECT @ROWNUM := @ROWNUM + 1       AS rownum, A.*
+                   FROM ( SELECT FS.STRCODE                   AS strCode
+                               , FS.STRNAME                   AS strName
+                               , FS.STRADDR                   AS strAddr
+                               , FS.STRORDER                  AS strOrder
+                               , FM.MEMNAME                   AS strOwnName
+                               , FS.STRTEL                    AS strTel
+                               , FS.STROWNTEL                 AS strOwnTel
+                               , FG.GRPCODE                   AS grpCode
+                               , FG.GRPNAME                   AS grpName
+                               , FS.AREACODE                  AS areaCode
+                               , FA.AREANAME                  AS areaName
+                               , FS.USEYN                     AS useYn
+                               , DATE_FORMAT(FS.REGDATE, '%Y-%m-%d') AS regDate
+                               , FS.STRCODE                   AS strCodeKey
+                            FROM F_STORE FS
+                      LEFT OUTER JOIN F_AREA FA
+                              ON FS.AREACODE = FA.AREACODE
+                      LEFT OUTER JOIN F_GROUP FG
+                              ON FS.GRPCODE = FG.GRPCODE
+                      LEFT OUTER JOIN F_MEMBER FM
+                              ON FM.USERID = FS.USERID
+                            WHERE 1 = 1
+                            <if test='searchWrd != null and searchWrd !=""'>
+                              AND (
+                                      FS.STRNAME LIKE CONCAT('%', #{searchWrd}, '%')
+                                   OR FS.STRCODE LIKE CONCAT('%', #{searchWrd}, '%')
+                                   OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%')
+                                  )
+                           </if>
+
+                              AND FS.USEYN = #{useYn}
+                        ) A,
+                    (SELECT @ROWNUM := 0) R
+                ORDER BY rownum desc
+            ) Z
+        LIMIT #{page}, #{sizePerPage}
+    </select>
+</mapper>

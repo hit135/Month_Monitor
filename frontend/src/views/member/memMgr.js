@@ -99,6 +99,7 @@ const MemMgr = () => {
 
   // 검색 버튼 이벤트
   const handleClickSearchBtn = () => {
+    pageItem.page = 1;
     handleInitTable();
   }
 
