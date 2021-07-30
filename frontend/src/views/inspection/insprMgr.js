@@ -106,8 +106,8 @@ const InsprMgr = () => {
             page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount} />
         </CCardBody>
       </CCard>
-      <InsprInsertModal modal={insertModal} setModal={setInsertModal} />
-      <InsprUpdateModal modal={updateModal} setModal={setUpdateModal} />
+      <InsprInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable}/>
+      <InsprUpdateModal modal={updateModal} setModal={setUpdateModal} handleInitTable={handleInitTable} />
     </>
   );
 };

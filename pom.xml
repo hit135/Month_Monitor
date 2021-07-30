@@ -9,8 +9,7 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>kr.fscom</groupId>
-  <artifactId>firsens</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>ss_firsens_web_mng</artifactId>
   <name>firsens</name>
   <description>project for Spring Boot</description>
   <properties>

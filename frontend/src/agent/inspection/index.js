@@ -18,20 +18,9 @@ export const getInspectorList = (page, size, searchItem) => {
     ].join('&'));
 }
 
-export const getDupChkInspId = (inspId) => {
-  return axios.post(`${API_ROOT}/selectDupChkInspId`, inspId );
-}
+export const getDupChkInspId = inspId => axios.post(`${API_ROOT}/selectDupChkInspId`, inspId);
 
-
-export const axiosTest = () => {
-  axios.get(`${API_ROOT}` + '/hello')
-    .then(function (response) {
-      console.log(response)
-    })
-    .catch(function (err) {
-      console.log(err)
-    })
-}
+export const insertInspector = map => axios.post(`${API_ROOT}/insertInspector`, map);
 
 
 

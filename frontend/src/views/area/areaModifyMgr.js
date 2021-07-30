@@ -5,6 +5,7 @@ import axios from "axios";
 
 const AreaModifyMgr = (props) => {
   const API_ROOT = 'http://localhost:8081/api';    // 로컬
+
   let { areaContent, nodeLv2Btn, handleClickUpdateItem } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm({
     mode: "all"

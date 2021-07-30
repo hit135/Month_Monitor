@@ -1,17 +1,12 @@
 package kr.fscom.firsens.sys.controller;
 
 import kr.fscom.firsens.common.security.Sha256Encrypt;
-import kr.fscom.firsens.sys.domain.SYSMemDomain;
-import kr.fscom.firsens.sys.repository.SYSAreaRepo;
 import kr.fscom.firsens.sys.repository.SYSInsprRepo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +77,7 @@ public class SYSInsprController {
         return rtn;
     }
 
-    @PostMapping(value = "selectDupChkInspId")
+    @PostMapping(value = "/selectDupChkInspId")
     public HashMap<String, Object> selectDupChkInspId(String inspId) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         boolean dupChk = false;
@@ -99,6 +94,20 @@ public class SYSInsprController {
         }
 
         return rtn;
+    }
+
+    @PostMapping(value = "/insertInspector")
+    public boolean insertInspector(@RequestBody HashMap<String, Object> param) throws Exception {
+        boolean result = false;
+
+        try {
+            int ins = sysInsprRepo.INSERT_SYS_INSPECTOR(param);
+            result = true;
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return result;
     }
 
 }

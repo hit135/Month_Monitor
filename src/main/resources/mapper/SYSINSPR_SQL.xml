@@ -51,4 +51,38 @@
          WHERE USEYN = #{inspId}
     </select>
 
+    <insert id="INSERT_SYS_INSPECTOR" parameterType="map">
+        INSERT INTO F_INSPECTOR (
+                    INSPID
+                  , INSPPASS
+                  , INSPNAME
+                  , INSPEMAIL
+                  , INSPTEL
+                  , INSPMOBILE
+                  , INSPAREACODE
+                  , INSPSHOPNAME
+                  , INSPADDR
+                  , ALARMUSE
+                  , USEYN
+                  , REGDATE
+                  , INSPRSNDATE
+                  , LOGINFAILCNT
+        ) VALUES (
+                    #{inspId}
+                  , #{inspPass}
+                  , #{inspName}
+                  , #{inspEmail}
+                  , #{inspTel}
+                  , #{inspMobile}
+                  , #{inspAreaCode}
+                  , #{inspShopName}
+                  , #{inspAddr}
+                  , 'Y'
+                  , #{useYn}
+                  , NOW()
+                  , NOW()
+                  , 0
+        )
+    </insert>
+
 </mapper>

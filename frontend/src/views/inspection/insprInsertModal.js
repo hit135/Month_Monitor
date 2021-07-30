@@ -2,11 +2,10 @@ import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHe
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import { getDupChkInspId, getInsprAreaList } from "../../agent/inspection";
+import { getDupChkInspId, getInsprAreaList, insertInspector } from "../../agent/inspection";
 
 const InsprInsertModal = (props) => {
-  const API_ROOT = 'http://localhost:8081/api';
-  const { modal, setModal } = props;
+  const { modal, setModal, handleInitTable } = props;
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
     { defaultValues: {}, mode: "all" }
   );
@@ -31,9 +30,13 @@ const InsprInsertModal = (props) => {
   const handleDupChkInspId = () => {
     getDupChkInspId(document.getElementById("modalInsInspId").value).then(resp => {
       if (resp['result']) {
-        if (resp['dupChk']) {
-
+        if (!resp['dupChk']) {
+          setError("inspId", { type: "dupUserId", message: "중복 ID가 존재합니다." } )
+          setFocus("inspId");
         }
+      } else {
+        setError("inspId", { type: "error", message: "중복 검사 도중 오류가 발생했습니다." } )
+        setFocus("inspId");
       }
     });
   }
@@ -44,7 +47,17 @@ const InsprInsertModal = (props) => {
   };
 
   const onSubmit = (data, e) => {
-
+    if (window.confirm("등록하시겠습니까?")) {
+      insertInspector(data).then(resp => {
+        if (resp) {
+          alert("점검자 등록이 완료되었습니다.");
+          closeModal();
+          handleInitTable();
+        } else {
+          alert("점검자 등록 도중 오류가 발생했습니다.");
+        }
+      });
+    }
   };
 
   return (
