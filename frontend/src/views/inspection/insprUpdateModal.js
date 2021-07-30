@@ -14,7 +14,8 @@ import {useForm} from "react-hook-form";
 import {getInsprAreaList} from "../../agent/inspection";
 
 const InsprUpdateModal = (props) => {
-  const API_ROOT = 'http://localhost:8081/api';
+//const API_ROOT = 'http://localhost:8081/api';    // 로컬
+  const API_ROOT = 'http://1.223.40.19:30081/api/';
   const { modal, setModal } = props;
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, setError } = useForm(
     {

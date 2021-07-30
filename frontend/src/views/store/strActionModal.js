@@ -14,7 +14,8 @@ import {useForm} from "react-hook-form";
 import axios from "axios";
 
 const StrActionModal = (props) => {
-  const API_ROOT = 'http://localhost:8081/api';    // 로컬
+//const API_ROOT = 'http://localhost:8081/api';    // 로컬
+  const API_ROOT = 'http://1.223.40.19:30081/api/';
   const { modal, setModal, handleInitTable } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
     {

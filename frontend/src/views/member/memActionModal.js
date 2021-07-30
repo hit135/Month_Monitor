@@ -15,7 +15,8 @@ import axios from "axios";
 import {convertPhoneNumber, insertMem} from "../../agent/member";
 
 const MemActionModal = (props) => {
-  const API_ROOT = 'http://localhost:8081/api';    // 로컬
+//const API_ROOT = 'http://localhost:8081/api';    // 로컬
+  const API_ROOT = 'http://1.223.40.19:30081/api/';   // 로컬
   const { modal, setModal, handleInitTable } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
     {

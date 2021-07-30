@@ -1,7 +1,8 @@
 import {useEffect} from "react";
 
 const axios = require('axios');
-const API_ROOT = 'http://localhost:8081/api';    // 로컬
+//const API_ROOT = 'http://localhost:8081/api';    // 로컬
+const API_ROOT = 'http://1.223.40.19:30081/api/';
 
 export const getAreaList = (page, sizePerPage, values = {searchWrd : "", useYn : "", delYn : ""}) => {
   return axios

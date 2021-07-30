@@ -4,7 +4,8 @@ import {useForm} from "react-hook-form";
 import axios from "axios";
 
 const AreaModifyMgr = (props) => {
-  const API_ROOT = 'http://localhost:8081/api';    // 로컬
+  //const API_ROOT = 'http://localhost:8081/api';    // 로컬
+  const API_ROOT = 'http://1.223.40.19:30081/api/';
 
   let { areaContent, nodeLv2Btn, handleClickUpdateItem } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm({
