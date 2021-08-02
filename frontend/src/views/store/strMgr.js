@@ -1,9 +1,8 @@
 import React, {lazy, useEffect, useState} from 'react'
-import { DropzoneArea } from 'material-ui-dropzone';
 import PageTableWidget from "../../widget/pageTableWidget";
 import {CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
-import {getMemList} from "../../agent/member";
 import {getStrList} from "../../agent/store";
+import StrActionModal from "./strActionModal";
 
 export const numCommaFormat = value => (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
 
@@ -24,7 +23,7 @@ const columns = [
   { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, formatter: ynStyleFormatter },
   { dataField: 'regDate', text: '등록일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, }
 ];
-const StrMgr = () => {
+const StrMgr = (props) => {
   const [repo, setRepo] = useState([]);               // 리스트 hook
   const [pageItem, setPageItem] = useState({
     page : 1,
@@ -35,10 +34,12 @@ const StrMgr = () => {
     useYn : "Y",
   });
 
+  const [actionModal, setActionModal] = useState(false)             // Modal hook
+  const [modifyModal, setModifyModal] = useState(false)             // Modal hook
+
   // 초기 테이블 셋팅
   const handleInitTable = () => {
     getStrList(pageItem.page, pageItem.sizePerPage, searchItem).then(function (resp) {
-      console.log(resp);
       setRepo(resp.data["resultList"]);
       setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
     });
@@ -64,13 +65,6 @@ const StrMgr = () => {
 
   return (
     <>
-      {/*<DropzoneArea*/}
-      {/*  acceptedFiles={['image/*']}*/}
-      {/*  dropzoneText={"Drag and drop an image here or click"}*/}
-      {/*  onChange={(files) => console.log('Files:', files)}*/}
-      {/*/>*/}
-
-
       <CRow>
         <CCol>
           <CCard>
@@ -99,7 +93,7 @@ const StrMgr = () => {
                     <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'}  id={"delYn"} />
                   </CFormGroup>
 
-                  <button className={"btn btn-custom float-right mt-0"}>등록</button>
+                  <button className={"btn btn-custom float-right mt-0"} onClick={(e) => setActionModal(true)}>등록</button>
                 </CCol>
               </CRow>
               <PageTableWidget
@@ -116,6 +110,8 @@ const StrMgr = () => {
           </CCard>
         </CCol>
       </CRow>
+
+      <StrActionModal modal={actionModal} setModal={setActionModal} />
     </>
   )
 }

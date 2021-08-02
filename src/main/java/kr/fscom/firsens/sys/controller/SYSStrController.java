@@ -1,15 +1,22 @@
 package kr.fscom.firsens.sys.controller;
-
+import kr.fscom.firsens.common.Base64ToImgDecoder;
 import kr.fscom.firsens.sys.domain.SYSStrDomain;
 import kr.fscom.firsens.sys.repository.SYSStrRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sun.misc.BASE64Encoder;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +52,47 @@ public class SYSStrController {
             LOG.error("■■■■■■■■■■■■■■■ 상점목록 요청 오류 : {}", ex.getMessage());
             rtn.put("result", "fail");
         }
+        return rtn;
+    }
+
+    @PostMapping(value = "/insertStr")
+    public HashMap<String, Object> insertStr(@ModelAttribute SYSStrDomain domain) throws Exception {
+
+        LOG.info("■■■■■■■■■■■■■■■ 상점 등록 시작 ");
+        HashMap<String, Object> rtn = new HashMap<String, Object>();
+
+        try {
+            int result = 0;
+
+            if(domain.getFiles().length > 0) {
+                String fileName = System.currentTimeMillis() + ".png";
+                String filePath = "D:/filepath/";
+                Base64ToImgDecoder imgDecoder = new Base64ToImgDecoder();
+                //file is MultipartFile
+                BASE64Encoder base64Encoder =new BASE64Encoder();
+                String base64EncoderImg = base64Encoder.encode(domain.getFiles()[0].getBytes());
+                imgDecoder.decoder(base64EncoderImg, filePath + fileName);
+            }
+
+
+
+
+            if(result > 0)
+                rtn.put("result", "success");
+            else
+                rtn.put("result", "fail");
+
+        }
+
+//        catch (SQLException e) {
+//            LOG.error("■■■■■■■■■■■■■■■ 상점 등록 요청 SQL 오류 : {}", e.getMessage());
+//        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("■■■■■■■■■■■■■■■ 상점 등록 오류 : {}", e.getMessage());
+        }
+
         return rtn;
     }
 }

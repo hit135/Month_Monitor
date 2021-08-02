@@ -11,7 +11,9 @@ import {
 } from "@coreui/react";
 import React from "react";
 import {useForm} from "react-hook-form";
-import axios from "axios";
+import { DropzoneArea } from 'material-ui-dropzone';
+import {convertPhoneNumber} from "../../agent/commonIndex";
+import {insertStr} from "../../agent/store";
 
 const StrActionModal = (props) => {
 //const API_ROOT = 'http://localhost:8081/api';    // 로컬
@@ -26,7 +28,9 @@ const StrActionModal = (props) => {
   );
 
   const onSubmit = (data, e) => {
-
+    insertStr(data).then((resp) => {
+      console.log(resp);
+    })
   };
 
   const closeModal = () => {
@@ -39,11 +43,11 @@ const StrActionModal = (props) => {
     setValue(e.target.id, value);
   }
 
-  // const handleChangePhoneNumber = (e) => {
-  //   e = e || window.e;
-  //   let _val = e.target.value.trim();
-  //   e.target.value = convertPhoneNumber(_val) ;
-  // }
+  const handleChangePhoneNumber = (e) => {
+    e = e || window.e;
+    let _val = e.target.value.trim();
+    e.target.value = convertPhoneNumber(_val) ;
+  }
 
   return (
     <>
@@ -55,58 +59,95 @@ const StrActionModal = (props) => {
       >
         <form onSubmit={handleSubmit(onSubmit)}>
         <CModalHeader>
-          <CModalTitle>회원 등록</CModalTitle>
+          <CModalTitle>상점 등록</CModalTitle>
         </CModalHeader>
         <CModalBody>
-           <CFormGroup row>
+          <CFormGroup row>
             <CCol md="6">
-              <CLabel htmlFor="userId">아이디<span className={"required-span"}> *</span></CLabel>
-              <input className={errors.userId && "is-invalid form-control" || (!errors.userId && getValues("userId") !== "") && "form-control is-valid" || (!errors.userId && getValues("userId") === "") && "form-control"}
-                onBlur={(e) => {
-                  if(!errors.userId) {
-                    axios
-                      .get(`${API_ROOT}/dupMemChk?userId=${e.target.value}`)
-                      .then(resp => {if(resp.data["result"] !== 0) {
-                        setValue("userId", "");
-                        setError("userId", {type: "dupUserId", message: "중복되는 아이디가 존재합니다. 다른 아이디로 등록해주세요."})
-                        setFocus("userId");
-                      }});
-                  }
-                }}
-              />
-              {errors.userId && errors.userId.type === "required" && <span className={"invalid-feedback"}>아이디를 입력해주세요.</span>}
-              {errors.userId && errors.userId.type === "pattern" && <span className={"invalid-feedback"}>{errors.userId.message}</span>}
-              {errors.userId && errors.userId.type === "minLength" && <span className={"invalid-feedback"}>아이디를 5글자 이상으로 입력해주세요.</span>}
-              {errors.userId && errors.userId.type === "maxLength" && <span className={"invalid-feedback"}>아이디를 20글자 이하로 입력해주세요.</span>}
-              {errors.userId && errors.userId.type === "dupUserId" && <span className={"invalid-feedback"}>{errors.userId.message}</span>}
+              <CLabel htmlFor="strName">상점명<span className={"required-span"}> *</span></CLabel>
+              <input className={errors.strName && "is-invalid form-control" || (!errors.strName && getValues("strName") !== "") && "form-control is-valid" || (!errors.userId && getValues("strName") === "") && "form-control"}
+                     {...register("strName", { required: true, minLength: 2, maxLength: 200})} placeholder={"상점명을 입력해주세요."} />
+              {errors.strName && errors.strName.type === "required" && <span className={"invalid-feedback"}>상점명을 입력해주세요.</span>}
+              {errors.strName && errors.strName.type === "pattern" && <span className={"invalid-feedback"}>{errors.strName.message}</span>}
+              {errors.strName && errors.strName.type === "minLength" && <span className={"invalid-feedback"}>아이디를 1글자 이상으로 입력해주세요.</span>}
+              {errors.strName && errors.strName.type === "maxLength" && <span className={"invalid-feedback"}>아이디를 200글자 이하로 입력해주세요.</span>}
+            </CCol>
+            <CCol md="6">
+              <CLabel htmlFor="areaCode">구역선택<span className={"required-span"}> *</span></CLabel>
+              <input className={errors.areaCode && "is-invalid form-control" || (!errors.areaCode && getValues("areaCode") !== "") && "form-control is-valid" || (!errors.areaCode && getValues("areaCode") === "") && "form-control"}
+                     {...register("areaCode", { required: true, minLength: 11, maxLength: 11})} placeholder={"구역을 선택해주세요."} />
+              {errors.areaCode && errors.areaCode.type === "required" && <span className={"invalid-feedback"}>구역코드를 입력해주세요.</span>}
+              {errors.areaCode && errors.areaCode.type === "minLength" && <span className={"invalid-feedback"}>구역코드를 11글자 이상으로 입력해주세요.</span>}
+              {errors.areaCode && errors.areaCode.type === "maxLength" && <span className={"invalid-feedback"}>구역코드를 11글자 이하으로 입력해주세요.</span>}
+              {errors.areaCode && errors.areaCode.type === "dupAreaCode" && <span className={"invalid-feedback"}>{errors.areaCode.message}</span>}
+
             </CCol>
           </CFormGroup>
 
           <CFormGroup row>
             <CCol md="6">
-              <CLabel htmlFor="userId">사용자 이름<span className={"required-span"}> *</span></CLabel>
-              <input className={errors.memName && "is-invalid form-control" || (!errors.memName && getValues("memName") !== "") && "form-control is-valid" || (!errors.memName && getValues("memName") === "") && "form-control"}
-                     placeholder={"최소 2글자 최대 50글자"}
-                     {...register("memName", { required: true, minLength: 2, maxLength: 20})} />
-              {errors.memName && errors.memName.type === "required" && <span className={"invalid-feedback"}>이름을 입력해주세요.</span>}
-              {errors.memName && errors.memName.type === "minLength" && <span className={"invalid-feedback"}>이름을 2글자 이상으로 입력해주세요.</span>}
-              {errors.memName && errors.memName.type === "maxLength" && <span className={"invalid-feedback"}>이름을 50글자 이하로 입력해주세요.</span>}
+              <CLabel htmlFor="strTel">전화번호</CLabel>
+
+              <input className={errors.strTel && "is-invalid form-control" || (!errors.strTel && getValues("strTel") !== "") && "form-control is-valid" || (!errors.strTel && getValues("strTel") === "") && "form-control"}
+                     onKeyUp={handleChangePhoneNumber} {...register("strTel", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요."} })} />
+              {errors.strTel && errors.strTel.type === "pattern" && <span className={"invalid-feedback"}>{errors.strTel.message}</span>}
             </CCol>
 
+            <CCol md="6">
+              <CLabel htmlFor="strOwnTel">휴대폰번호</CLabel>
+              <input className={errors.strOwnTel && "is-invalid form-control" || (!errors.strOwnTel && getValues("strOwnTel") !== "") && "form-control is-valid" || (!errors.strOwnTel && getValues("strOwnTel") === "") && "form-control"}
+                     onKeyUp={handleChangePhoneNumber} {...register("strOwnTel", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요."} })} />
+              {errors.strOwnTel && errors.strOwnTel.type === "pattern" && <span className={"invalid-feedback"}>{errors.strOwnTel.message}</span>}
+            </CCol>
           </CFormGroup>
 
+          <CFormGroup row>
+            <CCol md="6">
+              <CLabel htmlFor="strPosLat">구역위도</CLabel>
+              <input className={errors.strPosLat && "is-invalid form-control" || (!errors.strPosLat && getValues("strPosLat") !== "") && "form-control is-valid" || (!errors.strPosLat && getValues("strPosLat") === "") && "form-control"}
+                     {...register("strPosLat", {pattern: {value:  /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000"}})}
+                     placeholder={"구역 위도를 입력해주세요."} />
+              {errors.strPosLat && errors.strPosLat.type === "pattern" && <span className={"invalid-feedback"}>{errors.strPosLat.message}</span>}
+            </CCol>
+            <CCol md="6">
+              <CLabel htmlFor="strPosLon">구역경도</CLabel>
+              <input className={errors.strPosLon && "is-invalid form-control" || (!errors.strPosLon && getValues("strPosLon") !== "") && "form-control is-valid" || (!errors.strPosLon && getValues("strPosLon") === "") && "form-control"}
+                     {...register("strPosLon", {pattern: {value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"}}) }
+                     placeholder={"구역 경도를 입력해주세요."} />
+              {errors.strPosLon && errors.strPosLon.type === "pattern" && <span className={"invalid-feedback"}>{errors.strPosLon.message}</span>}
+            </CCol>
+          </CFormGroup>
 
+          <CFormGroup row>
+            <CCol md="6">
+              <CLabel htmlFor="strAddr">주소</CLabel>
+              <input className={errors.strAddr && "is-invalid form-control" || (!errors.strAddr && getValues("strAddr") !== "") && "form-control is-valid" || (!errors.strAddr && getValues("strAddr") === "") && "form-control"}
+                     {...register("strAddr", { minLength: 5, maxLength: 200})} placeholder={"주소를 입력해주세요."} />
+              {errors.strAddr && errors.strAddr.type === "minLength" && <span className={"invalid-feedback"}>주소를 5글자 이상으로 입력해주세요.</span>}
+              {errors.strAddr && errors.strAddr.type === "maxLength" && <span className={"invalid-feedback"}>주소를 200글자 이하으로 입력해주세요.</span>}
+            </CCol>
+            <CCol md="6">
+              <CFormGroup className="pr-3 d-inline-flex mb-0 mt-4">
+                <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
+                <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
+              </CFormGroup>
+            </CCol>
+          </CFormGroup>
 
-          <CRow className={"pl-3 pr-3"}>
-            <CFormGroup className="pr-3 d-inline-flex">
-              <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
-            </CFormGroup>
-            <CFormGroup className="pr-3 d-inline-flex">
-              <CLabel htmlFor="delYn" className="pr-1">삭제유무</CLabel>
-              <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} id={"delYn"} onChange={setSwitchValue} />
-            </CFormGroup>
-          </CRow>
+          <DropzoneArea
+            acceptedFiles={['image/*']}
+            filesLimit={10}
+            maxFileSize={1000000}
+            dropzoneText={"상점 이미지를 넣어주세요. 최대 10개, 개당 10MB"}
+            getFileRemovedMessage={(fileName) => `${fileName} 파일을 삭제했습니다.`}
+            getFileLimitExceedMessage={(filesLimit =>  `상점 이미지는 최대 ${filesLimit}개까지 가능합니다.`)}
+            getFileAddedMessage={(fileName => `${fileName} 이미지 추가를 완료했습니다.`)}
+            getDropRejectMessage={(file, rejectedFile, maxFileSize) => (file.size > maxFileSize) ? `파일의 사이즈가 너무 큽니다. 10MB` : "허용되지 않은 파일입니다."}
+            onChange={(files) => {
+              setValue("files", files);
+            }}
+          />
+
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>

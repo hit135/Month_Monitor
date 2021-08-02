@@ -11,8 +11,9 @@ import {
 } from "@coreui/react";
 import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
-import {convertPhoneNumber, deleteMem, updateMem} from "../../agent/member";
+import {deleteMem, updateMem} from "../../agent/member";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
+import {convertPhoneNumber} from "../../agent/commonIndex";
 
 const MemModifyModal = (props) => {
   const { modal, setModal, userContent, handleInitTable } = props

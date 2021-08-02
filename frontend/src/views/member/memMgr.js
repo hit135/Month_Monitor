@@ -109,11 +109,6 @@ const MemMgr = () => {
     handleInitTable();
   }
 
-  // 등록 버튼 이벤트
-  const handleClickRegisterModal = () => {
-    setActionModal(true);
-  }
-
   // 행 클릭 시
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
@@ -166,7 +161,7 @@ const MemMgr = () => {
                     <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} onChange={handleClickSearchType} id={"smsYn"} defaultChecked />
                   </CFormGroup>
 
-                  <button className={"btn btn-custom float-right mt-0"} onClick={handleClickRegisterModal}>등록</button>
+                  <button className={"btn btn-custom float-right mt-0"} onClick={(e) => setActionModal(true)}>등록</button>
                 </CCol>
               </CRow>
               <PageTableWidget

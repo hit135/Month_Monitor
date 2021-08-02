@@ -12,7 +12,8 @@ import {
 import React from "react";
 import {useForm} from "react-hook-form";
 import axios from "axios";
-import {convertPhoneNumber, insertMem} from "../../agent/member";
+import {insertMem} from "../../agent/member";
+import {convertPhoneNumber} from "../../agent/commonIndex";
 
 const MemActionModal = (props) => {
 //const API_ROOT = 'http://localhost:8081/api';    // 로컬
