@@ -42,12 +42,13 @@ public class SYSStrDomain implements Serializable {
     @JsonProperty("strTel")         private String strTel = "";                                 // 상점 전화
     @JsonProperty("strOwnTel")      private String strOwnTel = "";                              // 상점주 전화
     @JsonProperty("userId")         private String userId = "";                                 // 상점주 아이디
-    @JsonProperty("strPosLat")      private String strPosLat = "";                              // 상점 좌표 위도
-    @JsonProperty("strPosLon")      private String strPosLon = "";                              // 상점 좌표 경도
+    @JsonProperty("strPosLat")      private Double strPosLat;                                   // 상점 좌표 위도
+    @JsonProperty("strPosLon")      private Double strPosLon;                                   // 상점 좌표 경도
     @JsonProperty("regDate")        private String RegDate = "";                                // 상점 등록 일자
     @JsonProperty("useYn")          private String useYn = "";                                  // 사용 여부
     @JsonProperty("delYn")          private String delYn = "N";                                 // 삭제여부
     @JsonProperty("areaCode")       private String areaCode = "";                               // 구역 코드
+    @JsonProperty("levelAreaCode")  private String levelAreaCode = "";                          // 자식 구역 코드
     @JsonProperty("areaName")       private String areaName = "";                               // 구역명
     @JsonProperty("grpCode")        private String grpCode = "";                                // 지역 코드
     @JsonProperty("grpName")        private String grpName = "";                                // 지역명

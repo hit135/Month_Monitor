@@ -26,8 +26,7 @@ public class SYSAreaController {
     public SYSAreaController(SYSAreaRepo sysAreaRepo) { this.sysAreaRepo = sysAreaRepo; }
 
     @GetMapping("/areas")
-    public HashMap<String, Object> listPageArea(SYSAreaDomain domain, int page, int size, String searchWrd, String isUse,
-                                                String delYn) throws Exception {
+    public HashMap<String, Object> listPageArea(SYSAreaDomain domain) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         try {
             JSONArray jsonList = JSONArray.fromObject( getAreaListTree( sysAreaRepo.SELECT_LIST_SYS_AREA(domain), "0") );

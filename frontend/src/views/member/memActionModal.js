@@ -72,7 +72,7 @@ const MemActionModal = (props) => {
       >
         <form onSubmit={handleSubmit(onSubmit)}>
         <CModalHeader>
-          <CModalTitle>회원 등록</CModalTitle>
+          <CModalTitle style={{ color: "#fff" }}>회원 등록</CModalTitle>
         </CModalHeader>
         <CModalBody>
            <CFormGroup row>
@@ -135,14 +135,16 @@ const MemActionModal = (props) => {
               <CLabel htmlFor="userId">전화번호</CLabel>
 
               <input className={errors.memTel && "is-invalid form-control" || (!errors.memTel && getValues("memTel") !== "") && "form-control is-valid" || (!errors.memTel && getValues("memTel") === "") && "form-control"}
-                     onKeyUp={handleChangePhoneNumber} {...register("memTel", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요."} })} />
+                     onKeyUp={handleChangePhoneNumber} {...register("memTel", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요."} })}
+              placeholder={"전화번호를 입력해주세요."}/>
               {errors.memTel && errors.memTel.type === "pattern" && <span className={"invalid-feedback"}>{errors.memTel.message}</span>}
             </CCol>
 
             <CCol md="6">
               <CLabel htmlFor="memPwd">휴대폰번호</CLabel>
               <input className={errors.memMobile && "is-invalid form-control" || (!errors.memMobile && getValues("memMobile") !== "") && "form-control is-valid" || (!errors.memMobile && getValues("memMobile") === "") && "form-control"}
-                     onKeyUp={handleChangePhoneNumber} {...register("memMobile", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요."} })} />
+                     onKeyUp={handleChangePhoneNumber} {...register("memMobile", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요."} })}
+                     placeholder={"휴대폰번호를 입력해주세요."} />
               {errors.memMobile && errors.memMobile.type === "pattern" && <span className={"invalid-feedback"}>{errors.memMobile.message}</span>}
             </CCol>
           </CFormGroup>

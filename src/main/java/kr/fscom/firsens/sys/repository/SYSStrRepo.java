@@ -30,4 +30,11 @@ public interface SYSStrRepo {
 
     // 상점 목록
     List<HashMap<String, Object>> SELECT_LIST_SYS_STR(SYSStrDomain domain) throws Exception;
+
+    // 상점 중복 체크
+    int SELECT_CHK_SYS_STRCODE(SYSStrDomain domain) throws Exception;
+
+    int INSERT_SYS_STR(SYSStrDomain domain) throws Exception;
+    int UPDATE_SYS_STR(SYSStrDomain domain) throws Exception;
+    int DELETE_SYS_STR(SYSStrDomain domain) throws Exception;
 }

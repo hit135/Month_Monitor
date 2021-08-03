@@ -9,13 +9,22 @@ export const getStrList = (page, sizePerPage, searchItem) => {
 const config = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 export const insertStr = (array) => {
-  console.log(array);
   var formData = new FormData();
+  formData.append("strCode", array["strCode"]);
   formData.append("strName", array["strName"]);
   formData.append("areaCode", array["areaCode"]);
-  array["files"].map(function(item, idx) {
-    formData.append("files", item);
-  });
+  formData.append("strTel", array["strTel"]);
+  formData.append("strOwnTel", array["strOwnTel"]);
+  formData.append("strPosLat", (array["strPosLat"] === null) ? 0.0 : array["strPosLat"]);
+  formData.append("strPosLon", (array["strPosLon"] === null) ? 0.0 : array["strPosLon"]);
+  formData.append("strAddr", array["strAddr"]);
+  formData.append("levelAreaCode", array["levelAreaCode"]);
+  formData.append("useYn", array["useYn"]);
+  if(array["files"]) {
+    array["files"].map(function(item, idx) {
+      formData.append("files", item);
+    });
+  }
 
   return  axios({
     method: "post",

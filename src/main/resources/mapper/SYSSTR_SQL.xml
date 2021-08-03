@@ -58,4 +58,42 @@
             ) Z
         LIMIT #{page}, #{sizePerPage}
     </select>
+
+    <select id="SELECT_CHK_SYS_STRCODE" parameterType="SYSStrDomain" resultType="int">
+        SELECT COUNT(STRCODE) AS cnt
+          FROM F_STORE
+         WHERE STRCODE = #{strCode}
+           AND AREACODE = #{areaCode}
+           AND LEVELAREACODE = #{levelAreaCode}
+    </select>
+
+    <insert id="INSERT_SYS_STR" parameterType="SYSStrDomain">
+        INSERT INTO F_STORE (
+          STRCODE
+        , STRNAME
+        , STRADDR
+        , STRORDER
+        , STRTEL
+        , STROWNTEL
+        , STRPOSLAT
+        , STRPOSLON
+        , REGDATE
+        , USEYN
+        , AREACODE
+        , LEVELAREACODE
+        ) values (
+          #{strCode}
+        , #{strName}
+        , #{strAddr}
+        , #{strOrder}
+        , #{strTel}
+        , #{strOwnTel}
+        , #{strPosLat}
+        , #{strPosLon}
+        , NOW()
+        , #{useYn}
+        , #{areaCode}
+        , #{levelAreaCode}
+        )
+    </insert>
 </mapper>

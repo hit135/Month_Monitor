@@ -93,7 +93,9 @@ const StrMgr = (props) => {
                     <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'}  id={"delYn"} />
                   </CFormGroup>
 
-                  <button className={"btn btn-custom float-right mt-0"} onClick={(e) => setActionModal(true)}>등록</button>
+                  <button className={"btn btn-custom float-right mt-0"} onClick={(e) => {
+                    setActionModal(true);
+                  }}>등록</button>
                 </CCol>
               </CRow>
               <PageTableWidget
@@ -111,7 +113,7 @@ const StrMgr = (props) => {
         </CCol>
       </CRow>
 
-      <StrActionModal modal={actionModal} setModal={setActionModal} />
+      <StrActionModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
     </>
   )
 }

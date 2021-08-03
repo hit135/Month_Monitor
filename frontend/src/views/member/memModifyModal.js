@@ -37,7 +37,6 @@ const MemModifyModal = (props) => {
     appSwitch.memIsLeave = (userContent.memIsLeave === "Y");
     appSwitch.memRcvSms = (userContent.memRcvSms === "Y");
 
-    console.log(userContent);
     reset(userContent);
   }, [userContent]);
 
@@ -113,7 +112,7 @@ const MemModifyModal = (props) => {
       >
         <form onSubmit={handleSubmit(onSubmit)}>
         <CModalHeader>
-          <CModalTitle>회원 수정</CModalTitle>
+          <CModalTitle style={{ color: "#fff" }}>회원 수정</CModalTitle>
         </CModalHeader>
         <CModalBody>
            <CFormGroup row>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.fscom.firsens.sys.repository.SYSFileRepo">
+    <insert id="INSERT_SYS_FILE" parameterType="SYSFileDomain">
+        INSERT INTO F_AREA_IMG (
+              IMGLEVEL
+            , AREACODE
+            , STRCODE
+            , IMGNAME
+            , IMGPATH
+            , IMGNUM
+            , ORINAME
+            , REGDATE
+        ) VALUES (
+              'store'
+            , #{areaCode}
+            , #{strCode}
+            , #{imgName}
+            , #{imgPath}
+            , #{imgNum}
+            , #{oriName}
+            , NOW()
+        )
+    </insert>
+</mapper>
