@@ -248,6 +248,20 @@
             almtype:$(this).attr('data-almtype')
           });
         });
+        $('.right').on('click', '.right-sensor', function() {
+          var code = $(this).attr('data-areacode');
+          window.center_name = 'store';
+          fn_toggleCenterCont();
+          fn_getAreaSensorCount(code);
+          fn_getAreaStoreList(code);
+          $('.center-cont-top-btn.on').removeClass('on');
+          $('.center-cont-top-btn[data-page="Chart"]').addClass('on');
+          fn_clickContPage({
+            areacode:code,
+            strcode:$(this).attr('data-strcode'),
+            snsrid:$(this).attr('data-code')
+          });
+        });
         $('.center-cont-page').on('click', '.btn-datalog', function() {
           $('.center-cont-top-btn.on').removeClass('on');
           $('.center-cont-top-btn[data-page="Log"]').addClass('on');
@@ -276,6 +290,7 @@
         });
         $('.center-main-cont').on('click', '.js-panel-fullscreen', function() {
           var id = '#'+$(this).attr('data-id');
+          console.log(id);
           if( $(this).hasClass('on') ) {
             $(this).removeClass('on');
             $(id).removeClass('panel-fullscreen');
@@ -318,7 +333,7 @@
         fn_getAreaStoreList(code);
       }
 
-      function fn_onAreaLv2(code, strcode) {
+      function fn_onAreaLv2(code, strcode, snsrid) {
         if(code) {
           $('.left .area-lv2').removeClass('on');
           $('.left .area-lv2[data-code="'+code+'"]').addClass('on');
@@ -405,13 +420,14 @@
           $('.center-main-cont .sortable-grid').html('');
           if(d){
             window.area = d;
+            window.areaIndex = {};
             window.lv1cnt = 0;
             for(var i=d.length-1; i>=0; i--) {
               if(d[i].LEVEL != 1) {
                 window.lv1cnt++;
-
+                window.areaIndex[d[i].CODE] = i;
                 $.post($('#contextRoot').val()+'/mng/mainArea',
-                  { panel_index:'panel-'+i, areacode:d[i].CODE },
+                  { panel_index:'panel-'+d[i].CODE, areacode:d[i].CODE },
                   function (cont) {
                     var $temp = $('<div>');
                     $temp.html(cont);
@@ -435,6 +451,8 @@
         $.post($('#contextRoot').val()+'/mng/areaListAjax',{},function(d) {
           if(d){
             window.area = d;
+            window.areaIndex = {};
+            for(var i=d.length-1; i>=0; i--) if(d[i].LEVEL != 1) window.areaIndex[d[i].CODE] = i;
             var show_panel = $('.center-main-cont .panel-container');
             for(var i=0; i < show_panel.length; i++) {
               fn_setMainArea($(show_panel[i]).attr('data-id').replace('panel-',''));
@@ -445,20 +463,20 @@
 
       function fn_setMainArea(i) {
         var panel_id = 'panel-'+i;
-        $('#'+panel_id+' .center-main-area-title').text(window.area[i].NAME);
-        $('#'+panel_id+' .center-main-area-count-store').text(window.area[i].STORE);
-        $('#'+panel_id+' .center-main-area-count-sensor').text(window.area[i].SENSOR);
-        $('#'+panel_id+' .center-main-area-count-danger').text(window.area[i].DANGER);
-        $('#'+panel_id+' .center-main-area-count-warn').text(window.area[i].WARN);
-        $('#'+panel_id+' .center-main-area-count-discon').text(window.area[i].DISCON);
+        $('#'+panel_id+' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
+        $('#'+panel_id+' .center-main-area-count-store').text(window.area[window.areaIndex[i]].STORE);
+        $('#'+panel_id+' .center-main-area-count-sensor').text(window.area[window.areaIndex[i]].SENSOR);
+        $('#'+panel_id+' .center-main-area-count-danger').text(window.area[window.areaIndex[i]].DANGER);
+        $('#'+panel_id+' .center-main-area-count-warn').text(window.area[window.areaIndex[i]].WARN);
+        $('#'+panel_id+' .center-main-area-count-discon').text(window.area[window.areaIndex[i]].DISCON);
         if($('#'+panel_id).hasClass('panel-fullscreen') || $('#'+panel_id+' .panel-container').hasClass('show')) {
           $.post($('#contextRoot').val()+'/mng/mainAreaDataChartAjax',
-            { areacode:window.area[i].CODE },
+            { areacode:i },
             function (data) {
               fn_setChart('데이터 수신 현황', '#'+panel_id+' .center-main-data-chart', data, ['#99ccff','#003399']);
           });
           $.post($('#contextRoot').val()+'/mng/mainAreaLogChartAjax',
-            { areacode:window.area[i].CODE },
+            { areacode:i },
             function (data) {
               fn_setChart('경보 발생 현황', '#'+panel_id+' .center-main-log-chart', data, ['#ff9966','#cc3300']);
           });
@@ -489,7 +507,7 @@
         var j = 0;
         var now_time = fn_dateToString(new Date()).slice(11,15)+'0';
         for (var i = 0; i < window.min_category.length; i++) {
-          if(j < data.length-1 && data[j].RCVTIME==window.min_category[i]) series[0].data.push(data[j++].CNT);
+          if(j < data.length && data[j].RCVTIME==window.min_category[i]) series[0].data.push(data[j++].CNT);
           else if(window.min_category[i]) series[0].data.push(0);
         }
         for (var i = 0; i < window.min_category.length; i++) {
@@ -515,12 +533,12 @@
         for(var i = 0; i < show_panel.length; i++) {
           var idx = $(show_panel[i]).attr('data-id').replace('panel-','');
           $.post($('#contextRoot').val()+'/mng/mainAreaDataChartWeekAjax',
-            { areacode:window.area[idx].CODE },
+            { areacode:idx },
             function (data) {
               fn_setChartWeek('전력사용량 현황', '#panel-'+idx+' .center-main-data-chart-week', data, ['#99ccff','#003399']);
             });
           $.post($('#contextRoot').val()+'/mng/mainAreaLogChartWeekAjax',
-            { areacode:window.area[idx].CODE },
+            { areacode:idx },
             function (data) {
               fn_setChartWeek('경보 발생 현황', '#panel-'+idx+' .center-main-log-chart-week', data, ['#ff9966','#cc3300']);
             });
@@ -534,12 +552,6 @@
           chart: { height: 250, type: 'bar', id: target, animations: {enabled: false}, },
           title: { text: title, align: 'left' },
           colors: colors,
-          plotOptions: {
-            bar: { horizontal: false, borderRadius: 10, dataLabels: { position: 'bottom' } }
-          },
-          dataLabels: { enabled: true, style: { colors:['#fff'] }, dropShadow: { enabled:true },
-            formatter: function (val) { if(val) return val.toFixed(0); return 0; }
-          },
           annotations: {
             points: [{
               x: window.week_category[new Date().getDay()],
@@ -550,6 +562,12 @@
               },
               marker: { size:0 }
             }]
+          },
+          plotOptions: {
+            bar: { horizontal: false, borderRadius: 10, dataLabels: { position: 'bottom' } }
+          },
+          dataLabels: { enabled: true, style: { colors:['#fff'] }, dropShadow: { enabled:true },
+            formatter: function (val) { if(val) return val.toFixed(0); return 0; }
           },
           tooltip: { enabled: true, marker: {show: true},
             fixed: { enabled: true, position: 'topLeft' },
@@ -564,18 +582,18 @@
         };
         var series = [{name:'저번주', data:[]},{name:'이번주', data:[]}];
         var j = 0;
-        for (var i = 0; j < data.length && i < window.week_category.length; i++) {
-          if((i+1) == data[j].WEEK) series[0].data.push(data[j++].CNT);
+        for (var i = 0; i < window.week_category.length; i++) {
+          if(j < data.length && (i+1) == data[j].WEEK) series[0].data.push(data[j++].CNT);
           else series[0].data.push(0);
         }
-        for (var i = 0; j < data.length && i < window.week_category.length; i++) {
-          if((i+1) == data[j].WEEK) series[1].data.push(data[j++].CNT);
+        for (var i = 0; i < window.week_category.length; i++) {
+          if(j < data.length && (i+1) == data[j].WEEK) series[1].data.push(data[j++].CNT);
           else series[1].data.push(0);
         }
         opt.markers = { size: 0, hover: {size: 0} };
         var target_id = target.replace(/ /g,'-');
         if (window['chart-'+target_id]) {
-          window['chart-'+target_id].updateOptions(opt);
+          //window['chart-'+target_id].updateOptions(opt);
           window['chart-'+target_id].updateSeries(series);
         } else {
           opt.series = series;
@@ -589,6 +607,10 @@
         var page_name = $('.panel.panel-fullscreen .center-main-cont-top-btn.on').attr('data-page');
         $('.panel.panel-fullscreen [class^=center-main-page]').removeClass('on');
         $('.panel.panel-fullscreen .center-main-page-'+page_name).addClass('on');
+        if(page_name=='chart') {
+          fn_updateMainAreaList();
+          fn_getMainAreaWeek();
+        }
         if(page_name=='map') fn_getMainAreaMap();
       }
 
@@ -597,7 +619,7 @@
         for(var i = 0; i < show_panel.length; i++) {
           var idx = $(show_panel[i]).attr('data-id').replace('panel-','');
           $.post($('#contextRoot').val()+'/mng/mainAreaMapSensorListAjax',
-            { areacode:window.area[idx].CODE },
+            { areacode:idx },
             function (data) {
               fn_setMapMarker('#panel-'+idx+' .center-main-page-map', data);
             });
