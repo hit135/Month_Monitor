@@ -248,20 +248,6 @@
             almtype:$(this).attr('data-almtype')
           });
         });
-        $('.right').on('click', '.right-sensor', function() {
-          var code = $(this).attr('data-areacode');
-          window.center_name = 'store';
-          fn_toggleCenterCont();
-          fn_getAreaSensorCount(code);
-          fn_getAreaStoreList(code);
-          $('.center-cont-top-btn.on').removeClass('on');
-          $('.center-cont-top-btn[data-page="Chart"]').addClass('on');
-          fn_clickContPage({
-            areacode:code,
-            strcode:$(this).attr('data-strcode'),
-            snsrid:$(this).attr('data-code')
-          });
-        });
         $('.center-cont-page').on('click', '.btn-datalog', function() {
           $('.center-cont-top-btn.on').removeClass('on');
           $('.center-cont-top-btn[data-page="Log"]').addClass('on');
@@ -338,14 +324,14 @@
           $('.left .area-lv2').removeClass('on');
           $('.left .area-lv2[data-code="'+code+'"]').addClass('on');
           fn_getAreaSensorCount(code);
-          fn_getAreaStoreList(code, strcode);
+          fn_getAreaStoreList(code, strcode, snsrid);
         }
       }
 
-      function fn_clickRightSensor(code, strcode) {
+      function fn_clickRightSensor(code, strcode, snsrid) {
         window.center_name = 'store';
         fn_toggleCenterCont();
-        fn_onAreaLv2(code, strcode);
+        fn_onAreaLv2(code, strcode, snsrid);
       }
 
       function fn_getAreaSensorCount(code) {
@@ -359,7 +345,7 @@
           });
       }
 
-      function fn_getAreaStoreList(code, strcode) {
+      function fn_getAreaStoreList(code, strcode, snsrid) {
         var on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
         if(strcode) on_strcode = strcode;
         $.post($('#contextRoot').val()+'/mng/areaStoreListAjax',{areacode: code},
@@ -383,7 +369,9 @@
             if(!on_obj) on_obj = $('.center-left-sensor-list p')[0];
             $(on_obj).addClass('on');
             $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
-            if($('#prm_strcode').val()!=$('.center-left-sensor-list p.on').attr('data-strcode')) fn_clickContPage();
+            if($('#prm_strcode').val()!=$('.center-left-sensor-list p.on').attr('data-strcode'))
+               if(snsrid) fn_clickContPage({snsrid:snsrid});
+               else fn_clickContPage();
           });
       }
 
