@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class SYSStrController {
 
 
     @GetMapping("/strs")
-    public HashMap<String, Object> listPageMems(SYSStrDomain domain, int page, int size, String searchWrd, String useYn) throws Exception {
+    public HashMap<String, Object> listPageStrs(SYSStrDomain domain, int page, int size, String searchWrd, String useYn) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         List<HashMap<String, Object>> strList = new ArrayList<>();
         try {
@@ -66,16 +67,19 @@ public class SYSStrController {
         try {
             int result = 0;
             int duplicateCnt = 0;
+            domain.setKeyFied("STORE_ID");
+            sysStrRepo.GENERATE_STORE_CODE(domain);
+            domain.setStrCode("FS_STR_"+String.format("%013d", domain.getGenerateKey()));
             duplicateCnt = sysStrRepo.SELECT_CHK_SYS_STRCODE(domain);           // 상점코드 중복 체크
 
             if(duplicateCnt > 0) {
                 rtn.put("result", "duplicate");
             } else {
                 SYSAreaDomain vo = sysAreaRepo.SELECT_ONE_SYS_AREA_ITEM(domain.getAreaCode());
-                if(domain.getStrPosLat() == null && vo.getAreaPosLat() != null) {
+                if(domain.getStrPosLat() == null || domain.getStrPosLat() == 0.0 && vo.getAreaPosLat() != null) {
                     domain.setStrPosLat(vo.getAreaPosLat());
                 }
-                if(domain.getStrPosLon() == null && vo.getAreaPosLon() != null) {
+                if(domain.getStrPosLon() == null || domain.getStrPosLon() == 0.0 && vo.getAreaPosLon() != null) {
                     domain.setStrPosLon(vo.getAreaPosLon());
                 }
 
@@ -83,7 +87,7 @@ public class SYSStrController {
 
                 if(result > 0) {
                     rtn.put("result", "success");
-                    if(domain.getFiles().length > 0) {
+                    if(domain.getFiles() != null) {
                         String filePath = "D:/home/apps/img/imgstore/" + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
                         File newFile = new File(filePath);
                         if(newFile.mkdirs()) {
@@ -97,10 +101,12 @@ public class SYSStrController {
                                     BASE64Encoder base64Encoder =new BASE64Encoder();
                                     String base64EncoderImg = base64Encoder.encode(file.getBytes());
                                     imgDecoder.decoder(base64EncoderImg, filePath + fileName);
+                                    byte[] imgBytes = file.getBytes();
+                                    int imgSize = imgBytes.length;
 
                                     fvo.setImgName(fileName);
                                     fvo.setStrCode(domain.getStrCode());
-                                    fvo.setImgSize(file.getSize());
+                                    fvo.setImgSize(imgSize);
                                     fvo.setImgPath("/imgstore/");
                                     fvo.setOriName("imgfile");
                                     fvo.setImgNum(imgNum);
@@ -119,13 +125,24 @@ public class SYSStrController {
                     rtn.put("result", "fail");
             }
         }
-
         catch (SQLException e) {
             LOG.error("■■■■■■■■■■■■■■■ 상점 등록 요청 SQL 오류 : {}", e.getMessage());
         }
         catch (Exception e) {
             e.printStackTrace();
             LOG.error("■■■■■■■■■■■■■■■ 상점 등록 오류 : {}", e.getMessage());
+        }
+
+        return rtn;
+    }
+
+    @PostMapping("/selectStr")
+    public HashMap<String, Object> selectStr(@RequestBody SYSStrDomain domain) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        try {
+
+        } catch (Exception ex) {
+
         }
 
         return rtn;

@@ -10,7 +10,6 @@ const config = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 export const insertStr = (array) => {
   var formData = new FormData();
-  formData.append("strCode", array["strCode"]);
   formData.append("strName", array["strName"]);
   formData.append("areaCode", array["areaCode"]);
   formData.append("strTel", array["strTel"]);

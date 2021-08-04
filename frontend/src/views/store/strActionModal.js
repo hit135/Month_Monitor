@@ -27,7 +27,7 @@ const StrActionModal = (props) => {
   const { modal, setModal, handleInitTable } = props
   const [onAreaModal, setOnAreaModal] = useState();
   const [initDropZone, setInitDropZone] = useState();
-  const test = () => {
+  const setDropZoneArea = () => {
     setInitDropZone(
       <DropzoneArea
         clearOnUnmount={true}
@@ -47,7 +47,7 @@ const StrActionModal = (props) => {
   }
 
   useEffect(() => {
-    test();
+    setDropZoneArea();
   }, [modal])
 
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
@@ -129,15 +129,14 @@ const StrActionModal = (props) => {
         </CModalHeader>
         <CModalBody>
           <CFormGroup row>
-            <CCol md="6">
-              <CLabel htmlFor="strName">상점코드<span className={"required-span"}> *</span></CLabel>
-              <input className={errors.strCode && "is-invalid form-control" || (!errors.strCode && getValues("strCode") !== "") && "form-control is-valid" || (!errors.strCode && getValues("strCode") === "") && "form-control"}
-                     {...register("strCode", { required: true, minLength: 20, maxLength: 20})} placeholder={"상점명을 입력해주세요."} />
-              {errors.strCode && errors.strCode.type === "required" && <span className={"invalid-feedback"}>상점코드를 입력해주세요.</span>}
-              {errors.strCode && errors.strCode.type === "minLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이상으로 입력해주세요.</span>}
-              {errors.strCode && errors.strCode.type === "maxLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이하로 입력해주세요.</span>}
-            </CCol>
-
+            {/*<CCol md="6">*/}
+            {/*  <CLabel htmlFor="strName">상점코드<span className={"required-span"}> *</span></CLabel>*/}
+            {/*  <input className={errors.strCode && "is-invalid form-control" || (!errors.strCode && getValues("strCode") !== "") && "form-control is-valid" || (!errors.strCode && getValues("strCode") === "") && "form-control"}*/}
+            {/*         {...register("strCode", { required: true, minLength: 20, maxLength: 20})} placeholder={"상점명을 입력해주세요."} />*/}
+            {/*  {errors.strCode && errors.strCode.type === "required" && <span className={"invalid-feedback"}>상점코드를 입력해주세요.</span>}*/}
+            {/*  {errors.strCode && errors.strCode.type === "minLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이상으로 입력해주세요.</span>}*/}
+            {/*  {errors.strCode && errors.strCode.type === "maxLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이하로 입력해주세요.</span>}*/}
+            {/*</CCol>*/}
             <CCol md="6">
               <CLabel htmlFor="strName">상점명<span className={"required-span"}> *</span></CLabel>
               <input className={errors.strName && "is-invalid form-control" || (!errors.strName && getValues("strName") !== "") && "form-control is-valid" || (!errors.strName && getValues("strName") === "") && "form-control"}
@@ -146,9 +145,6 @@ const StrActionModal = (props) => {
               {errors.strName && errors.strName.type === "minLength" && <span className={"invalid-feedback"}>상점명을 1글자 이상으로 입력해주세요.</span>}
               {errors.strName && errors.strName.type === "maxLength" && <span className={"invalid-feedback"}>상점명을 200글자 이하로 입력해주세요.</span>}
             </CCol>
-          </CFormGroup>
-
-          <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="areaCode">구역선택<span className={"required-span"}> *</span></CLabel>
               <input className={errors.areaCode && "is-invalid form-control" || (!errors.areaCode && getValues("areaCode") !== "") && "form-control is-valid" || (!errors.areaCode && getValues("areaCode") === "") && "form-control"}
@@ -160,13 +156,23 @@ const StrActionModal = (props) => {
               {errors.areaCode && errors.areaCode.type === "maxLength" && <span className={"invalid-feedback"}>구역코드를 11글자 이하으로 입력해주세요.</span>}
               {errors.areaCode && errors.areaCode.type === "dupAreaCode" && <span className={"invalid-feedback"}>{errors.areaCode.message}</span>}
             </CCol>
+          </CFormGroup>
 
+          <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="strAddr">주소</CLabel>
               <input className={errors.strAddr && "is-invalid form-control" || (!errors.strAddr && getValues("strAddr") !== "") && "form-control is-valid" || (!errors.strAddr && getValues("strAddr") === "") && "form-control"}
                      {...register("strAddr", { minLength: 5, maxLength: 200})} placeholder={"주소를 입력해주세요."} />
               {errors.strAddr && errors.strAddr.type === "minLength" && <span className={"invalid-feedback"}>주소를 5글자 이상으로 입력해주세요.</span>}
               {errors.strAddr && errors.strAddr.type === "maxLength" && <span className={"invalid-feedback"}>주소를 200글자 이하으로 입력해주세요.</span>}
+            </CCol>
+            <CCol md="6">
+              <CRow className={"pl-3 pr-3"} style={{marginTop : '2.3rem'}}>
+                <CFormGroup className="pr-3 d-inline-flex">
+                  <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
+                  <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
+                </CFormGroup>
+              </CRow>
             </CCol>
           </CFormGroup>
 
@@ -204,14 +210,7 @@ const StrActionModal = (props) => {
               {errors.strPosLon && errors.strPosLon.type === "pattern" && <span className={"invalid-feedback"}>{errors.strPosLon.message}</span>}
             </CCol>
           </CFormGroup>
-
-          <CRow className={"pl-3 pr-3 mt-4"}>
-            <CFormGroup className="pr-3 d-inline-flex">
-              <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-              <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
-            </CFormGroup>
-          </CRow>
-          <CRow id={"dropzone"}>
+          <CRow id={"dropzone"} className={"pl-2 pr-2 mt-4"}>
             {initDropZone}
           </CRow>
 

@@ -57,6 +57,8 @@ public class SYSStrDomain implements Serializable {
     @JsonProperty("snsrCnt")        private int snsrCnt;                                        // 설치 센서 카운트
     @JsonProperty("snsrFireCnt")    private int snsrFireCnt;                                    // 설치 화재 수신기 카운트
 
+    private int generateKey = 0;        // 상점코드 생성을 위한 순번
+    private String keyFied = "";        // 구역코드 생성을 위한 조회 ID
     private int page;
     private int sizePerPage;
     private String searchWrd = "";

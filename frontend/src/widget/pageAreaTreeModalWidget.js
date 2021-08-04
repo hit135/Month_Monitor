@@ -7,10 +7,25 @@ let gData = [];
 
 function PageAreaTreeModalWidget(props) {
   const {onAreaModal, setOnAreaModal, nodeClick, initAreaCode} = props;
+  const [initTree, setInitTree] = useState();
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [inPutSearchValue, setInputSearchValue] = useState("");
+
+  const initTreeData = () => {
+    setInitTree(
+      <Tree
+        showLine={true}
+        onExpand={onExpand}
+        expandedKeys={expandedKeys}
+        autoExpandParent={autoExpandParent}
+        onClick={nodeClick}
+        treeData={loop(gData)}
+        filterTreeNode={filterTreeNode}
+      />
+    )
+  }
 
   const onExpand = (expandedKeys) => {
     setExpandedKeys(expandedKeys);
@@ -43,6 +58,14 @@ function PageAreaTreeModalWidget(props) {
       setAutoExpandParent(false);
     }
   };
+
+  useEffect(() => {
+    if(onAreaModal) {
+      initTreeData();
+    } else {
+      setInitTree("");
+    }
+  }, [onAreaModal])
 
   useEffect(() => {
     handleInitTree().then(r => {
@@ -108,15 +131,7 @@ function PageAreaTreeModalWidget(props) {
           <CRow className={"mb-3"}>
 
           </CRow>
-          <Tree
-            showLine={true}
-            onExpand={onExpand}
-            expandedKeys={expandedKeys}
-            autoExpandParent={autoExpandParent}
-            onClick={nodeClick}
-            treeData={loop(gData)}
-            filterTreeNode={filterTreeNode}
-          />
+          {initTree}
         </CModalBody>
         <CModalFooter>
           <CButton color="primary" onClick={initAreaCode}>초기화</CButton>
