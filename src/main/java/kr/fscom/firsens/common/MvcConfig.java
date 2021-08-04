@@ -1,7 +1,9 @@
 package kr.fscom.firsens.common;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 
 import java.io.IOException;
 
@@ -39,6 +41,12 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*");
     }
 
+    // 로컬 파일 테스트 추후 삭제예정
+    private final String uploadImagesPath;
+    public MvcConfig(@Value("${custom.path.upload-images}") String uploadImagesPath) {
+        this.uploadImagesPath = uploadImagesPath;
+    }
+
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations("file:src/main/resources/templates/");
@@ -52,6 +60,14 @@ public class MvcConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/imgstore/**", "/imgarea/**")
                 .addResourceLocations("file:/home/apps/img/imgstore/", "file:/home/apps/img/imgarea/");
+
+        registry.addResourceHandler("/localImgstore/**", "/localImgarea/**")
+                .addResourceLocations("file:///" + uploadImagesPath + "/")
+                .setCachePeriod(3600)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
     }
+
+
 
 }

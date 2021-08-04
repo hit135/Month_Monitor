@@ -36,6 +36,9 @@ mybatis:
 globals:
   naver:
     clientId: 'meqwtbwfkw'
+custom:
+  path:
+    upload-images: 'D:/home/apps/img/imgstore/'
 
 ---
 spring:

@@ -79,7 +79,6 @@ const MemModifyModal = (props) => {
   }
 
   const handleConfirmDelUser = (id) => {
-    console.log(id);
     if(window.confirm("회원을 영구 삭제하시겠습니까?")) {
       deleteMem(id).then(function(resp) {
         if(resp.data["result"] === "success") {

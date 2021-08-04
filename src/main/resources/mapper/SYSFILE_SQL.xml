@@ -2,6 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSFileRepo">
+    <select id="SELECT_SYS_FILE" parameterType="SYSFileDomain" resultType="SYSFileDomain">
+        SELECT AREACODE         AS areaCode
+             , STRCODE          AS strCode
+             , IMGNAME          AS imgName
+             , IMGPATH          AS imgPath
+             , IMGSIZE          AS imgSize
+          FROM F_AREA_IMG
+         WHERE AREACODE = #{areaCode}
+           AND STRCODE  = #{strCode}
+    </select>
     <insert id="INSERT_SYS_FILE" parameterType="SYSFileDomain">
         INSERT INTO F_AREA_IMG (
               IMGLEVEL

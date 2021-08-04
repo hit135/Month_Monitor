@@ -32,6 +32,7 @@
                                , FG.GRPNAME                   AS grpName
                                , FS.AREACODE                  AS areaCode
                                , FA.AREANAME                  AS areaName
+                               , FS.LEVELAREACODE             AS levelAreaCode
                                , FS.USEYN                     AS useYn
                                , DATE_FORMAT(FS.REGDATE, '%Y-%m-%d') AS regDate
                                , FS.STRCODE                   AS strCodeKey
@@ -62,7 +63,7 @@
     <select id="SELECT_CHK_SYS_STRCODE" parameterType="SYSStrDomain" resultType="int">
         SELECT COUNT(STRCODE) AS cnt
           FROM F_STORE
-         WHERE STRCODE = #{strCode}
+         WHERE STRCODE = #{modifyStrCode}
            AND AREACODE = #{areaCode}
            AND LEVELAREACODE = #{levelAreaCode}
     </select>
@@ -118,6 +119,7 @@
              , FG.GRPCODE                   AS grpCode
              , FG.GRPNAME                   AS grpName
              , FS.AREACODE                  AS areaCode
+             , FS.LEVELAREACODE             AS levelAreaCode
              , FS.USEYN                     AS useYn
              , FS.DELYN                     AS delYn
         FROM F_STORE FS
@@ -129,4 +131,21 @@
           AND FS.AREACODE = #{areaCode}
           AND FS.LEVELAREACODE = #{levelAreaCode}
     </select>
+
+    <update id="UPDATE_SYS_STR" parameterType="SYSStrDomain">
+        UPDATE F_STORE
+        SET STRCODE        = #{modifyStrCode}
+          , STRNAME        = #{strName}
+          , STRADDR        = #{strAddr}
+          , STRTEL         = #{strTel}
+          , STROWNTEL      = #{strOwnTel}
+          , STRPOSLAT      = #{strPosLat}
+          , STRPOSLON      = #{strPosLon}
+          , USEYN          = #{useYn}
+          , AREACODE       = #{areaCode}
+          , LEVELAREACODE  = #{levelAreaCode}
+        WHERE STRCODE = #{strCode}
+          AND AREACODE = #{areaCode}
+          AND LEVELAREACODE = #{levelAreaCode}
+    </update>
 </mapper>

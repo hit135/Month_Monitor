@@ -1,8 +1,10 @@
 import React, {lazy, useEffect, useState} from 'react'
 import PageTableWidget from "../../widget/pageTableWidget";
 import {CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
-import {getStrList} from "../../agent/store";
+import {getStr, getStrList} from "../../agent/store";
 import StrActionModal from "./strActionModal";
+import {getMem} from "../../agent/member";
+import StrModifyModal from "./strModifyModal";
 
 export const numCommaFormat = value => (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
 
@@ -34,6 +36,8 @@ const StrMgr = (props) => {
     useYn : "Y",
   });
 
+  const [strContent, setStrContent] = useState({});
+  const [fileContent, setFileContent] = useState([]);
   const [actionModal, setActionModal] = useState(false)             // Modal hook
   const [modifyModal, setModifyModal] = useState(false)             // Modal hook
 
@@ -62,6 +66,21 @@ const StrMgr = (props) => {
     pageItem.page = 1;
     handleInitTable();
   }
+
+  // 행 클릭 시
+  const rowEvents = {
+    onClick: (e, row, rowIndex) => {
+      getStr(row).then(async (resp) => {
+        if(resp.data["result"] === "success") {
+          setStrContent(resp.data["content"]);
+          await setFileContent(resp.data["fileContent"]);
+          setModifyModal(true);
+        } else {
+          alert("통신에 오륙가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        }
+      })
+    }
+  };
 
   return (
     <>
@@ -106,7 +125,7 @@ const StrMgr = (props) => {
                 totalSize={pageItem.totalElementsCount}
                 onTableChange={handleTableChange}
                 viewColumns={columns}
-                // rowEvents={rowEvents}
+                rowEvents={rowEvents}
               />
             </CCardBody>
           </CCard>
@@ -114,6 +133,7 @@ const StrMgr = (props) => {
       </CRow>
 
       <StrActionModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
+      <StrModifyModal modal={modifyModal} setModal={setModifyModal} strContent={strContent} fileContent={fileContent} handleInitTable={handleInitTable} />
     </>
   )
 }

@@ -35,6 +35,7 @@ public class SYSStrDomain implements Serializable {
 
     @JsonProperty("rowNum")         private int rowNum = 0;                                     // 순번
     @JsonProperty("strCode")        private String strCode = "";                                // 상점 코드
+    @JsonProperty("modifyStrCode")  private String modifyStrCode = "";                          // 수정 상점 코드
     @JsonProperty("strName")        private String strName = "";                                // 상점명
     @JsonProperty("strAddr")        private String strAddr = "";                                // 상점 주소
     @JsonProperty("strOrder")       private int strOrder = 0;                                   // 상점 순서
@@ -53,7 +54,8 @@ public class SYSStrDomain implements Serializable {
     @JsonProperty("grpCode")        private String grpCode = "";                                // 지역 코드
     @JsonProperty("grpName")        private String grpName = "";                                // 지역명
     @JsonProperty("strCodeKey")     private String strCodeKey = "";                             // 상점 코드 KEY
-    @JsonProperty("files")          private MultipartFile[] files;       // 첨부파일 리스트
+    @JsonProperty("files")          private MultipartFile[] files;                              // 첨부파일 리스트
+    @JsonProperty("deleteFileList") private String[] deleteFileList;                    // 첨부파일 삭제 리스트
     @JsonProperty("snsrCnt")        private int snsrCnt;                                        // 설치 센서 카운트
     @JsonProperty("snsrFireCnt")    private int snsrFireCnt;                                    // 설치 화재 수신기 카운트
 

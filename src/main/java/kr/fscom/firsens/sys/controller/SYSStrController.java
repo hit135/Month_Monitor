@@ -67,63 +67,67 @@ public class SYSStrController {
         try {
             int result = 0;
             int duplicateCnt = 0;
-            domain.setKeyFied("STORE_ID");
-            sysStrRepo.GENERATE_STORE_CODE(domain);
-            domain.setStrCode("FS_STR_"+String.format("%013d", domain.getGenerateKey()));
-            duplicateCnt = sysStrRepo.SELECT_CHK_SYS_STRCODE(domain);           // 상점코드 중복 체크
+            if(!domain.getAreaCode().equals("")) {
+                domain.setKeyFied("STORE_ID");
+                sysStrRepo.GENERATE_STORE_CODE(domain);
+                domain.setStrCode("FS_STR_"+String.format("%013d", domain.getGenerateKey()));
+                domain.setModifyStrCode(domain.getStrCode());
+                duplicateCnt = sysStrRepo.SELECT_CHK_SYS_STRCODE(domain);           // 상점코드 중복 체크
 
-            if(duplicateCnt > 0) {
-                rtn.put("result", "duplicate");
-            } else {
-                SYSAreaDomain vo = sysAreaRepo.SELECT_ONE_SYS_AREA_ITEM(domain.getAreaCode());
-                if(domain.getStrPosLat() == null || domain.getStrPosLat() == 0.0 && vo.getAreaPosLat() != null) {
-                    domain.setStrPosLat(vo.getAreaPosLat());
-                }
-                if(domain.getStrPosLon() == null || domain.getStrPosLon() == 0.0 && vo.getAreaPosLon() != null) {
-                    domain.setStrPosLon(vo.getAreaPosLon());
-                }
+                if(duplicateCnt > 0) {
+                    rtn.put("result", "duplicate");
+                } else {
+                    SYSAreaDomain vo = sysAreaRepo.SELECT_ONE_SYS_AREA_ITEM(domain.getAreaCode());
+                    if(domain.getStrPosLat() == null || domain.getStrPosLat() == 0.0 && vo.getAreaPosLat() != null) {
+                        domain.setStrPosLat(vo.getAreaPosLat());
+                    }
+                    if(domain.getStrPosLon() == null || domain.getStrPosLon() == 0.0 && vo.getAreaPosLon() != null) {
+                        domain.setStrPosLon(vo.getAreaPosLon());
+                    }
 
-                result = sysStrRepo.INSERT_SYS_STR(domain);
+                    result = sysStrRepo.INSERT_SYS_STR(domain);
 
-                if(result > 0) {
-                    rtn.put("result", "success");
-                    if(domain.getFiles() != null) {
-                        String filePath = "D:/home/apps/img/imgstore/" + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
-                        File newFile = new File(filePath);
-                        if(newFile.mkdirs()) {
-                            int imgNum = 0;
-                            for(MultipartFile file : domain.getFiles()) {
-                                try {
-                                    imgNum++;
-                                    SYSFileDomain fvo = new SYSFileDomain();
-                                    String fileName = String.valueOf(System.currentTimeMillis());
-                                    Base64ToImgDecoder imgDecoder = new Base64ToImgDecoder();
-                                    BASE64Encoder base64Encoder =new BASE64Encoder();
-                                    String base64EncoderImg = base64Encoder.encode(file.getBytes());
-                                    imgDecoder.decoder(base64EncoderImg, filePath + fileName);
-                                    byte[] imgBytes = file.getBytes();
-                                    int imgSize = imgBytes.length;
+                    if(result > 0) {
+                        rtn.put("result", "success");
+                        if(domain.getFiles() != null) {
+                            String filePath = "/home/apps/img/imgstore/" + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
+                            File newFile = new File(filePath);
+                            if(newFile.mkdirs()) {
+                                int imgNum = 0;
+                                for(MultipartFile file : domain.getFiles()) {
+                                    try {
+                                        imgNum++;
+                                        SYSFileDomain fvo = new SYSFileDomain();
+                                        String fileName = String.valueOf(System.currentTimeMillis());
+                                        Base64ToImgDecoder imgDecoder = new Base64ToImgDecoder();
+                                        BASE64Encoder base64Encoder =new BASE64Encoder();
+                                        String base64EncoderImg = base64Encoder.encode(file.getBytes());
+                                        imgDecoder.decoder(base64EncoderImg, filePath + fileName + ".png");
+                                        byte[] imgBytes = file.getBytes();
+                                        int imgSize = imgBytes.length;
 
-                                    fvo.setImgName(fileName);
-                                    fvo.setStrCode(domain.getStrCode());
-                                    fvo.setImgSize(imgSize);
-                                    fvo.setImgPath("/imgstore/");
-                                    fvo.setOriName("imgfile");
-                                    fvo.setImgNum(imgNum);
-                                    fvo.setAreaCode(domain.getAreaCode());
+                                        fvo.setImgName(fileName);
+                                        fvo.setStrCode(domain.getStrCode());
+                                        fvo.setImgSize(imgSize);
+                                        fvo.setImgPath("/imgstore/");
+                                        fvo.setOriName("imgfile");
+                                        fvo.setImgNum(imgNum);
+                                        fvo.setAreaCode(domain.getAreaCode());
 
-                                    sysFileRepo.INSERT_SYS_FILE(fvo);
-                                } catch (IOException ioEx) {
-                                    LOG.info("■■■■■■■■■■■■■■■ 첨부파일 등록 오류 : " + ioEx);
-                                } catch (SQLException e) {
-                                LOG.error("■■■■■■■■■■■■■■■ 상점 첨부파일 등록 요청 SQL 오류 : {}", e.getMessage());
-                               }
+                                        sysFileRepo.INSERT_SYS_FILE(fvo);
+                                    } catch (IOException ioEx) {
+                                        LOG.info("■■■■■■■■■■■■■■■ 첨부파일 등록 오류 : " + ioEx);
+                                    } catch (SQLException e) {
+                                        LOG.error("■■■■■■■■■■■■■■■ 상점 첨부파일 등록 요청 SQL 오류 : {}", e.getMessage());
+                                    }
+                                }
                             }
                         }
-                    }
-                } else
-                    rtn.put("result", "fail");
-            }
+                    } else
+                        rtn.put("result", "fail");
+                }
+            } else
+                rtn.put("result", "fail");
         }
         catch (SQLException e) {
             LOG.error("■■■■■■■■■■■■■■■ 상점 등록 요청 SQL 오류 : {}", e.getMessage());
@@ -139,10 +143,78 @@ public class SYSStrController {
     @PostMapping("/selectStr")
     public HashMap<String, Object> selectStr(@RequestBody SYSStrDomain domain) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
+        LOG.info("■■■■■■■■■■■■■■■ 상점 상세 요청 시작 ");
         try {
+            if (!domain.getStrCode().equals("")) {
+                rtn.put("content", sysStrRepo.SELECT_SYS_ONE_STR(domain));
+                SYSFileDomain fvo = new SYSFileDomain();
+                fvo.setAreaCode(domain.getAreaCode());
+                fvo.setStrCode(domain.getStrCode());
+                rtn.put("fileContent", sysFileRepo.SELECT_SYS_FILE(fvo));
+                rtn.put("result", "success");
+            } else {
+                rtn.put("result", "fail");
+            }
+        } catch (SQLException e) {
+            LOG.error("■■■■■■■■■■■■■■■ 상점 상세 요청 SQL 오류 : {}", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("■■■■■■■■■■■■■■■ 상점 상세 오류 : {}", e.getMessage());
+        }
 
-        } catch (Exception ex) {
+        return rtn;
+    }
 
+    @PostMapping("/updateStr")
+    public HashMap<String, Object> updateStr(@ModelAttribute SYSStrDomain domain) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        LOG.info("■■■■■■■■■■■■■■■ 상점 수정 요청 시작 ");
+        try {
+            int updateCnt = 0;
+            if(!domain.getStrCode().equals("") && !domain.getAreaCode().equals("")) {
+                if(!domain.getStrCode().equals(domain.getModifyStrCode())) {                // 상점 코드 수정 체크
+                    int duplicateCnt = sysStrRepo.SELECT_CHK_SYS_STRCODE(domain);           // 상점코드 중복 체크
+                    if(duplicateCnt > 0) {
+                        rtn.put("result", "duplicate");
+                        return rtn;
+                    } else {
+                        updateCnt = sysStrRepo.UPDATE_SYS_STR(domain);
+                    }
+                } else {
+                    updateCnt = sysStrRepo.UPDATE_SYS_STR(domain);
+                }
+
+                if(updateCnt > 0) {
+                    rtn.put("result", "success");
+
+                    // 첨부파일 삭제
+                    if(domain.getDeleteFileList() != null) {
+                        for(String fileName : domain.getDeleteFileList()) {
+                            String filePath = "D:/home/apps/img/imgstore/" + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
+                            File file = new File(filePath);
+                            if(file.isDirectory()) {
+                                file = new File(filePath + fileName);
+                                if(file.isFile()) {
+                                    file.delete();
+                                }
+                            } else {
+                                LOG.debug("■■■■■■■■■■■■■■■ 파일이나 디렉토리가 존재하지 않습니다");
+                            }
+                       }
+                    }
+
+                }
+
+                else
+                    rtn.put("result", "fail");
+            } else {
+                rtn.put("result", "fail");
+            }
+        } catch (SQLException e) {
+            LOG.error("■■■■■■■■■■■■■■■ 상점 수정 요청 SQL 오류 : {}", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("■■■■■■■■■■■■■■■ 상점 수정 오류 : {}", e.getMessage());
         }
 
         return rtn;

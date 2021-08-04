@@ -9,7 +9,7 @@ export const getStrList = (page, sizePerPage, searchItem) => {
 const config = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 export const insertStr = (array) => {
-  var formData = new FormData();
+  let formData = new FormData();
   formData.append("strName", array["strName"]);
   formData.append("areaCode", array["areaCode"]);
   formData.append("strTel", array["strTel"]);
@@ -28,6 +28,43 @@ export const insertStr = (array) => {
   return  axios({
     method: "post",
     url: `${API_ROOT}/insertStr`,
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+}
+
+export const getStr = (array) => {
+  return axios
+    .post(`${API_ROOT}/selectStr`, array)
+}
+
+export const updateStr = (array) => {
+  let formData = new FormData();
+  formData.append("strCode", array["strCode"]);
+  formData.append("modifyStrCode", array["modifyStrCode"]);
+  formData.append("strName", array["strName"]);
+  formData.append("areaCode", array["areaCode"]);
+  formData.append("strTel", array["strTel"]);
+  formData.append("strOwnTel", array["strOwnTel"]);
+  formData.append("strPosLat", (array["strPosLat"] === null) ? 0.0 : array["strPosLat"]);
+  formData.append("strPosLon", (array["strPosLon"] === null) ? 0.0 : array["strPosLon"]);
+  formData.append("strAddr", array["strAddr"]);
+  formData.append("levelAreaCode", array["levelAreaCode"]);
+  formData.append("useYn", array["useYn"]);
+  if(array["files"]) {
+    array["files"].map(function(item, idx) {
+      formData.append("files", item);
+    });
+  }
+  if(array["deleteFileList"]) {
+    formData.append("deleteFileList", array["deleteFileList"]);
+  }
+
+  return  axios({
+    method: "post",
+    url: `${API_ROOT}/updateStr`,
     data: formData,
     headers: {
       "Content-Type": "multipart/form-data",
