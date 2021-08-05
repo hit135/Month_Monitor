@@ -1,11 +1,11 @@
 package kr.fscom.firsens.sys.controller;
-import kr.fscom.firsens.common.Base64ToImgDecoder;
 import kr.fscom.firsens.sys.domain.SYSAreaDomain;
 import kr.fscom.firsens.sys.domain.SYSFileDomain;
 import kr.fscom.firsens.sys.domain.SYSStrDomain;
 import kr.fscom.firsens.sys.repository.SYSAreaRepo;
 import kr.fscom.firsens.sys.repository.SYSFileRepo;
 import kr.fscom.firsens.sys.repository.SYSStrRepo;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -293,10 +295,14 @@ public class SYSStrController {
         try {
             SYSFileDomain fvo = new SYSFileDomain();
             String fileName = String.valueOf(System.currentTimeMillis());
-            Base64ToImgDecoder imgDecoder = new Base64ToImgDecoder();
+
             BASE64Encoder base64Encoder =new BASE64Encoder();
             String base64EncoderImg = base64Encoder.encode(file.getBytes());
-            imgDecoder.decoder(base64EncoderImg, filePath + fileName + ".png");
+            byte[] data = Base64.decodeBase64(base64EncoderImg);
+            try (OutputStream stream = new FileOutputStream(filePath + fileName + ".png")) {
+                stream.write(data);
+            }
+
             byte[] imgBytes = file.getBytes();
             int imgSize = imgBytes.length;
 
