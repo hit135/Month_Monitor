@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,6 +27,8 @@ public class SYSStrController {
     private final SYSStrRepo sysStrRepo;
     private final SYSAreaRepo sysAreaRepo;
     private final SYSFileRepo sysFileRepo;
+//    private final String filePath = "D:/home/apps/img/imgstore/";
+    static String filePathValue = "/home/apps/img/imgstore/";
 
     @Autowired
     SYSStrController(SYSStrRepo sysStrRepo, SYSAreaRepo sysAreaRepo, SYSFileRepo sysFileRepo) { this.sysStrRepo = sysStrRepo; this.sysAreaRepo = sysAreaRepo; this.sysFileRepo = sysFileRepo; }
@@ -90,31 +91,14 @@ public class SYSStrController {
                     if(result > 0) {
                         rtn.put("result", "success");
                         if(domain.getFiles() != null) {
-                            String filePath = "/home/apps/img/imgstore/" + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
+                            String filePath =  filePathValue + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
                             File newFile = new File(filePath);
                             if(newFile.mkdirs()) {
                                 int imgNum = 0;
                                 for(MultipartFile file : domain.getFiles()) {
                                     try {
                                         imgNum++;
-                                        SYSFileDomain fvo = new SYSFileDomain();
-                                        String fileName = String.valueOf(System.currentTimeMillis());
-                                        Base64ToImgDecoder imgDecoder = new Base64ToImgDecoder();
-                                        BASE64Encoder base64Encoder =new BASE64Encoder();
-                                        String base64EncoderImg = base64Encoder.encode(file.getBytes());
-                                        imgDecoder.decoder(base64EncoderImg, filePath + fileName + ".png");
-                                        byte[] imgBytes = file.getBytes();
-                                        int imgSize = imgBytes.length;
-
-                                        fvo.setImgName(fileName);
-                                        fvo.setStrCode(domain.getStrCode());
-                                        fvo.setImgSize(imgSize);
-                                        fvo.setImgPath("/imgstore/");
-                                        fvo.setOriName("imgfile");
-                                        fvo.setImgNum(imgNum);
-                                        fvo.setAreaCode(domain.getAreaCode());
-
-                                        sysFileRepo.INSERT_SYS_FILE(fvo);
+                                        fileUpload(file, filePath, domain, imgNum);
                                     } catch (IOException ioEx) {
                                         LOG.info("■■■■■■■■■■■■■■■ 첨부파일 등록 오류 : " + ioEx);
                                     } catch (SQLException e) {
@@ -186,23 +170,58 @@ public class SYSStrController {
 
                 if(updateCnt > 0) {
                     rtn.put("result", "success");
-
+                    String filePath = filePathValue + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
                     // 첨부파일 삭제
                     if(domain.getDeleteFileList() != null) {
-                        for(String fileName : domain.getDeleteFileList()) {
-                            String filePath = "D:/home/apps/img/imgstore/" + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
-                            File file = new File(filePath);
-                            if(file.isDirectory()) {
-                                file = new File(filePath + fileName);
-                                if(file.isFile()) {
-                                    file.delete();
+                        SYSFileDomain fvo = new SYSFileDomain();
+                        fvo.setAreaCode(domain.getAreaCode());
+                        fvo.setStrCode(domain.getStrCode());
+                        try {
+                            for(String fileName : domain.getDeleteFileList()) {
+                                fvo.setImgName(fileName.replace(".png", ""));
+                                File file = new File(filePath);
+                                if(file.isDirectory()) {
+                                    file = new File(filePath + fileName);
+                                    if(file.isFile()) {
+                                        file.delete();
+                                        sysFileRepo.DELETE_SYS_FILE(fvo);
+                                    }
+                                } else {
+                                    LOG.debug("■■■■■■■■■■■■■■■ 파일이나 디렉토리가 존재하지 않습니다");
                                 }
-                            } else {
-                                LOG.debug("■■■■■■■■■■■■■■■ 파일이나 디렉토리가 존재하지 않습니다");
                             }
-                       }
+                        } catch (IOException ex) {
+                            LOG.info("■■■■■■■■■■■■■■■ 첨부파일 삭제 오류 : " + ex);
+                        } catch (SQLException ex) {
+                            LOG.info("■■■■■■■■■■■■■■■ 파일 디비 삭제 오류 : " + ex);
+                        }
                     }
 
+                    // 첨부파일 등록
+                    if(domain.getFiles() != null) {
+                        try {
+                            int imgNum = 0;
+                            File newFile = new File(filePath);
+                            if(!newFile.isDirectory()) {        // 첨부파일 경로 폴더 없을 때 생성
+                                newFile.mkdirs();
+                            }
+
+                            for(MultipartFile file : domain.getFiles()) {
+                                File files = new File(filePath + file.getOriginalFilename());
+                                if(files.isFile()) {
+                                    imgNum++;
+                                } else {
+                                    imgNum++;
+                                    fileUpload(file, filePath, domain, imgNum);
+                                }
+                            }
+
+                        } catch (IOException ex) {
+                            LOG.info("■■■■■■■■■■■■■■■ 첨부파일 수정 오류 : " + ex);
+                        } catch (SQLException ex) {
+                            LOG.info("■■■■■■■■■■■■■■■ 파일 디비 수정 오류 : " + ex);
+                        }
+                    }
                 }
 
                 else
@@ -218,5 +237,81 @@ public class SYSStrController {
         }
 
         return rtn;
+    }
+
+    @PostMapping("/deleteStr")
+    public HashMap<String, Object> deleteStr(@ModelAttribute SYSStrDomain domain) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        LOG.info("■■■■■■■■■■■■■■■ 상점 삭제 요청 시작 ");
+        try {
+            if (!domain.getStrCode().equals("") && !domain.getAreaCode().equals("")) {
+                String filePath = filePathValue + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
+                int deleteCnt = sysStrRepo.DELETE_SYS_STR(domain);
+
+                if(deleteCnt > 0) {
+                    rtn.put("result", "success");
+
+                    // 첨부파일 삭제
+                    if(domain.getFiles() != null) {
+                        SYSFileDomain fvo = new SYSFileDomain();
+                        fvo.setAreaCode(domain.getAreaCode());
+                        fvo.setStrCode(domain.getStrCode());
+
+                        for(MultipartFile file : domain.getFiles()) {
+                            fvo.setImgName(file.getOriginalFilename().replace(".png", ""));
+                            File files = new File(filePath);
+                            if(files.isDirectory()) {
+                                files = new File(filePath + file.getOriginalFilename());
+                                if(files.isFile()) {
+                                    files.delete();
+                                    sysFileRepo.DELETE_SYS_FILE(fvo);
+                                }
+                            } else {
+                                LOG.debug("■■■■■■■■■■■■■■■ 파일이나 디렉토리가 존재하지 않습니다");
+                            }
+                        }
+                    }
+                } else
+                    rtn.put("result", "fail");
+            } else {
+                rtn.put("result", "fail");
+            }
+        } catch (SQLException e) {
+            LOG.error("■■■■■■■■■■■■■■■ 상점 삭제 요청 SQL 오류 : {}", e.getMessage());
+            rtn.put("result", "fail");
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("■■■■■■■■■■■■■■■ 상점 삭제 오류 : {}", e.getMessage());
+            rtn.put("result", "fail");
+        }
+
+        return rtn;
+    }
+
+    public void fileUpload(MultipartFile file, String filePath, SYSStrDomain domain, int imgNum) throws Exception {
+        try {
+            SYSFileDomain fvo = new SYSFileDomain();
+            String fileName = String.valueOf(System.currentTimeMillis());
+            Base64ToImgDecoder imgDecoder = new Base64ToImgDecoder();
+            BASE64Encoder base64Encoder =new BASE64Encoder();
+            String base64EncoderImg = base64Encoder.encode(file.getBytes());
+            imgDecoder.decoder(base64EncoderImg, filePath + fileName + ".png");
+            byte[] imgBytes = file.getBytes();
+            int imgSize = imgBytes.length;
+
+            fvo.setImgName(fileName);
+            fvo.setStrCode(domain.getStrCode());
+            fvo.setImgSize(imgSize);
+            fvo.setImgPath("/imgstore/");
+            fvo.setOriName("imgfile");
+            fvo.setImgNum(imgNum);
+            fvo.setAreaCode(domain.getAreaCode());
+
+            sysFileRepo.INSERT_SYS_FILE(fvo);
+        } catch (IOException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 첨부파일 생성 오류 : {}", ex.getMessage());
+        } catch (SQLException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 첨부파일 디비 생성 오류 : {}", ex.getMessage());
+        }
     }
 }

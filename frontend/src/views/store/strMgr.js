@@ -37,7 +37,7 @@ const StrMgr = (props) => {
   });
 
   const [strContent, setStrContent] = useState({});
-  const [fileContent, setFileContent] = useState([]);
+  const [fileContent, setFileContent] = useState();
   const [actionModal, setActionModal] = useState(false)             // Modal hook
   const [modifyModal, setModifyModal] = useState(false)             // Modal hook
 
@@ -72,9 +72,9 @@ const StrMgr = (props) => {
     onClick: (e, row, rowIndex) => {
       getStr(row).then(async (resp) => {
         if(resp.data["result"] === "success") {
-          setStrContent(resp.data["content"]);
-          await setFileContent(resp.data["fileContent"]);
-          setModifyModal(true);
+          await setStrContent(resp.data["content"]);
+          setFileContent(resp.data["fileContent"]);
+          await setModifyModal(true);
         } else {
           alert("통신에 오륙가 발생했습니다. 잠시 후 다시 시도해주세요.");
         }

@@ -72,5 +72,27 @@ export const updateStr = (array) => {
   });
 }
 
+export const deleteStr = (strCode, areaCode, levelAreaCode, files) => {
+  let formData = new FormData();
+  formData.append("strCode", strCode);
+  formData.append("areaCode", areaCode);
+  formData.append("levelAreaCode", levelAreaCode);
+  if(files) {
+    files.map(function(item, idx) {
+      formData.append("files", item);
+    });
+  }
+
+  return axios({
+    method: "post",
+    url : `${API_ROOT}/deleteStr`,
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  })
+}
+
+
 
 

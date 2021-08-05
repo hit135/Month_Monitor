@@ -148,4 +148,11 @@
           AND AREACODE = #{areaCode}
           AND LEVELAREACODE = #{levelAreaCode}
     </update>
+
+    <delete id="DELETE_SYS_STR" parameterType="SYSStrDomain">
+        DELETE FROM F_STORE
+              WHERE STRCODE = #{strCode}
+                AND AREACODE = #{areaCode}
+                AND LEVELAREACODE = #{levelAreaCode}
+    </delete>
 </mapper>

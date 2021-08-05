@@ -3,7 +3,8 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSFileRepo">
     <select id="SELECT_SYS_FILE" parameterType="SYSFileDomain" resultType="SYSFileDomain">
-        SELECT AREACODE         AS areaCode
+        SELECT SEQ              AS seq
+             , AREACODE         AS areaCode
              , STRCODE          AS strCode
              , IMGNAME          AS imgName
              , IMGPATH          AS imgPath
@@ -35,4 +36,11 @@
             , NOW()
         )
     </insert>
+
+    <delete id="DELETE_SYS_FILE" parameterType="SYSFileDomain">
+        DELETE FROM F_AREA_IMG
+              WHERE AREACODE = #{areaCode}
+                AND STRCODE  = #{strCode}
+                AND IMGNAME  = #{imgName}
+    </delete>
 </mapper>

@@ -126,14 +126,6 @@ const StrActionModal = (props) => {
         </CModalHeader>
         <CModalBody>
           <CFormGroup row>
-            {/*<CCol md="6">*/}
-            {/*  <CLabel htmlFor="strName">상점코드<span className={"required-span"}> *</span></CLabel>*/}
-            {/*  <input className={errors.strCode && "is-invalid form-control" || (!errors.strCode && getValues("strCode") !== "") && "form-control is-valid" || (!errors.strCode && getValues("strCode") === "") && "form-control"}*/}
-            {/*         {...register("strCode", { required: true, minLength: 20, maxLength: 20})} placeholder={"상점명을 입력해주세요."} />*/}
-            {/*  {errors.strCode && errors.strCode.type === "required" && <span className={"invalid-feedback"}>상점코드를 입력해주세요.</span>}*/}
-            {/*  {errors.strCode && errors.strCode.type === "minLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이상으로 입력해주세요.</span>}*/}
-            {/*  {errors.strCode && errors.strCode.type === "maxLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이하로 입력해주세요.</span>}*/}
-            {/*</CCol>*/}
             <CCol md="6">
               <CLabel htmlFor="strName">상점명<span className={"required-span"}> *</span></CLabel>
               <input className={errors.strName && "is-invalid form-control" || (!errors.strName && getValues("strName") !== "") && "form-control is-valid" || (!errors.strName && getValues("strName") === "") && "form-control"}
