@@ -52,6 +52,10 @@ spring:
   devtools:
     livereload:
       enabled: true
+  servlet:
+    multipart:
+      max-file-size: 11MB
+      max-request-size: 110MB
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://1.223.40.19:13331/ifiresens_v2?autoReconnect=true&useSSL=false
@@ -72,3 +76,6 @@ mybatis:
 globals:
   naver:
     clientId: 'meqwtbwfkw'
+custom:
+  path:
+    upload-images: 'D:/home/apps/img/imgstore/'
