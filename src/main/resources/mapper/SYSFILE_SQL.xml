@@ -43,4 +43,13 @@
                 AND STRCODE  = #{strCode}
                 AND IMGNAME  = #{imgName}
     </delete>
+
+    <update id="UPDATE_SYS_FILE_ORDER" parameterType="SYSFileDomain">
+        UPDATE   F_AREA_IMG A
+          JOIN     (SELECT @rank := 0) r
+           SET      A.IMGNUM = @rank:= (@rank+1)
+         WHERE A.AREACODE = #{areaCode}
+           AND A.STRCODE = #{strCode}
+      ORDER BY REGDATE
+    </update>
 </mapper>

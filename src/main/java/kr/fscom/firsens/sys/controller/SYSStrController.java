@@ -27,7 +27,7 @@ public class SYSStrController {
     private final SYSStrRepo sysStrRepo;
     private final SYSAreaRepo sysAreaRepo;
     private final SYSFileRepo sysFileRepo;
-//    private final String filePath = "D:/home/apps/img/imgstore/";
+//    private final String filePathValue = "D:/home/apps/img/imgstore/";
     static String filePathValue = "/home/apps/img/imgstore/";
 
     @Autowired
@@ -89,15 +89,15 @@ public class SYSStrController {
                     result = sysStrRepo.INSERT_SYS_STR(domain);
 
                     if(result > 0) {
+                        int imgNum = 0;
                         rtn.put("result", "success");
                         if(domain.getFiles() != null) {
                             String filePath =  filePathValue + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
                             File newFile = new File(filePath);
                             if(newFile.mkdirs()) {
-                                int imgNum = 0;
                                 for(MultipartFile file : domain.getFiles()) {
+                                    imgNum ++;
                                     try {
-                                        imgNum++;
                                         fileUpload(file, filePath, domain, imgNum);
                                     } catch (IOException ioEx) {
                                         LOG.info("■■■■■■■■■■■■■■■ 첨부파일 등록 오류 : " + ioEx);
@@ -168,12 +168,12 @@ public class SYSStrController {
                     updateCnt = sysStrRepo.UPDATE_SYS_STR(domain);
                 }
 
+                SYSFileDomain fvo = new SYSFileDomain();
                 if(updateCnt > 0) {
                     rtn.put("result", "success");
                     String filePath = filePathValue + domain.getAreaCode() + "/" + domain.getStrCode() + "/";
                     // 첨부파일 삭제
                     if(domain.getDeleteFileList() != null) {
-                        SYSFileDomain fvo = new SYSFileDomain();
                         fvo.setAreaCode(domain.getAreaCode());
                         fvo.setStrCode(domain.getStrCode());
                         try {
@@ -200,7 +200,6 @@ public class SYSStrController {
                     // 첨부파일 등록
                     if(domain.getFiles() != null) {
                         try {
-                            int imgNum = 0;
                             File newFile = new File(filePath);
                             if(!newFile.isDirectory()) {        // 첨부파일 경로 폴더 없을 때 생성
                                 newFile.mkdirs();
@@ -208,11 +207,8 @@ public class SYSStrController {
 
                             for(MultipartFile file : domain.getFiles()) {
                                 File files = new File(filePath + file.getOriginalFilename());
-                                if(files.isFile()) {
-                                    imgNum++;
-                                } else {
-                                    imgNum++;
-                                    fileUpload(file, filePath, domain, imgNum);
+                                if(!files.isFile()) {
+                                    fileUpload(file, filePath, domain, 0);
                                 }
                             }
 
@@ -222,8 +218,11 @@ public class SYSStrController {
                             LOG.info("■■■■■■■■■■■■■■■ 파일 디비 수정 오류 : " + ex);
                         }
                     }
-                }
 
+                    if(domain.getFiles() != null || domain.getDeleteFileList() != null) {
+                        sysFileRepo.UPDATE_SYS_FILE_ORDER(fvo);
+                    }
+                }
                 else
                     rtn.put("result", "fail");
             } else {
@@ -270,6 +269,8 @@ public class SYSStrController {
                                 LOG.debug("■■■■■■■■■■■■■■■ 파일이나 디렉토리가 존재하지 않습니다");
                             }
                         }
+
+                        sysFileRepo.UPDATE_SYS_FILE_ORDER(fvo);
                     }
                 } else
                     rtn.put("result", "fail");

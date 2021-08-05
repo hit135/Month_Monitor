@@ -136,7 +136,14 @@ const StrModifyModal = (props) => {
       const levelAreaCode = getValues("levelAreaCode");
       const file = getValues("files");
       deleteStr(strCode, areaCode, levelAreaCode, file).then((resp) => {
-
+        if(resp.data["result"] === "success") {
+          alert("상점 삭제를 완료했습니다.");
+          closeModal();
+          handleInitTable();
+        } else {
+          alert("상점 삭제에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+          closeModal();
+        }
       });
     }
 
