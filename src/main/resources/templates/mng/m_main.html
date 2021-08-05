@@ -11,6 +11,9 @@
       .top-search-result { position:absolute; z-index:100; right:0; top:40px; width:300px; max-height:400px; background:#fff; overflow-y:scroll; }
       .top-search-result p { cursor:pointer; }
       .top-search-result p:hover { background:#ddd; }
+      .nav-link-text {
+          color : #333;
+      }
     </style>
     <style type="text/css">
       .left p { padding:3px 7px; margin-bottom:3px; border-radius:4px; }
@@ -165,6 +168,7 @@
   </head>
   <body class="mod-bg-1 mod-nav-link">
     <div class="top"><th:block th:replace="mng/layout/m_top"></th:block></div>
+
     <div class="row">
       <div class="left col-md-2 mt-md-n7 col-12 mt-0"><th:block th:replace="mng/layout/m_left"></th:block></div>
       <div class="center col-md-8 col-12">
@@ -210,6 +214,62 @@
 
       </div>
       <div class="right col-md-2 mt-md-n7 col-12 mt-0"><th:block th:replace="mng/layout/m_right"></th:block></div>
+
+      <div class="modal fade default-example-modal-left-sm" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-left modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title h4">Firsens 관리자 메뉴</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true"><i class="fal fa-times"></i></span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <nav id="js-primary-nav" class="primary-nav" role="navigation">
+                <ul id="js-nav-menu" class="nav-menu">
+                  <li>
+                    <a href="javascript:movePageAdm('area')">
+                      <i class="fal fa-home"></i>
+                      <span class="nav-link-text" data-i18n="nav.application_intel">구역관리</span>
+                    </a>
+                    <a href="javascript:movePageAdm('mem')">
+                      <i class="fal fa-user"></i>
+                      <span class="nav-link-text" data-i18n="nav.application_intel">회원관리</span>
+                    </a>
+                    <a href="javascript:movePageAdm('str')">
+                      <i class="fal fa-store"></i>
+                      <span class="nav-link-text" data-i18n="nav.application_intel">상점관리</span>
+                    </a>
+                    <a href="javascript:movePageAdm('snsr')">
+                      <i class="fal fa-siren"></i>
+                      <span class="nav-link-text" data-i18n="nav.application_intel">센서관리</span>
+                    </a>
+                    <a href="javascript:movePageAdm('inspr')">
+                      <i class="fal fa-user"></i>
+                      <span class="nav-link-text" data-i18n="nav.application_intel">점검자관리</span>
+                    </a>
+                    <a href="javascript:movePageAdm('insp')">
+                      <i class="fal fa-list"></i>
+                      <span class="nav-link-text" data-i18n="nav.application_intel">점검관리</span>
+                    </a>
+                    <a href="javascript:movePageAdm('push')">
+                      <i class="fal fa-bell"></i>
+                      <span class="nav-link-text" data-i18n="nav.application_intel">발송이력</span>
+                    </a>
+                    <a href="javascript:movePageAdm('stat')">
+                      <i class="fal fa-chart-pie"></i>
+                      <span class="nav-link-text" data-i18n="nav.application_intel">통계</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="bottom"><th:block th:replace="mng/layout/m_bottom"></th:block></div>
     <script th:src="@{/fs/js/polyfill.min.js}"></script>
@@ -218,6 +278,7 @@
     <script type="text/javascript">
       $(function() {
         fn_init();
+        console.log(1234);
       });
 
       function fn_init() {
@@ -650,6 +711,16 @@
         }
       }
 
+      function movePageAdm(type) {
+          let path = "";
+          if(location.hostname === "localhost")
+              path = "http://localhost:3000/#/";
+          else
+              path = "http://1.223.40.19:30081/adm#/";
+
+          location.href = path + type;
+          // http://1.223.40.19:30081/adm#/area
+      }
     </script>
   </body>
 </html>
