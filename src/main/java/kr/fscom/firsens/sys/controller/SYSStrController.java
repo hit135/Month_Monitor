@@ -5,13 +5,12 @@ import kr.fscom.firsens.sys.domain.SYSStrDomain;
 import kr.fscom.firsens.sys.repository.SYSAreaRepo;
 import kr.fscom.firsens.sys.repository.SYSFileRepo;
 import kr.fscom.firsens.sys.repository.SYSStrRepo;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Encoder;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -295,10 +294,9 @@ public class SYSStrController {
         try {
             SYSFileDomain fvo = new SYSFileDomain();
             String fileName = String.valueOf(System.currentTimeMillis());
+            String base64EncoderImg = Base64.encode(file.getBytes());
+            byte[] data = Base64.decode(base64EncoderImg);
 
-            BASE64Encoder base64Encoder =new BASE64Encoder();
-            String base64EncoderImg = base64Encoder.encode(file.getBytes());
-            byte[] data = Base64.decodeBase64(base64EncoderImg);
             try (OutputStream stream = new FileOutputStream(filePath + fileName + ".png")) {
                 stream.write(data);
             }
