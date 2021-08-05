@@ -31,6 +31,7 @@ public class SYSAreaController {
         try {
             JSONArray jsonList = JSONArray.fromObject( getAreaListTree( sysAreaRepo.SELECT_LIST_SYS_AREA(domain), "0") );
             rtn.put("resultList", jsonList);
+            rtn.put("result", "success");
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 구역목록 요청 SQL 오류 : {}", ex.getMessage());
             rtn.put("result", "fail");
