@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * @Class Name : SYSAreaDomain.java
- * @Description : 구역관리
+ * @Class Name : SYSSnsrDomain.java
+ * @Description : 회원관리
  * @Modification Information
  *
  *   수정일         수정자      수정내용

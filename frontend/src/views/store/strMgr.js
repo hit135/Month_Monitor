@@ -82,6 +82,12 @@ const StrMgr = (props) => {
     }
   };
 
+  const handleInitListStrArea = () => {
+
+  }
+
+
+
   return (
     <>
       <CRow>

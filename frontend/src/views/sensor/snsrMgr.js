@@ -1,5 +1,5 @@
 import React, {lazy, useEffect, useState} from 'react'
-import {CCard, CCardBody, CCardHeader, CCol, CInput, CRow} from "@coreui/react";
+import {CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
 import {Tree} from "antd";
 import {
   dataList,
@@ -7,15 +7,43 @@ import {
   getAreaList,
   getParentKey,
 } from "../../agent/area";
+import PageTableWidget from "../../widget/pageTableWidget";
+import {numCommaFormat} from "../member/memMgr";
+import {getSnsrList} from "../../agent/sensor";
 
 let gData = [];
 
+const columns = [
+  { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right' }, formatter: (cell) => numCommaFormat(cell) },
+  { dataField: 'snsrSeq', text: '센서코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
+  { dataField: 'snsrId', text: '센서아이디', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
+  { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }},
+  { dataField: 'snsrNick', text: '센서명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }},
+  // { dataField: 'channel', text: '채널', headerStyle: { textAlign: 'center' }},
+  // { dataField: 'sOc1V1', text: '전류 1차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
+  // { dataField: 'sOc2V1', text: '전류 2차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
+  // { dataField: 'sIgr1V', text: 'IGR 1차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
+  // { dataField: 'sIgr2V', text: 'IGR 2차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
+  // { dataField: 'sIgo1V', text: 'IGO 1차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
+  // { dataField: 'sIgo2V', text: 'IGO 2차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
+  { dataField: 'regDate', text: '등록일자', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }}
+];
 const SnsrMgr = () => {
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [inPutSearchValue, setInputSearchValue] = useState("");
-  const [nodeArray, setNodeArray] = useState();
+  const [repo, setRepo] = useState([]);               // 리스트 hook
+  const [pageItem, setPageItem] = useState({
+    page : 1,
+    sizePerPage: 10
+  }); // 페이징 hook
+  const [searchItem, setSearchItem] = useState({
+    searchWrd : "",
+    delYn : "N",
+    areaCode : "all",
+    levelAreaCode: "all"
+  });
 
   const onExpand = (expandedKeys) => {
     setExpandedKeys(expandedKeys);
@@ -53,6 +81,8 @@ const SnsrMgr = () => {
     handleInitTree().then(r => {
       generateList(gData);
       clickSearchTree();
+
+      handleInitTable();
     });
   }, []);
 
@@ -61,12 +91,12 @@ const SnsrMgr = () => {
     await getAreaList(page, sizePerPage).then(function (resp) {
       console.log(resp);
       if(resp.data["result"] === "success") {
-        const data = [{title : "전체", children: [], key: "AREA_0000000"}];
+        const data = [{title : "전체", children: [], key: "all"}];
         // data.push();
         resp.data["resultList"].map(function(item, idx) {
           data.push(item);
         });
-        data.push({title : "알수없음", children: [], key: "AREA_111111"})
+        data.push({title : "알수없음", children: [], key: "none"})
 
         gData = data;
       }
@@ -74,9 +104,27 @@ const SnsrMgr = () => {
     });
   }
 
+
+  // const nodeClick = async (e, node) => {
+  //   console.log(node);
+  //
+  //   pageItem.page = 1;
+  //   // searchItem.areaCode =
+
+  // }
+
   // 노드 선택 이벤트
   const nodeClick = async (e, node) => {
-    setNodeArray(node);
+    pageItem.page = 1;
+    const parentKey = getParentKey(node.key, gData);
+    searchItem.levelAreaCode = node["key"];
+    if(parentKey !== undefined) {
+      searchItem.areaCode = parentKey;
+    } else {
+      searchItem.areaCode = node["key"];
+    }
+
+    await handleInitTable();
   }
 
   // 검색 후 이벤트
@@ -104,6 +152,41 @@ const SnsrMgr = () => {
         key: item.key,
       };
     });
+
+  // 초기 테이블 셋팅
+  const handleInitTable = () => {
+    getSnsrList(pageItem.page, pageItem.sizePerPage, searchItem).then(function (resp) {
+      setRepo(resp.data["resultList"]);
+      setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
+    });
+  }
+
+  // 페이징 클릭 시
+  const handleTableChange = (pageNation, param) => {
+    pageItem.page = param.page;
+    pageItem.sizePerPage = param.sizePerPage;
+
+    handleInitTable();
+  };
+
+  // 검색 버튼 이벤트
+  const handleClickSearchBtn = () => {
+    pageItem.page = 1;
+    handleInitTable();
+  }
+
+  const handleClickSearchType = (e) => {
+    const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
+    searchItem[e.target.id] = value;
+    handleInitTable();
+  }
+
+  // 행 클릭 시
+  const rowEvents = {
+    onClick: (e, row, rowIndex) => {
+
+    }
+  };
 
   return (
     <>
@@ -157,7 +240,35 @@ const SnsrMgr = () => {
               </CCol>
             </CCardHeader>
             <CCardBody className={"pt-3"}>
+              <CCol md="12" xl="12" className={"pl-0 pr-0 mb-2"}>
+                <CCol sm="2" className={"float-left pl-0"}>
+                  <CInput placeholder="검색어 입력" onKeyUp={(e) => {
+                    searchItem.searchWrd = e.target.value;
+                    if(e.key === "Enter") handleClickSearchBtn()
+                  }} />
+                </CCol>
+                <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
 
+                <CFormGroup className="pl-3 pr-3 d-inline-flex mb-0 ct-mt">
+                  <CLabel htmlFor="exampleInputName2" className="pr-1">삭제유무</CLabel>
+                  <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'}  id={"delYn"} />
+                </CFormGroup>
+
+                <button className={"btn btn-custom float-right mt-0"} onClick={(e) => {
+
+                }}>등록</button>
+              </CCol>
+
+              <PageTableWidget
+                keyField={"snsrId"}
+                data={repo}
+                page={pageItem.page}
+                sizePerPage={pageItem.sizePerPage}
+                totalSize={pageItem.totalElementsCount}
+                onTableChange={handleTableChange}
+                viewColumns={columns}
+                rowEvents={rowEvents}
+              />
             </CCardBody>
           </CCard>
         </CCol>
