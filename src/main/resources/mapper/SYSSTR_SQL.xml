@@ -8,6 +8,9 @@
                     LEFT OUTER JOIN F_MEMBER FM
                         ON FM.USERID = FS.USERID
                  WHERE 1 = 1
+                <if test='areaCode != ""'>
+                    AND FS.AREACODE = #{areaCode}
+                </if>
                 <if test='searchWrd != null and searchWrd !=""'>
                    AND (
                          FS.STRNAME LIKE CONCAT('%', #{searchWrd}, '%')
@@ -44,6 +47,9 @@
                       LEFT OUTER JOIN F_MEMBER FM
                               ON FM.USERID = FS.USERID
                             WHERE 1 = 1
+                            <if test='areaCode != ""'>
+                               AND FS.AREACODE = #{areaCode}
+                            </if>
                             <if test='searchWrd != null and searchWrd !=""'>
                               AND (
                                       FS.STRNAME LIKE CONCAT('%', #{searchWrd}, '%')

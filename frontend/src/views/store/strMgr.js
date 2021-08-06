@@ -1,10 +1,23 @@
 import React, {lazy, useEffect, useState} from 'react'
 import PageTableWidget from "../../widget/pageTableWidget";
-import {CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
+import {
+  CBadge,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CFormGroup,
+  CInput,
+  CLabel,
+  CRow,
+  CSelect,
+  CSwitch
+} from "@coreui/react";
 import {getStr, getStrList} from "../../agent/store";
 import StrActionModal from "./strActionModal";
 import {getMem} from "../../agent/member";
 import StrModifyModal from "./strModifyModal";
+import {getInsprAreaList} from "../../agent/inspection";
 
 export const numCommaFormat = value => (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
 
@@ -33,6 +46,7 @@ const StrMgr = (props) => {
   }); // 페이징 hook
   const [searchItem, setSearchItem] = useState({
     searchWrd : "",
+    areaCode : "",
     useYn : "Y",
   });
 
@@ -51,6 +65,7 @@ const StrMgr = (props) => {
 
   useEffect(() => {
     handleInitTable();
+    handleInitListStrArea();
   }, []);
 
   // 페이징 클릭 시
@@ -83,8 +98,24 @@ const StrMgr = (props) => {
   };
 
   const handleInitListStrArea = () => {
+    getInsprAreaList().then(resp => {
+      if (resp.data['result']) {
+        let html = '';
 
+        for (let item of resp.data['resultList'])
+          html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
+
+        document.getElementById("areaCode").innerHTML += html;
+      }
+    });
   }
+
+  const handleChangeSearchType = (e) => {
+    const value = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
+    searchItem[e.target.id] = value;
+    handleInitTable();
+  };
+
 
 
 
@@ -107,15 +138,27 @@ const StrMgr = (props) => {
                       if(e.key === "Enter") handleClickSearchBtn()
                     }} />
                   </CCol>
-                  <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
+                  <button className={"btn btn-custom-info mt-0 float-left"} onClick={handleClickSearchBtn}>검색</button>
+
+                  <CCol sm="2" className={"float-left pl-3"}>
+                      <CSelect id={'areaCode'} onChange={handleChangeSearchType}>
+                        <option value={''}>시장 전체</option>
+                      </CSelect>
+                  </CCol>
+
+                  {/*<CCol sm="2" className={"pl-0"}>*/}
+                  {/*  <span>시장선택</span>*/}
+                  {/*  <CSelect id={'strAreaCode'} onChange={handleChangeSearchType}>*/}
+                  {/*    <option value={''}>시장 전체</option>*/}
+                  {/*  </CSelect>*/}
+                  {/*</CCol>*/}
+                  {/*<div className={"d-flex align-items-center"}>*/}
+                  {/*  */}
+                  {/*</div>*/}
 
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt pl-3">
                     <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
                     <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"}  defaultChecked/>
-                  </CFormGroup>
-                  <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt">
-                    <CLabel htmlFor="exampleInputName2" className="pr-1">삭제유무</CLabel>
-                    <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'}  id={"delYn"} />
                   </CFormGroup>
 
                   <button className={"btn btn-custom float-right mt-0"} onClick={(e) => {
