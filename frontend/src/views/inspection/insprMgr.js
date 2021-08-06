@@ -10,13 +10,16 @@ import InsprInsertModal from "./insprInsertModal";
 import InsprUpdateModal from "./insprUpdateModal";
 
 const columns = [
-    { dataField: 'inspId', text: '점검자 ID', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
+    { dataField: 'rowNo', text: 'NO.', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'right', height: '42px' } }
+  , { dataField: 'inspId', text: '점검자 ID', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
   , { dataField: 'inspName', text: '점검자 이름', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
   , { dataField: 'inspEmail', text: '점검자 이메일', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
   , { dataField: 'inspTel', text: '점검자 연락처', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center', height: '42px' } }
   , { dataField: 'inspMobile', text: '점검자 휴대폰', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center', height: '42px' } }
-  , { dataField: 'inspAreaName', text: '점검자 소속', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
+  , { dataField: 'inspAreaName', text: '점검자 소속 시장', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
   , { dataField: 'inspShopName', text: '점검자 업체', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
+  , { dataField: 'regDate', text: '등록일', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
+  , { dataField: 'inspRsntDate', text: '최근접속일', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
 ];
 
 const InsprMgr = () => {
@@ -56,6 +59,13 @@ const InsprMgr = () => {
   const handleChangeSearchType = (e) => {
     const value = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     searchItem[e.target.id] = value;
+    handleInitTable();
+  };
+
+  const handleTableChange = (pageNation, param) => {
+    pageItem.page = param.page;
+    pageItem.sizePerPage = param.sizePerPage;
+
     handleInitTable();
   };
 
@@ -103,7 +113,9 @@ const InsprMgr = () => {
 
           <PageTableWidget
             keyField={"inspId"} data={repo} viewColumns={columns}
-            page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount} />
+            page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
+            onTableChange={handleTableChange}
+          />
         </CCardBody>
       </CCard>
       <InsprInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable}/>

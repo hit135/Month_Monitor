@@ -23,6 +23,11 @@ const InsprInsertModal = (props) => {
           html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
 
         document.getElementById("modalInsInspAreaCode").innerHTML += html;
+
+        let sel = document.getElementById("modalInsInspAreaCode");
+        setValue("inspAreaCode", sel.options[sel.selectedIndex].value);
+      } else {
+        alert("점검자 소속 시장 목록을 불러오는 도중 오류가 발생했습니다.");
       }
     });
   }
