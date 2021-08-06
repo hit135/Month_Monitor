@@ -28,9 +28,11 @@ const InsprInsertModal = (props) => {
   }
 
   const handleDupChkInspId = () => {
-    getDupChkInspId(document.getElementById("modalInsInspId").value).then(resp => {
-      if (resp['result']) {
-        if (!resp['dupChk']) {
+    let checkIdMap = { 'inspId': document.getElementById("modalInsInspId").value };
+
+    getDupChkInspId(checkIdMap).then(resp => {
+      if (resp['data']['result']) {
+        if (resp['data']['dupChk']) {
           setError("inspId", { type: "dupUserId", message: "중복 ID가 존재합니다." } )
           setFocus("inspId");
         }
@@ -49,7 +51,7 @@ const InsprInsertModal = (props) => {
   const onSubmit = (data, e) => {
     if (window.confirm("등록하시겠습니까?")) {
       insertInspector(data).then(resp => {
-        if (resp) {
+        if (resp['data']) {
           alert("점검자 등록이 완료되었습니다.");
           closeModal();
           handleInitTable();
@@ -67,7 +69,7 @@ const InsprInsertModal = (props) => {
           <CModalHeader>
             <CModalTitle style={{ width: '100%' }}>
               <div className={'d-flex justify-content-between'} style={{ width: '100%' }}>
-                <div>점검자 정보 등록</div>
+                <div className={'text-white'}>점검자 정보 등록</div>
                 <div style={{ cursor: 'pointer' }} onClick={() => closeModal()}>X</div>
               </div>
             </CModalTitle>
@@ -161,9 +163,7 @@ const InsprInsertModal = (props) => {
             <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor={"inspAreaCode"}>점검자 소속 시장</CLabel>
-                <CSelect id={"modalInsInspAreaCode"} {...register("inspAreaCode")}>
-                  <option value={''}>없음</option>
-                </CSelect>
+                <CSelect id={"modalInsInspAreaCode"} {...register("inspAreaCode")}></CSelect>
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor={"inspShopName"}>점검자 소속 업체</CLabel>

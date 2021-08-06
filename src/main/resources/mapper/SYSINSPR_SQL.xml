@@ -45,10 +45,10 @@
            <if test='inspAreaCode != ""'>AND INSPAREACODE = #{inspAreaCode}</if>
     </select>
 
-    <select id="CNT_SYS_DUPCHK_INSPID" parameterType="string" resultType="int">
+    <select id="CNT_SYS_DUPCHK_INSPID" parameterType="map" resultType="int">
         SELECT COUNT(INSPID)
           FROM F_INSPECTOR
-         WHERE USEYN = #{inspId}
+         WHERE INSPID = #{inspId}
     </select>
 
     <insert id="INSERT_SYS_INSPECTOR" parameterType="map">
@@ -63,9 +63,11 @@
                   , INSPSHOPNAME
                   , INSPADDR
                   , ALARMUSE
+                  , PUSHUSE
+                  , SMSUSE
                   , USEYN
                   , REGDATE
-                  , INSPRSNDATE
+                  , INSPRSNTDATE
                   , LOGINFAILCNT
         ) VALUES (
                     #{inspId}
@@ -78,7 +80,9 @@
                   , #{inspShopName}
                   , #{inspAddr}
                   , 'Y'
-                  , #{useYn}
+                  , 'Y'
+                  , 'Y'
+                  , 'Y'
                   , NOW()
                   , NOW()
                   , 0

@@ -14,8 +14,6 @@ import {useForm} from "react-hook-form";
 import {getInsprAreaList} from "../../agent/inspection";
 
 const InsprUpdateModal = (props) => {
-//const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  const API_ROOT = 'http://1.223.40.19:30081/api/';
   const { modal, setModal } = props;
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, setError } = useForm(
     {
@@ -53,7 +51,7 @@ const InsprUpdateModal = (props) => {
         <CModalHeader>
           <CModalTitle style={{ width: '100%' }}>
             <div className={'w-100 d-flex justify-content-between'} style={{ width: '100%' }}>
-              <div>점검자 정보 수정</div>
+              <div className={'text-white'}>점검자 정보 수정</div>
               <div style={{ cursor: 'pointer' }} onClick={() => closeModal()}>X</div>
             </div>
           </CModalTitle>
