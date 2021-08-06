@@ -14,12 +14,11 @@ import {
   CSwitch
 } from "@coreui/react";
 import {getStr, getStrList} from "../../agent/store";
-import StrActionModal from "./strActionModal";
+import StrInsertModal from "./strInsertModal";
 import {getMem} from "../../agent/member";
-import StrModifyModal from "./strModifyModal";
+import StrUpdateModal from "./strUpdateModal";
 import {getInsprAreaList} from "../../agent/inspection";
-
-export const numCommaFormat = value => (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
+import {numCommaFormat} from "../../agent/commonIndex";
 
 // Y/N 표시 스타일
 const ynStyleFormatter = (cell) =>
@@ -146,16 +145,6 @@ const StrMgr = (props) => {
                       </CSelect>
                   </CCol>
 
-                  {/*<CCol sm="2" className={"pl-0"}>*/}
-                  {/*  <span>시장선택</span>*/}
-                  {/*  <CSelect id={'strAreaCode'} onChange={handleChangeSearchType}>*/}
-                  {/*    <option value={''}>시장 전체</option>*/}
-                  {/*  </CSelect>*/}
-                  {/*</CCol>*/}
-                  {/*<div className={"d-flex align-items-center"}>*/}
-                  {/*  */}
-                  {/*</div>*/}
-
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt pl-3">
                     <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
                     <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={handleChangeSearchType}  defaultChecked/>
@@ -181,8 +170,8 @@ const StrMgr = (props) => {
         </CCol>
       </CRow>
 
-      <StrActionModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
-      <StrModifyModal modal={modifyModal} setModal={setModifyModal} strContent={strContent} fileContent={fileContent} handleInitTable={handleInitTable} />
+      <StrInsertModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
+      <StrUpdateModal modal={modifyModal} setModal={setModifyModal} strContent={strContent} fileContent={fileContent} handleInitTable={handleInitTable} />
     </>
   )
 }

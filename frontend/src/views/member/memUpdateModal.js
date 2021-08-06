@@ -15,7 +15,7 @@ import {deleteMem, updateMem} from "../../agent/member";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
 import {convertPhoneNumber} from "../../agent/commonIndex";
 
-const MemModifyModal = (props) => {
+const MemUpdateModal = (props) => {
   const { modal, setModal, userContent, handleInitTable } = props
   const [onAreaModal, setOnAreaModal] = useState();
   const [appSwitch, setAppSwitch] = useState({
@@ -231,4 +231,4 @@ const MemModifyModal = (props) => {
   )
 }
 
-export default MemModifyModal
+export default MemUpdateModal

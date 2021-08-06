@@ -8,8 +8,9 @@ import {
   getParentKey,
 } from "../../agent/area";
 import PageTableWidget from "../../widget/pageTableWidget";
-import {numCommaFormat} from "../member/memMgr";
 import {getSnsrList} from "../../agent/sensor";
+import {numCommaFormat} from "../../agent/commonIndex";
+import SnsrInsertModal from "./snsrInsertModal";
 
 let gData = [];
 
@@ -19,16 +20,11 @@ const columns = [
   { dataField: 'snsrId', text: '센서아이디', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
   { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }},
   { dataField: 'snsrNick', text: '센서명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }},
-  // { dataField: 'channel', text: '채널', headerStyle: { textAlign: 'center' }},
-  // { dataField: 'sOc1V1', text: '전류 1차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
-  // { dataField: 'sOc2V1', text: '전류 2차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
-  // { dataField: 'sIgr1V', text: 'IGR 1차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
-  // { dataField: 'sIgr2V', text: 'IGR 2차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
-  // { dataField: 'sIgo1V', text: 'IGO 1차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
-  // { dataField: 'sIgo2V', text: 'IGO 2차임계치', headerStyle: { textAlign: 'center' }, formatter: (cell) => numCommaFormat(cell) },
   { dataField: 'regDate', text: '등록일자', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }}
 ];
 const SnsrMgr = () => {
+  const [insertModal, setInsertModal] = useState(false)             // Modal hook
+  const [updateModal, setUpdateModal] = useState(false)             // Modal hook
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [searchValue, setSearchValue] = useState("");
@@ -103,15 +99,6 @@ const SnsrMgr = () => {
 
     });
   }
-
-
-  // const nodeClick = async (e, node) => {
-  //   console.log(node);
-  //
-  //   pageItem.page = 1;
-  //   // searchItem.areaCode =
-
-  // }
 
   // 노드 선택 이벤트
   const nodeClick = async (e, node) => {
@@ -255,7 +242,7 @@ const SnsrMgr = () => {
                 </CFormGroup>
 
                 <button className={"btn btn-custom float-right mt-0"} onClick={(e) => {
-
+                  setInsertModal(true);
                 }}>등록</button>
               </CCol>
 
@@ -273,7 +260,7 @@ const SnsrMgr = () => {
           </CCard>
         </CCol>
 
-
+      <SnsrInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable} />
       </CRow>
     </>
   )

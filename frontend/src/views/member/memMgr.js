@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import {CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
 import PageTableWidget from "../../widget/pageTableWidget";
-import MemActionModal from "../member/memActionModal";
+import MemInsertModal from "../member/memInsertModal";
 import {getMem, getMemList} from "../../agent/member";
-import MemModifyModal from "./memModifyModal";
-
-export const numCommaFormat = value => (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
+import MemUpdateModal from "./memUpdateModal";
+import {numCommaFormat} from "../../agent/commonIndex";
 
 const authStyleFormatter = (cell) => {
   let cellStr = "";
@@ -143,7 +142,6 @@ const MemMgr = () => {
                     }} />
                   </CCol>
                   <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
-
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt pl-3">
                     <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
                     <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={handleClickSearchType} defaultChecked/>
@@ -160,7 +158,6 @@ const MemMgr = () => {
                     <CLabel htmlFor="exampleInputName2" className="pr-1">SMS수신여부</CLabel>
                     <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} onChange={handleClickSearchType} id={"smsYn"} defaultChecked />
                   </CFormGroup>
-
                   <button className={"btn btn-custom float-right mt-0"} onClick={(e) => setActionModal(true)}>등록</button>
                 </CCol>
               </CRow>
@@ -178,8 +175,8 @@ const MemMgr = () => {
           </CCard>
         </CCol>
       </CRow>
-      <MemActionModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
-      <MemModifyModal modal={modifyModal} setModal={setModifyModal} userContent={userContent} handleInitTable={handleInitTable}/>
+      <MemInsertModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
+      <MemUpdateModal modal={modifyModal} setModal={setModifyModal} userContent={userContent} handleInitTable={handleInitTable}/>
     </>
   )
 }

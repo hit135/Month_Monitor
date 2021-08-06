@@ -18,7 +18,7 @@ import {
   CCol, CInput,
   CRow,
 } from '@coreui/react'
-import AreaModifyMgr from "./areaModifyMgr";
+import AreaUpdateMgr from "./areaUpdateMgr";
 
 let gData = [];
 
@@ -226,7 +226,7 @@ const AreaMgr = () => {
             </CCardBody>
           </CCard>
         </CCol>
-        <AreaModifyMgr areaContent={areaContent} nodeLv2Btn={nodeLv2Btn} handleClickUpdateItem={handleClickUpdateItem}/>
+        <AreaUpdateMgr areaContent={areaContent} nodeLv2Btn={nodeLv2Btn} handleClickUpdateItem={handleClickUpdateItem}/>
       </CRow>
     </>
   )

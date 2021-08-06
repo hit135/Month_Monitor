@@ -15,7 +15,7 @@ import axios from "axios";
 import {insertMem} from "../../agent/member";
 import {convertPhoneNumber} from "../../agent/commonIndex";
 
-const MemActionModal = (props) => {
+const MemInsertModal = (props) => {
 //const API_ROOT = 'http://localhost:8081/api';    // 로컬
   const API_ROOT = 'http://1.223.40.19:30081/api/';   // 로컬
   const { modal, setModal, handleInitTable } = props
@@ -193,4 +193,4 @@ const MemActionModal = (props) => {
   )
 }
 
-export default MemActionModal
+export default MemInsertModal

@@ -35,7 +35,7 @@ const TheSidebar = () => {
       onShowChange={(val) => dispatch({type: 'set', sidebarShow: val })}
     >
       <CSidebarBrand className="d-md-down-none" to="/">
-        <img src={'logo-fs.png'} style={{ "width" : "3rem"}} />
+        <img src={'/fs/img/logo-fs.png'} style={{ "width" : "3rem"}} />
         <span style={{"font-size" : "1.2rem", fontWeight : "900"}}>관제관리시스템</span>
       </CSidebarBrand>
       <CSidebarNav>

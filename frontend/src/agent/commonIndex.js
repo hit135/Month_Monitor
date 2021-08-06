@@ -27,3 +27,5 @@ export const convertPhoneNumber = (str) => {
 
   return str;
 }
+
+export const numCommaFormat = value => (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;

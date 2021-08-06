@@ -101,6 +101,8 @@ public class SYSSnsrDomain {
     @JsonProperty("areaCode")        private String areaCode = "";               // 구역코드
     @JsonProperty("levelAreaCode")   private String levelAreaCode = "";          // 하위구역코드
 
+    private int generateKey = 0;        // 센서코드 생성을 위한 순번
+    private String keyFied = "";        // 센서코드 생성을 위한 조회 ID
     private int page;
     private int strPage;
     private int sizePerPage;

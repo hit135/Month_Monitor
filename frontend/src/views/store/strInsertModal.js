@@ -13,58 +13,45 @@ import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import { DropzoneArea } from 'material-ui-dropzone';
 import {convertPhoneNumber} from "../../agent/commonIndex";
-import {deleteStr, insertStr, updateStr} from "../../agent/store";
+import {insertStr} from "../../agent/store";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
 import {getAreaList, getParentKey} from "../../agent/area";
 
-const StrModifyModal = (props) => {
+const StrInsertModal = (props) => {
 //const API_ROOT = 'http://localhost:8081/api';    // 로컬
   const API_ROOT = 'http://1.223.40.19:30081/api/';
-  // const filePathName = "http://localhost:8081/localImgstore/";
-  const filePathName = "http://1.223.40.19:30081/imgstore/";
   let gData = [];
-  const { modal, setModal, strContent, fileContent, handleInitTable } = props
+  const { modal, setModal, handleInitTable } = props
   const [onAreaModal, setOnAreaModal] = useState();
   const [initDropZone, setInitDropZone] = useState();
-  const [fileList, setFileList] = useState();
-  const [deleteFileList, setDeleteFileList] = useState();
-  const [appSwitch, setAppSwitch] = useState({
-    useYn : false,
-  });
-
-  let delFileList = [];
-  let storeFileList = [];
-  useEffect(async () => {
-    appSwitch.useYn = (strContent.useYn === "Y");
-    delFileList = [];
-    reset(strContent);
-  }, [strContent]);
-
-  useEffect(async () => {
-
-    setInitDropZone("");
-    if(fileContent !== undefined) {
-      await fileContent.map(function(item, idx) {
-        const filePath = filePathName + item.areaCode + "/" + item.strCode + "/" + item.imgName + ".png";
-        storeFileList.push(filePath);
-      })
-    }
-
-    if(storeFileList !== []) {
-      setFileList(storeFileList);
-    }
-  }, [fileContent]);
+  const setDropZoneArea = () => {
+    setInitDropZone(
+      <DropzoneArea
+        clearOnUnmount={true}
+        acceptedFiles={['image/*']}
+        filesLimit={10}
+        maxFileSize={1000000}
+        dropzoneText={"상점 이미지를 넣어주세요. 최대 10개, 개당 10MB"}
+        getFileRemovedMessage={(fileName) => `${fileName} 파일을 삭제했습니다.`}
+        getFileLimitExceedMessage={(filesLimit =>  `상점 이미지는 최대 ${filesLimit}개까지 가능합니다.`)}
+        getFileAddedMessage={(fileName => `${fileName} 이미지 추가를 완료했습니다.`)}
+        getDropRejectMessage={(file, rejectedFile, maxFileSize) => (file.size > maxFileSize) ? `파일의 사이즈가 너무 큽니다. 10MB` : "허용되지 않은 파일입니다."}
+        onChange={(files) => {
+          setValue("files", files);
+        }}
+      />
+    )
+  }
 
   useEffect(() => {
     setDropZoneArea();
-  }, [fileList])
-
-
+  }, [modal])
 
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
     {
       defaultValues: {
         useYn : 'Y',
+        strCode : 'FS_STR_0000000000000',
         strPosLat: null,
         strPosLon: null,
       }, mode: "all"
@@ -72,20 +59,15 @@ const StrModifyModal = (props) => {
   );
 
   const onSubmit = (data, e) => {
-    data.modifyStrCode = data.strCode;
-    data.strCode = strContent.strCode;
-    data.deleteFileList = deleteFileList;
-
-    console.log(data);
-    updateStr(data).then((resp) => {
+    insertStr(data).then((resp) => {
       if(resp.data["result"] === "duplicate") {
         alert("상점코드가 중복됩니다.");
       } else if(resp.data["result"] === "success") {
-        alert("상점 수정을 완료했습니다.");
+        alert("상점 등록을 완료했습니다.");
         closeModal();
         handleInitTable();
       } else {
-        alert("상점 수정에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+        alert("상점 등록에 실패하였습니다. 잠시 후 다시 시도해주세요.");
         closeModal();
       }
     })
@@ -94,8 +76,7 @@ const StrModifyModal = (props) => {
   const closeModal = async () => {
     await setInitDropZone("");
     setModal(!modal);
-    setDeleteFileList([]);
-    reset({});
+    reset();
   }
 
   const setSwitchValue = (e) => {
@@ -129,48 +110,7 @@ const StrModifyModal = (props) => {
     setValue("areaCode", "");
   }
 
-  const handleClickDeleteStore = () => {
-    if(window.confirm("상점을 삭제하시겠습니까?")) {
-      const strCode = getValues("strCode");
-      const areaCode = getValues("areaCode");
-      const levelAreaCode = getValues("levelAreaCode");
-      const file = getValues("files");
-      deleteStr(strCode, areaCode, levelAreaCode, file).then((resp) => {
-        if(resp.data["result"] === "success") {
-          alert("상점 삭제를 완료했습니다.");
-          closeModal();
-          handleInitTable();
-        } else {
-          alert("상점 삭제에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-          closeModal();
-        }
-      });
-    }
 
-  }
-
-  const setDropZoneArea = () => {
-    setInitDropZone(
-      <DropzoneArea
-        initialFiles={fileList}
-        acceptedFiles={['image/*']}
-        filesLimit={10}
-        maxFileSize={1000000}
-        dropzoneText={"상점 이미지를 넣어주세요. 최대 10개, 개당 10MB"}
-        getFileRemovedMessage={(fileName) => `${fileName} 파일을 삭제했습니다.`}
-        getFileLimitExceedMessage={(filesLimit =>  `상점 이미지는 최대 ${filesLimit}개까지 가능합니다.`)}
-        getFileAddedMessage={(fileName => `${fileName} 이미지 추가를 완료했습니다.`)}
-        getDropRejectMessage={(file, rejectedFile, maxFileSize) => (file.size > maxFileSize) ? `파일의 사이즈가 너무 큽니다. 10MB` : "허용되지 않은 파일입니다."}
-        onChange={(files) => {
-          setValue("files", files);
-        }}
-        onDelete={(file) => {
-          delFileList.push(file.name);
-          setDeleteFileList(delFileList);
-        }}
-      />
-    )
-  }
 
   return (
     <>
@@ -182,18 +122,10 @@ const StrModifyModal = (props) => {
       >
         <form onSubmit={handleSubmit(onSubmit)}>
         <CModalHeader>
-          <CModalTitle style={{ color: "#fff" }}>상점 수정</CModalTitle>
+          <CModalTitle style={{ color: "#fff" }}>상점 등록</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CFormGroup row>
-            <CCol md="6">
-              <CLabel htmlFor="strName">상점코드<span className={"required-span"}> *</span></CLabel>
-              <input className={errors.strCode && "is-invalid form-control" || (!errors.strCode && getValues("strCode") !== "") && "form-control is-valid" || (!errors.strCode && getValues("strCode") === "") && "form-control"}
-                     {...register("strCode", { required: true, minLength: 20, maxLength: 20})} placeholder={"상점명을 입력해주세요."} />
-              {errors.strCode && errors.strCode.type === "required" && <span className={"invalid-feedback"}>상점코드를 입력해주세요.</span>}
-              {errors.strCode && errors.strCode.type === "minLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이상으로 입력해주세요.</span>}
-              {errors.strCode && errors.strCode.type === "maxLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이하로 입력해주세요.</span>}
-            </CCol>
             <CCol md="6">
               <CLabel htmlFor="strName">상점명<span className={"required-span"}> *</span></CLabel>
               <input className={errors.strName && "is-invalid form-control" || (!errors.strName && getValues("strName") !== "") && "form-control is-valid" || (!errors.strName && getValues("strName") === "") && "form-control"}
@@ -202,9 +134,6 @@ const StrModifyModal = (props) => {
               {errors.strName && errors.strName.type === "minLength" && <span className={"invalid-feedback"}>상점명을 1글자 이상으로 입력해주세요.</span>}
               {errors.strName && errors.strName.type === "maxLength" && <span className={"invalid-feedback"}>상점명을 200글자 이하로 입력해주세요.</span>}
             </CCol>
-          </CFormGroup>
-
-          <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="areaCode">구역선택<span className={"required-span"}> *</span></CLabel>
               <input className={errors.areaCode && "is-invalid form-control" || (!errors.areaCode && getValues("areaCode") !== "") && "form-control is-valid" || (!errors.areaCode && getValues("areaCode") === "") && "form-control"}
@@ -216,13 +145,23 @@ const StrModifyModal = (props) => {
               {errors.areaCode && errors.areaCode.type === "maxLength" && <span className={"invalid-feedback"}>구역코드를 11글자 이하으로 입력해주세요.</span>}
               {errors.areaCode && errors.areaCode.type === "dupAreaCode" && <span className={"invalid-feedback"}>{errors.areaCode.message}</span>}
             </CCol>
+          </CFormGroup>
 
+          <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="strAddr">주소</CLabel>
               <input className={errors.strAddr && "is-invalid form-control" || (!errors.strAddr && getValues("strAddr") !== "") && "form-control is-valid" || (!errors.strAddr && getValues("strAddr") === "") && "form-control"}
                      {...register("strAddr", { minLength: 5, maxLength: 200})} placeholder={"주소를 입력해주세요."} />
               {errors.strAddr && errors.strAddr.type === "minLength" && <span className={"invalid-feedback"}>주소를 5글자 이상으로 입력해주세요.</span>}
               {errors.strAddr && errors.strAddr.type === "maxLength" && <span className={"invalid-feedback"}>주소를 200글자 이하으로 입력해주세요.</span>}
+            </CCol>
+            <CCol md="6">
+              <CRow className={"pl-3 pr-3"} style={{marginTop : '2.3rem'}}>
+                <CFormGroup className="pr-3 d-inline-flex">
+                  <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
+                  <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
+                </CFormGroup>
+              </CRow>
             </CCol>
           </CFormGroup>
 
@@ -260,31 +199,15 @@ const StrModifyModal = (props) => {
               {errors.strPosLon && errors.strPosLon.type === "pattern" && <span className={"invalid-feedback"}>{errors.strPosLon.message}</span>}
             </CCol>
           </CFormGroup>
-          <CCol md="6">
-            <CRow className={"pl-3 pr-3"} style={{marginTop : '2.3rem'}}>
-              <CFormGroup className="pr-3 d-inline-flex">
-                <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-                <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue} defaultChecked/>
-              </CFormGroup>
-            </CRow>
-          </CCol>
-
           <CRow id={"dropzone"} className={"pl-2 pr-2 mt-4"}>
             {initDropZone}
           </CRow>
 
         </CModalBody>
-          <CModalFooter style={{ display: "block" }}>
-            <div className={'d-flex'}>
-              <div className={"mr-auto"}>
-                <CButton color="danger" className={"mr-auto"} onClick={() => handleClickDeleteStore()}>영구삭제</CButton>
-              </div>
-              <div>
-                <CButton className={"mr-2"} color="secondary" onClick={() => closeModal()}>취소</CButton>
-                <CButton color="info" type="submit">수정</CButton>
-              </div>
-            </div>
-          </CModalFooter>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>
+          <CButton color="info" type="submit">등록</CButton>
+        </CModalFooter>
       </form>
       </CModal>
 
@@ -293,4 +216,4 @@ const StrModifyModal = (props) => {
   )
 }
 
-export default StrModifyModal
+export default StrInsertModal
