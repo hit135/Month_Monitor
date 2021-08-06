@@ -12,26 +12,33 @@
     </select>
 
     <select id="LIST_SYS_INSPECTORS" parameterType="map" resultType="map">
-        SELECT I.INSPID AS inspId
-             , I.INSPNAME As inspName
-             , I.INSPEMAIL AS inspEmail
-             , I.INSPTEL AS inspTel
-             , I.INSPMOBILE AS inspMobile
-             , I.INSPAREACODE AS inspAreaCode
-             , A.AREANAME AS inspAreaName
-             , I.INSPSHOPNAME AS inspShopName
-          FROM F_INSPECTOR I
-                LEFT JOIN ( SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE AREALEVEL = 1 ) A
-                    ON I.INSPAREACODE = A.AREACODE
-         WHERE I.USEYN = #{useYn}
-           AND I.ALARMUSE = #{alarmUse}
-           <if test='loginLock == "Y"'>AND LOGINFAILCNT >= 5</if>
-           <if test='searchWrd != null and searchWrd != ""'>
-           AND (    I.INSPID LIKE CONCAT('%', #{searchWrd}, '%')
-                 OR I.INSPNAME LIKE CONCAT('%', #{searchWrd}, '%') )
-           </if>
-           <if test='inspAreaCode != ""'>AND I.INSPAREACODE = #{inspAreaCode}</if>
-         ORDER BY I.REGDATE DESC
+        SELECT T.*
+          FROM ( SELECT ROW_NUMBER() over (ORDER BY Z.REGDATE) AS rowNo
+                      , Z.*
+                   FROM ( SELECT I.INSPID AS inspId
+                               , I.INSPNAME As inspName
+                               , I.INSPEMAIL AS inspEmail
+                               , I.INSPTEL AS inspTel
+                               , I.INSPMOBILE AS inspMobile
+                               , I.INSPAREACODE AS inspAreaCode
+                               , A.AREANAME AS inspAreaName
+                               , I.INSPSHOPNAME AS inspShopName
+                               , DATE_FORMAT(I.REGDATE, '%Y-%m-%d %H:%i:%s') AS regDate
+                               , DATE_FORMAT(I.INSPRSNTDATE, '%Y-%m-%d %H:%i:%s') AS inspRsntDate
+                            FROM F_INSPECTOR I
+                                    LEFT JOIN ( SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N' ) A
+                                        ON I.INSPAREACODE = A.AREACODE
+                           WHERE I.USEYN = #{useYn}
+                             AND I.ALARMUSE = #{alarmUse}
+                             <if test='loginLock == "Y"'>AND LOGINFAILCNT >= 5</if>
+                             <if test='searchWrd != null and searchWrd != ""'>
+                             AND (    I.INSPID   LIKE CONCAT('%', #{searchWrd}, '%')
+                                   OR I.INSPNAME LIKE CONCAT('%', #{searchWrd}, '%') )
+                             </if>
+                             <if test='inspAreaCode != ""'>AND I.INSPAREACODE = #{inspAreaCode}</if>
+                           ORDER BY I.REGDATE DESC ) Z
+               ) T
+         ORDER BY T.rowNo DESC
          LIMIT #{page}, #{sizePerPage}
     </select>
 
@@ -42,7 +49,7 @@
            AND ALARMUSE = #{alarmUse}
            <if test='loginLock == "Y"'>AND LOGINFAILCNT >= 5</if>
            <if test='searchWrd != null and searchWrd != ""'>
-           AND (    INSPID LIKE CONCAT('%', #{searchWrd}, '%')
+           AND (    INSPID   LIKE CONCAT('%', #{searchWrd}, '%')
                  OR INSPNAME LIKE CONCAT('%', #{searchWrd}, '%') )
            </if>
            <if test='inspAreaCode != ""'>AND INSPAREACODE = #{inspAreaCode}</if>
