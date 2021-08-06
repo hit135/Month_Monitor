@@ -158,7 +158,7 @@ const StrMgr = (props) => {
 
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt pl-3">
                     <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-                    <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"}  defaultChecked/>
+                    <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={handleChangeSearchType}  defaultChecked/>
                   </CFormGroup>
 
                   <button className={"btn btn-custom float-right mt-0"} onClick={(e) => {
