@@ -15,14 +15,14 @@ const columns = [
   , { dataField: 'inspEmail', text: '점검자 이메일', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
   , { dataField: 'inspTel', text: '점검자 연락처', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center', height: '42px' } }
   , { dataField: 'inspMobile', text: '점검자 휴대폰', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center', height: '42px' } }
-  , { dataField: 'inspAreaCode', text: '점검자 소속', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
+  , { dataField: 'inspAreaName', text: '점검자 소속', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
   , { dataField: 'inspShopName', text: '점검자 업체', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
 ];
 
 const InsprMgr = () => {
   const [repo, setRepo] = useState([]);
   const [pageItem, setPageItem] = useState({ page: 1, sizePerPage: 10 });
-  const [searchItem, setSearchItem] = useState({ searchWrd: "", useYn: "Y", alarmUse: "Y", loginLock: "N", inspAreaCode: "0" });
+  const [searchItem, setSearchItem] = useState({ searchWrd: "", useYn: "Y", alarmUse: "Y", loginLock: "N", inspAreaCode: "" });
   const [insertModal, setInsertModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
 

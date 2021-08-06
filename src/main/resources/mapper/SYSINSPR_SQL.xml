@@ -12,23 +12,26 @@
     </select>
 
     <select id="LIST_SYS_INSPECTORS" parameterType="map" resultType="map">
-        SELECT INSPID AS inspId
-             , INSPNAME As inspName
-             , INSPEMAIL AS inspEmail
-             , INSPTEL AS inspTel
-             , INSPMOBILE AS inspMobile
-             , INSPAREACODE AS inspAreaCode
-             , INSPSHOPNAME AS inspShopName
-          FROM F_INSPECTOR
-         WHERE USEYN = #{useYn}
-           AND ALARMUSE = #{alarmUse}
+        SELECT I.INSPID AS inspId
+             , I.INSPNAME As inspName
+             , I.INSPEMAIL AS inspEmail
+             , I.INSPTEL AS inspTel
+             , I.INSPMOBILE AS inspMobile
+             , I.INSPAREACODE AS inspAreaCode
+             , A.AREANAME AS inspAreaName
+             , I.INSPSHOPNAME AS inspShopName
+          FROM F_INSPECTOR I
+                LEFT JOIN ( SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE AREALEVEL = 1 ) A
+                    ON I.INSPAREACODE = A.AREACODE
+         WHERE I.USEYN = #{useYn}
+           AND I.ALARMUSE = #{alarmUse}
            <if test='loginLock == "Y"'>AND LOGINFAILCNT >= 5</if>
            <if test='searchWrd != null and searchWrd != ""'>
-           AND (    INSPID LIKE CONCAT('%', #{searchWrd}, '%')
-                 OR INSPNAME LIKE CONCAT('%', #{searchWrd}, '%') )
+           AND (    I.INSPID LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR I.INSPNAME LIKE CONCAT('%', #{searchWrd}, '%') )
            </if>
-           <if test='inspAreaCode != ""'>AND INSPAREACODE = #{inspAreaCode}</if>
-         ORDER BY REGDATE DESC
+           <if test='inspAreaCode != ""'>AND I.INSPAREACODE = #{inspAreaCode}</if>
+         ORDER BY I.REGDATE DESC
          LIMIT #{page}, #{sizePerPage}
     </select>
 

@@ -101,7 +101,10 @@ public class SYSInsprController {
         boolean result = false;
 
         try {
+            String sha256InspPass = sha256Encrypt.getHex((String) param.get("inspPass"), (String) param.get("inspId"));
+            param.put("inspPass", sha256InspPass);
             int ins = sysInsprRepo.INSERT_SYS_INSPECTOR(param);
+
             result = true;
         } catch (Exception e) {
             LOG.debug(e.getMessage());
