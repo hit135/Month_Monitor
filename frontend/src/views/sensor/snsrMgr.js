@@ -8,9 +8,10 @@ import {
   getParentKey,
 } from "../../agent/area";
 import PageTableWidget from "../../widget/pageTableWidget";
-import {getSnsrList} from "../../agent/sensor";
+import {getSnsr, getSnsrList} from "../../agent/sensor";
 import {numCommaFormat} from "../../agent/commonIndex";
 import SnsrInsertModal from "./snsrInsertModal";
+import SnsrUpdateModal from "./snsrUpdateModal";
 
 let gData = [];
 
@@ -25,6 +26,7 @@ const columns = [
 const SnsrMgr = () => {
   const [insertModal, setInsertModal] = useState(false)             // Modal hook
   const [updateModal, setUpdateModal] = useState(false)             // Modal hook
+  const [snsrContent, setSnsrContent] = useState({});
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [searchValue, setSearchValue] = useState("");
@@ -77,7 +79,6 @@ const SnsrMgr = () => {
     handleInitTree().then(r => {
       generateList(gData);
       clickSearchTree();
-
       handleInitTable();
     });
   }, []);
@@ -171,7 +172,14 @@ const SnsrMgr = () => {
   // 행 클릭 시
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
-
+      getSnsr(row.snsrId).then(resp => {
+        if(resp.data["result"] === "success") {
+          setSnsrContent(resp.data["content"]);
+          setUpdateModal(true);
+        } else {
+          alert("통신에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        }
+      })
     }
   };
 
@@ -237,8 +245,8 @@ const SnsrMgr = () => {
                 <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
 
                 <CFormGroup className="pl-3 pr-3 d-inline-flex mb-0 ct-mt">
-                  <CLabel htmlFor="exampleInputName2" className="pr-1">삭제유무</CLabel>
-                  <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'}  id={"delYn"} />
+                  <CLabel htmlFor="delYn" className="pr-1">삭제유무</CLabel>
+                  <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'}  id={"delYn"} onChange={handleClickSearchType}/>
                 </CFormGroup>
 
                 <button className={"btn btn-custom float-right mt-0"} onClick={(e) => {
@@ -260,7 +268,8 @@ const SnsrMgr = () => {
           </CCard>
         </CCol>
 
-      <SnsrInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable} />
+        <SnsrInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable} />
+        <SnsrUpdateModal modal={updateModal} setModal={setUpdateModal} snsrContent={snsrContent} handleInitTable={handleInitTable} />
       </CRow>
     </>
   )

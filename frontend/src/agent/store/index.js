@@ -93,6 +93,11 @@ export const deleteStr = (strCode, areaCode, levelAreaCode, files) => {
   })
 }
 
+export const getModalStrList = (searchWrd) => {
+  return axios
+    .get(`${API_ROOT}/modalStr?searchWrd=${searchWrd}`)
+}
+
 
 
 

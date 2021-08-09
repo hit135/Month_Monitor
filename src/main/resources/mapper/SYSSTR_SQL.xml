@@ -140,8 +140,7 @@
 
     <update id="UPDATE_SYS_STR" parameterType="SYSStrDomain">
         UPDATE F_STORE
-        SET STRCODE        = #{modifyStrCode}
-          , STRNAME        = #{strName}
+        SET STRNAME        = #{strName}
           , STRADDR        = #{strAddr}
           , STRTEL         = #{strTel}
           , STROWNTEL      = #{strOwnTel}

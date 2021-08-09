@@ -6,7 +6,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 function PageTableWidget(props) {
 //
   const {
-    keyField, data, page, sizePerPage, onTableChange, onSizePerPageChange, totalSize, viewColumns, rowEvents, paginationSize
+    keyField, data, page, sizePerPage, onTableChange, onSizePerPageChange, totalSize, viewColumns, rowEvents, paginationSize, hideSizePerPage
   } = props;
 //
   return (
@@ -28,7 +28,7 @@ function PageTableWidget(props) {
           paginationSize: (paginationSize) ? paginationSize : 5,
           showTotal: false,
           hidePageListOnlyOnePage: true,
-          hideSizePerPage: false,
+          hideSizePerPage: (hideSizePerPage !== undefined),
           onSizePerPageChange: onSizePerPageChange,
         })}
         noDataIndication={() => <div style={{textAlign: 'center'}}>목록이 없습니다.</div>} />

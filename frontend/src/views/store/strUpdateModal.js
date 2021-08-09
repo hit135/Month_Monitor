@@ -72,23 +72,30 @@ const StrUpdateModal = (props) => {
   );
 
   const onSubmit = (data, e) => {
-    data.modifyStrCode = data.strCode;
-    data.strCode = strContent.strCode;
-    data.deleteFileList = deleteFileList;
+    if(strContent.strCode === data.strCode) {
+      data.modifyStrCode = data.strCode;
+      data.strCode = strContent.strCode;
+      data.deleteFileList = deleteFileList;
 
-    console.log(data);
-    updateStr(data).then((resp) => {
-      if(resp.data["result"] === "duplicate") {
-        alert("상점코드가 중복됩니다.");
-      } else if(resp.data["result"] === "success") {
-        alert("상점 수정을 완료했습니다.");
-        closeModal();
-        handleInitTable();
-      } else {
-        alert("상점 수정에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-        closeModal();
-      }
-    })
+      console.log(data);
+      updateStr(data).then((resp) => {
+        if(resp.data["result"] === "duplicate") {
+          alert("상점코드가 중복됩니다.");
+        } else if(resp.data["result"] === "success") {
+          alert("상점 수정을 완료했습니다.");
+          closeModal();
+          handleInitTable();
+        } else {
+          alert("상점 수정에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+          closeModal();
+        }
+      })
+    } else {
+      alert("악의적으로 상점코드가 수정됐습니다. 잠시 후 다시 시도해주세요.");
+      return false;
+    }
+
+
   };
 
   const closeModal = async () => {
@@ -189,10 +196,7 @@ const StrUpdateModal = (props) => {
             <CCol md="6">
               <CLabel htmlFor="strName">상점코드<span className={"required-span"}> *</span></CLabel>
               <input className={errors.strCode && "is-invalid form-control" || (!errors.strCode && getValues("strCode") !== "") && "form-control is-valid" || (!errors.strCode && getValues("strCode") === "") && "form-control"}
-                     {...register("strCode", { required: true, minLength: 20, maxLength: 20})} placeholder={"상점명을 입력해주세요."} />
-              {errors.strCode && errors.strCode.type === "required" && <span className={"invalid-feedback"}>상점코드를 입력해주세요.</span>}
-              {errors.strCode && errors.strCode.type === "minLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이상으로 입력해주세요.</span>}
-              {errors.strCode && errors.strCode.type === "maxLength" && <span className={"invalid-feedback"}>상점코드를 20글자 이하로 입력해주세요.</span>}
+                     {...register("strCode", { required: true, minLength: 20, maxLength: 20})} readOnly={true} />
             </CCol>
             <CCol md="6">
               <CLabel htmlFor="strName">상점명<span className={"required-span"}> *</span></CLabel>
@@ -277,7 +281,7 @@ const StrUpdateModal = (props) => {
           <CModalFooter style={{ display: "block" }}>
             <div className={'d-flex'}>
               <div className={"mr-auto"}>
-                <CButton color="danger" className={"mr-auto"} onClick={() => handleClickDeleteStore()}>영구삭제</CButton>
+                <CButton color="danger" className={"mr-auto"} onClick={() => handleClickDeleteStore()}>삭제</CButton>
               </div>
               <div>
                 <CButton className={"mr-2"} color="secondary" onClick={() => closeModal()}>취소</CButton>

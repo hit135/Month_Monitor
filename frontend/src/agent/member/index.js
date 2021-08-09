@@ -17,6 +17,11 @@ export const getMem = (id) => {
     .post(`${API_ROOT}/selectMem`, { 'userId' : id } )
 }
 
+export const getModalMemList = (searchWrd) => {
+  return axios
+    .get(`${API_ROOT}/modalMem?searchWrd=${searchWrd}`)
+}
+
 export const updateMem = (array) => {
   return axios
     .post(`${API_ROOT}/updateMem`, array)

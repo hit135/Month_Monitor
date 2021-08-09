@@ -8,7 +8,7 @@
           LEFT JOIN F_STORE ST
                  ON ST.STRCODE = SI.STRCODE
                 AND ST.AREACODE = SI.AREACODE
-         WHERE SI.DELYN = 'N'
+         WHERE SI.DELYN = #{delYn}
         <if test='areaCode != "all" and areaCode == levelAreaCode'>
             AND SI.AREACODE = #{areaCode}
         </if>
@@ -47,7 +47,7 @@
                                     LEFT JOIN F_STORE ST
                                            ON ST.STRCODE = SI.STRCODE
                                           AND ST.AREACODE = SI.AREACODE
-                                   WHERE SI.DELYN = 'N'
+                                   WHERE SI.DELYN = #{delYn}
                                      <if test='areaCode != "all" and areaCode == levelAreaCode'>
                                          AND SI.AREACODE = #{areaCode}
                                      </if>
@@ -76,60 +76,155 @@
         WHERE TABLE_NAME = #{keyFied}
     </update>
 
+    <select id="SELECT_CHK_SYS_SNSRID" parameterType="SYSSnsrDomain" resultType="int">
+        SELECT COUNT(SNSRID)
+          FROM F_SENSOR_INFO
+         WHERE SNSRID = #{snsrId}
+    </select>
+
     <insert id="INSERT_SYS_SNSR" parameterType="SYSSnsrDomain">
-         INSERT INTO F_SENSOR_INFO (
-                    SNSRSEQ
-                  , SNSRID
-                  , STRCODE
-                  , REGDATE
-                  , SNSRNICK
-                  , SNSRMGPS
-                  , SVOL
-                  , SOC1V1
-                  , SOC1T1
-                  , SOC1V2
-                  , SOC1T2
-                  , SOC2V1
-                  , SOC2T1
-                  , SOC2V2
-                  , SOC2T2
-                  , SIGO1V
-                  , SIGO1T
-                  , SIGO2V
-                  , SIGO2T
-                  , SIGR1V
-                  , SIGR1T
-                  , SIGR2V
-                  , SIGR2T
-                  , SSEC
-                  , COMPTYPE
-                  , CHANNEL
-        ) VALUES (
-                    CONCAT('FS_SNR_',LPAD( #{generateKey} ,'13','0'))
-                  , #{snsrId}
-                  , #{strCode}
-                  , NOW()
-                  , #{snsrNick}
-                  , #{snsrMGps}
-                  , #{sVol}
-                  , #{sOc1V1}
-                  , #{sOc1T1}
-                  , #{sOc1V2}
-                  , #{sOc1T2}
-                  , #{sOc2V1}
-                  , #{sOc2T1}
-                  , #{sOc2V2}
-                  , #{sOc2T2}
-                  , #{sIgo1V}
-                  , #{sIgo1T}
-                  , #{sIgo2V}
-                  , #{sIgo2T}
-                  , #{sIgr1V}
-                  , #{sIgr1T}
-                  , #{sIgr2V}
-                  , #{sIgr2T}
-                  , #{sSec}
-                  , 'A'
-                  , #{channel}
+        INSERT INTO F_SENSOR_INFO (
+               SNSRSEQ
+              , SNSRID
+              , STRCODE
+              , REGDATE
+              , SNSRNICK
+              , SNSRMGPS
+              , SNSRADDR
+              , AREACODE
+              , LEVELAREACODE
+              , SVOL
+              , SOC1V1
+              , SOC1T1
+              , SOC1V2
+              , SOC1T2
+              , SOC2V1
+              , SOC2T1
+              , SOC2V2
+              , SOC2T2
+              , SIGO1V
+              , SIGO1T
+              , SIGO2V
+              , SIGO2T
+              , SIGR1V
+              , SIGR1T
+              , SIGR2V
+              , SIGR2T
+              , SSEC
+              , COMPTYPE
+              , CHANNEL
+              , PANELNAME
+              ) VALUES (
+                CONCAT('FS_SNR_', LPAD(#{generateKey}, '13', '0'))
+              , #{snsrId}
+              , #{strCode}
+              , NOW()
+              , #{snsrNick}
+              , #{snsrMGps}
+              , #{snsrAddr}
+              , #{areaCode}
+              , #{levelAreaCode}
+              , #{sVol}
+              , #{sOc1V1}
+              , #{sOc1T1}
+              , #{sOc1V2}
+              , #{sOc1T2}
+              , #{sOc2V1}
+              , #{sOc2T1}
+              , #{sOc2V2}
+              , #{sOc2T2}
+              , #{sIgo1V}
+              , #{sIgo1T}
+              , #{sIgo2V}
+              , #{sIgo2T}
+              , #{sIgr1V}
+              , #{sIgr1T}
+              , #{sIgr2V}
+              , #{sIgr2T}
+              , #{sSec}
+              , 'A'
+              , #{channel}
+              , '분전반1'
+         )
     </insert>
+
+    <select id="SELECT_SYS_SNSR" parameterType="SYSSnsrDomain" resultType="SYSSnsrDomain">
+        SELECT SNSRSEQ                   AS snsrSeq
+             , SNSRID                    AS snsrId
+             , STRCODE                   AS strCode
+             , SNSRMACADDR               AS snsrMacAddr
+             , SNSRNICK                  AS snsrNick
+             , SNSRMGPS                  AS snsrMGps
+             , REGDATE                   AS regDate
+             , UPDDATE                   AS updDate
+             , SNSRADDR                  AS snsrAddr
+             , AREACODE                  AS areaCode
+             , LEVELAREACODE             AS levelAreaCode
+             , SVOL                      AS sVol
+             , SOC1V1                    AS sOc1V1
+             , SOC1V2                    AS sOc1V2
+             , SOC1T1                    AS sOc1T1
+             , SOC1T2                    AS sOc1T2
+             , SOC2V1                    AS sOc2V1
+             , SOC2V2                    AS sOc2V2
+             , SOC2T1                    AS sOc2T1
+             , SOC2T2                    AS sOc2T2
+             , SIGO1V                    AS sIgo1V
+             , SIGO2V                    AS sIgo2V
+             , SIGO1T                    AS sIgo1T
+             , SIGO2T                    AS sIgo2T
+             , SIGR1V                    AS sIgr1V
+             , SIGR2V                    AS sIgr2V
+             , SIGR1T                    AS sIgr1T
+             , SIGR2T                    AS sIgr2T
+             , SSEC                      AS sSec
+             , SVER                      AS sVer
+             , STYPE                     AS sType
+             , UPFLAG                    AS upFlag
+             , DOWNFLAG                  AS downFlag
+             , RHZ                       AS rHz
+             , RPF                       AS rPf
+             , RRSSI                     AS rRssi
+             , CHANNEL                   AS channel
+        FROM F_SENSOR_INFO
+        WHERE SNSRID = #{snsrId}
+    </select>
+
+    <update id="UPDATE_SYS_SNSR" parameterType="SYSSnsrDomain">
+        UPDATE F_SENSOR_INFO
+        SET UPDDATE     = NOW()
+        , SNSRNICK      = #{snsrNick}
+        , SNSRMGPS      = #{snsrMGps}
+        , AREACODE      = #{areaCode}
+        , LEVELAREACODE = #{levelAreaCode}
+        , SNSRADDR      = #{snsrAddr}
+        , STRCODE       = #{strCode}
+        , SOC1V1        = #{sOc1V1}
+        , SOC1T1        = #{sOc1T1}
+        , SOC1V2        = #{sOc1V2}
+        , SOC1T2        = #{sOc1T2}
+        , SOC2V1        = #{sOc2V1}
+        , SOC2T1        = #{sOc2T1}
+        , SOC2V2        = #{sOc2V2}
+        , SOC2T2        = #{sOc2T2}
+        , SIGO1V        = #{sIgo1V}
+        , SIGO1T        = #{sIgo1T}
+        , SIGO2V        = #{sIgo2V}
+        , SIGO2T        = #{sIgo2T}
+        , SIGR1V        = #{sIgr1V}
+        , SIGR1T        = #{sIgr1T}
+        , SIGR2V        = #{sIgr2V}
+        , SIGR2T        = #{sIgr2T}
+        , SVOL          = #{sVol}
+        , SSEC          = #{sSec}
+        , CHANNEL       = #{channel}
+        WHERE SNSRID     = #{snsrId}
+    </update>
+
+    <update id="DELETE_SYS_SNSR" parameterType="SYSSnsrDomain">
+        UPDATE F_SENSOR_INFO
+           SET DELYN = 'Y'
+         WHERE SNSRID = #{snsrId}
+    </update>
+
 </mapper>

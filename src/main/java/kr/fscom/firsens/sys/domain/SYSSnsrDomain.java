@@ -31,6 +31,7 @@ public class SYSSnsrDomain {
     @JsonProperty("rowNum")          private int rowNum = 0;                     // 순번
     @JsonProperty("snsrSeq")         private String snsrSeq = "";                // 센서 SEQ
     @JsonProperty("snsrId")          private String snsrId = "";                 // 센서 ID
+    @JsonProperty("updSnsrId")       private String updSnsrId = "";              // 수정 센서 ID
     @JsonProperty("strCode")         private String strCode = "";                // 상점 코드
     @JsonProperty("strName")         private String strName = "";                // 상점명
     @JsonProperty("snsrMacAddr")     private String snsrMacAddr = "";            // 맥어드레스
@@ -39,8 +40,8 @@ public class SYSSnsrDomain {
     @JsonProperty("updDate")         private String updDate = "";                // 수정일시
     @JsonProperty("snsrAddr")        private String snsrAddr = "";               // 설치주소
     @JsonProperty("snsrMGps")        private String snsrMGps = "";               // GPS좌표(위도, 경도)
-    @JsonProperty("snsrMGpsLat")     private String snsrMGpsLat = "";            // GPS좌표(위도)
-    @JsonProperty("snsrMGpsLon")     private String snsrMGpsLon = "";            // GPS좌표(경도)
+    @JsonProperty("snsrPosLat")     private Double snsrPosLat;                   // GPS좌표(위도)
+    @JsonProperty("snsrPosLon")     private Double snsrPosLon;                   // GPS좌표(경도)
     @JsonProperty("snsrMPos")        private String snsrMPos = "";               // 0 : 주소 사용, 1 : GPS좌표 사용
     @JsonProperty("snsrMNuse")       private int snsrMNuse = 0;                  // 0 : 닉네임 사용 안 함, 1 : 닉네임 사용
     @JsonProperty("snsrMInit")       private int snsrMInit = 0;                  // 0 : 초기상태, 1 : 데이터 수신

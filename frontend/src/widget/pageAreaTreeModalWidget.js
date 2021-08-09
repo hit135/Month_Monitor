@@ -113,7 +113,7 @@ function PageAreaTreeModalWidget(props) {
         show={onAreaModal}
         onClose={() => setOnAreaModal(!onAreaModal)}
         size="sm"
-        className={"mt-5"}
+        className={"mt-5 strModal"}
       >
         <CModalHeader closeButton>
           <CModalTitle>구역 선택</CModalTitle>
@@ -129,7 +129,6 @@ function PageAreaTreeModalWidget(props) {
             <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
           </CCol>
           <CRow className={"mb-3"}>
-
           </CRow>
           {initTree}
         </CModalBody>

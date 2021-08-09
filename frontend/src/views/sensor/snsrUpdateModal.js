@@ -6,20 +6,20 @@ import {
   CModalFooter,
   CModalHeader,
   CModalTitle,
-  CCol
+  CCol, CSwitch, CInput, CFormText
 } from "@coreui/react";
-import React, { useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
 import {getAreaList, getParentKey} from "../../agent/area";
-import {insertSnsr} from "../../agent/sensor";
+import {deleteSnsr, updateSnsr} from "../../agent/sensor";
 import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
 
-const SnsrInsertModal = (props) => {
+const SnsrUpdateModal = (props) => {
 //const API_ROOT = 'http://localhost:8081/api';    // 로컬
   const API_ROOT = 'http://1.223.40.19:30081/api/';
   let gData = [];
-  const { modal, setModal, handleInitTable } = props
+  const { modal, setModal, snsrContent, handleInitTable } = props
   const [onAreaModal, setOnAreaModal] = useState();
   const [onStrModal, setOnStrModal] = useState();
 
@@ -50,10 +50,16 @@ const SnsrInsertModal = (props) => {
     }
   );
 
+  useEffect(async () => {
+    reset(snsrContent);
+  }, [snsrContent]);
+
   const onSubmit = (data, e) => {
-    insertSnsr(data).then((resp) => {
+    console.log(data);
+    data.updSnsrId = snsrContent.snsrId;
+    updateSnsr(data).then((resp) => {
       if(resp.data["result"] === "success") {
-        alert("센서 등록을 완료했습니다.");
+        alert("센서 수정을 완료했습니다.");
         closeModal();
         handleInitTable();
       } else if(resp.data["result"] === "duplicate") {
@@ -62,7 +68,7 @@ const SnsrInsertModal = (props) => {
         alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
         closeModal();
       }
-    })
+    });
   };
 
   const closeModal = async () => {
@@ -91,6 +97,19 @@ const SnsrInsertModal = (props) => {
     setValue("levelAreaCode", "");
   }
 
+  const handleClickDeleteSnsr = (snsrId) => {
+    deleteSnsr(snsrId).then(resp => {
+      if(resp.data["result"] === "success") {
+        alert("센서 삭제를 완료했습니다.");
+        closeModal();
+        handleInitTable();
+      } else {
+        alert("센서 삭제에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        closeModal();
+      }
+    });
+  }
+
   const clickStrRow = (e) => {
     setValue("strCode", e.strCode)
   }
@@ -108,7 +127,7 @@ const SnsrInsertModal = (props) => {
       >
         <form onSubmit={handleSubmit(onSubmit)}>
         <CModalHeader>
-          <CModalTitle style={{ color: "#fff" }}>센서 등록</CModalTitle>
+          <CModalTitle style={{ color: "#fff" }}>센서 수정</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CFormGroup row>
@@ -184,7 +203,7 @@ const SnsrInsertModal = (props) => {
             <CCol md="6">
               <CLabel htmlFor="sSec" className={"mb-0"}>전송주기</CLabel>
               <input className={errors.sSec && "is-invalid form-control" || (!errors.sSec && getValues("sSec") !== "") && "form-control is-valid" || (!errors.sSec && getValues("sSec") === "") && "form-control"}
-                     {...register("sSec", {required: true}) } value={"240"} />
+                     {...register("sSec", {required: true}) } />
               {errors.sSec && errors.sSec.type === "required" && <span className={"invalid-feedback"}>전송주기를 입력해주세요.</span>}
             </CCol>
 
@@ -313,10 +332,18 @@ const SnsrInsertModal = (props) => {
             </CCol>
           </CFormGroup>
         </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>
-          <CButton color="info" type="submit">등록</CButton>
+        <CModalFooter style={{ display: "block" }}>
+          <div className={'d-flex'}>
+            <div className={"mr-auto"}>
+              <CButton color="danger" className={"mr-auto"} onClick={(e) => {handleClickDeleteSnsr(snsrContent.snsrId)}}>삭제</CButton>
+            </div>
+            <div>
+              <CButton className={"mr-2"} color="secondary" onClick={() => closeModal()}>취소</CButton>
+              <CButton color="info" type="submit">수정</CButton>
+            </div>
+          </div>
         </CModalFooter>
+
       </form>
       </CModal>
 
@@ -326,4 +353,4 @@ const SnsrInsertModal = (props) => {
   )
 }
 
-export default SnsrInsertModal
+export default SnsrUpdateModal

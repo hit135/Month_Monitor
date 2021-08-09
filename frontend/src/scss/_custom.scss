@@ -67,3 +67,14 @@ table tr {
 .search-label { width : 100%; }
 
 .MuiDropzonePreviewList-removeButton {top: 13px !important; right: 28px !important;}
+
+.label-text {
+  font-size: 12px;
+  margin-top: 0.3rem;
+}
+
+.strModal > .react-bootstrap-table-pagination {
+  flex: 0 0 100%;
+  max-width: 100%;
+  display: block;
+}
