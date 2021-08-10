@@ -2,169 +2,7 @@
   <html lang="en">
   <head>
     <th:block th:replace="mng/layout/m_head"></th:block>
-    <style type="text/css">
-      .top .sensor-stat { text-shadow:1px 1px 5px #000; color:#fff; }
-      .top-date { font-size:16px; padding-top:10px; }
-      .top-time { font-size:28px; margin-bottom:-30px; }
-      .top-search { padding-top:10px; }
-      .top-search-text { -webkit-ime-mode:active; -moz-ime-mode:active; -ms-ime-mode:active; ime-mode:active; }
-      .top-search-result { position:absolute; z-index:100; right:0; top:40px; width:300px; max-height:400px; background:#fff; overflow-y:scroll; }
-      .top-search-result p { cursor:pointer; }
-      .top-search-result p:hover { background:#ddd; }
-      .nav-link-text {
-          color : #333;
-      }
-    </style>
-    <style type="text/css">
-      .left p { padding:3px 7px; margin-bottom:3px; border-radius:4px; }
-      .left span { display:inline-block; text-shadow:1px 1px 5px #fff; }
-      .left .name { width:55%; }
-      .left .danger { width:20%; text-align:right; color:#ff2f44; }
-      .left .warn { width:20%; text-align:right; color:#efaf77; }
-      .left .area-lv1 { font-size:20px; font-weight:bold; background:#ddd; width:90%; margin-left:5%; }
-      .left .area-lv2 { font-size:14px; font-weight:bold; background:#eee; width:85%; margin-left:10%; border-bottom:1px solid #ccc; cursor:pointer; }
-      .left .area-lv2:hover { background:#ccc; }
-      .left .area-lv2.on { background:#2b559b; color:white; text-shadow:1px 1px 5px #000; }
-      .left h3 { text-align:center; color:#fff; padding:8px; font-size:20px; font-weight:bold; text-shadow:1px 1px 5px #000; }
-      .left h3 span { text-shadow:1px 1px 5px #000; }
-      .left-list-sensor { height:213px; overflow-y:scroll; padding:5px 10px; }
-      .left-list-sensor p { font-size:14px; margin-bottom:7px; cursor:pointer; }
-      .left-list-sensor p:hover { background:#e7f0f8; }
-    </style>
-    <style type="text/css">
-      .right [class^=sensors] { margin-bottom:15px; }
-      .right h3 { text-align:center; color:#fff; padding:8px; font-size:20px; font-weight:bold; text-shadow:1px 1px 5px #000; }
-      .right .list-sensor { height:227px; overflow-y:scroll; padding:5px 10px; }
-      .right .list-sensor p { font-size:14px; margin-bottom:7px; cursor:pointer; }
-      .right .list-sensor p:hover { background:#e7f0f8; }
-    </style>
-    <style type="text/css">
-      .center-top { background:#2b559b; color:#fff; border-radius:4px; margin-bottom:15px; }
-      .center .area-name { font-size:30px; font-weight:bold; }
-      .center .area-stat span { display:inline-block; font-size:18px; font-weight:bold; padding:8px; }
-      .center-left-sensor-list { height:700px; overflow-y:scroll; direction:rtl; padding:10px; }
-      .center-left-sensor-list p { position:relative; padding:5px 10px; border-radius:3px; background:#eee; border-bottom:1px solid #ccc; font-size:14px; font-weight:bold; color:#2b559b; cursor:pointer; margin-bottom:7px; }
-      .center-left-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
-      .center-left-sensor-list p span.cnt2 { display:none; }
-      .center-left-sensor-list p.danger { color:#ff2f44; }
-      .center-left-sensor-list p.warn { color:#efaf77; }
-      .center-left-sensor-list p.danger span { color:#fff; background:#f88; }
-      .center-left-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
-      .center-left-sensor-list p.warn span { color:#fff; background:#fd8; }
-      .center-left-sensor-list p.discon span { color:#fff; background:#999; }
-      .center-left-sensor-list p:hover { background:#ccc; }
-      .center-left-sensor-list p.on { background:#2b559b; color:white; text-shadow:1px 1px 5px #000; }
-      .center-main-cont { height:770px; overflow-x:hidden; overflow-y:scroll; }
-      .center-main-cont .panel { margin-bottom:0; }
-      .center-main-cont .panel-hdr { background:#2b559b; }
-      .center-main-cont .panel-hdr * { color:#ffffff; }
-      .center-main-cont .panel-hdr .center-main-area-count span, .center-main-cont .panel-hdr .center-main-area-count b { display:inline-block; width:40px; text-align:right; }
-      .center-main-cont .btn-panel { font-size:1rem; color:#fff; width:1.5rem; height:1.5rem; }
-      .center-main-cont .center-main-area-title { font-size:24px; font-weight:bold; }
-      .center-main-cont .ui-sortable-handle .center-main-area-count { font-size:12px; font-weight:normal; }
-      .center-main-cont .panel-hdr .center-main-area-count-store { font-size:16px; font-weight:bold; color:#afd9ee; }
-      .center-main-cont .panel-hdr .center-main-area-count-sensor { font-size:16px; font-weight:bold; color:#afd9ee; }
-      .center-main-cont .panel-hdr .center-main-area-count-danger { font-size:16px; font-weight:bold; color:#e082ae; }
-      .center-main-cont .panel-hdr .center-main-area-count-warn { font-size:16px; font-weight:bold; color:#dbc969; }
-      .center-main-cont .panel-hdr .center-main-area-count-discon { font-size:16px; font-weight:bold; color:#dddddd; }
-      .center-main-cont .panel-container { height:250px; overflow:hidden; }
-      .center-main-area-tab { height:49px; }
-      .center-main-cont .panel-fullscreen .center-main-cont-top-btn { display:inline-block; }
-      .center-main-cont .panel-fullscreen [class^=center-main-page] { display:none; }
-      .center-main-cont .panel-fullscreen [class^=center-main-page].on { display:block; }
-      .center-main-cont-top-btn { display:none; font-size:20px; padding:10px 15px; margin-top:20px; line-height:20px; cursor:pointer; }
-      .center-main-cont-top-btn:hover { color:#afd9ee; text-decoration:underline; }
-      .center-main-cont-top-btn.on { background:#fff; color:#2b559b; font-weight:bold; }
-
-    </style>
-    <style type="text/css">
-      .center-cont-top { background:#2b559b; color:#fff; height:50px; }
-      .center-cont-top .store-name { font-size:24px; line-height:50px; font-weight:bold; }
-      .center-cont-top-btn { display:inline-block; font-size:16px; padding:10px; margin-top:10px; cursor:pointer; }
-      .center-cont-top-btn:hover { color:#afd9ee; text-decoration:underline; }
-      .center-cont-top-btn.on { background:#fff; color:#2b559b; font-weight:bold; }
-      .center-main-btn { display:inline-block; float:right; background:#ffc241; color:#000; font-weight:bold; border-radius:4px; margin:10px; padding:5px 10px; cursor:pointer; }
-      .center-cont-page { border:1px solid #2b559b; min-height:650px; }
-      .center-cont-page .btn-chart { cursor:pointer; }
-      .center-cont-page .btn-datalog { cursor:pointer; }
-    </style>
-    <style type="text/css">
-      .store-info .store-meta tr { border-bottom:1px solid #7c91df; margin:0; }
-      .store-info .store-meta th { background:#7c91df; width:60px; padding:0; line-height:35px; text-align:center; color:#fff; font-size:12px; font-weight:bold; border-top:1px solid #fff; }
-      .store-info .store-meta td { padding:0 10px; line-height:35px; font-size:16px; font-weight:bold; }
-      .store-info .store-meta td.store-sensor-cont { font-size:12px; }
-      .store-info .store-meta td.store-sensor-cont p { margin:0; }
-      .store-info .store-datalog-list { height:200px; overflow-y:scroll; }
-      .store-info .store-datalog-list p { font-weight:bold; color:#666; font-size:13px; margin:0; }
-      .store-info .store-datalog-list p.DANGER { color:#ff2f44; }
-      .store-info .store-datalog-list p.WARN { color:#efaf77; }
-      .store-info .store-log-week-stat table { width:100%; table-layout:fixed; }
-      .store-info .tbl-bar td { text-align:center; }
-      .store-info .tbl-bar td.bl { border-left:3px solid #fff; }
-      .store-info .tbl-bar .tr-bar td .block { display:block; position:relative; height:105px; }
-      .store-info .tbl-bar .progress-bar { display:block; position:absolute; bottom:0; width:100%; border-radius:3px 3px 0 0; }
-      .store-info .tbl-bar .progress-bar.danger-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
-      .store-info .tbl-bar .progress-bar.warn-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
-      .store-info-sensor-list { margin-bottom:20px; height:200px; overflow-y:scroll; }
-      .store-info-sensor-list p.btn-datalog { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; line-height:16px; }
-      .store-info-sensor-list p.btn-datalog span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
-      .store-info-sensor-list p.btn-datalog span.cnt2 { display:none; }
-      .store-info-sensor-list p.danger { color:#ff2f44; }
-      .store-info-sensor-list p.warn { color:#efaf77; }
-      .store-info-sensor-list p.danger span { color:#fff; background:#f88; }
-      .store-info-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
-      .store-info-sensor-list p.warn span { color:#fff; background:#fd8; }
-      .store-info-sensor-list p.discon span { color:#fff; background:#999; }
-      .store-info-sensor-list p.store-info-check { margin-bottom:0; line-height:20px; }
-      .store-info-sensor-list p.store-info-check span { display:inline-block; width:70px; font-weight:bold; font-size:11px; color:#fff; border-radius:10px; text-align:center; cursor:pointer; }
-      .store-info-sensor-list p.store-info-check .btn-check-start { background:#999; }
-      .store-info-sensor-list p.store-info-check .btn-check-end { background:#47b73a; display:none; }
-      .store-info-sensor-list p.store-info-check.CHECKING .btn-check-start { display:none; }
-      .store-info-sensor-list p.store-info-check.CHECKING .btn-check-end { display:inline-block; }
-    </style>
-    <style type="text/css">
-      .store-log .store-datalog-meta { width:100%; table-layout:fixed; }
-      .store-log .store-datalog-meta tr { border-bottom:1px solid; }
-      .store-log .store-datalog-meta th { color:#666; width:95px; font-weight:bold; text-align:right; }
-      .store-log .store-datalog-meta td { color:#666; padding:8px; }
-      .store-log .store-datalog-meta td span { display:inline-block; text-align:right; width:80px; margin-right:5px; color:#000; font-weight:bold; font-size:16px; }
-      .store-log .form-group { margin-bottom:0; }
-      .store-log .store-datalog-filtered-list { height:580px; overflow-y:scroll; }
-      .store-log .store-datalog-filtered-list p { font-weight:bold; color:#666; font-size:13px; margin:0; cursor:pointer; }
-      .store-log .store-datalog-filtered-list p.on { font-size:14px; margin:5px 0; background:#ddd; }
-      .store-log .store-datalog-filtered-list p:hover { background:#e7f0f8; }
-      .store-log .store-datalog-filtered-list p.DANGER { color:#ff2f44; }
-      .store-log .store-datalog-filtered-list p.WARN { color:#efaf77; }
-      .store-log .store-datalog-filtered-list p button { display:none; margin-left:10px; }
-      .store-log .store-datalog-filtered-list p.on button { display:inline-block; }
-      .store-log-sensor-list { margin-bottom:20px; height:180px; overflow-y:scroll; }
-      .store-log-sensor-list p { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; }
-      .store-log-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
-      .store-log-sensor-list p span.cnt2 { display:none; }
-      .store-log-sensor-list p.danger { color:#ff2f44; }
-      .store-log-sensor-list p.warn { color:#efaf77; }
-      .store-log-sensor-list p.danger span { color:#fff; background:#f88; }
-      .store-log-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
-      .store-log-sensor-list p.warn span { color:#fff; background:#fd8; }
-      .store-log-sensor-list p.discon span { color:#fff; background:#999; }
-    </style>
-    <style type="text/css">
-      .store-chart-sensor-list { margin-bottom:20px; height:150px; overflow-y:scroll; }
-      .store-chart-sensor-list p { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; }
-      .store-chart-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
-      .store-chart-sensor-list p span.cnt2 { display:none; }
-      .store-chart-sensor-list p.danger { color:#ff2f44; }
-      .store-chart-sensor-list p.warn { color:#efaf77; }
-      .store-chart-sensor-list p.danger span { color:#fff; background:#f88; }
-      .store-chart-sensor-list p.danger span.cnt2 { display:inline-block; color:#fff; background:#fd8; }
-      .store-chart-sensor-list p.warn span { color:#fff; background:#fd8; }
-      .store-chart-sensor-list p.discon span { color:#fff; background:#999; }
-    </style>
-    <style type="text/css">
-      @media (min-width: 768px) {
-        .mt-md-n7 { margin-top: -100px !important; }
-      }
-    </style>
+    <link rel="stylesheet" th:href="@{/fs/css/custom.css}">
   </head>
   <body class="mod-bg-1 mod-nav-link">
     <div class="top"><th:block th:replace="mng/layout/m_top"></th:block></div>
@@ -278,7 +116,6 @@
     <script type="text/javascript">
       $(function() {
         fn_init();
-        console.log(1234);
       });
 
       function fn_init() {
@@ -287,6 +124,7 @@
           ' data-strname="{{html STRNAME}}">({{html SNSRCOUNT}}) {{html STRNAME}} ' +
           '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span></p>');
         fn_initMainAreaList();
+
         $('.center-left-sensor-list').on('click', 'p', function() {
           $('.center-left-sensor-list p.on').removeClass('on');
           $(this).addClass('on');
@@ -332,12 +170,11 @@
           } else {
             $(this).addClass('on');
             $(id+' .panel-container').addClass('show');
-            fn_updateMainAreaList();
+            fn_updateMainAreaList(id);
           }
         });
         $('.center-main-cont').on('click', '.js-panel-fullscreen', function() {
           var id = '#'+$(this).attr('data-id');
-          console.log(id);
           if( $(this).hasClass('on') ) {
             $(this).removeClass('on');
             $(id).removeClass('panel-fullscreen');
@@ -450,17 +287,6 @@
           });
       }
 
-      function fn_toggleCenterCont() {
-        if(window.center_name == 'main') {
-          $('.center-main-cont').show();
-          $('.center-store-cont').hide();
-          fn_updateMainAreaList();
-        } else {
-          $('.center-main-cont').hide();
-          $('.center-store-cont').show();
-        }
-      }
-
       function fn_initMainAreaList() {
         window.min_category = [];
         for(var i=0; i<24; i++) for(var j=0; j<6; j++)
@@ -484,19 +310,33 @@
                     if(window.lv1cnt==$('.center-main-cont .panel').length) {
                       $('#center-main-cont').smartPanel({ localStorage: true });
                       $($('.center-main-cont .panel-container')[0]).addClass('show');
-                      $($('.center-main-cont .panel-container')[1]).addClass('show');
+                      // $($('.center-main-cont .panel-container')[1]).addClass('show');
                     }
                     window.center_name = 'main';
                     fn_toggleCenterCont();
                 });
-
               }
             }
           }
+          fn_loadMainAreaList();
         });
       }
 
-      function fn_updateMainAreaList() {
+      function fn_toggleCenterCont() {
+          if(window.center_name == 'main') {
+              $('.center-main-cont').show();
+              $('.center-store-cont').hide();
+          } else {
+              $('.center-main-cont').hide();
+              $('.center-store-cont').show();
+          }
+      }
+
+      function fn_loadMainAreaList() {
+          fn_updateMainAreaList();
+      }
+
+      function fn_updateMainAreaList(id) {
         $.post($('#contextRoot').val()+'/mng/areaListAjax',{},function(d) {
           if(d){
             window.area = d;
@@ -504,32 +344,49 @@
             for(var i=d.length-1; i>=0; i--) if(d[i].LEVEL != 1) window.areaIndex[d[i].CODE] = i;
             var show_panel = $('.center-main-cont .panel-container');
             for(var i=0; i < show_panel.length; i++) {
-              fn_setMainArea($(show_panel[i]).attr('data-id').replace('panel-',''));
+              fn_setMainArea($(show_panel[i]).attr('data-id').replace('panel-',''), id);
             }
           }
         });
       }
 
-      function fn_setMainArea(i) {
+      function fn_setMainArea(i, id) {
         var panel_id = 'panel-'+i;
+        console.log(panel_id, id);
         $('#'+panel_id+' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
         $('#'+panel_id+' .center-main-area-count-store').text(window.area[window.areaIndex[i]].STORE);
         $('#'+panel_id+' .center-main-area-count-sensor').text(window.area[window.areaIndex[i]].SENSOR);
         $('#'+panel_id+' .center-main-area-count-danger').text(window.area[window.areaIndex[i]].DANGER);
         $('#'+panel_id+' .center-main-area-count-warn').text(window.area[window.areaIndex[i]].WARN);
         $('#'+panel_id+' .center-main-area-count-discon').text(window.area[window.areaIndex[i]].DISCON);
-        if($('#'+panel_id).hasClass('panel-fullscreen') || $('#'+panel_id+' .panel-container').hasClass('show')) {
-          $.post($('#contextRoot').val()+'/mng/mainAreaDataChartAjax',
-            { areacode:i },
-            function (data) {
-              fn_setChart('데이터 수신 현황', '#'+panel_id+' .center-main-data-chart', data, ['#99ccff','#003399']);
-          });
-          $.post($('#contextRoot').val()+'/mng/mainAreaLogChartAjax',
-            { areacode:i },
-            function (data) {
-              fn_setChart('경보 발생 현황', '#'+panel_id+' .center-main-log-chart', data, ['#ff9966','#cc3300']);
-          });
+        if(id === undefined) {
+            if($('#'+panel_id).hasClass('panel-fullscreen') || $('#'+panel_id+' .panel-container').hasClass('show')) {
+                $.post($('#contextRoot').val()+'/mng/mainAreaDataChartAjax',
+                    { areacode:i },
+                    function (data) {
+                        fn_setChart('데이터 수신 현황', '#'+panel_id+' .center-main-data-chart', data, ['#99ccff','#003399']);
+                    });
+                $.post($('#contextRoot').val()+'/mng/mainAreaLogChartAjax',
+                    { areacode:i },
+                    function (data) {
+                        fn_setChart('경보 발생 현황', '#'+panel_id+' .center-main-log-chart', data, ['#ff9966','#cc3300']);
+                    });
+            }
+        } else {
+            if($('#'+panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "") || $('#'+panel_id+' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
+                $.post($('#contextRoot').val()+'/mng/mainAreaDataChartAjax',
+                    { areacode:i },
+                    function (data) {
+                        fn_setChart('데이터 수신 현황', '#'+panel_id+' .center-main-data-chart', data, ['#99ccff','#003399']);
+                    });
+                $.post($('#contextRoot').val()+'/mng/mainAreaLogChartAjax',
+                    { areacode:i },
+                    function (data) {
+                        fn_setChart('경보 발생 현황', '#'+panel_id+' .center-main-log-chart', data, ['#ff9966','#cc3300']);
+                    });
+            }
         }
+
       }
 
       function fn_setChart(title, target, data, colors) {

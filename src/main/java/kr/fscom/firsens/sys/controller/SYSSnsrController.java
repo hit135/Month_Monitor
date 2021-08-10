@@ -138,9 +138,10 @@ public class SYSSnsrController {
         try {
             if(!domain.getSnsrId().equals(domain.getUpdSnsrId())) {
                 int duplicateCnt = sysSnsrRepo.SELECT_CHK_SYS_SNSRID(domain);           // 센서 아이디 중복 체크
-                if(duplicateCnt > 0)
+                if(duplicateCnt > 0) {
                     rtn.put("result", "duplicate");
-                return rtn;
+                    return rtn;
+                }
             }
 
             if(!domain.getSnsrId().equals("")) {

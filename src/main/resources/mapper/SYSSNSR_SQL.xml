@@ -193,6 +193,7 @@
     <update id="UPDATE_SYS_SNSR" parameterType="SYSSnsrDomain">
         UPDATE F_SENSOR_INFO
         SET UPDDATE     = NOW()
+        , SNSRID        = #{snsrId}
         , SNSRNICK      = #{snsrNick}
         , SNSRMGPS      = #{snsrMGps}
         , AREACODE      = #{areaCode}
@@ -218,7 +219,7 @@
         , SVOL          = #{sVol}
         , SSEC          = #{sSec}
         , CHANNEL       = #{channel}
-        WHERE SNSRID     = #{snsrId}
+        WHERE SNSRID     = #{updSnsrId}
     </update>
 
     <update id="DELETE_SYS_SNSR" parameterType="SYSSnsrDomain">
