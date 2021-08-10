@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react'
-import {CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
+import React, { useEffect, useState } from 'react'
+import { CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch } from "@coreui/react";
 import PageTableWidget from "../../widget/pageTableWidget";
 import MemInsertModal from "../member/memInsertModal";
 import {getMem, getMemList} from "../../agent/member";
 import MemUpdateModal from "./memUpdateModal";
-import {numCommaFormat} from "../../agent/commonIndex";
+import { numCommaFormat } from "../../agent/commonIndex";
 
-const authStyleFormatter = (cell) => {
+const authStyleFormatter = cell => {
   let cellStr = "";
   switch (cell) {
     case 0: cellStr = "전체관리자"; break;
@@ -24,22 +24,22 @@ const authStyleFormatter = (cell) => {
   );
 };
 
-const memUseStyleFormatter = (cell) =>
+const memUseStyleFormatter = cell =>
   <h5 className="mr-0 mb-0">
     <CBadge color={(cell === "Y") ? 'primary' : 'danger'}>{(cell === "Y") ? '사용' : '미사용'}</CBadge>
   </h5>;
 
-const memLeaveStyleFormatter = (cell) =>
+const memLeaveStyleFormatter = cell =>
   <h5 className="mr-0 mb-0">
     <CBadge color={(cell === "Y") ? 'danger' : 'primary'}>{(cell === "N") ? '미탈퇴' : '탈퇴'}</CBadge>
   </h5>;
 
-const memDeleteStyleFormatter = (cell) =>
+const memDeleteStyleFormatter = cell =>
   <h5 className="mr-0 mb-0">
     <CBadge color={(cell === "Y") ? 'danger' : 'primary'}>{(cell === "N") ? '미삭제' : '삭제'}</CBadge>
   </h5>;
 
-const storeCountStyleFormatter = (cell) =>
+const storeCountStyleFormatter = cell =>
   <h5 className="mr-0 mb-0">
     <CBadge color={(cell > 0) ? 'danger' : 'primary'}>{cell}</CBadge>
   </h5>;
@@ -60,10 +60,12 @@ const columns = [
 
 const MemMgr = () => {
   const [repo, setRepo] = useState([]);               // 리스트 hook
+
   const [pageItem, setPageItem] = useState({
     page : 1,
     sizePerPage: 10
   }); // 페이징 hook
+
   const [searchItem, setSearchItem] = useState({
     searchWrd : "",
     useYn : "Y",
@@ -102,7 +104,7 @@ const MemMgr = () => {
     handleInitTable();
   }
 
-  const handleClickSearchType = (e) => {
+  const handleClickSearchType = e => {
     const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     searchItem[e.target.id] = value;
     handleInitTable();
@@ -111,8 +113,8 @@ const MemMgr = () => {
   // 행 클릭 시
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
-      getMem(row.userId).then(function (resp){
-        if(resp.data["result"] === "success") {
+      getMem(row.userId).then(resp => {
+        if (resp.data["result"] === "success") {
           setUserContent(resp.data["content"]);
           setModifyModal(true);
         } else {
@@ -136,9 +138,9 @@ const MemMgr = () => {
               <CRow className={"mb-3"}>
                 <CCol md="12" xl="12">
                   <CCol sm="2" className={"float-left pl-0"}>
-                    <CInput placeholder="검색어 입력" onKeyUp={(e) => {
+                    <CInput placeholder="검색어 입력" onKeyUp={e => {
                       searchItem.searchWrd = e.target.value;
-                      if(e.key === "Enter") handleClickSearchBtn()
+                      if (e.key === "Enter") handleClickSearchBtn()
                     }} />
                   </CCol>
                   <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>

@@ -1,29 +1,15 @@
-import {
-  CButton, CFormGroup,
-  CRow,
-  CLabel,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-  CCol, CSwitch
-} from "@coreui/react";
-import React, {useEffect, useState} from "react";
-import {useForm} from "react-hook-form";
+import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch } from "@coreui/react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { DropzoneArea } from 'material-ui-dropzone';
-import {convertPhoneNumber} from "../../agent/commonIndex";
-import {deleteStr, insertStr, updateStr} from "../../agent/store";
+import { convertPhoneNumber, API_ROOT, filePathName } from "../../agent/commonIndex";
+import { deleteStr, insertStr, updateStr } from "../../agent/store";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import {getAreaList, getParentKey} from "../../agent/area";
+import { getAreaList, getParentKey } from "../../agent/area";
 
-const StrUpdateModal = (props) => {
-//const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  const API_ROOT = 'http://1.223.40.19:30081/api/';
-  // const filePathName = "http://localhost:8081/localImgstore/";
-  const filePathName = "http://1.223.40.19:30081/imgstore/";
+const StrUpdateModal = props => {
   let gData = [];
-  const { modal, setModal, strContent, fileContent, handleInitTable } = props
+  const { modal, setModal, strContent, fileContent, handleInitTable } = props;
   const [onAreaModal, setOnAreaModal] = useState();
   const [initDropZone, setInitDropZone] = useState();
   const [fileList, setFileList] = useState();

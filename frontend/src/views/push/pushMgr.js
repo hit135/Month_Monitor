@@ -1,10 +1,10 @@
-import React, {lazy, useEffect, useState} from 'react'
+import React, { lazy, useEffect, useState } from 'react'
 import { CCard, CCardHeader, CCardBody, CRow, CCol, CButtonGroup, CButton, CInput, CSelect } from '@coreui/react'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import { ko } from "date-fns/esm/locale";
 import PageTableWidget from "../../widget/pageTableWidget";
-import {getAreaList, rowEvents} from "../../agent/area";
+import { getAreaList, rowEvents } from "../../agent/area";
 
 const columns = [
   { dataField: 'rowNo', text: '순번', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color : '#fff'}, style: {textAlign: 'right'}},

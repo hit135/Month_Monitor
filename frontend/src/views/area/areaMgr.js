@@ -1,23 +1,8 @@
-import React, {useEffect, useState} from 'react'
-import {
-  getAreaList,
-  generateList,
-  getParentKey,
-  dataList,
-  insertAreaItem,
-  deleteAreaItem,
-  selectAreaItem, updateAreaItem
-} from "../../agent/area";
+import React, { useEffect, useState } from 'react'
+import { getAreaList, generateList, getParentKey, dataList, insertAreaItem, deleteAreaItem, selectAreaItem, updateAreaItem } from "../../agent/area";
 import 'antd/dist/antd.css';
 import { Tree } from 'antd';
-
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol, CInput,
-  CRow,
-} from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCol, CInput, CRow } from '@coreui/react'
 import AreaUpdateMgr from "./areaUpdateMgr";
 
 let gData = [];
@@ -38,16 +23,13 @@ const AreaMgr = () => {
     setAutoExpandParent(false);
   };
 
-  const clickSearchTree = (e) => {
+  const clickSearchTree = e => {
     const value = inPutSearchValue;
+
     const expandedKeys = dataList
-      .map((item) => {
-        if (item.title.indexOf(value) > -1) {
-          return getParentKey(item.key, gData);
-        }
-        return null;
-      })
+      .map(item => (item.title.indexOf(value) > -1) ? getParentKey(item.key, gData) : null)
       .filter((item, i, self) => item && self.indexOf(item) === i);
+
     if (value) {
       setExpandedKeys(expandedKeys);
       setSearchValue(value);
@@ -59,7 +41,7 @@ const AreaMgr = () => {
     }
   };
 
-  const filterTreeNode = (node) => {
+  const filterTreeNode = node => {
     const title = node.title.props.children;
     const result = title.indexOf(searchValue) !== -1;
     return result;
@@ -73,23 +55,20 @@ const AreaMgr = () => {
   }, []);
 
   // 초기 테이블 셋팅
-  const handleInitTree = async (page = 1, sizePerPage = 10) => {
-    await getAreaList(page, sizePerPage).then(function (resp) {
-      gData = resp.data["resultList"];
-    });
-  }
+  const handleInitTree = async (page = 1, sizePerPage = 10) =>
+    await getAreaList(page, sizePerPage).then(resp => gData = resp.data["resultList"]);
 
   // 구역 등록 이벤트
   const handleClickRegisterItem = async (type, upAreaCode, areaLevel) => {
-    await insertAreaItem(type, upAreaCode, areaLevel).then(function (resp) {
-      if(resp.data["result"] === "success") {
+    await insertAreaItem(type, upAreaCode, areaLevel).then(resp => {
+      if (resp.data["result"] === "success") {
         handleInitTree().then(r => {
           alert("구역 등록을 완료했습니다.");
           generateList(gData);
           clickSearchTree();
           setNodeLv2Btn(true);
         });
-      } else if(resp.data["result"] === "duplicate") {
+      } else if (resp.data["result"] === "duplicate") {
         alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.")
       } else {
         alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
@@ -99,7 +78,7 @@ const AreaMgr = () => {
 
   const handleClickUpdateItem = (data) => {
     updateAreaItem(data).then((resp) => {
-      if(resp.data["result"] === "duplicate") {
+      if (resp.data["result"] === "duplicate") {
         alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.");
       } else if(resp.data["result"] === "success") {
         handleInitTree().then(r => {
@@ -121,24 +100,19 @@ const AreaMgr = () => {
     setNodeLevel(node.areaLevel + 1);            // 노드 레벨 set
     setNodeArray(node);
 
-    await selectAreaItem(node.key).then(function(resp) {
-      if(resp.data["result"] === "success") {
-        setAreaContent(resp.data["content"]);
-      } else {
-        alert("상세 조회에 오류가 발생했습니다.");
-      }
-    });
+    await selectAreaItem(node.key)
+      .then(resp => (resp.data["result"] === "success") ? setAreaContent(resp.data["content"]) :  alert("상세 조회에 오류가 발생했습니다."));
   }
 
   // 구역 삭제 이벤트
   const deleteNode = () => {
-    if(window.confirm("구역을 삭제하시겠습니까?")) {
-      if(nodeArray.children.length > 0) {
+    if (window.confirm("구역을 삭제하시겠습니까?")) {
+      if (nodeArray.children.length > 0) {
         alert("하위 구역을 먼저 삭제하셔야합니다.");
         return false;
       } else {
-        deleteAreaItem(nodeArray.key).then(function (resp) {
-          if(resp.data["result"] === "success") {
+        deleteAreaItem(nodeArray.key).then(resp => {
+          if (resp.data["result"] === "success") {
             handleInitTree().then(r => {
               alert("구역 삭제를 완료했습니다.");
               generateList(gData);
@@ -154,29 +128,19 @@ const AreaMgr = () => {
   }
 
   // 검색 후 이벤트
-  const loop = (data) =>
-    data.map((item) => {
+  const loop = data =>
+    data.map(item => {
       const index = item.title.indexOf(searchValue);
       const beforeStr = item.title.substr(0, index);
       const afterStr = item.title.substr(index + searchValue.length);
-      const title =
-        index > -1 ? (
-          <span>
-            {beforeStr}
-            <span className="site-tree-search-value">{searchValue}</span>
-            {afterStr}
-          </span>
-        ) : (
-          <span>{item.title}</span>
-        );
-      if (item.children) {
-        return { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) };
-      }
 
-      return {
-        title,
-        key: item.key,
-      };
+      const title =
+        (index > -1) ? <span>{beforeStr}<span className="site-tree-search-value">{searchValue}</span>{afterStr}</span> : <span>{item.title}</span>;
+
+      if (item.children)
+        return { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) };
+
+      return { title, key: item.key };
     });
 
   return (
@@ -232,4 +196,4 @@ const AreaMgr = () => {
   )
 }
 
-export default AreaMgr
+export default AreaMgr;

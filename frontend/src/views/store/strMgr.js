@@ -1,27 +1,15 @@
-import React, {lazy, useEffect, useState} from 'react'
+import React, { lazy, useEffect, useState } from 'react'
 import PageTableWidget from "../../widget/pageTableWidget";
-import {
-  CBadge,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CFormGroup,
-  CInput,
-  CLabel,
-  CRow,
-  CSelect,
-  CSwitch
-} from "@coreui/react";
-import {getStr, getStrList} from "../../agent/store";
+import { CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSelect, CSwitch } from "@coreui/react";
+import { getStr, getStrList } from "../../agent/store";
 import StrInsertModal from "./strInsertModal";
-import {getMem} from "../../agent/member";
+import { getMem } from "../../agent/member";
 import StrUpdateModal from "./strUpdateModal";
-import {getInsprAreaList} from "../../agent/inspection";
-import {numCommaFormat} from "../../agent/commonIndex";
+import { getInsprAreaList } from "../../agent/inspection";
+import { numCommaFormat } from "../../agent/commonIndex";
 
 // Y/N 표시 스타일
-const ynStyleFormatter = (cell) =>
+const ynStyleFormatter = cell =>
   <h5 className="mr-0 mb-0">
     <CBadge color={(cell === "N") ? 'danger' : 'primary'}>{(cell === "N") ? '미사용' : '사용'}</CBadge>
   </h5>;
@@ -34,21 +22,13 @@ const columns = [
   { dataField: 'strAddr', text: '주소', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' },  },
   { dataField: 'strTel', text: '상점 전화번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, },
   { dataField: 'strOwnTel', text: '상점주 전화번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, },
-  { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, formatter: ynStyleFormatter },
-  { dataField: 'regDate', text: '등록일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, }
+  { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: ynStyleFormatter },
+  { dataField: 'regDate', text: '등록일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, }
 ];
 const StrMgr = (props) => {
   const [repo, setRepo] = useState([]);               // 리스트 hook
-  const [pageItem, setPageItem] = useState({
-    page : 1,
-    sizePerPage: 10
-  }); // 페이징 hook
-  const [searchItem, setSearchItem] = useState({
-    searchWrd : "",
-    areaCode : "",
-    useYn : "Y",
-  });
-
+  const [pageItem, setPageItem] = useState({ page : 1, sizePerPage: 10 }); // 페이징 hook
+  const [searchItem, setSearchItem] = useState({ searchWrd : "", areaCode : "", useYn : "Y" });
   const [strContent, setStrContent] = useState({});
   const [fileContent, setFileContent] = useState();
   const [actionModal, setActionModal] = useState(false)             // Modal hook

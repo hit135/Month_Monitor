@@ -1,29 +1,20 @@
-export const convertPhoneNumber = (str) => {
+export const API_ROOT = 'http://localhost:8081/api';    // 로컬
+// export const API_ROOT = 'http://1.223.40.19:30081/api/';
+
+// export const filePathName = "http://localhost:8081/localImgstore/";
+export const filePathName = "http://1.223.40.19:30081/imgstore/";
+
+export const convertPhoneNumber = str => {
   str = str.replace(/[^0-9]/g, '');
 
-  var tmp = '';
-  if( str.length < 4){
+  if (str.length < 4)
     return str;
-  }else if(str.length < 7){
-    tmp += str.substr(0, 3);
-    tmp += '-';
-    tmp += str.substr(3);
-    return tmp;
-  }else if(str.length < 11){
-    tmp += str.substr(0, 3);
-    tmp += '-';
-    tmp += str.substr(3, 3);
-    tmp += '-';
-    tmp += str.substr(6);
-    return tmp;
-  }else{
-    tmp += str.substr(0, 3);
-    tmp += '-';
-    tmp += str.substr(3, 4);
-    tmp += '-';
-    tmp += str.substr(7);
-    return tmp;
-  }
+  else if (str.length < 7)
+    return `${str.substr(0, 3)}-${str.substr(3)}`;
+  else if (str.length < 11)
+    return `${str.substr(0, 3)}-${str.substr(3, 3)}-${str.substr(6)}`;
+  else
+    return `${str.substr(0, 3)}-${str.substr(3, 4)}-${str.substr(7)}`;
 
   return str;
 }

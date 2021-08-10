@@ -1,23 +1,12 @@
-import {
-  CButton, CFormGroup,
-  CLabel,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-  CCol, CSwitch, CInput, CFormText
-} from "@coreui/react";
-import React, {useEffect, useState} from "react";
-import {useForm} from "react-hook-form";
+import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch, CInput, CFormText } from "@coreui/react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import {getAreaList, getParentKey} from "../../agent/area";
-import {deleteSnsr, updateSnsr} from "../../agent/sensor";
+import { getAreaList, getParentKey } from "../../agent/area";
+import { deleteSnsr, updateSnsr } from "../../agent/sensor";
 import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
 
-const SnsrUpdateModal = (props) => {
-//const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  const API_ROOT = 'http://1.223.40.19:30081/api/';
+const SnsrUpdateModal = props => {
   let gData = [];
   const { modal, setModal, snsrContent, handleInitTable } = props
   const [onAreaModal, setOnAreaModal] = useState();
@@ -57,6 +46,7 @@ const SnsrUpdateModal = (props) => {
   const onSubmit = (data, e) => {
     console.log(data);
     data.updSnsrId = snsrContent.snsrId;
+
     updateSnsr(data).then((resp) => {
       if(resp.data["result"] === "success") {
         alert("센서 수정을 완료했습니다.");
@@ -77,7 +67,7 @@ const SnsrUpdateModal = (props) => {
   }
 
   const nodeClick = async (e, node) => {
-    if(gData !== []) {
+    if (gData !== []) {
       await getAreaList().then(function (resp) {
         gData = resp.data["resultList"];
       });
@@ -85,7 +75,7 @@ const SnsrUpdateModal = (props) => {
 
     const parentKey = getParentKey(node.key, gData);
     setValue("levelAreaCode", node["key"]);
-    if(parentKey !== undefined) {
+    if (parentKey !== undefined) {
       setValue("areaCode", parentKey);
     } else {
       setValue("areaCode", node["key"]);
@@ -97,9 +87,9 @@ const SnsrUpdateModal = (props) => {
     setValue("levelAreaCode", "");
   }
 
-  const handleClickDeleteSnsr = (snsrId) => {
+  const handleClickDeleteSnsr = snsrId => {
     deleteSnsr(snsrId).then(resp => {
-      if(resp.data["result"] === "success") {
+      if (resp.data["result"] === "success") {
         alert("센서 삭제를 완료했습니다.");
         closeModal();
         handleInitTable();
@@ -110,21 +100,12 @@ const SnsrUpdateModal = (props) => {
     });
   }
 
-  const clickStrRow = (e) => {
-    setValue("strCode", e.strCode)
-  }
-
-  const initStrCode = () => {
-    setValue("strCode", "")
-  }
+  const clickStrRow = e => setValue("strCode", e.strCode);
+  const initStrCode = () => setValue("strCode", "");
 
   return (
     <>
-      <CModal
-        show={modal}
-        onClose={() => closeModal()}
-        color="info"
-      >
+      <CModal show={modal} onClose={() => closeModal()} color="info">
         <form onSubmit={handleSubmit(onSubmit)}>
         <CModalHeader>
           <CModalTitle style={{ color: "#fff" }}>센서 수정</CModalTitle>

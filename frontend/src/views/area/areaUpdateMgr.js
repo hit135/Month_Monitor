@@ -1,12 +1,10 @@
-import {CCard, CCardBody, CCardHeader, CCol, CLabel, CFormGroup, CButton, CSwitch, CRow} from "@coreui/react";
-import React, {useEffect, useState} from "react";
-import {useForm} from "react-hook-form";
+import { CCard, CCardBody, CCardHeader, CCol, CLabel, CFormGroup, CButton, CSwitch, CRow } from "@coreui/react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import axios from "axios";
+import { API_ROOT } from "../../agent/commonIndex";
 
 const AreaUpdateMgr = (props) => {
-  //const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  const API_ROOT = 'http://1.223.40.19:30081/api/';
-
   let { areaContent, nodeLv2Btn, handleClickUpdateItem } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm({
     mode: "all"
@@ -16,8 +14,9 @@ const AreaUpdateMgr = (props) => {
   const [onMemModal, setOnMemModal] = useState(false)             // Modal hook
 
   useEffect(() => {
-    if(nodeLv2Btn) {
+    if (nodeLv2Btn) {
       areaContent = undefined;
+
       reset({
         areaCode: "",
         areaName : "",
@@ -28,39 +27,35 @@ const AreaUpdateMgr = (props) => {
         areaOrder: 0,
         useYn : "N",
         areaOrderUpdate: false,
-        areaOrderType: false,
+        areaOrderType: false
       });
-
     } else {
       reset(areaContent);
     }
-    if(areaContent !== undefined) {
+
+    if (typeof areaContent !== "undefined") {
       appSwitch.useYn = (areaContent.useYn === "Y");
       setValue("prevAreaCode", areaContent.areaCode);
     } else {
-      setAppSwitch(data => ({
-        ...data,
-        ["useYn"]: false
-      }));
+      setAppSwitch(data => ({ ...data, ["useYn"]: false }));
     }
   }, [areaContent]);
 
-  const setSwitchValue = (e) => {
+  const setSwitchValue = e => {
     const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
-    setAppSwitch(data => ({
-      ...data,
-      [e.target.id]: (value === "Y")
-    }));
+
+    setAppSwitch(data => ({ ...data, [e.target.id]: (value === "Y") }));
     setValue(e.target.id, value);
   }
 
   const onSubmit = (data, e) => {
-    if(areaContent.areaOrder !== data.areaOrder) {
+    if (areaContent.areaOrder !== data.areaOrder) {
       data.areaOrderUpdate = true;
       // setValue("areaOrderUpdate", true);
-      if(parseInt(data.areaOrder) === data.orderCnt)
+      if (parseInt(data.areaOrder) === data.orderCnt)
         data.areaOrderType = true;
     }
+
     console.log(data);
     handleClickUpdateItem(data);
   };
@@ -76,7 +71,6 @@ const AreaUpdateMgr = (props) => {
                   <h5 className={"mb-0 ml-0"}>{areaContent === undefined ? "" : areaContent.areaName} 상세 및 수정</h5>
                 </div>
               </div>
-
             </CCol>
           </CCardHeader>
           <CCardBody className={"pt-3"}>
@@ -109,7 +103,6 @@ const AreaUpdateMgr = (props) => {
                          {...register("upAreaCode", { required: true })} placeholder={""} />
                 </CCol>
             </CFormGroup>
-
             <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="areaName">구역명<span className={"required-span"}> *</span></CLabel>
@@ -130,7 +123,6 @@ const AreaUpdateMgr = (props) => {
                 </select>
               </CCol>
             </CFormGroup>
-
             <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="areaAddr">주소</CLabel>

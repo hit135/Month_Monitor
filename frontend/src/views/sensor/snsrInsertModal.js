@@ -1,23 +1,12 @@
-import {
-  CButton, CFormGroup,
-  CLabel,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-  CCol
-} from "@coreui/react";
-import React, { useState} from "react";
-import {useForm} from "react-hook-form";
+import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol } from "@coreui/react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import {getAreaList, getParentKey} from "../../agent/area";
-import {insertSnsr} from "../../agent/sensor";
+import { getAreaList, getParentKey } from "../../agent/area";
+import { insertSnsr } from "../../agent/sensor";
 import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
 
-const SnsrInsertModal = (props) => {
-//const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  const API_ROOT = 'http://1.223.40.19:30081/api/';
+const SnsrInsertModal = props => {
   let gData = [];
   const { modal, setModal, handleInitTable } = props
   const [onAreaModal, setOnAreaModal] = useState();

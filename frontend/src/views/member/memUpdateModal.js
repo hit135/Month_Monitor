@@ -1,19 +1,9 @@
-import {
-  CButton, CFormGroup,
-  CRow,
-  CLabel,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-  CCol, CSwitch
-} from "@coreui/react";
-import React, {useEffect, useState} from "react";
-import {useForm} from "react-hook-form";
-import {deleteMem, updateMem} from "../../agent/member";
+import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch } from "@coreui/react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { deleteMem, updateMem } from "../../agent/member";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import {convertPhoneNumber} from "../../agent/commonIndex";
+import { convertPhoneNumber } from "../../agent/commonIndex";
 
 const MemUpdateModal = (props) => {
   const { modal, setModal, userContent, handleInitTable } = props
@@ -41,9 +31,9 @@ const MemUpdateModal = (props) => {
   }, [userContent]);
 
   const onSubmit = (data, e) => {
-    if(userContent.userId === data.userId) {
+    if (userContent.userId === data.userId) {
       updateMem(data).then(resp => {
-        if(resp.data["result"] === "success") {
+        if (resp.data["result"] === "success") {
           alert("회원 수정을 완료했습니다.");
           closeModal();
           handleInitTable();
@@ -63,25 +53,22 @@ const MemUpdateModal = (props) => {
     setModal(!modal);
   }
 
-  const setSwitchValue = (e) => {
+  const setSwitchValue = e => {
     const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
-    setAppSwitch(data => ({
-      ...data,
-      [e.target.id]: (value === "Y")
-    }));
+    setAppSwitch(data => ({ ...data, [e.target.id]: (value === "Y") }));
     setValue(e.target.id, value);
   }
 
-  const handleChangePhoneNumber = (e) => {
+  const handleChangePhoneNumber = e => {
     e = e || window.e;
     let _val = e.target.value.trim();
     e.target.value = convertPhoneNumber(_val) ;
   }
 
-  const handleConfirmDelUser = (id) => {
-    if(window.confirm("회원을 영구 삭제하시겠습니까?")) {
-      deleteMem(id).then(function(resp) {
-        if(resp.data["result"] === "success") {
+  const handleConfirmDelUser = id => {
+    if (window.confirm("회원을 영구 삭제하시겠습니까?")) {
+      deleteMem(id).then(resp => {
+        if (resp.data["result"] === "success") {
           alert("회원 삭제를 완료했습니다.");
           closeModal();
           handleInitTable();
@@ -93,22 +80,12 @@ const MemUpdateModal = (props) => {
     }
   }
 
-  const nodeClick = (e, node) => {
-    setValue("memAreaCode", node["key"])
-  }
-
-  const initAreaCode = () => {
-    setValue("memAreaCode", "");
-  }
+  const nodeClick = (e, node) => setValue("memAreaCode", node["key"]);
+  const initAreaCode = () => setValue("memAreaCode", "");
 
   return (
     <>
-      <CModal
-        show={modal}
-        onClose={() => closeModal()}
-        color="info"
-        size="lg"
-      >
+      <CModal show={modal} onClose={() => closeModal()} color="info" size="lg">
         <form onSubmit={handleSubmit(onSubmit)}>
         <CModalHeader>
           <CModalTitle style={{ color: "#fff" }}>회원 수정</CModalTitle>
@@ -121,7 +98,6 @@ const MemUpdateModal = (props) => {
               {...register("userId")}
               />
             </CCol>
-
             <CCol md="6">
               <CLabel htmlFor="memPwd">비밀번호</CLabel>
               <input className={errors.memPwd && "is-invalid form-control" || (!errors.memPwd && getValues("memPwd") !== "") && "form-control is-valid" || (!errors.memPwd && getValues("memPwd") === "") && "form-control"}
@@ -132,7 +108,6 @@ const MemUpdateModal = (props) => {
               {errors.memPwd && errors.memPwd.type === "pattern" && <span className={"invalid-feedback"}>비밀번호 형식에 맞게 입력해주세요. (특수문자 / 문자 / 숫자 포함 8~15자리)</span>}
             </CCol>
           </CFormGroup>
-
           <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="memName">사용자 이름<span className={"required-span"}> *</span></CLabel>
@@ -142,7 +117,6 @@ const MemUpdateModal = (props) => {
               {errors.memName && errors.memName.type === "minLength" && <span className={"invalid-feedback"}>이름을 2글자 이상으로 입력해주세요.</span>}
               {errors.memName && errors.memName.type === "maxLength" && <span className={"invalid-feedback"}>이름을 50글자 이하로 입력해주세요.</span>}
             </CCol>
-
             <CCol md="6">
               <CLabel htmlFor="memEmail">사용자 이메일</CLabel>
               <input className={errors.memEmail && "is-invalid form-control" || (!errors.memEmail && getValues("memEmail") !== "") && "form-control is-valid" || (!errors.memEmail && getValues("memEmail") === "") && "form-control"}
@@ -151,16 +125,13 @@ const MemUpdateModal = (props) => {
               {errors.memEmail && <span className={"invalid-feedback"}>{errors.memEmail.message}</span>}
             </CCol>
           </CFormGroup>
-
           <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="userId">전화번호</CLabel>
-
               <input className={errors.memTel && "is-invalid form-control" || (!errors.memTel && getValues("memTel") !== "") && "form-control is-valid" || (!errors.memTel && getValues("memTel") === "") && "form-control"}
                      onKeyUp={handleChangePhoneNumber} {...register("memTel", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요."} })} />
               {errors.memTel && errors.memTel.type === "pattern" && <span className={"invalid-feedback"}>{errors.memTel.message}</span>}
             </CCol>
-
             <CCol md="6">
               <CLabel htmlFor="memPwd">휴대폰번호</CLabel>
               <input className={errors.memMobile && "is-invalid form-control" || (!errors.memMobile && getValues("memMobile") !== "") && "form-control is-valid" || (!errors.memMobile && getValues("memMobile") === "") && "form-control"}
@@ -175,7 +146,6 @@ const MemUpdateModal = (props) => {
                      placeholder={"구역을 선택해주세요."} onClick={(e) => setOnAreaModal(true)} />
             </CCol>
           </CFormGroup>
-
           <CRow className={"pl-3 pr-3 mt-4"}>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
@@ -198,7 +168,6 @@ const MemUpdateModal = (props) => {
                        checked={ appSwitch.memRcvSms }/>
             </CFormGroup>
           </CRow>
-
           <CFormGroup row>
             <CCol md="12">
               <CLabel htmlFor="memMemo">메모</CLabel>

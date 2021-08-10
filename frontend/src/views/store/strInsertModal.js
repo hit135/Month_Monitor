@@ -1,29 +1,18 @@
-import {
-  CButton, CFormGroup,
-  CRow,
-  CLabel,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-  CCol, CSwitch
-} from "@coreui/react";
-import React, {useEffect, useState} from "react";
-import {useForm} from "react-hook-form";
+import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch } from "@coreui/react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { DropzoneArea } from 'material-ui-dropzone';
-import {convertPhoneNumber} from "../../agent/commonIndex";
-import {insertStr} from "../../agent/store";
+import { convertPhoneNumber } from "../../agent/commonIndex";
+import { insertStr } from "../../agent/store";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import {getAreaList, getParentKey} from "../../agent/area";
+import { getAreaList, getParentKey } from "../../agent/area";
 
-const StrInsertModal = (props) => {
-//const API_ROOT = 'http://localhost:8081/api';    // 로컬
-  const API_ROOT = 'http://1.223.40.19:30081/api/';
+const StrInsertModal = props => {
   let gData = [];
   const { modal, setModal, handleInitTable } = props
   const [onAreaModal, setOnAreaModal] = useState();
   const [initDropZone, setInitDropZone] = useState();
+
   const setDropZoneArea = () => {
     setInitDropZone(
       <DropzoneArea
