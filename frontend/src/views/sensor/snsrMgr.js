@@ -1,15 +1,10 @@
-import React, {lazy, useEffect, useState} from 'react'
-import {CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
-import {Tree} from "antd";
-import {
-  dataList,
-  generateList,
-  getAreaList,
-  getParentKey,
-} from "../../agent/area";
+import React, { lazy, useEffect, useState } from 'react'
+import { CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch } from "@coreui/react";
+import { Tree } from "antd";
+import { dataList, generateList, getAreaList, getParentKey } from "../../agent/area";
 import PageTableWidget from "../../widget/pageTableWidget";
-import {getSnsr, getSnsrList} from "../../agent/sensor";
-import {numCommaFormat} from "../../agent/commonIndex";
+import { getSnsr, getSnsrList } from "../../agent/sensor";
+import { numCommaFormat } from "../../agent/commonIndex";
 import SnsrInsertModal from "./snsrInsertModal";
 import SnsrUpdateModal from "./snsrUpdateModal";
 
@@ -23,6 +18,7 @@ const columns = [
   { dataField: 'snsrNick', text: '센서명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }},
   { dataField: 'regDate', text: '등록일자', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }}
 ];
+
 const SnsrMgr = () => {
   const [insertModal, setInsertModal] = useState(false)             // Modal hook
   const [updateModal, setUpdateModal] = useState(false)             // Modal hook

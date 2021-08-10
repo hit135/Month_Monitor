@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.fscom.firsens.sys.repository.SYSStatRepo">
+
+    <select id="SELECT_SYS_STAT_AREA_INFO_STAT" parameterType="map" resultType="map">
+        SELECT L.AREANAME AS areaName
+             , L.AREAADDR AS areaAddr
+             , COUNT(DISTINCT S.STRCODE) AS stCnt
+             , COUNT(DISTINCT I.SNSRSEQ) AS snsrCnt
+          FROM ( SELECT * FROM F_STORE WHERE AREACODE = #{areaCode} AND USEYN = 'Y' AND DELYN = 'N' ) S
+                    LEFT JOIN ( SELECT DISTINCT AREACODE, AREANAME, AREAADDR FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N' ) L
+                        ON S.AREACODE = L.AREACODE
+                    LEFT JOIN ( SELECT AREACODE, STRCODE, SNSRSEQ FROM F_SENSOR_INFO WHERE DELYN = 'N' ) I
+                        ON S.AREACODE = I.AREACODE
+    </select>
+
+    <select id="SELECT_SYS_STAT_STR_INFO" parameterType="map" resultType="map">
+        SELECT DISTINCT STRCODE AS strCode
+             , STRNAME AS strName
+          FROM F_STORE
+         WHERE AREACODE = #{areaCode}
+           AND USEYN = 'Y'
+           AND DELYN = 'N'
+           AND STRCODE LIKE CONCAT('%', #{searchWrd})
+    </select>
+
+    <select id="SELECT_SYS_STAT_SNSR_INFO" parameterType="map" resultType="map">
+        SELECT DISTINCT SNSRID AS snsrId
+             , SNSRSEQ AS snsrSeq
+             , SNSRNICK AS snsrNick
+          FROM F_SENSOR_INFO
+         WHERE AREACODE = #{areaCode}
+           AND DELYN = 'N'
+           AND (    SNSRID  LIKE CONCAT('%', #{searchWrd})
+                 OR SNSRSEQ LIKE CONCAT('%', #{searchWrd}) )
+    </select>
+
+    <select id="LIST_SYS_STAT_AREA_HOURLY_STAT" parameterType="map" resultType="map">
+        SELECT ( CASE TRUNCATE(T.HOUR / 4, 0) WHEN 0 THEN   '0 ~ 3' WHEN 1 THEN   '4 ~ 7' WHEN 2 THEN  '8 ~ 11'
+                                              WHEN 3 THEN '12 ~ 15' WHEN 4 THEN '16 ~ 19' WHEN 5 THEN '20 ~ 23' END ) AS hour
+             , COALESCE(SUM(A.OCWARNINGCNT), 0) AS ocWarningCnt
+             , COALESCE(SUM(A.OCWARNINGCNT) * 100 / SUM(SUM(A.OCWARNINGCNT)) OVER(), 0) AS ocWarningPer
+             , COALESCE(SUM(A.OCDANGERCNT), 0) AS ocDangerCnt
+             , COALESCE(SUM(A.OCDANGERCNT) * 100 / SUM(SUM(A.OCDANGERCNT)) OVER(), 0) AS ocDangerPer
+             , COALESCE(SUM(A.IGOWARNINGCNT), 0) AS igoWarningCnt
+             , COALESCE(SUM(A.IGOWARNINGCNT) * 100 / SUM(SUM(A.IGOWARNINGCNT)) OVER(), 0) AS igoWarningPer
+             , COALESCE(SUM(A.IGODANGERCNT), 0) AS igoDangerCnt
+             , COALESCE(SUM(A.IGODANGERCNT) * 100 / SUM(SUM(A.IGODANGERCNT)) OVER(), 0) AS igoDangerPer
+             , COALESCE(SUM(A.IGRWARNINGCNT), 0) AS igrWarningCnt
+             , COALESCE(SUM(A.IGRWARNINGCNT) * 100 / SUM(SUM(A.IGRWARNINGCNT)) OVER(), 0) AS igrWarningPer
+             , COALESCE(SUM(A.IGRDANGERCNT), 0) AS igrDangerCnt
+             , COALESCE(SUM(A.IGRDANGERCNT) * 100 / SUM(SUM(A.IGRDANGERCNT)) OVER(), 0) AS igrDangerPer
+             , COALESCE(SUM(B.USEKWH), 0) AS snsrKwh
+             , COALESCE(SUM(B.USEKWH) * 100 / SUM(SUM(B.USEKWH)) OVER(), 0) AS snsrKwhPer
+          FROM ( SELECT LPAD(seq, 2, '0') AS HOUR FROM seq_0_to_23 ) T
+                    LEFT JOIN ( SELECT DATE_FORMAT(DATETIME, '%H') AS HOUR
+                                     , SUM(OCWARNINGCNT) AS OCWARNINGCNT
+                                     , SUM(OCDANGERCNT) AS OCDANGERCNT
+                                     , SUM(IGOWARNINGCNT) AS IGOWARNINGCNT
+                                     , SUM(IGODANGERCNT) AS IGODANGERCNT
+                                     , SUM(IGRWARNINGCNT) AS IGRWARNINGCNT
+                                     , SUM(IGRDANGERCNT) AS IGRDANGERCNT
+                                    <choose>
+                                        <when test='"area".equals(type)'>
+                                          FROM F_CRN_AREA_ELEC_EVT_STAT
+                                         WHERE AREACODE = #{areaCode}
+                                           AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
+                                         GROUP BY AREACODE, DATE_FORMAT(DATETIME, '%H')
+                                        </when>
+                                        <when test='"str".equals(type)'>
+                                          FROM F_CRN_SNSR_ELEC_EVT_STAT
+                                         WHERE AREACODE = #{areaCode}
+                                           AND STRCODE = #{strCode}
+                                           AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
+                                         GROUP BY AREACODE, STRCODE, DATE_FORMAT(DATETIME, '%H')
+                                        </when>
+                                        <when test='"snsr".equals(type)'>
+                                          FROM F_CRN_SNSR_ELEC_EVT_STAT
+                                         WHERE AREACODE = #{areaCode}
+                                           AND ( SNSRID = #{snsrId} OR SNSRSEQ = #{snsrSeq} )
+                                           AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
+                                         GROUP BY AREACODE, STRCODE, SNSRID, SNSRSEQ, DATE_FORMAT(DATETIME, '%H')
+                                        </when>
+                                    </choose>
+                                     ORDER BY HOUR ) A
+                                        ON T.HOUR = A.HOUR
+                        LEFT JOIN ( SELECT T.HOUR
+                                         , ( CASE WHEN T.HOUR = '00' THEN K.H00  WHEN T.HOUR = '01' THEN K.H01 WHEN T.HOUR = '02' THEN K.H02 WHEN T.HOUR = '03' THEN K.H03
+                                                  WHEN T.HOUR = '04' THEN K.H04  WHEN T.HOUR = '05' THEN K.H05 WHEN T.HOUR = '06' THEN K.H06 WHEN T.HOUR = '07' THEN K.H07
+                                                  WHEN T.HOUR = '08' THEN K.H08  WHEN T.HOUR = '09' THEN K.H09 WHEN T.HOUR = '10' THEN K.H10 WHEN T.HOUR = '11' THEN K.H11
+                                                  WHEN T.HOUR = '12' THEN K.H12  WHEN T.HOUR = '13' THEN K.H13 WHEN T.HOUR = '14' THEN K.H14 WHEN T.HOUR = '15' THEN K.H15
+                                                  WHEN T.HOUR = '16' THEN K.H16  WHEN T.HOUR = '17' THEN K.H17 WHEN T.HOUR = '18' THEN K.H18 WHEN T.HOUR = '19' THEN K.H19
+                                                  WHEN T.HOUR = '20' THEN K.H20  WHEN T.HOUR = '21' THEN K.H21 WHEN T.HOUR = '22' THEN K.H22 WHEN T.HOUR = '23' THEN K.H23
+                                             END ) AS USEKWH
+                                      FROM ( SELECT LPAD(seq, 2, '0') AS HOUR FROM seq_0_to_23 ) T
+                                         , ( SELECT SUM(H00) AS H00, SUM(H01) AS H01, SUM(H02) AS H02, SUM(H03) AS H03, SUM(H04) AS H04, SUM(H05) AS H05, SUM(H06) AS H06, SUM(H07) AS H07
+                                                  , SUM(H08) AS H08, SUM(H09) AS H09, SUM(H10) AS H10, SUM(H11) AS H11, SUM(H12) AS H12, SUM(H13) AS H13, SUM(H14) AS H14, SUM(H15) AS H15
+                                                  , SUM(H16) AS H16, SUM(H17) AS H17, SUM(H18) AS H18, SUM(H19) AS H19, SUM(H20) AS H20, SUM(H21) AS H21, SUM(H22) AS H22, SUM(H23) AS H23
+                                            <choose>
+                                                <when test='"area".equals(type)'>
+                                                     FROM F_CRN_AREA_KWH_HIST
+                                                    WHERE AREACODE = #{areaCode}
+                                                      AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
+                                                    GROUP BY AREACODE
+                                                </when>
+                                                <when test='"str".equals(type)'>
+                                                     FROM F_CRN_SNSR_KWH_HIST
+                                                    WHERE AREACODE = #{areaCode}
+                                                      AND STRCODE = #{strCode}
+                                                      AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
+                                                    GROUP BY AREACODE, STRCODE
+                                                </when>
+                                                <when test='"snsr".equals(type)'>
+                                                     FROM F_CRN_SNSR_KWH_HIST
+                                                    WHERE AREACODE = #{areaCode}
+                                                      AND ( SNSRID = #{snsrId} OR SNSRSEQ = #{snsrSeq} )
+                                                      AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
+                                                    GROUP BY AREACODE, STRCODE, SNSRID, SNSRSEQ
+                                                </when>
+                                            </choose>
+                                            ) K
+                                  ) B
+                                    ON T.HOUR = B.HOUR
+         GROUP BY TRUNCATE(T.HOUR / 4, 0)
+         ORDER BY TRUNCATE(T.HOUR / 4, 0)
+    </select>
+
+    <select id="LIST_SYS_STAT_AREA_DAYOFWEEK_STAT" parameterType="map" resultType="map">
+        SELECT T.DAYNAME AS dayName
+             , COALESCE(A.OC1STCNT, 0) AS oc1stCnt
+             , COALESCE(A.OC1STPER, 0) AS oc1stPer
+             , COALESCE(A.OC2NDCNT, 0) AS oc2ndCnt
+             , COALESCE(A.OC2NDPER, 0) AS oc2ndPer
+             , COALESCE(A.IGO1STCNT, 0)  AS igo1stCnt
+             , COALESCE(A.IGO1STPER, 0)  AS igo1stPer
+             , COALESCE(A.IGO2NDCNT, 0)  AS igo2ndCnt
+             , COALESCE(A.IGO2NDPER, 0)  AS igo2ndPer
+             , COALESCE(A.IGR1STCNT, 0)  AS igr1stCnt
+             , COALESCE(A.IGR1STPER, 0)  AS igr1stPer
+             , COALESCE(A.IGR2NDCNT, 0)  AS igr2ndCnt
+             , COALESCE(A.IGR2NDPER, 0)  AS igr2ndPer
+             , COALESCE(A.SNSRKWH, 0) AS snsrKwh
+             , COALESCE(A.SNSRKWPER, 0) AS snsrKwhPer
+          FROM ( SELECT '일요일' AS DAYNAME, 1 AS DAYOFWEEK UNION SELECT '월요일' AS DAYNAME, 2 AS DAYOFWEEK UNION
+                 SELECT '화요일' AS DAYNAME, 3 AS DAYOFWEEK UNION SELECT '수요일' AS DAYNAME, 4 AS DAYOFWEEK UNION
+                 SELECT '목요일' AS DAYNAME, 5 AS DAYOFWEEK UNION SELECT '금요일' AS DAYNAME, 6 AS DAYOFWEEK UNION
+                 SELECT '토요일' AS DAYNAME, 7 AS DAYOFWEEK ) T
+                    LEFT JOIN ( SELECT ( CASE DAYNAME(SDATE) WHEN   'Sunday' THEN '일요일'  WHEN     'Monday' THEN '월요일'
+                                                             WHEN  'Tuesday' THEN '화요일'  WHEN  'Wednesday' THEN '수요일'
+                                                             WHEN 'Thursday' THEN '목요일'  WHEN     'Friday' THEN '금요일'
+                                                             WHEN 'Saturday' THEN '토요일'
+                                         END ) AS DAYNAME
+                                     , DAYOFWEEK(SDATE) AS DAYOFWEEK
+                                     , SUM(OC1ST) AS OC1STCNT
+                                     , SUM(OC1ST) * 100 / SUM(SUM(OC1ST)) OVER() AS OC1STPER
+                                     , SUM(OC2ND) AS OC2NDCNT
+                                     , SUM(OC2ND) * 100 / SUM(SUM(OC2ND)) OVER() AS OC2NDPER
+                                     , SUM(IGO1ST) AS IGO1STCNT
+                                     , SUM(IGO1ST) * 100 / SUM(SUM(IGO1ST)) OVER() AS IGO1STPER
+                                     , SUM(IGO2ND) AS IGO2NDCNT
+                                     , SUM(IGO2ND) * 100 / SUM(SUM(IGO2ND)) OVER() AS IGO2NDPER
+                                     , SUM(IGR1ST) AS IGR1STCNT
+                                     , SUM(IGR1ST) * 100 / SUM(SUM(IGR1ST)) OVER() AS IGR1STPER
+                                     , SUM(IGR2ND) AS IGR2NDCNT
+                                     , SUM(IGR2ND) * 100 / SUM(SUM(IGR2ND)) OVER() AS IGR2NDPER
+                                     , SUM(SNSRKWHDAILY) AS SNSRKWH
+                                     , SUM(SNSRKWHDAILY) * 100 / SUM(SUM(SNSRKWHDAILY)) OVER() AS SNSRKWPER
+                                <choose>
+                                    <when test='"area".equals(type)'>
+                                         FROM F_CRN_AREA_ELEC_DAILY_STAT
+                                        WHERE AREACODE = #{areaCode}
+                                    </when>
+                                    <when test='"str".equals(type)'>
+                                         FROM F_ELEC_SENSOR_STAT
+                                        WHERE AREACODE = #{areaCode} AND STRCODE = #{strCode}
+                                    </when>
+                                    <when test='"snsr".equals(type)'>
+                                         FROM F_ELEC_SENSOR_STAT
+                                        WHERE AREACODE = #{areaCode} AND (SNSRID = #{snsrId} OR SNSRSEQ = #{snsrSeq})
+                                    </when>
+                                </choose>
+                                   AND ( SDATE BETWEEN #{startDate} AND #{endDate} )
+                                 GROUP BY DAYOFWEEK(SDATE) ) A
+                                    ON T.DAYOFWEEK = A.DAYOFWEEK
+    </select>
+
+    <select id="SELECT_SYS_STAT_AREA_KWHIGO_STAT" parameterType="map" resultType="map">
+        SELECT S.SNSRKWH AS snsrKwh
+        , (S.SNSRKWH * 100 / SNSRSUM) AS snsrKwhPer
+        , S.SNSRIGO AS snsrIgo
+        , (S.SNSRIGO * 100 / SNSRSUM) AS snsrIgoPer
+        FROM ( SELECT SUM(SNSRKWHDAILY) AS SNSRKWH
+        , SUM(SNSRIGOAVG) AS SNSRIGO
+        , SUM(SNSRKWHDAILY) + SUM(SNSRIGOAVG) AS SNSRSUM
+        FROM F_ELEC_SENSOR_STAT
+        WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
+        AND AREACODE = #{areaCode}
+        <if test='"str".equals(type)'>AND STRCODE = #{strCode}</if>
+        <if test='"snsr".equals(type)'>AND (SNSRID = #{snsrId} OR SNSRSEQ = #{snsrSeq})</if>
+        ) S
+    </select>
+
+    <select id="LIST_SYS_STAT_AREA_MONTHLY_STAT" parameterType="map" resultType="map">
+        SELECT T.SDATE AS sDate
+        , COALESCE(E.OC1ST, 0) AS oc1st
+        , COALESCE(E.OC2ND, 0) AS oc2nd
+        , COALESCE(E.OCEVT, 0) AS ocEvt
+        , COALESCE(E.IGO1ST, 0) AS igo1st
+        , COALESCE(E.IGO2ND, 0) AS igo2nd
+        , COALESCE(E.IGOEVT, 0) AS igoEvt
+        , COALESCE(E.IGR1ST, 0) AS igr1st
+        , COALESCE(E.IGR2ND, 0) AS igr2nd
+        , COALESCE(E.IGREVT, 0) AS igrEvt
+        , COALESCE(E.MONTHLYEVT, 0) AS monthlyEvt
+        , COALESCE(E.SNSRKWH, 0) AS snsrKwh
+        , COALESCE(E.SNSRIGO, 0) AS snsrIgo
+        FROM ( SELECT CONCAT(LPAD(seq, 2, '0')) AS sDate  FROM seq_1_to_12 ) T
+        LEFT JOIN ( SELECT DATE_FORMAT(SDATE, '%m') AS sDate
+        , SUM(OC1ST) AS OC1ST
+        , SUM(OC2ND) AS OC2ND
+        , SUM(TOTOCALM) AS OCEVT
+        , SUM(IGO1ST) AS IGO1ST
+        , SUM(IGO2ND) AS IGO2ND
+        , SUM(IGO1ST) + SUM(IGO2ND) AS IGOEVT
+        , SUM(IGR1ST) AS IGR1ST
+        , SUM(IGR2ND) AS IGR2ND
+        , SUM(IGR1ST) + SUM(IGR2ND) AS IGREVT
+        , SUM(TOTOCALM) + SUM(TOTIGALM) AS MONTHLYEVT
+        , SUM(SNSRKWHDAILY) AS SNSRKWH
+        , SUM(SNSRIGOAVG) AS SNSRIGO
+        FROM F_ELEC_SENSOR_STAT
+        WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
+        AND AREACODE = #{areaCode}
+        <if test='"str".equals(type)'>AND STRCODE = #{strCode}</if>
+        <if test='"snsr".equals(type)'>AND (SNSRID = #{snsrId} OR SNSRSEQ = #{snsrSeq})</if>
+        GROUP BY DATE_FORMAT(SDATE, '%m') ) E
+        ON T.SDATE = E.SDATE
+        UNION ALL
+        SELECT CONCAT('전체') AS sDate
+        , SUM(OC1ST) AS OC1ST
+        , SUM(OC2ND) AS OC2ND
+        , SUM(TOTOCALM) AS OCEVT
+        , SUM(IGO1ST) AS IGO1ST
+        , SUM(IGO2ND) AS IGO2ND
+        , SUM(IGO1ST) + SUM(IGO2ND) AS IGOEVT
+        , SUM(IGR1ST) AS IGR1ST
+        , SUM(IGR2ND) AS IGR2ND
+        , SUM(IGR1ST) + SUM(IGR2ND) AS IGREVT
+        , SUM(TOTOCALM) + SUM(TOTIGALM) AS MONTHLYEVT
+        , SUM(SNSRKWHDAILY) AS SNSRKWH
+        , SUM(SNSRIGOAVG) AS SNSRIGO
+        FROM F_ELEC_SENSOR_STAT
+        WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
+        AND AREACODE = #{areaCode}
+        <if test='"str".equals(type)'>AND STRCODE = #{strCode}</if>
+        <if test='"snsr".equals(type)'>AND (SNSRID = #{snsrId} OR SNSRSEQ = #{snsrSeq})</if>
+        ORDER BY sDate
+    </select>
+
+    <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <select id="LIST_SYS_STAT_LEVEL_AREA_STAT" parameterType="map" resultType="map">
+        SELECT E.LEVELAREACODE AS levelAreaCode
+             , ( SELECT AREANAME FROM F_LEVEL_AREA WHERE AREACODE = E.LEVELAREACODE ) AS areaName
+             , SUM(E.OC1ST) AS oc1st
+             , SUM(E.OC2ND) AS oc2nd
+             , SUM(E.IGO1ST) AS igo1st
+             , SUM(E.IGO2ND) AS igo2nd
+             , SUM(E.IGR1ST) AS igr1st
+             , SUM(E.IGR2ND) AS igr2nd
+             , SUM(E.DISCONN) AS disconn
+             , SUM(E.SNSRKWHDAILY) AS snsrKwh
+        FROM F_ELEC_SENSOR_STAT E
+        WHERE E.AREACODE = #{areaCode} AND (E.SDATE BETWEEN #{startDate} AND #{endDate})
+        GROUP BY E.LEVELAREACODE
+        ORDER BY E.LEVELAREACODE
+    </select>
+
+    <select id="LIST_SYS_STAT_STR_EVENT_STAT" parameterType="map" resultType="map">
+        SELECT S.STRCODE AS strCode
+             , ( SELECT DISTINCT STRNAME FROM F_STORE WHERE STRCODE = S.STRCODE ) AS strName
+             , S.OC1ST AS oc1st
+             , S.OC2ND AS oc2nd
+             , S.IGO1ST AS igo1st
+             , S.IGO2ND AS igo2nd
+             , S.IGR1ST AS igr1st
+             , S.IGR2ND AS igr2nd
+             , S.DISCONN AS disconn
+        FROM ( SELECT STRCODE
+                    , SUM(OC1ST) AS OC1ST
+                    , SUM(OC2ND) AS OC2ND
+                    , SUM(IGO1ST) AS IGO1ST
+                    , SUM(IGO2ND) AS IGO2ND
+                    , SUM(IGR1ST) AS IGR1ST
+                    , SUM(IGR2ND) AS IGR2ND
+                    , SUM(DISCONN) AS DISCONN
+               FROM F_ELEC_SENSOR_STAT
+               WHERE AREACODE = #{areaCode}
+                 AND SDATE BETWEEN #{startDate} AND #{endDate}
+               GROUP BY AREACODE, STRCODE ) S
+        WHERE (S.OC1ST + S.OC2ND + S.IGO1ST + S.IGO2ND + S.IGR1ST + S.IGR2ND + S.DISCONN) > 0
+        ORDER BY (S.OC1ST + S.OC2ND + S.IGO1ST + S.IGO2ND + S.IGR1ST + S.IGR2ND + S.DISCONN) DESC
+            LIMIT 5
+    </select>
+
+    <select id="LIST_SYS_STAT_STR_KWH_STAT" parameterType="map" resultType="map">
+        SELECT S.STRCODE AS strCode
+             , ( SELECT DISTINCT STRNAME FROM F_STORE WHERE STRCODE = S.STRCODE ) AS strName
+             , S.SNSRKWH AS snsrKwh
+             , S.SNSRIGO AS snsrIgo
+        FROM ( SELECT STRCODE
+                    , SUM(SNSRKWHDAILY) AS SNSRKWH
+                    , SUM(SNSRIGOAVG) AS SNSRIGO
+               FROM F_ELEC_SENSOR_STAT
+               WHERE AREACODE = #{areaCode}
+                 AND SDATE BETWEEN #{startDate} AND #{endDate}
+               GROUP BY AREACODE, STRCODE ) S
+        ORDER BY (S.SNSRKWH) DESC
+            LIMIT 5
+    </select>
+
+</mapper>
