@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch } from "@coreui/react";
 import PageTableWidget from "../../widget/pageTableWidget";
 import MemInsertModal from "../member/memInsertModal";
-import {getMem, getMemList} from "../../agent/member";
+import { getMem, getMemList } from "../../agent/member";
 import MemUpdateModal from "./memUpdateModal";
 import { numCommaFormat } from "../../agent/commonIndex";
 
@@ -45,38 +45,30 @@ const storeCountStyleFormatter = cell =>
   </h5>;
 
 const columns = [
-  { dataField: 'rowNum', text: '순번', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px', width: '5rem' }, formatter: (cell) => numCommaFormat(cell) },
-  { dataField: 'userId', text: 'ID', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'left' } },
-  { dataField: 'memName', text: '이름', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'left' } },
-  { dataField: 'memLevel', text: '권한', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, formatter: authStyleFormatter },
-  { dataField: 'memTel', text: '전화번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
-  { dataField: 'memMobile', text: '휴대폰번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
-  { dataField: 'strCnt', text: '상점수', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right' }, formatter: storeCountStyleFormatter },
-  { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, formatter: memUseStyleFormatter },
+  { dataField: 'rowNum', text: '순번', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px', width: '5rem' }
+    , formatter: (cell) => numCommaFormat(cell) },
+  { dataField: 'userId', text: 'ID', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'left' } },
+  { dataField: 'memName', text: '이름', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'left' } },
+  { dataField: 'memLevel', text: '권한', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: authStyleFormatter },
+  { dataField: 'memTel', text: '전화번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } },
+  { dataField: 'memMobile', text: '휴대폰번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } },
+  { dataField: 'strCnt', text: '상점수', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'right' }, formatter: storeCountStyleFormatter },
+  { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: memUseStyleFormatter },
   { dataField: 'delYn', text: '삭제유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: memDeleteStyleFormatter },
-  { dataField: 'memIsLeave', text: '탈퇴유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, formatter: memLeaveStyleFormatter },
-  { dataField: 'memRsntDate', text: '최근접속일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
+  { dataField: 'memIsLeave', text: '탈퇴유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: memLeaveStyleFormatter },
+  { dataField: 'memRsntDate', text: '최근접속일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } },
 ];
 
 const MemMgr = () => {
   const [repo, setRepo] = useState([]);               // 리스트 hook
 
-  const [pageItem, setPageItem] = useState({
-    page : 1,
-    sizePerPage: 10
-  }); // 페이징 hook
+  const [pageItem, setPageItem] = useState({ page: 1, sizePerPage: 10 }); // 페이징 hook
 
-  const [searchItem, setSearchItem] = useState({
-    searchWrd : "",
-    useYn : "Y",
-    delYn : "N",
-    leaveYn: "N",
-    smsYn : "Y",
-  });
+  const [searchItem, setSearchItem] = useState({ searchWrd: "", useYn: "Y", delYn: "N", leaveYn: "N", smsYn: "Y" });
 
   const [userContent, setUserContent] = useState({});
-  const [actionModal, setActionModal] = useState(false)             // Modal hook
-  const [modifyModal, setModifyModal] = useState(false)             // Modal hook
+  const [actionModal, setActionModal] = useState(false);            // Modal hook
+  const [modifyModal, setModifyModal] = useState(false);            // Modal hook
 
   useEffect(() => {
     handleInitTable();
@@ -84,7 +76,7 @@ const MemMgr = () => {
 
   // 초기 테이블 셋팅
   const handleInitTable = () => {
-    getMemList(pageItem.page, pageItem.sizePerPage, searchItem).then(function (resp) {
+    getMemList(pageItem.page, pageItem.sizePerPage, searchItem).then(resp => {
       setRepo(resp.data["resultList"]);
       setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
     });
@@ -140,7 +132,8 @@ const MemMgr = () => {
                   <CCol sm="2" className={"float-left pl-0"}>
                     <CInput placeholder="검색어 입력" onKeyUp={e => {
                       searchItem.searchWrd = e.target.value;
-                      if (e.key === "Enter") handleClickSearchBtn()
+                      if (e.key === "Enter")
+                        handleClickSearchBtn()
                     }} />
                   </CCol>
                   <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
@@ -177,10 +170,11 @@ const MemMgr = () => {
           </CCard>
         </CCol>
       </CRow>
+
       <MemInsertModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
       <MemUpdateModal modal={modifyModal} setModal={setModifyModal} userContent={userContent} handleInitTable={handleInitTable}/>
     </>
-  )
+  );
 }
 
 export default MemMgr

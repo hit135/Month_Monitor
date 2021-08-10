@@ -18,12 +18,12 @@ const AreaMgr = () => {
   const [nodeArray, setNodeArray] = useState();
   const [areaContent, setAreaContent] = useState();
 
-  const onExpand = (expandedKeys) => {
+  const onExpand = expandedKeys => {
     setExpandedKeys(expandedKeys);
     setAutoExpandParent(false);
   };
 
-  const clickSearchTree = e => {
+  const clickSearchTree = () => {
     const value = inPutSearchValue;
 
     const expandedKeys = dataList
@@ -41,11 +41,7 @@ const AreaMgr = () => {
     }
   };
 
-  const filterTreeNode = node => {
-    const title = node.title.props.children;
-    const result = title.indexOf(searchValue) !== -1;
-    return result;
-  };
+  const filterTreeNode = node => node.title.props.children.indexOf(searchValue) !== -1;
 
   useEffect(() => {
     handleInitTree().then(r => {
@@ -74,13 +70,13 @@ const AreaMgr = () => {
         alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
       }
     });
-  }
+  };
 
   const handleClickUpdateItem = (data) => {
     updateAreaItem(data).then((resp) => {
       if (resp.data["result"] === "duplicate") {
         alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.");
-      } else if(resp.data["result"] === "success") {
+      } else if (resp.data["result"] === "success") {
         handleInitTree().then(r => {
           alert("구역 수정을 완료했습니다.");
           generateList(gData);
@@ -91,24 +87,24 @@ const AreaMgr = () => {
         return false;
       }
     });
-  }
+  };
 
   // 노드 선택 이벤트
   const nodeClick = async (e, node) => {
-    setNodeLv2Btn((node.selected));                     // 하위 레벨 버튼 disabled
+    setNodeLv2Btn(node.selected);                       // 하위 레벨 버튼 disabled
     setNodeUpCode(node.key);                            // 상위 코드 set
     setNodeLevel(node.areaLevel + 1);            // 노드 레벨 set
     setNodeArray(node);
 
     await selectAreaItem(node.key)
-      .then(resp => (resp.data["result"] === "success") ? setAreaContent(resp.data["content"]) :  alert("상세 조회에 오류가 발생했습니다."));
-  }
+      .then(resp => (resp.data["result"] === "success") ? setAreaContent(resp.data["content"]) : alert("상세 조회에 오류가 발생했습니다."));
+  };
 
   // 구역 삭제 이벤트
   const deleteNode = () => {
     if (window.confirm("구역을 삭제하시겠습니까?")) {
       if (nodeArray.children.length > 0) {
-        alert("하위 구역을 먼저 삭제하셔야합니다.");
+        alert("하위 구역을 먼저 삭제하셔야 합니다.");
         return false;
       } else {
         deleteAreaItem(nodeArray.key).then(resp => {
@@ -125,17 +121,16 @@ const AreaMgr = () => {
         });
       }
     }
-  }
+  };
 
   // 검색 후 이벤트
   const loop = data =>
     data.map(item => {
       const index = item.title.indexOf(searchValue);
-      const beforeStr = item.title.substr(0, index);
-      const afterStr = item.title.substr(index + searchValue.length);
 
-      const title =
-        (index > -1) ? <span>{beforeStr}<span className="site-tree-search-value">{searchValue}</span>{afterStr}</span> : <span>{item.title}</span>;
+      const title = (index > -1) ?
+        <span>{item.title.substr(0, index)}<span className="site-tree-search-value">{searchValue}</span>{item.title.substr(index + searchValue.length)}</span> :
+        <span>{item.title}</span>;
 
       if (item.children)
         return { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) };
@@ -155,12 +150,11 @@ const AreaMgr = () => {
                     <h5 className={"mb-0 ml-0"}>전체 시장 목록</h5>
                   </div>
                   <div>
-                    <button className={"btn btn-danger float-right mt-0 ml-2"}  disabled={nodeLv2Btn}
-                            onClick={(e) => deleteNode()}>삭제</button>
+                    <button className={"btn btn-danger float-right mt-0 ml-2"}  disabled={nodeLv2Btn} onClick={e => deleteNode()}>삭제</button>
                     <button className={"btn btn-custom float-right mt-0 ml-2"} id={"lv2Node"} disabled={nodeLv2Btn}
-                            onClick={(e) => handleClickRegisterItem(e.target.id, nodeUpcode, nodeLevel)}>하위 레벨 등록</button>
+                            onClick={e => handleClickRegisterItem(e.target.id, nodeUpcode, nodeLevel)}>하위 레벨 등록</button>
                     <button className={"btn btn-custom float-right mt-0"} id={"lv1Node"}
-                            onClick={(e) => handleClickRegisterItem(e.target.id, '0', 1)}>상위 레벨 등록</button>
+                            onClick={e => handleClickRegisterItem(e.target.id, '0', 1)}>상위 레벨 등록</button>
                   </div>
                 </div>
               </CCol>
@@ -168,10 +162,8 @@ const AreaMgr = () => {
             <CCardBody className={"pt-3"}>
               <CCol className={"pl-0"}>
                 <CCol sm="4" className={"float-left pl-0"}>
-                  <CInput placeholder="검색어 입력" onChange={(e) => { setInputSearchValue(e.target.value)} } onKeyUp={(e) => {
-                    if(e.key === "Enter")
-                      clickSearchTree();
-                  }}  />
+                  <CInput placeholder="검색어 입력" onChange={(e) => { setInputSearchValue(e.target.value)} }
+                          onKeyUp={e => { if (e.key === "Enter") clickSearchTree(); }} />
                 </CCol>
                 <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
               </CCol>
@@ -190,10 +182,11 @@ const AreaMgr = () => {
             </CCardBody>
           </CCard>
         </CCol>
+
         <AreaUpdateMgr areaContent={areaContent} nodeLv2Btn={nodeLv2Btn} handleClickUpdateItem={handleClickUpdateItem}/>
       </CRow>
     </>
-  )
+  );
 }
 
 export default AreaMgr;

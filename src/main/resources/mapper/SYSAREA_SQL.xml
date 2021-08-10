@@ -6,7 +6,15 @@
         SELECT A.AREACODE as 'key'
              , A.AREACODE as areaCode
              , A.UPAREACODE as upAreaCode
-             , CONCAT(A.AREANAME, ' ', '(',IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE), 0), ')') AS title
+             , CONCAT(
+                   A.AREANAME, ' ('
+                 , IFNULL(
+                     CASE WHEN A.AREALEVEL = 1 THEN (SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE)
+                          WHEN A.AREALEVEL = 2 THEN (SELECT COUNT(LEVELAREACODE) AS STORECNT FROM F_STORE WHERE A.UPAREACODE = AREACODE AND A.AREACODE = LEVELAREACODE GROUP BY AREACODE)
+                     END
+                 , 0)
+                 , ')'
+               ) AS title
              , A.AREALEVEL as areaLevel
              , IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE), 0) AS storeCnt
          FROM F_LEVEL_AREA A

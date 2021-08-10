@@ -8,10 +8,8 @@ export const getAreaList = () => axios.get(`${API_ROOT}/areas`);
 export let dataList = [];
 
 export const generateList = data => {
-  for (let i = 0; i < data.length; i++) {
-    const node = data[i];
-    const { key } = node;
-    dataList.push({ key, title: node.title, areaLevel: node.areaLevel });
+  for (const node of data) {
+    dataList.push({ node, title: node.title, areaLevel: node.areaLevel });
 
     if (node.children)
       generateList(node.children);
@@ -21,9 +19,7 @@ export const generateList = data => {
 export const getParentKey = (key, tree) => {
   let parentKey;
 
-  for (let i = 0; i < tree.length; i++) {
-    const node = tree[i];
-
+  for (const node of tree) {
     if (node.children)
       if (node.children.some((item) => item.key === key))
         parentKey = node.key;

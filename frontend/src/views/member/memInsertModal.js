@@ -9,18 +9,14 @@ const MemInsertModal = (props) => {
   const { modal, setModal, handleInitTable } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
     {
-      defaultValues: {
-        useYn : "Y",
-        memIsLeave: "N",
-        memRcvSms: "Y",
-        delYn : "N",
-        groupUse: "N",
-      }, mode: "all"
+      defaultValues: { useYn: "Y", memIsLeave: "N", memRcvSms: "Y", delYn: "N", groupUse: "N" }, mode: "all"
     }
   );
 
-  const { onBlur, ...rest } = register("userId", { required: true, minLength: 5, maxLength: 20, pattern: {value: /^[a-z]+[a-z0-9]{4,19}$/g,
-      message: "아이디는 영문자로 시작하는 5~20자 영문자 또는 숫자이어야 합니다."}});
+  const { onBlur, ...rest } =
+    register("userId", {
+      required: true, minLength: 5, maxLength: 20, pattern: { value: /^[a-z]+[a-z0-9]{4,19}$/g, message: "아이디는 영문자로 시작하는 5~20자 영문자 또는 숫자이어야 합니다." }
+    });
 
   const onSubmit = (data, e) => {
     insertMem(data).then(resp => {
@@ -38,18 +34,17 @@ const MemInsertModal = (props) => {
   const closeModal = () => {
     setModal(!modal);
     reset();
-  }
+  };
 
-  const setSwitchValue = (e) => {
+  const setSwitchValue = e => {
     const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     setValue(e.target.id, value);
-  }
+  };
 
-  const handleChangePhoneNumber = (e) => {
+  const handleChangePhoneNumber = e => {
     e = e || window.e;
-    let _val = e.target.value.trim();
-    e.target.value = convertPhoneNumber(_val) ;
-  }
+    e.target.value = convertPhoneNumber(e.target.value.trim());
+  };
 
   return (
     <>
@@ -62,22 +57,23 @@ const MemInsertModal = (props) => {
              <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="userId">아이디<span className={"required-span"}> *</span></CLabel>
-                <input className={errors.userId && "is-invalid form-control" || (!errors.userId && getValues("userId") !== "") && "form-control is-valid" || (!errors.userId && getValues("userId") === "") && "form-control"}
-                  onBlur={e => {
-                    if (!errors.userId) {
-                      axios
-                        .get(`${API_ROOT}/dupMemChk?userId=${e.target.value}`)
-                        .then(resp => {
-                          if (resp.data["result"] !== 0) {
-                            setValue("userId", "");
-                            setError("userId", {type: "dupUserId", message: "중복되는 아이디가 존재합니다. 다른 아이디로 등록해주세요."})
-                            setFocus("userId");
-                          }
-                        });
-                    }
-                  }}
-                  {...rest}
-                />
+                <input className={ errors.userId && "is-invalid form-control"
+                                  || (!errors.userId && getValues("userId") !== "") && "form-control is-valid"
+                                  || (!errors.userId && getValues("userId") === "") && "form-control" }
+                       onBlur={e => {
+                         if (!errors.userId) {
+                           axios
+                             .get(`${API_ROOT}/dupMemChk?userId=${e.target.value}`)
+                             .then(resp => {
+                               if (resp.data["result"] !== 0) {
+                                 setValue("userId", "");
+                                 setError("userId", { type: "dupUserId", message: "중복되는 아이디가 존재합니다. 다른 아이디로 등록해주세요." })
+                                 setFocus("userId");
+                               }
+                             });
+                         }
+                       }}
+                       { ...rest } />
                 {errors.userId && errors.userId.type === "required" && <span className={"invalid-feedback"}>아이디를 입력해주세요.</span>}
                 {errors.userId && errors.userId.type === "pattern" && <span className={"invalid-feedback"}>{errors.userId.message}</span>}
                 {errors.userId && errors.userId.type === "minLength" && <span className={"invalid-feedback"}>아이디를 5글자 이상으로 입력해주세요.</span>}
@@ -86,8 +82,13 @@ const MemInsertModal = (props) => {
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor="memPwd">비밀번호<span className={"required-span"}> *</span></CLabel>
-                <input className={errors.memPwd && "is-invalid form-control" || (!errors.memPwd && getValues("memPwd") !== "") && "form-control is-valid" || (!errors.memPwd && getValues("memPwd") === "") && "form-control"}
-                       {...register("memPwd", { required: true, minLength: 8, maxLength: 15, pattern: {value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/} })} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} type={"password"}/>
+                <input className={ errors.memPwd && "is-invalid form-control"
+                                  || (!errors.memPwd && getValues("memPwd") !== "") && "form-control is-valid"
+                                  || (!errors.memPwd && getValues("memPwd") === "") && "form-control" }
+                       { ...register("memPwd", {
+                         required: true, minLength: 8, maxLength: 15, pattern: { value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/ }
+                       }) }
+                       placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} type={"password"}/>
                 {errors.memPwd && errors.memPwd.type === "required" && <span className={"invalid-feedback"}>비밀번호를 입력해주세요.</span>}
                 {errors.memPwd && errors.memPwd.type === "minLength" && <span className={"invalid-feedback"}>비밀번호를 8글자 이상으로 입력해주세요.</span>}
                 {errors.memPwd && errors.memPwd.type === "maxLength" && <span className={"invalid-feedback"}>비밀번호를 15글자 이하로 입력해주세요.</span>}
@@ -97,32 +98,44 @@ const MemInsertModal = (props) => {
             <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="userId">사용자 이름<span className={"required-span"}> *</span></CLabel>
-                <input className={errors.memName && "is-invalid form-control" || (!errors.memName && getValues("memName") !== "") && "form-control is-valid" || (!errors.memName && getValues("memName") === "") && "form-control"}
+                <input className={ errors.memName && "is-invalid form-control"
+                                  || (!errors.memName && getValues("memName") !== "") && "form-control is-valid"
+                                  || (!errors.memName && getValues("memName") === "") && "form-control" }
                        placeholder={"최소 2글자 최대 50글자"}
-                       {...register("memName", { required: true, minLength: 2, maxLength: 20})} />
+                       { ...register("memName", { required: true, minLength: 2, maxLength: 20 }) } />
                 {errors.memName && errors.memName.type === "required" && <span className={"invalid-feedback"}>이름을 입력해주세요.</span>}
                 {errors.memName && errors.memName.type === "minLength" && <span className={"invalid-feedback"}>이름을 2글자 이상으로 입력해주세요.</span>}
                 {errors.memName && errors.memName.type === "maxLength" && <span className={"invalid-feedback"}>이름을 50글자 이하로 입력해주세요.</span>}
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor="memEmail">사용자 이메일</CLabel>
-                <input className={errors.memEmail && "is-invalid form-control" || (!errors.memEmail && getValues("memEmail") !== "") && "form-control is-valid" || (!errors.memEmail && getValues("memEmail") === "") && "form-control"}
-                       {...register("memEmail", { pattern: {value: /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i, message : "이메일 형식에 맞게 입력해주세요."} })} />
+                <input className={ errors.memEmail && "is-invalid form-control"
+                                  || (!errors.memEmail && getValues("memEmail") !== "") && "form-control is-valid"
+                                  || (!errors.memEmail && getValues("memEmail") === "") && "form-control" }
+                       { ...register("memEmail", {
+                         pattern: { value: /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i, message: "이메일 형식에 맞게 입력해주세요." }
+                       }) } />
                 {errors.memEmail && <span className={"invalid-feedback"}>{errors.memEmail.message}</span>}
               </CCol>
             </CFormGroup>
             <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="userId">전화번호</CLabel>
-                <input className={errors.memTel && "is-invalid form-control" || (!errors.memTel && getValues("memTel") !== "") && "form-control is-valid" || (!errors.memTel && getValues("memTel") === "") && "form-control"}
-                       onKeyUp={handleChangePhoneNumber} {...register("memTel", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요."} })}
+                <input className={ errors.memTel && "is-invalid form-control"
+                                  || (!errors.memTel && getValues("memTel") !== "") && "form-control is-valid"
+                                  || (!errors.memTel && getValues("memTel") === "") && "form-control" }
+                       onKeyUp={handleChangePhoneNumber}
+                       { ...register("memTel", { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message: "전화번호 형식에 맞게 입력해주세요." } }) }
                        placeholder={"전화번호를 입력해주세요."}/>
                 {errors.memTel && errors.memTel.type === "pattern" && <span className={"invalid-feedback"}>{errors.memTel.message}</span>}
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor="memPwd">휴대폰번호</CLabel>
-                <input className={errors.memMobile && "is-invalid form-control" || (!errors.memMobile && getValues("memMobile") !== "") && "form-control is-valid" || (!errors.memMobile && getValues("memMobile") === "") && "form-control"}
-                       onKeyUp={handleChangePhoneNumber} {...register("memMobile", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요."} })}
+                <input className={ errors.memMobile && "is-invalid form-control"
+                                  || (!errors.memMobile && getValues("memMobile") !== "") && "form-control is-valid"
+                                  || (!errors.memMobile && getValues("memMobile") === "") && "form-control" }
+                       onKeyUp={handleChangePhoneNumber}
+                       { ...register("memMobile", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message: "휴대폰번호 형식에 맞게 입력해주세요." } }) }
                        placeholder={"휴대폰번호를 입력해주세요."} />
                 {errors.memMobile && errors.memMobile.type === "pattern" && <span className={"invalid-feedback"}>{errors.memMobile.message}</span>}
               </CCol>
@@ -145,7 +158,6 @@ const MemInsertModal = (props) => {
                 <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"memRcvSms"} onChange={setSwitchValue} defaultChecked />
               </CFormGroup>
             </CRow>
-
             <CFormGroup row>
               <CCol md="12">
                 <CLabel htmlFor="memMemo">메모</CLabel>
@@ -154,7 +166,7 @@ const MemInsertModal = (props) => {
                   id="textarea-input"
                   rows="12"
                   placeholder="메모를 입력해주세요."
-                  {...register("memMemo")}
+                  { ...register("memMemo") }
                 />
               </CCol>
             </CFormGroup>
@@ -166,7 +178,7 @@ const MemInsertModal = (props) => {
         </form>
       </CModal>
     </>
-  )
+  );
 }
 
-export default MemInsertModal
+export default MemInsertModal;

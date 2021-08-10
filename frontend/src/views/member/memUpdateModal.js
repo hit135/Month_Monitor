@@ -51,19 +51,18 @@ const MemUpdateModal = (props) => {
   const closeModal = () => {
     reset({});
     setModal(!modal);
-  }
+  };
 
   const setSwitchValue = e => {
     const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     setAppSwitch(data => ({ ...data, [e.target.id]: (value === "Y") }));
     setValue(e.target.id, value);
-  }
+  };
 
   const handleChangePhoneNumber = e => {
     e = e || window.e;
-    let _val = e.target.value.trim();
-    e.target.value = convertPhoneNumber(_val) ;
-  }
+    e.target.value = convertPhoneNumber(e.target.value.trim());
+  };
 
   const handleConfirmDelUser = id => {
     if (window.confirm("회원을 영구 삭제하시겠습니까?")) {
@@ -78,7 +77,7 @@ const MemUpdateModal = (props) => {
         }
       });
     }
-  }
+  };
 
   const nodeClick = (e, node) => setValue("memAreaCode", node["key"]);
   const initAreaCode = () => setValue("memAreaCode", "");
@@ -100,9 +99,16 @@ const MemUpdateModal = (props) => {
             </CCol>
             <CCol md="6">
               <CLabel htmlFor="memPwd">비밀번호</CLabel>
-              <input className={errors.memPwd && "is-invalid form-control" || (!errors.memPwd && getValues("memPwd") !== "") && "form-control is-valid" || (!errors.memPwd && getValues("memPwd") === "") && "form-control"}
-                     {...register("memPwd", { minLength: 8, maxLength: 15, pattern: {value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/,
-                         message: "특수문자 / 문자 / 숫자 포함 형태의 8~15자리"} })} placeholder={"비밀번호 입력 시 변경됩니다."} type={"password"}/>
+              <input className={ errors.memPwd && "is-invalid form-control"
+                                || (!errors.memPwd && getValues("memPwd") !== "") && "form-control is-valid"
+                                || (!errors.memPwd && getValues("memPwd") === "") && "form-control" }
+                     placeholder={"비밀번호 입력 시 변경됩니다."} type={"password"}
+                     { ...register("memPwd", {
+                       minLength: 8, maxLength: 15, pattern: {
+                           value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/
+                         , message: "특수문자 / 문자 / 숫자 포함 형태의 8~15자리"
+                       }
+                     }) } />
               {errors.memPwd && errors.memPwd.type === "minLength" && <span className={"invalid-feedback"}>비밀번호를 8글자 이상으로 입력해주세요.</span>}
               {errors.memPwd && errors.memPwd.type === "maxLength" && <span className={"invalid-feedback"}>비밀번호를 15글자 이하로 입력해주세요.</span>}
               {errors.memPwd && errors.memPwd.type === "pattern" && <span className={"invalid-feedback"}>비밀번호 형식에 맞게 입력해주세요. (특수문자 / 문자 / 숫자 포함 8~15자리)</span>}
@@ -111,30 +117,41 @@ const MemUpdateModal = (props) => {
           <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="memName">사용자 이름<span className={"required-span"}> *</span></CLabel>
-              <input className={errors.memName && "is-invalid form-control" || (!errors.memName && getValues("memName") !== "") && "form-control is-valid" || (!errors.memName && getValues("memName") === "") && "form-control"} placeholder={"최소 2글자 최대 50글자"}
-                     {...register("memName", { required: true, minLength: 2, maxLength: 20})} />
+              <input className={ errors.memName && "is-invalid form-control"
+                                || (!errors.memName && getValues("memName") !== "") && "form-control is-valid"
+                                || (!errors.memName && getValues("memName") === "") && "form-control" }
+                     placeholder={"최소 2글자 최대 50글자"}
+                     { ...register("memName", { required: true, minLength: 2, maxLength: 20 }) } />
               {errors.memName && errors.memName.type === "required" && <span className={"invalid-feedback"}>이름을 입력해주세요.</span>}
               {errors.memName && errors.memName.type === "minLength" && <span className={"invalid-feedback"}>이름을 2글자 이상으로 입력해주세요.</span>}
               {errors.memName && errors.memName.type === "maxLength" && <span className={"invalid-feedback"}>이름을 50글자 이하로 입력해주세요.</span>}
             </CCol>
             <CCol md="6">
               <CLabel htmlFor="memEmail">사용자 이메일</CLabel>
-              <input className={errors.memEmail && "is-invalid form-control" || (!errors.memEmail && getValues("memEmail") !== "") && "form-control is-valid" || (!errors.memEmail && getValues("memEmail") === "") && "form-control"}
-                     {...register("memEmail", { pattern: {value: /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i,
-                                                                       message : "이메일 형식에 맞게 입력해주세요."} })} />
+              <input className={ errors.memEmail && "is-invalid form-control"
+                                || (!errors.memEmail && getValues("memEmail") !== "") && "form-control is-valid"
+                                || (!errors.memEmail && getValues("memEmail") === "") && "form-control" }
+                     { ...register("memEmail", { pattern: {
+                          value: /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
+                        , message : "이메일 형식에 맞게 입력해주세요." }
+                     }) } />
               {errors.memEmail && <span className={"invalid-feedback"}>{errors.memEmail.message}</span>}
             </CCol>
           </CFormGroup>
           <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="userId">전화번호</CLabel>
-              <input className={errors.memTel && "is-invalid form-control" || (!errors.memTel && getValues("memTel") !== "") && "form-control is-valid" || (!errors.memTel && getValues("memTel") === "") && "form-control"}
+              <input className={ errors.memTel && "is-invalid form-control"
+                                || (!errors.memTel && getValues("memTel") !== "") && "form-control is-valid"
+                                || (!errors.memTel && getValues("memTel") === "") && "form-control" }
                      onKeyUp={handleChangePhoneNumber} {...register("memTel", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요."} })} />
               {errors.memTel && errors.memTel.type === "pattern" && <span className={"invalid-feedback"}>{errors.memTel.message}</span>}
             </CCol>
             <CCol md="6">
               <CLabel htmlFor="memPwd">휴대폰번호</CLabel>
-              <input className={errors.memMobile && "is-invalid form-control" || (!errors.memMobile && getValues("memMobile") !== "") && "form-control is-valid" || (!errors.memMobile && getValues("memMobile") === "") && "form-control"}
+              <input className={ errors.memMobile && "is-invalid form-control"
+                                || (!errors.memMobile && getValues("memMobile") !== "") && "form-control is-valid"
+                                || (!errors.memMobile && getValues("memMobile") === "") && "form-control" }
                      onKeyUp={handleChangePhoneNumber} {...register("memMobile", { pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요."} })} />
               {errors.memMobile && errors.memMobile.type === "pattern" && <span className={"invalid-feedback"}>{errors.memMobile.message}</span>}
             </CCol>
@@ -160,12 +177,12 @@ const MemUpdateModal = (props) => {
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="delYn" className="pr-1">삭제유무</CLabel>
               <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} id={"delYn"} onChange={setSwitchValue}
-                       checked={ appSwitch.delYn }/>
+                       checked={ appSwitch.delYn } />
             </CFormGroup>
             <CFormGroup className="pr-3 d-inline-flex">
               <CLabel htmlFor="exampleInputName2" className="pr-1">SMS수신여부</CLabel>
               <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"memRcvSms"} onChange={setSwitchValue}
-                       checked={ appSwitch.memRcvSms }/>
+                       checked={ appSwitch.memRcvSms } />
             </CFormGroup>
           </CRow>
           <CFormGroup row>
@@ -197,7 +214,7 @@ const MemUpdateModal = (props) => {
 
       <PageAreaTreeModalWidget onAreaModal={onAreaModal} setOnAreaModal={setOnAreaModal} nodeClick={nodeClick} initAreaCode={initAreaCode} />
     </>
-  )
+  );
 }
 
-export default MemUpdateModal
+export default MemUpdateModal;
