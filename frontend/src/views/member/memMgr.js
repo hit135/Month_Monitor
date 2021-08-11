@@ -17,32 +17,20 @@ const authStyleFormatter = cell => {
     default: cellStr = "";
   }
 
-  return (
-    <h5 className="mr-0 mb-0">
-      <CBadge color="primary">{cellStr}</CBadge>
-    </h5>
-  );
+  return (<h5 className="mr-0 mb-0"><CBadge color="primary">{cellStr}</CBadge></h5>);
 };
 
 const memUseStyleFormatter = cell =>
-  <h5 className="mr-0 mb-0">
-    <CBadge color={(cell === "Y") ? 'primary' : 'danger'}>{(cell === "Y") ? '사용' : '미사용'}</CBadge>
-  </h5>;
+  <h5 className="mr-0 mb-0"><CBadge color={(cell === "Y") ? 'primary' : 'danger'}>{(cell === "Y") ? '사용' : '미사용'}</CBadge></h5>;
 
 const memLeaveStyleFormatter = cell =>
-  <h5 className="mr-0 mb-0">
-    <CBadge color={(cell === "Y") ? 'danger' : 'primary'}>{(cell === "N") ? '미탈퇴' : '탈퇴'}</CBadge>
-  </h5>;
+  <h5 className="mr-0 mb-0"><CBadge color={(cell === "Y") ? 'danger' : 'primary'}>{(cell === "N") ? '미탈퇴' : '탈퇴'}</CBadge></h5>;
 
 const memDeleteStyleFormatter = cell =>
-  <h5 className="mr-0 mb-0">
-    <CBadge color={(cell === "Y") ? 'danger' : 'primary'}>{(cell === "N") ? '미삭제' : '삭제'}</CBadge>
-  </h5>;
+  <h5 className="mr-0 mb-0"><CBadge color={(cell === "Y") ? 'danger' : 'primary'}>{(cell === "N") ? '미삭제' : '삭제'}</CBadge></h5>;
 
 const storeCountStyleFormatter = cell =>
-  <h5 className="mr-0 mb-0">
-    <CBadge color={(cell > 0) ? 'danger' : 'primary'}>{cell}</CBadge>
-  </h5>;
+  <h5 className="mr-0 mb-0"><CBadge color={(cell > 0) ? 'danger' : 'primary'}>{cell}</CBadge></h5>;
 
 const columns = [
   { dataField: 'rowNum', text: '순번', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px', width: '5rem' }
@@ -61,26 +49,19 @@ const columns = [
 
 const MemMgr = () => {
   const [repo, setRepo] = useState([]);               // 리스트 hook
-
   const [pageItem, setPageItem] = useState({ page: 1, sizePerPage: 10 }); // 페이징 hook
-
   const [searchItem, setSearchItem] = useState({ searchWrd: "", useYn: "Y", delYn: "N", leaveYn: "N", smsYn: "Y" });
-
   const [userContent, setUserContent] = useState({});
   const [actionModal, setActionModal] = useState(false);            // Modal hook
   const [modifyModal, setModifyModal] = useState(false);            // Modal hook
 
-  useEffect(() => {
-    handleInitTable();
-  }, []);
+  useEffect(() => handleInitTable(), []);
 
   // 초기 테이블 셋팅
-  const handleInitTable = () => {
-    getMemList(pageItem.page, pageItem.sizePerPage, searchItem).then(resp => {
-      setRepo(resp.data["resultList"]);
-      setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
-    });
-  }
+  const handleInitTable = () => getMemList(pageItem.page, pageItem.sizePerPage, searchItem).then(resp => {
+    setRepo(resp.data["resultList"]);
+    setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
+  });
 
   // 페이징 클릭 시
   const handleTableChange = (pageNation, param) => {
@@ -94,26 +75,24 @@ const MemMgr = () => {
   const handleClickSearchBtn = () => {
     pageItem.page = 1;
     handleInitTable();
-  }
+  };
 
   const handleClickSearchType = e => {
     const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     searchItem[e.target.id] = value;
     handleInitTable();
-  }
+  };
 
   // 행 클릭 시
   const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      getMem(row.userId).then(resp => {
-        if (resp.data["result"] === "success") {
-          setUserContent(resp.data["content"]);
-          setModifyModal(true);
-        } else {
-          alert("통신에 오륙가 발생했습니다. 잠시 후 다시 시도해주세요.");
-        }
-      });
-    }
+    onClick: (e, row, rowIndex) => getMem(row.userId).then(resp => {
+      if (resp.data["result"] === "success") {
+        setUserContent(resp.data["content"]);
+        setModifyModal(true);
+      } else {
+        alert("통신에 오륙가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      }
+    })
   };
 
   return (
@@ -133,7 +112,7 @@ const MemMgr = () => {
                     <CInput placeholder="검색어 입력" onKeyUp={e => {
                       searchItem.searchWrd = e.target.value;
                       if (e.key === "Enter")
-                        handleClickSearchBtn()
+                        handleClickSearchBtn();
                     }} />
                   </CCol>
                   <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
@@ -156,16 +135,8 @@ const MemMgr = () => {
                   <button className={"btn btn-custom float-right mt-0"} onClick={(e) => setActionModal(true)}>등록</button>
                 </CCol>
               </CRow>
-              <PageTableWidget
-                keyField={"userId"}
-                data={repo}
-                page={pageItem.page}
-                sizePerPage={pageItem.sizePerPage}
-                totalSize={pageItem.totalElementsCount}
-                onTableChange={handleTableChange}
-                viewColumns={columns}
-                rowEvents={rowEvents}
-              />
+              <PageTableWidget keyField={"userId"} data={repo} page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
+                               onTableChange={handleTableChange} viewColumns={columns} rowEvents={rowEvents} />
             </CCardBody>
           </CCard>
         </CCol>
@@ -175,6 +146,6 @@ const MemMgr = () => {
       <MemUpdateModal modal={modifyModal} setModal={setModifyModal} userContent={userContent} handleInitTable={handleInitTable}/>
     </>
   );
-}
+};
 
-export default MemMgr
+export default MemMgr;

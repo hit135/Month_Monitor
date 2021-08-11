@@ -45,7 +45,7 @@ const InsprMgr = () => {
         document.getElementById("inspAreaCode").innerHTML += html;
       }
     });
-  }
+  };
 
   const handleInitTable = () => {
     getInspectorList(pageItem.page, pageItem.sizePerPage, searchItem).then(resp => {

@@ -52,7 +52,7 @@ const PushMgr = () => {
       setPageItem({page: page, sizePerPage: sizePerPage, totalElementsCount: resp.data["totalElements"]})
     });
     */
-  }
+  };
 
   // 페이징 클릭 시
   const handleTableChange = (pageNation, param) => {
@@ -101,6 +101,6 @@ const PushMgr = () => {
       </CCard>
     </div>
   );
-}
+};
 
 export default PushMgr;

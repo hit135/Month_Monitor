@@ -19,13 +19,12 @@ export const generateList = data => {
 export const getParentKey = (key, tree) => {
   let parentKey;
 
-  for (const node of tree) {
+  for (const node of tree)
     if (node.children)
-      if (node.children.some((item) => item.key === key))
+      if (node.children.some(item => item.key === key))
         parentKey = node.key;
       else if (getParentKey(key, node.children))
         parentKey = getParentKey(key, node.children);
-  }
 
   return parentKey;
 };
@@ -33,10 +32,8 @@ export const getParentKey = (key, tree) => {
 export const insertAreaItem = (type, upAreaCode, areaLevel) =>
   axios.post(`${API_ROOT}/insertLvAreaItem`, { type: type, upAreaCode: upAreaCode, areaLevel: areaLevel });
 
-export const selectAreaItem = (areaCode) => axios.get(`${API_ROOT}/selectAreaItem?areaCode=${areaCode}`);
-export const deleteAreaItem = (areaCode) => axios.post(`${API_ROOT}/deleteAreaItem`, { areaCode: areaCode });
-export const updateAreaItem = (array) => axios.post(`${API_ROOT}/updateAreaItem`, array);
+export const selectAreaItem = areaCode => axios.get(`${API_ROOT}/selectAreaItem?areaCode=${areaCode}`);
+export const deleteAreaItem = areaCode => axios.post(`${API_ROOT}/deleteAreaItem`, { areaCode: areaCode });
+export const updateAreaItem = array => axios.post(`${API_ROOT}/updateAreaItem`, array);
 
-export const rowEvents = () => {
-
-}
+export const rowEvents = () => {};

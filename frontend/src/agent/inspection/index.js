@@ -4,7 +4,6 @@ const axios = require('axios');
 
 export const getInsprAreaList = () => axios.post(`${API_ROOT}/listInsprArea`);
 
-
 export const getInspectorList = (page, size, searchItem) =>
    axios.get([
        `${API_ROOT}/insprs?page=${page}`
