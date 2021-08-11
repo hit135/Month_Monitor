@@ -13,7 +13,8 @@ const ynStyleFormatter = cell =>
   <h5 className="mr-0 mb-0"><CBadge color={(cell === "N") ? 'danger' : 'primary'}>{(cell === "N") ? '미사용' : '사용'}</CBadge></h5>;
 
 const columns = [
-  { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px', width: '5rem' }, formatter: (cell) => numCommaFormat(cell) },
+  { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px', width: '5rem' }
+    , formatter: (cell) => numCommaFormat(cell) },
   { dataField: 'areaName', text: '구역명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' }, },
   { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' },  },
   { dataField: 'strOwnName', text: '상점주', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' },  },
