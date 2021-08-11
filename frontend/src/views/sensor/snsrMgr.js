@@ -128,8 +128,7 @@ const SnsrMgr = () => {
   };
 
   const handleClickSearchType = e => {
-    const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
-    searchItem[e.target.id] = value;
+    searchItem[e.target.id] = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     handleInitTable();
   };
 
