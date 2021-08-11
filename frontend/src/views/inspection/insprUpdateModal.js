@@ -38,7 +38,7 @@ const InsprUpdateModal = (props) => {
         document.getElementById("modalUpdInspAreaCode").innerHTML += html;
       }
     });
-  }
+  };
 
   const closeModal = () => {
     setModal(!modal);

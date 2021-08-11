@@ -70,9 +70,7 @@ const MemMgr = () => {
   const [actionModal, setActionModal] = useState(false);            // Modal hook
   const [modifyModal, setModifyModal] = useState(false);            // Modal hook
 
-  useEffect(() => {
-    handleInitTable();
-  }, []);
+  useEffect(() => handleInitTable(), []);
 
   // 초기 테이블 셋팅
   const handleInitTable = () => {
@@ -80,7 +78,7 @@ const MemMgr = () => {
       setRepo(resp.data["resultList"]);
       setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
     });
-  }
+  };
 
   // 페이징 클릭 시
   const handleTableChange = (pageNation, param) => {
@@ -94,13 +92,13 @@ const MemMgr = () => {
   const handleClickSearchBtn = () => {
     pageItem.page = 1;
     handleInitTable();
-  }
+  };
 
   const handleClickSearchType = e => {
     const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     searchItem[e.target.id] = value;
     handleInitTable();
-  }
+  };
 
   // 행 클릭 시
   const rowEvents = {
@@ -175,6 +173,6 @@ const MemMgr = () => {
       <MemUpdateModal modal={modifyModal} setModal={setModifyModal} userContent={userContent} handleInitTable={handleInitTable}/>
     </>
   );
-}
+};
 
-export default MemMgr
+export default MemMgr;

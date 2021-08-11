@@ -41,7 +41,7 @@ const AreaMgr = () => {
     }
   };
 
-  const filterTreeNode = node => node.title.props.children.indexOf(searchValue) !== -1;
+  const filterTreeNode = node => (node.title.props.children.indexOf(searchValue) !== -1);
 
   useEffect(() => {
     handleInitTree().then(r => {
@@ -73,7 +73,7 @@ const AreaMgr = () => {
   };
 
   const handleClickUpdateItem = (data) => {
-    updateAreaItem(data).then((resp) => {
+    updateAreaItem(data).then(resp => {
       if (resp.data["result"] === "duplicate") {
         alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.");
       } else if (resp.data["result"] === "success") {

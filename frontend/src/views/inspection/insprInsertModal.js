@@ -10,9 +10,7 @@ const InsprInsertModal = (props) => {
     { defaultValues: {}, mode: "all" }
   );
 
-  useEffect(() => {
-    handleInitListInsprArea();
-  }, []);
+  useEffect(() => handleInitListInsprArea(), []);
 
   const handleInitListInsprArea = () => {
     getInsprAreaList().then(resp => {
@@ -30,7 +28,7 @@ const InsprInsertModal = (props) => {
         alert("점검자 소속 시장 목록을 불러오는 도중 오류가 발생했습니다.");
       }
     });
-  }
+  };
 
   const handleDupChkInspId = () => {
     let checkIdMap = { 'inspId': document.getElementById("modalInsInspId").value };
@@ -46,7 +44,7 @@ const InsprInsertModal = (props) => {
         setFocus("inspId");
       }
     });
-  }
+  };
 
   const closeModal = () => {
     setModal(!modal);
@@ -67,6 +65,10 @@ const InsprInsertModal = (props) => {
     }
   };
 
+  let handleInputClass = key => errors[key] && "is-invalid form-control"
+      || (!errors[key] && getValues(key) !== "") && "form-control is-valid"
+      || (!errors[key] && getValues(key) === "") && "form-control";
+
   return (
     <>
       <CModal show={modal} onClose={() => closeModal()} color="info" size="lg">
@@ -82,11 +84,8 @@ const InsprInsertModal = (props) => {
           <CModalBody>
             <CFormGroup row>
               <CCol md="6">
-                <CLabel>점검자 ID</CLabel>
-                <input className={ errors.inspId && "is-invalid form-control"
-                                  || (!errors.inspId && getValues("inspId") !== "") && "form-control is-valid"
-                                  || (!errors.inspId && getValues("inspId") === "") && "form-control" }
-                       id="modalInsInspId" type={"text"} placeholder={"5~20자 내로 입력하세요."}
+                <CLabel>점검자 ID<span className={"required-span"}> *</span></CLabel>
+                <input className={handleInputClass("inspId")} id="modalInsInspId" type={"text"} placeholder={"5~20자 내로 입력하세요."}
                        { ...register("inspId", {
                            required: { value: true, message: 'ID는 필수입니다.' }
                          , minLength: { value: 5, message: '5자 이상 입력하세요.' }
@@ -97,11 +96,8 @@ const InsprInsertModal = (props) => {
                 { errors.inspId && <span className={"invalid-feedback"}>{errors.inspId.message}</span> }
               </CCol>
               <CCol md="6">
-                <CLabel>점검자 비밀번호</CLabel>
-                <input className={ errors.inspPass && "is-invalid form-control"
-                                  || (!errors.inspPass && getValues("inspPass") !== "") && "form-control is-valid"
-                                  || (!errors.inspPass && getValues("inspPass") === "") && "form-control" }
-                       type={"password"} placeholder={"숫자/문자/특수문자 포함 8~15자 내로 입력하세요."}
+                <CLabel>점검자 비밀번호<span className={"required-span"}> *</span></CLabel>
+                <input className={handleInputClass("inspPass")} type={"password"} placeholder={"숫자/문자/특수문자 포함 8~15자 내로 입력하세요."}
                        { ...register("inspPass", {
                            required: { value: true, message: '비밀번호는 필수입니다.' }
                          , minLength: { value: 8, message: '8자 이상 입력하세요.' }
@@ -113,11 +109,8 @@ const InsprInsertModal = (props) => {
             </CFormGroup>
             <CFormGroup row>
               <CCol md="6">
-                <CLabel>점검자 이름</CLabel>
-                <input className={ errors.inspName && "is-invalid form-control"
-                                  || (!errors.inspName && getValues("inspName") !== "") && "form-control is-valid"
-                                  || (!errors.inspName && getValues("inspName") === "") && "form-control" }
-                       type={"text"} placeholder={"2~50자 내로 입력하세요."}
+                <CLabel>점검자 이름<span className={"required-span"}> *</span></CLabel>
+                <input className={handleInputClass("inspName")} type={"text"} placeholder={"2~50자 내로 입력하세요."}
                        { ...register("inspName", {
                            required: { value: true, message: '이름은 필수입니다.' }
                          , minLength: { value: 2, message: '2자 이상 입력하세요.' }
@@ -128,10 +121,7 @@ const InsprInsertModal = (props) => {
               </CCol>
               <CCol md="6">
                 <CLabel>점검자 이메일</CLabel>
-                <input className={ errors.inspEmail && "is-invalid form-control"
-                                  || (!errors.inspEmail && getValues("inspEmail") !== "") && "form-control is-valid"
-                                  || (!errors.inspEmail && getValues("inspEmail") === "") && "form-control" }
-                       type={"text"} placeholder={"이메일 형식에 맞게 입력하세요."}
+                <input className={handleInputClass("inspEmail")} type={"text"} placeholder={"이메일 형식에 맞게 입력하세요."}
                        { ...register("inspEmail", {
                          pattern: {
                              value: /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
@@ -144,10 +134,7 @@ const InsprInsertModal = (props) => {
             <CFormGroup row>
               <CCol md="6">
                 <CLabel>점검자 연락처</CLabel>
-                <input className={ errors.inspTel && "is-invalid form-control"
-                                  || (!errors.inspTel && getValues("inspTel") !== "") && "form-control is-valid"
-                                  || (!errors.inspTel && getValues("inspTel") === "") && "form-control" }
-                       type={"text"} placeholder={"연락처 형식에 맞게 입력하세요."}
+                <input className={handleInputClass("inspTel")} type={"text"} placeholder={"연락처 형식에 맞게 입력하세요."}
                        { ...register("inspTel", {
                          pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요." }
                        }) } />
@@ -155,10 +142,7 @@ const InsprInsertModal = (props) => {
               </CCol>
               <CCol md="6">
                 <CLabel>점검자 휴대폰 번호</CLabel>
-                <input className={ errors.inspMobile && "is-invalid form-control"
-                                  || (!errors.inspMobile && getValues("inspMobile") !== "") && "form-control is-valid"
-                                  || (!errors.inspMobile && getValues("inspMobile") === "") && "form-control" }
-                       type={"text"} placeholder={"휴대폰 번호 형식에 맞게 입력하세요."}
+                <input className={handleInputClass("inspMobile")} type={"text"} placeholder={"휴대폰 번호 형식에 맞게 입력하세요."}
                        { ...register("inspMobile", {
                          pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰 번호 형식에 맞게 입력하세요." }
                        }) } />
@@ -172,10 +156,7 @@ const InsprInsertModal = (props) => {
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor={"inspShopName"}>점검자 소속 업체</CLabel>
-                <input className={ errors.inspShopName && "is-invalid form-control"
-                                  || (!errors.inspShopName && getValues("inspShopName") !== "") && "form-control is-valid"
-                                  || (!errors.inspShopName && getValues("inspShopName") === "") && "form-control" }
-                       type={"text"} placeholder={"2~100자 내로 입력하세요."}
+                <input className={handleInputClass("inspShopName")} type={"text"} placeholder={"2~100자 내로 입력하세요."}
                        { ...register("inspShopName", {
                            minLength: { value: 2, message: "2자 이상 입력하세요." }
                          , maxLength: { value: 100, message: "100자 내로 입력하세요." }
@@ -186,10 +167,7 @@ const InsprInsertModal = (props) => {
             <CFormGroup row>
               <CCol md="12">
                 <CLabel htmlFor={"inspAddr"}>점검자 주소</CLabel>
-                <input className={ errors.inspAddr && "is-invalid form-control"
-                                  || (!errors.inspAddr && getValues("inspAddr") !== "") && "form-control is-valid"
-                                  || (!errors.inspAddr && getValues("inspAddr") === "") && "form-control" }
-                       type={"text"} placeholder={"200자 내로 입력하세요."}
+                <input className={handleInputClass("inspAddr")} type={"text"} placeholder={"200자 내로 입력하세요."}
                        { ...register("inspAddr", {
                            minLength: { value: 2, message: "2자 이상 입력하세요." }
                          , maxLength: { value: 200, message: "200자 내로 입력하세요." }

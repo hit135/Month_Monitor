@@ -15,7 +15,7 @@ const InspMgr = () => {
   const [endDate, setEndDate] = useState(new Date());
 
   return (
-    <div>
+    <>
       <CCard>
         <CCardHeader>
           <div className={'d-flex justify-content-between'}>
@@ -94,7 +94,7 @@ const InspMgr = () => {
           </CRow>
         </CCardBody>
       </CCard>
-    </div>
+    </>
   );
 }
 
