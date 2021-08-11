@@ -190,10 +190,15 @@
           $(this).addClass('on');
           fn_tapCenterMainPage();
         });
-
-        setInterval(fn_refresh, 1000*60);
-        //setTimeout(function() { $('.left .area-lv2')[0].click(); }, 800);
       }
+
+      var refreshTime = window.setInterval(function() {
+         let date = new Date();
+         let mins = date.getMinutes();
+         console.log(mins);
+         if(mins === 2 || mins === 12 || mins === 22 || mins === 32 || mins === 42 || mins === 52)
+          fn_refresh();
+      }, 60 * 1000);
 
       function fn_refresh() {
         fn_refreshTop();
@@ -310,7 +315,7 @@
                     if(window.lv1cnt==$('.center-main-cont .panel').length) {
                       $('#center-main-cont').smartPanel({ localStorage: true });
                       $($('.center-main-cont .panel-container')[0]).addClass('show');
-                      // $($('.center-main-cont .panel-container')[1]).addClass('show');
+                      $($('.center-main-cont .panel-container')[1]).addClass('show');
                     }
                     window.center_name = 'main';
                     fn_toggleCenterCont();
@@ -417,9 +422,14 @@
           else if(window.min_category[i]) series[0].data.push(0);
         }
         for (var i = 0; i < window.min_category.length; i++) {
-          if(j < data.length-1 && data[j].RCVTIME==window.min_category[i]) series[1].data.push(data[j++].CNT);
+          if(j < data.length - 1 && data[j].RCVTIME==window.min_category[i]) {
+              console.log(window.min_category[i]);
+              series[1].data.push(data[j++].CNT);
+          }
           else if(window.min_category[i] < now_time) series[1].data.push(0);
         }
+
+        // console.log(series[1].data);
         opt.markers = { size: 0, hover: {size: 0} };
         var target_id = target.replace(/ /g,'-');
         if (window['chart-'+target_id]) {
