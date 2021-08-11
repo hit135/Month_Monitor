@@ -14,7 +14,7 @@ export const getMemList = (page, sizePerPage, searchItem) =>
   ].join('&'));
 
 export const insertMem = array => axios.post(`${API_ROOT}/insertMem`, array);
-export const getMem = id => axios.post(`${API_ROOT}/selectMem`, { userId : id });
+export const getMem = id => axios.post(`${API_ROOT}/selectMem`, { userId: id });
 export const getModalMemList = searchWrd => axios.get(`${API_ROOT}/modalMem?searchWrd=${searchWrd}`);
 export const updateMem = array => axios.post(`${API_ROOT}/updateMem`, array);
-export const deleteMem = id => axios.post(`${API_ROOT}/deleteMem`, { userId : id });
+export const deleteMem = id => axios.post(`${API_ROOT}/deleteMem`, { userId: id });

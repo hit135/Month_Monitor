@@ -57,18 +57,17 @@ const AreaMgr = () => {
   // 구역 등록 이벤트
   const handleClickRegisterItem = async (type, upAreaCode, areaLevel) =>
     await insertAreaItem(type, upAreaCode, areaLevel).then(resp => {
-      if (resp.data["result"] === "success") {
+      if (resp.data["result"] === "success")
         handleInitTree().then(r => {
           alert("구역 등록을 완료했습니다.");
           generateList(gData);
           clickSearchTree();
           setNodeLv2Btn(true);
         });
-      } else if (resp.data["result"] === "duplicate") {
+      else if (resp.data["result"] === "duplicate")
         alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.")
-      } else {
+      else
         alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-      }
     });
 
   const handleClickUpdateItem = (data) => updateAreaItem(data).then(resp => {
@@ -128,10 +127,8 @@ const AreaMgr = () => {
       <span>{item.title.substr(0, index)}<span className="site-tree-search-value">{searchValue}</span>{item.title.substr(index + searchValue.length)}</span> :
       <span>{item.title}</span>;
 
-    if (item.children)
-      return { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) };
-
-    return { title, key: item.key };
+    return (item.children) ?
+      { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) } : { title, key: item.key };
   });
 
   return (
@@ -158,7 +155,7 @@ const AreaMgr = () => {
             <CCardBody className={"pt-3"}>
               <CCol className={"pl-0"}>
                 <CCol sm="4" className={"float-left pl-0"}>
-                  <CInput placeholder="검색어 입력" onChange={(e) => setInputSearchValue(e.target.value) }
+                  <CInput placeholder="검색어 입력" onChange={e => setInputSearchValue(e.target.value) }
                           onKeyUp={e => { if (e.key === "Enter") clickSearchTree(); }} />
                 </CCol>
                 <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
@@ -170,10 +167,10 @@ const AreaMgr = () => {
           </CCard>
         </CCol>
 
-        <AreaUpdateMgr areaContent={areaContent} nodeLv2Btn={nodeLv2Btn} handleClickUpdateItem={handleClickUpdateItem}/>
+        <AreaUpdateMgr areaContent={areaContent} nodeLv2Btn={nodeLv2Btn} handleClickUpdateItem={handleClickUpdateItem} />
       </CRow>
     </>
   );
-}
+};
 
 export default AreaMgr;

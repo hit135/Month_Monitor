@@ -6,11 +6,8 @@ import { API_ROOT } from "../../agent/commonIndex";
 
 const AreaUpdateMgr = props => {
   let { areaContent, nodeLv2Btn, handleClickUpdateItem } = props
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm({
-      defaultValues: {
-
-      }, mode: "all"
-    }
+  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm(
+    { defaultValues: {}, mode: "all" }
   );
 
   const [appSwitch, setAppSwitch] = useState({ useYn: false });
@@ -37,8 +34,7 @@ const AreaUpdateMgr = props => {
   }, [areaContent]);
 
   const setSwitchValue = e => {
-    const value = e.target.type === 'checkbox' ? (e.target.checked ? 'Y' : 'N') : e.target.value;
-
+    const value = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     setAppSwitch(data => ({ ...data, [e.target.id]: (value === "Y") }));
     setValue(e.target.id, value);
   };
@@ -52,7 +48,6 @@ const AreaUpdateMgr = props => {
         data.areaOrderType = true;
     }
 
-    console.log(data);
     handleClickUpdateItem(data);
   };
 
@@ -80,15 +75,13 @@ const AreaUpdateMgr = props => {
                   <input className={handleInputClass("areaCode")} placeholder={"AREA_000000"}
                          onBlur={e => {
                            if (!errors.areaCode && areaContent.areaCode !== e.target.value) {
-                             axios
-                               .get(`${API_ROOT}/dupAreaChk?areaCode=${e.target.value}`)
-                               .then(resp => {
-                                 if (resp.data["result"] !== 0) {
-                                   setValue("areaCode", "");
-                                   setError("areaCode", { type: "dupAreaCode", message: "중복되는 구역코드가 존재합니다. 다른 코드로 등록해주세요." })
-                                   setFocus("areaCode");
-                                 }
-                               });
+                             axios.get(`${API_ROOT}/dupAreaChk?areaCode=${e.target.value}`).then(resp => {
+                               if (resp.data["result"] !== 0) {
+                                 setValue("areaCode", "");
+                                 setError("areaCode", { type: "dupAreaCode", message: "중복되는 구역코드가 존재합니다. 다른 코드로 등록해주세요." })
+                                 setFocus("areaCode");
+                               }
+                             });
                            }
                          }}
                          { ...register("areaCode", {
@@ -100,7 +93,7 @@ const AreaUpdateMgr = props => {
                 </CCol>
                 <CCol md="6">
                   <CLabel htmlFor="upAreaCode">상위구역코드</CLabel>
-                  <input className={"form-control"} readOnly={true} placeholder={""} { ...register("upAreaCode", { required: true }) } />
+                  <input className={"form-control"} readOnly={true} placeholder={""} />
                 </CCol>
             </CFormGroup>
             <CFormGroup row>
@@ -116,14 +109,12 @@ const AreaUpdateMgr = props => {
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor="memPwd">구역순번<span className={"required-span"}> *</span></CLabel>
-                <select className={"form-control"} {...register("areaOrder")}>
-                  {
-                    Array.from(
-                      Array(typeof areaContent === "undefined" ? 0 : areaContent.orderCnt), (e, i) =>
-                        <option key={i} value={i + 1}>{i + 1}</option>
-                    )
-                  }
-                </select>
+                <select className={"form-control"} {...register("areaOrder")}>{
+                  Array.from(
+                    Array((typeof areaContent === "undefined") ? 0 : areaContent.orderCnt), (e, i) =>
+                      <option key={i} value={i + 1}>{i + 1}</option>
+                  )
+                }</select>
               </CCol>
             </CFormGroup>
             <CFormGroup row>
