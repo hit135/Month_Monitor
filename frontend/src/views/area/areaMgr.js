@@ -55,7 +55,7 @@ const AreaMgr = () => {
     await getAreaList(page, sizePerPage).then(resp => gData = resp.data["resultList"]);
 
   // 구역 등록 이벤트
-  const handleClickRegisterItem = async (type, upAreaCode, areaLevel) => {
+  const handleClickRegisterItem = async (type, upAreaCode, areaLevel) =>
     await insertAreaItem(type, upAreaCode, areaLevel).then(resp => {
       if (resp.data["result"] === "success") {
         handleInitTree().then(r => {
@@ -70,24 +70,22 @@ const AreaMgr = () => {
         alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
       }
     });
-  };
 
-  const handleClickUpdateItem = (data) => {
-    updateAreaItem(data).then(resp => {
-      if (resp.data["result"] === "duplicate") {
-        alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.");
-      } else if (resp.data["result"] === "success") {
-        handleInitTree().then(r => {
-          alert("구역 수정을 완료했습니다.");
-          generateList(gData);
-          clickSearchTree();
-        });
-      } else {
-        alert("구역 수정에 오류가 발생했습니다.");
-        return false;
-      }
-    });
-  };
+
+  const handleClickUpdateItem = (data) => updateAreaItem(data).then(resp => {
+    if (resp.data["result"] === "duplicate") {
+      alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.");
+    } else if (resp.data["result"] === "success") {
+      handleInitTree().then(r => {
+        alert("구역 수정을 완료했습니다.");
+        generateList(gData);
+        clickSearchTree();
+      });
+    } else {
+      alert("구역 수정에 오류가 발생했습니다.");
+      return false;
+    }
+  });
 
   // 노드 선택 이벤트
   const nodeClick = async (e, node) => {
@@ -124,19 +122,18 @@ const AreaMgr = () => {
   };
 
   // 검색 후 이벤트
-  const loop = data =>
-    data.map(item => {
-      const index = item.title.indexOf(searchValue);
+  const loop = data => data.map(item => {
+    const index = item.title.indexOf(searchValue);
 
-      const title = (index > -1) ?
-        <span>{item.title.substr(0, index)}<span className="site-tree-search-value">{searchValue}</span>{item.title.substr(index + searchValue.length)}</span> :
-        <span>{item.title}</span>;
+    const title = (index > -1) ?
+      <span>{item.title.substr(0, index)}<span className="site-tree-search-value">{searchValue}</span>{item.title.substr(index + searchValue.length)}</span> :
+      <span>{item.title}</span>;
 
-      if (item.children)
-        return { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) };
+    if (item.children)
+      return { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) };
 
-      return { title, key: item.key };
-    });
+    return { title, key: item.key };
+  });
 
   return (
     <>
@@ -170,15 +167,8 @@ const AreaMgr = () => {
               <CRow className={"mb-3"}>
 
               </CRow>
-              <Tree
-                showLine={true}
-                onExpand={onExpand}
-                expandedKeys={expandedKeys}
-                autoExpandParent={autoExpandParent}
-                onClick={nodeClick}
-                treeData={loop(gData)}
-                filterTreeNode={filterTreeNode}
-              />
+              <Tree showLine={true} onExpand={onExpand} expandedKeys={expandedKeys} autoExpandParent={autoExpandParent}
+                    onClick={nodeClick} treeData={loop(gData)} filterTreeNode={filterTreeNode} />
             </CCardBody>
           </CCard>
         </CCol>

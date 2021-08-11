@@ -11,9 +11,7 @@ const MemUpdateModal = props => {
   const [appSwitch, setAppSwitch] = useState({ useYn: false, delYn: false, memIsLeave: false, memRcvSms: false });
 
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm(
-    {
-      mode: "all"
-    }
+    { mode: "all" }
   );
 
   useEffect(() => {
@@ -152,8 +150,8 @@ const MemUpdateModal = props => {
           <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="memAreaCode">구역선택</CLabel>
-              <input className={"form-control"} {...register("memAreaCode") } readOnly={true}
-                     placeholder={"구역을 선택해주세요."} onClick={(e) => setOnAreaModal(true)} />
+              <input className={"form-control"} {...register("memAreaCode") } readOnly={true} placeholder={"구역을 선택해주세요."}
+                     onClick={e => setOnAreaModal(true)} />
             </CCol>
           </CFormGroup>
           <CRow className={"pl-3 pr-3 mt-4"}>

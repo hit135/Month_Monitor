@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 
 import { getDupChkInspId, getInsprAreaList, insertInspector } from "../../agent/inspection";
 
-const InsprInsertModal = (props) => {
+const InsprInsertModal = props => {
   const { modal, setModal, handleInitTable } = props;
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
     { defaultValues: {}, mode: "all" }
@@ -12,23 +12,21 @@ const InsprInsertModal = (props) => {
 
   useEffect(() => handleInitListInsprArea(), []);
 
-  const handleInitListInsprArea = () => {
-    getInsprAreaList().then(resp => {
-      if (resp.data['result']) {
-        let html = '';
+  const handleInitListInsprArea = () => getInsprAreaList().then(resp => {
+    if (resp.data['result']) {
+      let html = '';
 
-        for (let item of resp.data['resultList'])
-          html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
+      for (let item of resp.data['resultList'])
+        html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
 
-        document.getElementById("modalInsInspAreaCode").innerHTML += html;
+      document.getElementById("modalInsInspAreaCode").innerHTML += html;
 
-        let sel = document.getElementById("modalInsInspAreaCode");
-        setValue("inspAreaCode", sel.options[sel.selectedIndex].value);
-      } else {
-        alert("점검자 소속 시장 목록을 불러오는 도중 오류가 발생했습니다.");
-      }
-    });
-  };
+      let sel = document.getElementById("modalInsInspAreaCode");
+      setValue("inspAreaCode", sel.options[sel.selectedIndex].value);
+    } else {
+      alert("점검자 소속 시장 목록을 불러오는 도중 오류가 발생했습니다.");
+    }
+  });
 
   const handleDupChkInspId = () => {
     let checkIdMap = { 'inspId': document.getElementById("modalInsInspId").value };

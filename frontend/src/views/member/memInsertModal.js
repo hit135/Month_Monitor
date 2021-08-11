@@ -7,32 +7,30 @@ import { convertPhoneNumber, API_ROOT } from "../../agent/commonIndex";
 
 const MemInsertModal = props => {
   const { modal, setModal, handleInitTable } = props;
+
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
     {
       defaultValues: { useYn: "Y", memIsLeave: "N", memRcvSms: "Y", delYn: "N", groupUse: "N" }, mode: "all"
     }
   );
 
-  const { onBlur, ...rest } =
-    register("userId", {
-        required: { value: true, message: '아이디를 입력해주세요.' }
-      , minLength: { value: 5, message: '아이디를 5글자 이상으로 입력해주세요.' }
-      , maxLength: { value: 20, message: '아이디를 20글자 이하로 입력해주세요.' }
-      , pattern: { value: /^[a-z]+[a-z0-9]{4,19}$/g, message: "아이디는 영문자로 시작하는 5~20자 영문자 또는 숫자이어야 합니다." }
-    });
+  const { onBlur, ...rest } = register("userId", {
+      required: { value: true, message: '아이디를 입력해주세요.' }
+    , minLength: { value: 5, message: '아이디를 5글자 이상으로 입력해주세요.' }
+    , maxLength: { value: 20, message: '아이디를 20글자 이하로 입력해주세요.' }
+    , pattern: { value: /^[a-z]+[a-z0-9]{4,19}$/g, message: "아이디는 영문자로 시작하는 5~20자 영문자 또는 숫자이어야 합니다." }
+  });
 
-  const onSubmit = (data, e) => {
-    insertMem(data).then(resp => {
-      if (resp.data["result"] === "success") {
-        alert("회원 등록을 완료했습니다.");
-        closeModal();
-        handleInitTable();
-      } else {
-        alert("회원 등록에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-        closeModal();
-      }
-    });
-  };
+  const onSubmit = (data, e) => insertMem(data).then(resp => {
+    if (resp.data["result"] === "success") {
+      alert("회원 등록을 완료했습니다.");
+      closeModal();
+      handleInitTable();
+    } else {
+      alert("회원 등록에 실패하였습니다. 잠시 후 다시 시도해주세요.");
+      closeModal();
+    }
+  });
 
   const closeModal = () => {
     setModal(!modal);
@@ -159,10 +157,8 @@ const MemInsertModal = props => {
             <CFormGroup row>
               <CCol md="12">
                 <CLabel htmlFor="memMemo">메모</CLabel>
-                <textarea
-                  className={"form-control textarea-height"} name="textarea-input" id="textarea-input" rows="12" placeholder="메모를 입력해주세요."
-                  { ...register("memMemo") }
-                />
+                <textarea className={"form-control textarea-height"} name="textarea-input" id="textarea-input" rows="12"
+                          placeholder="메모를 입력해주세요." { ...register("memMemo") } />
               </CCol>
             </CFormGroup>
           </CModalBody>
