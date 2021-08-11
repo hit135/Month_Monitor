@@ -100,7 +100,7 @@ const MemInsertModal = props => {
              <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="userId">아이디<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("userId")} onBlur={e => handleOnBlurUserId(e.target.value)} { ...rest } />
+                <input className={handleInputClass("userId")} type={"text"} onBlur={e => handleOnBlurUserId(e.target.value)} { ...rest } />
                 { errors.userId && <span className={"invalid-feedback"}>{errors.userId.message}</span> }
               </CCol>
               <CCol md="6">
@@ -113,7 +113,7 @@ const MemInsertModal = props => {
             <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="memName">사용자 이름<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("memName")} placeholder={"최소 2글자, 최대 50글자"} type={"text"}
+                <input className={handleInputClass("memName")} type={"text"} placeholder={"최소 2글자, 최대 50글자"}
                        { ...register("memName", regOpts['memName']) } />
                 { errors.memName && <span className={"invalid-feedback"}>{errors.memName.message}</span> }
               </CCol>

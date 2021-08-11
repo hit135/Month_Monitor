@@ -121,7 +121,7 @@ const MemUpdateModal = props => {
              <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="userId">아이디</CLabel>
-                <input readOnly={true} className={"form-control"} {...register("userId")} />
+                <input className={"form-control"} readOnly={true} />
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor="memPwd">비밀번호</CLabel>
