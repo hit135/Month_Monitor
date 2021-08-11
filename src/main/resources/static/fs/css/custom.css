@@ -150,3 +150,8 @@
 @media (min-width: 768px) {
     .mt-md-n7 { margin-top: -100px !important; }
 }
+
+.panel.panel-fullscreen {
+    width: 100% !important;
+    position: absolute !important;
+}
