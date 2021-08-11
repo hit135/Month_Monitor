@@ -7,8 +7,11 @@ import { API_ROOT } from "../../agent/commonIndex";
 const AreaUpdateMgr = props => {
   let { areaContent, nodeLv2Btn, handleClickUpdateItem } = props
   const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm({
-    mode: "all"
-  });
+      defaultValues: {
+
+      }, mode: "all"
+    }
+  );
 
   const [appSwitch, setAppSwitch] = useState({ useYn: false });
   const [onMemModal, setOnMemModal] = useState(false);            // Modal hook
@@ -53,13 +56,8 @@ const AreaUpdateMgr = props => {
     handleClickUpdateItem(data);
   };
 
-  let handleInputClass = key => errors[key] && "is-invalid form-control"
-    || (!errors[key] && getValues(key) !== "") && "form-control is-valid"
-    || (!errors[key] && getValues(key) === "") && "form-control";
-
-  let handleInputPosClass = key => errors[key] && "is-invalid form-control"
-    || (!errors[key] && getValues(key) !== null && typeof areaContent !== 'undefined') && "form-control is-valid"
-    || (!errors[key] && getValues(key) === null || typeof areaContent === 'undefined') && "form-control"
+  let handleInputClass = key =>
+    (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
 
   return (
     <>
@@ -151,7 +149,7 @@ const AreaUpdateMgr = props => {
             <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="areaPosLat">구역위도</CLabel>
-                <input className={handleInputPosClass("areaPosLat")} placeholder={"구역 위도를 입력해주세요."}
+                <input className={handleInputClass("areaPosLat")} placeholder={"구역 위도를 입력해주세요."}
                        { ...register("areaPosLat", {
                          pattern: { value: /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000" }
                        }) } />
@@ -159,7 +157,7 @@ const AreaUpdateMgr = props => {
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor="areaPosLon">구역경도</CLabel>
-                <input className={handleInputPosClass("areaPosLon")} placeholder={"구역 경도를 입력해주세요."}
+                <input className={handleInputClass("areaPosLon")} placeholder={"구역 경도를 입력해주세요."}
                        { ...register("areaPosLon", {
                          pattern: {value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"}
                        }) } />

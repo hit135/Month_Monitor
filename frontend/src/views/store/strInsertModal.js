@@ -77,13 +77,8 @@ const StrInsertModal = props => {
 
   const initAreaCode = () => setValue("areaCode", "");
 
-  let handleInputClass = key => errors[key] && "is-invalid form-control"
-    || (!errors[key] && getValues(key) !== "") && "form-control is-valid"
-    || (!errors[key] && getValues(key) === "") && "form-control";
-
-  let handleInputPosClass = key => errors[key] && "is-invalid form-control"
-    || (!errors[key] && getValues(key) !== null) && "form-control is-valid"
-    || (!errors[key] && getValues(key) === null) && "form-control"
+  let handleInputClass = key =>
+    (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
 
   return (
     <>
@@ -155,7 +150,7 @@ const StrInsertModal = props => {
             <CFormGroup row>
               <CCol md="6">
                 <CLabel htmlFor="strPosLat">구역위도</CLabel>
-                <input className={handleInputPosClass("strPosLat")} placeholder={"구역 위도를 입력해주세요."}
+                <input className={handleInputClass("strPosLat")} placeholder={"구역 위도를 입력해주세요."}
                        { ...register("strPosLat", {
                          pattern: { value:  /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000" }
                        }) } />
@@ -163,7 +158,7 @@ const StrInsertModal = props => {
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor="strPosLon">구역경도</CLabel>
-                <input className={handleInputPosClass("strPosLon")} placeholder={"구역 경도를 입력해주세요."}
+                <input className={handleInputClass("strPosLon")} placeholder={"구역 경도를 입력해주세요."}
                        { ...register("strPosLon", {
                          pattern: { value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000" }
                        }) } />

@@ -112,7 +112,7 @@ const MemMgr = () => {
                     <CInput placeholder="검색어 입력" onKeyUp={e => {
                       searchItem.searchWrd = e.target.value;
                       if (e.key === "Enter")
-                        handleClickSearchBtn()
+                        handleClickSearchBtn();
                     }} />
                   </CCol>
                   <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>

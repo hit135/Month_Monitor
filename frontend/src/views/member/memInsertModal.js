@@ -47,9 +47,8 @@ const MemInsertModal = props => {
     e.target.value = convertPhoneNumber(e.target.value.trim());
   };
 
-  let handleInputClass = key => errors[key] && "is-invalid form-control"
-    || (!errors[key] && getValues(key) !== "") && "form-control is-valid"
-    || (!errors[key] && getValues(key) === "") && "form-control";
+  let handleInputClass = key =>
+    (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
 
   return (
     <>
