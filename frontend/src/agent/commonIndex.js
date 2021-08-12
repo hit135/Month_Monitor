@@ -27,11 +27,10 @@ export const handleChangePhoneNumber = e => {
   e.target.value = convertPhoneNumber(e.target.value.trim());
 };
 
-export let handleValidInput = (errors, key, getValues) =>
-  errors[key] && "is-invalid form-control" || (!errors[key] && getValues !== "") && "form-control is-valid" || (!errors[key] && getValues === "") && "form-control"
+export const getInputValue = e => (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
 
-export let handleValidInputPos = (errors, key, getValues) =>
-  errors[key] && "is-invalid form-control" || (!errors[key] && getValues !== null) && "form-control is-valid" || (!errors[key] && getValues === null) && "form-control"
+export let getValidInput = (errKey, keyVal, check) =>
+  errKey && "is-invalid form-control" || (!errKey && keyVal !== check) && "form-control is-valid" || (!errKey && keyVal === check) && "form-control";
 
 export let handleValidInputClass = (errors, key) =>
   (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");

@@ -117,7 +117,7 @@ const AreaMgr = () => {
     });
 
   // 구역 수정 이벤트
-  const handleClickUpdateItem = (data) => updateAreaItem(data).then(resp => {
+  const handleClickUpdateItem = data => updateAreaItem(data).then(resp => {
     if (resp.data["result"] === "duplicate") {
       alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.");
     } else if (resp.data["result"] === "success") {
@@ -143,7 +143,7 @@ const AreaMgr = () => {
                   <h5 className={"mb-0 ml-0"}>전체 시장 목록</h5>
                 </div>
                 <div>
-                  <button className={"btn btn-danger float-right mt-0 ml-2"} disabled={nodeLv2Btn} onClick={e => deleteNode()}>삭제</button>
+                  <button className={"btn btn-danger float-right mt-0 ml-2"} disabled={nodeLv2Btn} onClick={deleteNode}>삭제</button>
                   <button className={"btn btn-custom float-right mt-0 ml-2"} id={"lv2Node"} disabled={nodeLv2Btn}
                           onClick={e => handleClickRegisterItem(e.target.id, nodeUpcode, nodeLevel)}>하위 레벨 등록</button>
                   <button className={"btn btn-custom float-right mt-0"} id={"lv1Node"}

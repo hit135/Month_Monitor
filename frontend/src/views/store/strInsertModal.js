@@ -1,11 +1,12 @@
-import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch } from "@coreui/react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+
+import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch } from "@coreui/react";
 import { DropzoneArea } from 'material-ui-dropzone';
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import { handleValidInputClass, handleChangePhoneNumber } from "../../agent/commonIndex";
 import { insertStr } from "../../agent/store";
 import { getAreaList, getParentKey } from "../../agent/area";
+import { getInputValue, getValidInput, handleChangePhoneNumber } from "../../agent/commonIndex";
 
 const StrInsertModal = props => {
   let gData = [];
@@ -20,6 +21,14 @@ const StrInsertModal = props => {
       defaultValues: { useYn: 'Y', strCode: 'FS_STR_0000000000000', strPosLat: null, strPosLon: null }, mode: "all"
     }
   );
+
+  let inputCmmHtml = (id, txt, checkValid, placeholder, required, keyUp) =>
+    <CCol md="6">
+      <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
+      <input className={getValidInput(errors[id], getValues(id), checkValid)} id={id} type={"text"} placeholder={placeholder} onKeyUp={keyUp}
+             { ...register(id, regOpts[id]) } />
+      { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
+    </CCol>;
 
   useEffect(() => setDropZoneArea(), [modal]);
 
@@ -38,13 +47,6 @@ const StrInsertModal = props => {
         onChange={files => setValue("files", files)} />
     );
 
-  let inputTextCmmHtml = (id, txt, placeholder, required=false, keyUp) =>
-    <CCol md="6">
-      <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
-      <input className={handleValidInputClass(errors, id)} id={id} type={"text"} placeholder={placeholder} onKeyUp={keyUp} { ...register(id, regOpts[id]) } />
-      { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
-    </CCol>;
-
   const initAreaCode = () => setValue("areaCode", "");
 
   const nodeClick = async (e, node) => {
@@ -56,7 +58,7 @@ const StrInsertModal = props => {
     setValue("areaCode", (typeof parentKey !== 'undefined') ? parentKey : node["key"]);
   };
 
-  const setSwitchValue = e => setValue(e.target.id, (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value);
+  const setSwitchValue = e => setValue(e.target.id, getInputValue(e));
 
   const regOpts = {
       strName: {
@@ -101,15 +103,15 @@ const StrInsertModal = props => {
           </CModalHeader>
           <CModalBody>
             <CFormGroup row>
-              {inputTextCmmHtml("strName", "상점명", "상점명을 입력해주세요.", true,null)}
+              {inputCmmHtml("strName", "상점명", '', "상점명을 입력해주세요.", true,null)}
               <CCol md={"6"}>
                 <CLabel htmlFor={"areaCode"}>구역선택<span className={"required-span"}> *</span></CLabel>
-                <input className={"form-control"} type={"text"} id={"areaCode"} placeholder={"구역을 선택해주세요."} readOnly={true}
+                <input className={"form-control"} id={"areaCode"} type={"text"} placeholder={"구역을 선택해주세요."} readOnly={true}
                        onClick={e => setOnAreaModal(true)} { ...register("areaCode") } />
               </CCol>
             </CFormGroup>
             <CFormGroup row>
-              {inputTextCmmHtml("strAddr", "주소", "주소를 입력하세요.", null)}
+              {inputCmmHtml("strAddr", "주소", '', "주소를 입력하세요.", null)}
               <CCol md={"6"}>
                 <CRow className={"pl-3 pr-3"} style={{ marginTop: '2.3rem' }}>
                   <CFormGroup className={"pr-3 d-inline-flex"}>
@@ -121,12 +123,12 @@ const StrInsertModal = props => {
               </CCol>
             </CFormGroup>
             <CFormGroup row>
-              {inputTextCmmHtml("strTel", "전화번호", "전화번호를 입력해주세요.", false, handleChangePhoneNumber)}
-              {inputTextCmmHtml("strOwnTel", "휴대폰번호", "휴대폰번호를 입력해주세요.", false, handleChangePhoneNumber)}
+              {inputCmmHtml("strTel", "전화번호", '', "전화번호를 입력해주세요.", false, handleChangePhoneNumber)}
+              {inputCmmHtml("strOwnTel", "휴대폰번호", '', "휴대폰번호를 입력해주세요.", false, handleChangePhoneNumber)}
             </CFormGroup>
             <CFormGroup row>
-              {inputTextCmmHtml("strPosLat", "구역위도", "구역 위도를 입력해주세요.", false, null)}
-              {inputTextCmmHtml("strPosLon", "구역경도", "구역 경도를 입력해주세요.", false, null)}
+              {inputCmmHtml("strPosLat", "구역위도", null, "구역 위도를 입력해주세요.", false, null)}
+              {inputCmmHtml("strPosLon", "구역경도", null, "구역 경도를 입력해주세요.", false, null)}
             </CFormGroup>
             <CRow id={"dropzone"} className={"pl-2 pr-2 mt-4"}>{initDropZone}</CRow>
           </CModalBody>

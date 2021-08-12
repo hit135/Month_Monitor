@@ -6,7 +6,7 @@ import StrInsertModal from "./strInsertModal";
 import StrUpdateModal from "./strUpdateModal";
 import { getStr, getStrList } from "../../agent/store";
 import { getInsprAreaList } from "../../agent/inspection";
-import { numCommaFormat } from "../../agent/commonIndex";
+import { getInputValue, numCommaFormat } from "../../agent/commonIndex";
 
 // Y/N 표시 스타일
 const ynStyleFormatter = cell =>
@@ -16,6 +16,7 @@ const columns = [
     { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'right', height: '42px', width: '5rem' }
       , formatter: (cell) => numCommaFormat(cell) }
   , { dataField: 'areaName', text: '구역명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
+  , { dataField: 'strCode', text: '상점코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'strOwnName', text: '상점주', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'strAddr', text: '주소', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
@@ -65,7 +66,7 @@ const StrMgr = () => {
 
   // swtich
   const handleChangeSearchType = e => {
-    searchItem[e.target.id] = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
+    searchItem[e.target.id] = getInputValue(e);
     handleInitTable();
   };
 
