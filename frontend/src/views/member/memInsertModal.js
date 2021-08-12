@@ -13,6 +13,7 @@ const MemInsertModal = props => {
     { defaultValues: { useYn: "Y", memIsLeave: "N", memRcvSms: "Y", delYn: "N", groupUse: "N" }, mode: "all" }
   );
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, type, placeholder, required, handle) =>
     <CCol md={"6"}>
       <CLabel htmlFor={id}>{txt}{required && <span className={"required-span"}> *</span>}</CLabel>
@@ -26,6 +27,7 @@ const MemInsertModal = props => {
       <CLabel htmlFor={id} className={"pr-1"}>{txt}</CLabel>
       <CSwitch className={'mx-1'} id={id} color={color} labelOn={labelOn} labelOff={labelOff} onChange={setSwitchValue} defaultChecked={defaultChecked} />
     </CFormGroup>;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const setSwitchValue = e => setValue(e.target.id, getInputValue(e));
 

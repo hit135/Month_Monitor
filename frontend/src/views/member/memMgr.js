@@ -67,7 +67,7 @@ const MemMgr = () => {
   // 초기 테이블 셋팅
   const handleInitTable = () => getMemList(pageItem.page, pageItem.sizePerPage, searchItem).then(resp => {
     setRepo(resp.data["resultList"]);
-    setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
+    setPageItem({ page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"] });
   });
 
   // 페이징 클릭 시
@@ -81,7 +81,7 @@ const MemMgr = () => {
     searchItem.searchWrd = e.target.value;
     if (e.key === "Enter")
       handleClickSearchBtn();
-  }
+  };
 
   // 검색 버튼 이벤트
   const handleClickSearchBtn = () => {

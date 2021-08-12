@@ -1,11 +1,13 @@
-import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol } from "@coreui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol } from "@coreui/react";
+
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import { handleValidInputClass } from "../../agent/commonIndex";
+import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
 import { getAreaList, getParentKey } from "../../agent/area";
 import { insertSnsr } from "../../agent/sensor";
-import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
+import { getInputValue, getValidInput } from "../../agent/commonIndex";
+
 
 const SnsrInsertModal = props => {
   let gData = [];
@@ -14,7 +16,7 @@ const SnsrInsertModal = props => {
   const [onAreaModal, setOnAreaModal] = useState();
   const [onStrModal, setOnStrModal] = useState();
 
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
+  const { register, handleSubmit, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
     {
       defaultValues: {
           sVol: 20, sSce: 240, sOc1V1: 100, sOc1V2: 120, sOc1T1: 60, sOc1T2: 30, sOc2V1: 120, sOc2V2: 130, sOc2T1: 60, sOc2T2: 10
@@ -23,25 +25,25 @@ const SnsrInsertModal = props => {
     }
   );
 
-  let inputTextCmmHtml = (id, txt, placeholder, required=false) =>
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  let inputCmmHtml = (id, txt, checkValid, placeholder, required) =>
     <CCol md="6">
       <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
-      <input className={handleValidInputClass(errors, id)} id={id} type={"text"} placeholder={placeholder} { ...register(id, regOpts[id]) } />
+      <input className={getValidInput(errors[id], getValues(id), checkValid)} id={id} type={"text"} placeholder={placeholder} { ...register(id, regOpts[id]) } />
       { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
     </CCol>;
 
-  let inputReadOnlyCmmHtml = (id, txt, placeholder, onclick) =>
+  let inputReadOnlyHtml = (id, txt, placeholder, onclick) =>
     <CCol md="6">
       <CLabel htmlFor={id} className={"mb-0"}>{txt}</CLabel>
-      <input className={handleValidInputClass(errors, id)} type={"text"} placeholder={placeholder} readOnly={true}
-             onClick={onclick} />
+      <input className={getValidInput(errors[id], getValues(id), '')} id={id} type={"text"} placeholder={placeholder} readOnly={true}
+             onClick={onclick} { ...register(id)} />
     </CCol>
 
   let inputNumberCmmHtml = (key, txt, initValue=0) =>
     <CCol md="6">
       <CLabel htmlFor={key} className={"mb-0"}>{txt}</CLabel>
-      <input className={handleValidInputClass(errors, key)} type={"number"} value={initValue} { ...register(key, regOpts[key]) } />
-      { errors[key] && <span className={"invalid-feedback"}>{errors[key].message}</span> }
+      <input className={"form-control"} type={"number"} value={initValue} { ...register(key) } />
     </CCol>;
 
   let inputNumberCmmHtml2 = (key, txt, initValue=0) =>
@@ -50,10 +52,10 @@ const SnsrInsertModal = props => {
         <CLabel htmlFor={key} className={"label-text"}>{txt}</CLabel>
       </CCol>
       <CCol xs="6" md="3">
-        <input className={handleValidInputClass(errors, key)} type={"number"} value={initValue} { ...register(key, regOpts[key]) } />
-        { errors[key] && <span className={"invalid-feedback"}>{errors[key].message}</span> }
+        <input className={"form-control"} type={"number"} value={initValue} { ...register(key) } />
       </CCol>
     </>;
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const initAreaCode = () => {
     setValue("areaCode", "");
@@ -86,24 +88,6 @@ const SnsrInsertModal = props => {
       }
     , snsrPosLat: { pattern: { value: /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000" } }
     , snsrPosLon: { pattern: { value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"} }
-    , sVol: { required: { value: true, message: '차단기 용량를 입력해주세요.' } }
-    , sSec: { required: { value: true, message: '전송주기를 입력해주세요.' } }
-    , sOc1V1: { required: { value: true, message: '1차 전류 임계값#1을 입력해주세요.' } }
-    , sOc1V2: { required: { value: true, message: '1차 전류 임계값#2를 입력해주세요.' } }
-    , sOc1T1: { required: { value: true, message: '1차 전류 임계시간#1을 입력해주세요.' } }
-    , sOc1T2: { required: { value: true, message: '1차 전류 임계시간#2를 입력해주세요.' } }
-    , sOc2V1: { required: { value: true, message: '2차 전류 임계값#1을 입력해주세요.' } }
-    , sOc2V2: { required: { value: true, message: '2차 전류 임계값#2를 입력해주세요.' } }
-    , sOc2T1: { required: { value: true, message: '2차 전류 임계시간#1을 입력해주세요.' } }
-    , sOc2T2: { required: { value: true, message: '2차 전류 임계시간#2를 입력해주세요.' } }
-    , sIgo1V: { required: { value: true, message: '1차 IGO 임계값을 입력해주세요.' } }
-    , sIgo1T: { required: { value: true, message: '1차 IGO 임계시간을 입력해주세요.' } }
-    , sIgo2V: { required: { value: true, message: '2차 IGO 임계값을 입력해주세요.' } }
-    , sIgo2T: { required: { value: true, message: '2차 IGO 임계시간을 입력해주세요.' } }
-    , sIgr1V: { required: { value: true, message: '1차 IGR 임계값을 입력해주세요.' } }
-    , sIgr1T: { required: { value: true, message: '1차 IGR 임계시간을 입력해주세요.' } }
-    , sIgr2V: { required: { value: true, message: '2차 IGR 임계값을 입력해주세요.' } }
-    , sIgr2T: { required: { value: true, message: '2차 IGR 임계시간을 입력해주세요.' } }
   };
 
   const onSubmit = (data, e) => insertSnsr(data).then(resp => {
@@ -132,10 +116,10 @@ const SnsrInsertModal = props => {
           </CModalHeader>
           <CModalBody>
             <CFormGroup row>
-              {inputTextCmmHtml("snsrId", "센서 아이디", "센서아이디를 입력해주세요.", true)}
-              {inputTextCmmHtml("snsrNick", "센서명", "센서명을 입력해주세요.", true)}
-              {inputReadOnlyCmmHtml("areaCode", "구역선택", "구역을 선택해주세요.", e => setOnAreaModal(true))}
-              {inputReadOnlyCmmHtml("strCode", "상점선택", "상점을 선택해주세요.", e => setOnStrModal(true))}
+              {inputCmmHtml("snsrId", "센서 아이디", '', "센서아이디를 입력해주세요.", true)}
+              {inputCmmHtml("snsrNick", "센서명", '', "센서명을 입력해주세요.", true)}
+              {inputReadOnlyHtml("areaCode", "구역선택", "구역을 선택해주세요.", e => setOnAreaModal(true))}
+              {inputReadOnlyHtml("strCode", "상점선택", "상점을 선택해주세요.", e => setOnStrModal(true))}
               <CCol md="6">
                 <CLabel htmlFor={"channel"} className={"mb-0"}>채널</CLabel>
                 <select className={"form-control"} id={"channel"} { ...register("channel") }>
@@ -145,9 +129,9 @@ const SnsrInsertModal = props => {
                   <option key={4} value={4}>4</option>
                 </select>
               </CCol>
-              {inputTextCmmHtml("snsrAddr", "주소", "주소를 입력해주세요.", false)}
-              {inputTextCmmHtml("snsrPosLat", "구역위도", "구역 위도를 입력해주세요.", false)}
-              {inputTextCmmHtml("snsrPosLon", "구역경도", "구역 경도를 입력해주세요.", false)}
+              {inputCmmHtml("snsrAddr", "주소", '', "주소를 입력해주세요.", false)}
+              {inputCmmHtml("snsrPosLat", "구역위도", null,"구역 위도를 입력해주세요.", false)}
+              {inputCmmHtml("snsrPosLon", "구역경도", null, "구역 경도를 입력해주세요.", false)}
             </CFormGroup>
             <CFormGroup row>
               {inputNumberCmmHtml("sVol", "차단기용량", 20)}

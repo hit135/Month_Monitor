@@ -34,6 +34,7 @@ const StrUpdateModal = props => {
     }
   );
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, checkValid, placeholder, required, keyUp) =>
     <CCol md="6">
       <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
@@ -41,6 +42,13 @@ const StrUpdateModal = props => {
              { ...register(id, regOpts[id]) } />
       { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
     </CCol>;
+
+  let inputReadOnlyHtml = (id, txt, onclick) =>
+    <CCol md={"6"}>
+      <CLabel htmlFor={id}>{txt}<span className={"required-span"}> *</span></CLabel>
+      <input className={"form-control"} id={id} type={"text"} readOnly={true} onClick={onclick} { ...register(id)} />
+    </CCol>;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(async () => {
     appSwitch.useYn = (strContent.useYn === "Y");
@@ -131,7 +139,6 @@ const StrUpdateModal = props => {
           handleInitTable();
         } else {
           alert("상점 삭제에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-          closeModal();
         }
       });
     }
@@ -143,7 +150,6 @@ const StrUpdateModal = props => {
       data.strCode = strContent.strCode;
       data.deleteFileList = deleteFileList;
 
-      console.log(data);
       updateStr(data).then(resp => {
         if (resp.data["result"] === "duplicate") {
           alert("상점코드가 중복됩니다.");
@@ -153,7 +159,6 @@ const StrUpdateModal = props => {
           handleInitTable();
         } else {
           alert("상점 수정에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-          closeModal();
         }
       })
     } else {
@@ -178,18 +183,11 @@ const StrUpdateModal = props => {
           </CModalHeader>
           <CModalBody>
             <CFormGroup row>
-              <CCol md={"6"}>
-                <CLabel htmlFor={"strCode"}>상점코드<span className={"required-span"}> *</span></CLabel>
-                <input className={"form-control"} id={"strCode"} type={"text"} readOnly={true} { ...register("strCode")} />
-              </CCol>
+              {inputReadOnlyHtml("strCode", "상점코드", null)}
               {inputCmmHtml("strName", "상점명", '', "상점명을 입력해주세요.", true,null)}
             </CFormGroup>
             <CFormGroup row>
-              <CCol md={"6"}>
-                <CLabel htmlFor={"areaCode"}>구역선택<span className={"required-span"}> *</span></CLabel>
-                <input className={"form-control"} id={"areaCode"} type={"text"} placeholder={"구역을 선택해주세요."} readOnly={true}
-                       onClick={e => setOnAreaModal(true)} { ...register("areaCode") } />
-              </CCol>
+              {inputReadOnlyHtml("areaCode", "구역선택", e => setOnAreaModal(true))}
               {inputCmmHtml("strAddr", "주소", '', "주소를 입력하세요.", null)}
             </CFormGroup>
             <CFormGroup row>
@@ -204,7 +202,7 @@ const StrUpdateModal = props => {
               <CRow className={"pl-3 pr-3"} style={{ marginTop: '2.3rem' }}>
                 <CFormGroup className={"pr-3 d-inline-flex"}>
                   <CLabel htmlFor={"useYn"} className={"pr-1"}>사용유무</CLabel>
-                  <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setUpdSwitchValue} defaultChecked />
+                  <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setUpdSwitchValue} checked={appSwitch.useYn} />
                 </CFormGroup>
               </CRow>
             </CCol>

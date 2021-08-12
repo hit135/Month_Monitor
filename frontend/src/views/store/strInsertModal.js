@@ -22,6 +22,7 @@ const StrInsertModal = props => {
     }
   );
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, checkValid, placeholder, required, keyUp) =>
     <CCol md="6">
       <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
@@ -29,6 +30,7 @@ const StrInsertModal = props => {
              { ...register(id, regOpts[id]) } />
       { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
     </CCol>;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => setDropZoneArea(), [modal]);
 

@@ -124,7 +124,7 @@ const AreaMgr = () => {
     if (resp.data["result"] === "duplicate") {
       alert("중복되는 구역코드가 존재합니다. 잠시 후 다시 시도해주세요.");
     } else if (resp.data["result"] === "success") {
-      handleInitTree().then(r => {
+      handleInitTree().then(() => {
         alert("구역 수정을 완료했습니다.");
         generateList(gData);
         clickSearchTree();
@@ -158,7 +158,7 @@ const AreaMgr = () => {
           <CCardBody className={"pt-3"}>
             <CCol className={"pl-0"}>
               <CCol sm={"4"} className={"float-left pl-0"}>
-                <CInput placeholder="검색어 입력" onChange={e => setInputSearchValue(e.target.value) }
+                <CInput placeholder={"검색어 입력"} onChange={e => setInputSearchValue(e.target.value) }
                         onKeyUp={e => { if (e.key === "Enter") clickSearchTree(); }} />
               </CCol>
               <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
