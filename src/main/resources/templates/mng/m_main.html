@@ -163,8 +163,10 @@
           fn_toggleCenterCont();
         });
         $('.center-main-cont').on('click', '.js-panel-collapse', function() {
+          console.log(1234)
           var id = '#'+$(this).attr('data-id');
           if( $(this).hasClass('on') ) {
+            console.log(1);
             $(this).removeClass('on');
             $(id+' .panel-container').removeClass('show');
           } else {
@@ -195,7 +197,6 @@
       var refreshTime = window.setInterval(function() {
          let date = new Date();
          let mins = date.getMinutes();
-         console.log(mins);
          if(mins === 2 || mins === 12 || mins === 22 || mins === 32 || mins === 42 || mins === 52)
           fn_refresh();
       }, 60 * 1000);
@@ -314,7 +315,10 @@
                     $('.center-main-cont .sortable-grid').append($temp.find('.sub-cont').html());
                     if(window.lv1cnt==$('.center-main-cont .panel').length) {
                       $('#center-main-cont').smartPanel({ localStorage: true });
+
+                      $($('.center-main-cont .js-panel-collapse')[0]).addClass("on");
                       $($('.center-main-cont .panel-container')[0]).addClass('show');
+                      $($('.center-main-cont .js-panel-collapse')[1]).addClass("on");
                       $($('.center-main-cont .panel-container')[1]).addClass('show');
                     }
                     window.center_name = 'main';
@@ -357,7 +361,6 @@
 
       function fn_setMainArea(i, id) {
         var panel_id = 'panel-'+i;
-        console.log(panel_id, id);
         $('#'+panel_id+' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
         $('#'+panel_id+' .center-main-area-count-store').text(window.area[window.areaIndex[i]].STORE);
         $('#'+panel_id+' .center-main-area-count-sensor').text(window.area[window.areaIndex[i]].SENSOR);
@@ -423,13 +426,11 @@
         }
         for (var i = 0; i < window.min_category.length; i++) {
           if(j < data.length - 1 && data[j].RCVTIME==window.min_category[i]) {
-              console.log(window.min_category[i]);
               series[1].data.push(data[j++].CNT);
           }
           else if(window.min_category[i] < now_time) series[1].data.push(0);
         }
 
-        // console.log(series[1].data);
         opt.markers = { size: 0, hover: {size: 0} };
         var target_id = target.replace(/ /g,'-');
         if (window['chart-'+target_id]) {

@@ -93,7 +93,10 @@ const AreaMgr = () => {
     setNodeArray(node);
 
     await selectAreaItem(node.key)
-      .then(resp => (resp.data["result"] === "success") ? setAreaContent(resp.data["content"]) : alert("상세 조회에 오류가 발생했습니다."));
+      .then(resp => {
+        (resp.data["result"] === "success") ? setAreaContent(resp.data["content"]) : alert("상세 조회에 오류가 발생했습니다.");
+        console.log(resp.data);
+      });
   };
 
   // 구역 삭제 이벤트

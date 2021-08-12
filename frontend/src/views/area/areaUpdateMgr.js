@@ -114,7 +114,7 @@ const AreaUpdateMgr = props => {
                 </CCol>
                 <CCol md="6">
                   <CLabel htmlFor="upAreaCode">상위구역코드</CLabel>
-                  <input className={"form-control"} readOnly={true} placeholder={""} />
+                  <input className={"form-control"} readOnly={true} placeholder={""}  { ...register("upAreaCode") } />
                 </CCol>
               </CFormGroup>
               <CFormGroup row>
