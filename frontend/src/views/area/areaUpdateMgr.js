@@ -125,8 +125,8 @@ const AreaUpdateMgr = props => {
             <CFormGroup row>
               {inputCmmHtml('areaName', '구역명', "", '구역명을 입력해주세요.', true)}
               <CCol md={"6"}>
-                <CLabel htmlFor="memPwd">구역순번<span className={"required-span"}> *</span></CLabel>
-                <select className={"form-control"}>{
+                <CLabel htmlFor={"areaOrder"}>구역순번<span className={"required-span"}> *</span></CLabel>
+                <select className={"form-control"} id={"areaOrder"} { ...register("areaOrder") }>{
                   Array.from(
                     Array((typeof areaContent === "undefined") ? 0 : areaContent.orderCnt), (e, i) => <option key={i} value={i + 1}>{i + 1}</option>
                   )

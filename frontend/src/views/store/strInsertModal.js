@@ -16,17 +16,17 @@ const StrInsertModal = props => {
   const [onAreaModal, setOnAreaModal] = useState();
   const [initDropZone, setInitDropZone] = useState();
 
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
+  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues } = useForm(
     {
       defaultValues: { useYn: 'Y', strCode: 'FS_STR_0000000000000', strPosLat: null, strPosLon: null }, mode: "all"
     }
   );
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  let inputCmmHtml = (id, txt, checkValid, placeholder, required, keyUp) =>
+  let inputCmmHtml = (id, txt, checkValid, placeholder, required, handle) =>
     <CCol md="6">
       <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
-      <input className={getValidInput(errors[id], getValues(id), checkValid)} id={id} type={"text"} placeholder={placeholder} onKeyUp={keyUp}
+      <input className={getValidInput(errors[id], getValues(id), checkValid)} id={id} type={"text"} placeholder={placeholder} onKeyUp={handle}
              { ...register(id, regOpts[id]) } />
       { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
     </CCol>;
@@ -105,7 +105,7 @@ const StrInsertModal = props => {
           </CModalHeader>
           <CModalBody>
             <CFormGroup row>
-              {inputCmmHtml("strName", "상점명", '', "상점명을 입력해주세요.", true,null)}
+              {inputCmmHtml("strName", "상점명", '', "상점명을 입력해주세요.", true, null)}
               <CCol md={"6"}>
                 <CLabel htmlFor={"areaCode"}>구역선택<span className={"required-span"}> *</span></CLabel>
                 <input className={"form-control"} id={"areaCode"} type={"text"} placeholder={"구역을 선택해주세요."} readOnly={true}

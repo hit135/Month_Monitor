@@ -4,16 +4,9 @@ import { useForm } from "react-hook-form";
 import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch } from "@coreui/react";
 import { DropzoneArea } from 'material-ui-dropzone';
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import { deleteStr, insertStr, updateStr } from "../../agent/store";
+import { deleteStr, updateStr } from "../../agent/store";
 import { getAreaList, getParentKey } from "../../agent/area";
-import {
-  getInputValue,
-  handleValidInputClass,
-  handleChangePhoneNumber,
-  API_ROOT,
-  filePathName,
-  getValidInput
-} from "../../agent/commonIndex";
+import { getInputValue, handleChangePhoneNumber, filePathName, getValidInput } from "../../agent/commonIndex";
 
 const StrUpdateModal = props => {
   let gData = [];
@@ -28,7 +21,7 @@ const StrUpdateModal = props => {
   let delFileList = [];
   let storeFileList = [];
 
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
+  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues } = useForm(
     {
       defaultValues: { useYn: 'Y', strPosLat: null, strPosLon: null }, mode: "all"
     }

@@ -11,9 +11,7 @@ const MemUpdateModal = props => {
   const [onAreaModal, setOnAreaModal] = useState();
   const [appSwitch, setAppSwitch] = useState({ useYn: false, delYn: false, memIsLeave: false, memRcvSms: false });
 
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm(
-    { mode: "all" }
-  );
+  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ mode: "all" });
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, type, placeholder, required, handle) =>

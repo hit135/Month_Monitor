@@ -175,7 +175,7 @@ const SnsrMgr = () => {
       <CCol md={9}>
         <CCard>
           <CCardHeader>
-            <CCol md="12" xl="12" className={"pl-0 pr-0"}>
+            <CCol md={"12"} xl={"12"} className={"pl-0 pr-0"}>
               <div className={"d-flex align-item-center"}>
                 <div className={"mr-auto"}>
                   <h5 className={"mb-0 ml-0"}>센서 목록</h5>
@@ -190,7 +190,7 @@ const SnsrMgr = () => {
               </CCol>
               <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
               <CFormGroup className={"pl-3 pr-3 d-inline-flex mb-0 ct-mt"}>
-                <CLabel htmlFor={"delYn"} className="pr-1">삭제유무</CLabel>
+                <CLabel htmlFor={"delYn"} className={"pr-1"}>삭제유무</CLabel>
                 <CSwitch className={'mx-1'} id={"delYn"} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} onChange={handleClickSearchType} />
               </CFormGroup>
               <button className={"btn btn-custom float-right mt-0"} onClick={e => setInsertModal(true)}>등록</button>

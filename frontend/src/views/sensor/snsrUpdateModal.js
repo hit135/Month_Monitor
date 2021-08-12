@@ -14,7 +14,7 @@ const SnsrUpdateModal = props => {
   const [onAreaModal, setOnAreaModal] = useState();
   const [onStrModal, setOnStrModal] = useState();
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, setFocus, getValues, setError } = useForm(
+  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm(
     {
       defaultValues: {
           sVol: 20, sSce: 240, sOc1V1: 100, sOc1V2: 120, sOc1T1: 60, sOc1T2: 30, sOc2V1: 120, sOc2V2: 130, sOc2T1: 60, sOc2T2: 10
