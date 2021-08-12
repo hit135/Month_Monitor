@@ -15,6 +15,7 @@ const MemUpdateModal = props => {
     { mode: "all" }
   );
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, type, placeholder, required, handle) =>
     <CCol md={"6"}>
       <CLabel htmlFor={id}>{txt}{required && <span className={"required-span"}> *</span>}</CLabel>
@@ -28,6 +29,7 @@ const MemUpdateModal = props => {
       <CLabel htmlFor={id} className={"pr-1"}>{txt}</CLabel>
       <CSwitch className={'mx-1'} id={id} color={color} labelOn={labelOn} labelOff={labelOff} onChange={setUpdSwitchValue} checked={checked} />
     </CFormGroup>;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     appSwitch.useYn = (userContent.useYn === "Y");
@@ -81,7 +83,6 @@ const MemUpdateModal = props => {
           handleInitTable();
         } else {
           alert("회원 삭제에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-          closeModal();
         }
       });
     }
@@ -96,7 +97,6 @@ const MemUpdateModal = props => {
           handleInitTable();
         } else {
           alert("회원 수정에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-          closeModal();
         }
       });
     } else {

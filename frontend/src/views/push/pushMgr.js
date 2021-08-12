@@ -44,7 +44,7 @@ const PushMgr = () => {
     ];
 
     setRepo(item);
-    setPageItem({page: page, sizePerPage: sizePerPage, totalElementsCount: 22});
+    setPageItem({ page: page, sizePerPage: sizePerPage, totalElementsCount: 22 });
 
     /*
     getAreaList(page, sizePerPage).then(function (resp) {

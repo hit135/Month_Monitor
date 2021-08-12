@@ -11,6 +11,7 @@ const AreaUpdateMgr = props => {
 
   const { register, handleSubmit, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm({ mode: "all" });
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, checkValid, placeholder, required) =>
     <CCol md={"6"}>
       <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
@@ -18,6 +19,7 @@ const AreaUpdateMgr = props => {
              { ...register(id, regOpts[id]) } />
       { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
     </CCol>;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     if (nodeLv2Btn) {
