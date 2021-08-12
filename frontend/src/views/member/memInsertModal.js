@@ -12,10 +12,11 @@ const MemInsertModal = props => {
     { defaultValues: { useYn: "Y", memIsLeave: "N", memRcvSms: "Y", delYn: "N", groupUse: "N" }, mode: "all" }
   );
 
-  let switchCommonHtml = (txt, color, labelOn, labelOff, id, defaultChecked) =>
+  let switchCommonHtml = (id, txt, color, labelOn, labelOff, defaultChecked) =>
     <CFormGroup className="pr-3 d-inline-flex">
-      <CLabel htmlFor="useYn" className="pr-1">{txt}</CLabel>
-      <CSwitch className={'mx-1'} color={color} labelOn={labelOn} labelOff={labelOff} id={id} onChange={setSwitchValue} defaultChecked={defaultChecked} />
+      <CLabel htmlFor={id} className="pr-1">{txt}</CLabel>
+      <CSwitch className={'mx-1'} id={id} color={color} labelOn={labelOn} labelOff={labelOff} onChange={setSwitchValue} defaultChecked={defaultChecked}
+               { ...register(id) } />
     </CFormGroup>;
 
   const setSwitchValue = e => setValue(e.target.id, (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value);
@@ -70,7 +71,6 @@ const MemInsertModal = props => {
       }
     , memTel: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message: "전화번호 형식에 맞게 입력해주세요." } }
     , memMobile: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message: "휴대폰번호 형식에 맞게 입력해주세요." } }
-    , memMemo: {}
   };
 
   const onSubmit = (data, e) => insertMem(data).then(resp => {
@@ -90,74 +90,73 @@ const MemInsertModal = props => {
   };
 
   return (
-    <>
-      <CModal show={modal} onClose={() => closeModal()} color="info" size="lg">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CModalHeader>
-            <CModalTitle style={{ color: "#fff" }}>회원 등록</CModalTitle>
-          </CModalHeader>
-          <CModalBody>
-             <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="userId">아이디<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("userId")} type={"text"} onBlur={e => handleOnBlurUserId(e.target.value)} { ...rest } />
-                { errors.userId && <span className={"invalid-feedback"}>{errors.userId.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="memPwd">비밀번호<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("memPwd")} type={"password"} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"}
-                       { ...register('memPwd', regOpts['memPwd']) } />
-                { errors.memPwd && <span className={"invalid-feedback"}>{errors.memPwd.message}</span> }
-              </CCol>
-            </CFormGroup>
-            <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="memName">사용자 이름<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("memName")} type={"text"} placeholder={"최소 2글자, 최대 50글자"}
-                       { ...register("memName", regOpts['memName']) } />
-                { errors.memName && <span className={"invalid-feedback"}>{errors.memName.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="memEmail">사용자 이메일</CLabel>
-                <input className={handleInputClass("memEmail")} type={"text"} { ...register("memEmail", regOpts['memEmail']) } />
-                { errors.memEmail && <span className={"invalid-feedback"}>{errors.memEmail.message}</span> }
-              </CCol>
-            </CFormGroup>
-            <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="memTel">전화번호</CLabel>
-                <input className={handleInputClass("memTel")} type={"text"} onKeyUp={handleChangePhoneNumber} placeholder={"전화번호를 입력해주세요."}
-                       { ...register("memTel", regOpts['memTel']) } />
-                { errors.memTel && <span className={"invalid-feedback"}>{errors.memTel.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="memMobile">휴대폰번호</CLabel>
-                <input className={handleInputClass("memMobile")} type={"text"} onKeyUp={handleChangePhoneNumber} placeholder={"휴대폰번호를 입력해주세요."}
-                       { ...register("memMobile", regOpts['memMobile']) } />
-                { errors.memMobile && <span className={"invalid-feedback"}>{errors.memMobile.message}</span> }
-              </CCol>
-            </CFormGroup>
-            <CRow className={"pl-3 pr-3"}>
-              {switchCommonHtml('사용유무', 'info', '사용', '미사용', 'useYn', true)}
-              {switchCommonHtml('탈퇴유무', 'danger', '탈퇴', '미탈퇴', 'memIsLeave', false)}
-              {switchCommonHtml('삭제유무', 'danger', '삭제', '미삭제', 'delYn', false)}
-              {switchCommonHtml('SMS수신여부', 'info', '사용', '미사용', 'memRcvSms', true)}
-            </CRow>
-            <CFormGroup row>
-              <CCol md="12">
-                <CLabel htmlFor="memMemo">메모</CLabel>
-                <textarea className={"form-control textarea-height"} name="textarea-input" id="textarea-input" rows="12" placeholder="메모를 입력해주세요."
-                          { ...register("memMemo", regOpts['memMemo']) } />
-              </CCol>
-            </CFormGroup>
-          </CModalBody>
-          <CModalFooter>
-            <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>
-            <CButton color="info" type="submit">등록</CButton>
-          </CModalFooter>
-        </form>
-      </CModal>
-    </>
+    <CModal show={modal} onClose={() => closeModal()} color="info" size="lg">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <CModalHeader>
+          <CModalTitle style={{ color: "#fff" }}>회원 등록</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+           <CFormGroup row>
+            <CCol md="6">
+              <CLabel htmlFor="userId">아이디<span className={"required-span"}> *</span></CLabel>
+              <input className={handleInputClass("userId")} id="userId" type={"text"} placeholder={"아이디를 입력해주세요."}
+                     onBlur={e => handleOnBlurUserId(e.target.value)} { ...rest } />
+              { errors.userId && <span className={"invalid-feedback"}>{errors.userId.message}</span> }
+            </CCol>
+            <CCol md="6">
+              <CLabel htmlFor="memPwd">비밀번호<span className={"required-span"}> *</span></CLabel>
+              <input className={handleInputClass("memPwd")} id="memPwd" type={"password"} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"}
+                     { ...register('memPwd', regOpts['memPwd']) } />
+              { errors.memPwd && <span className={"invalid-feedback"}>{errors.memPwd.message}</span> }
+            </CCol>
+          </CFormGroup>
+          <CFormGroup row>
+            <CCol md="6">
+              <CLabel htmlFor="memName">사용자 이름<span className={"required-span"}> *</span></CLabel>
+              <input className={handleInputClass("memName")} id="memName" type={"text"} placeholder={"최소 2글자, 최대 50글자"}
+                     { ...register("memName", regOpts['memName']) } />
+              { errors.memName && <span className={"invalid-feedback"}>{errors.memName.message}</span> }
+            </CCol>
+            <CCol md="6">
+              <CLabel htmlFor="memEmail">사용자 이메일</CLabel>
+              <input className={handleInputClass("memEmail")} id="memEmail" type={"text"} placeholder={"이메일을 입력해주세요."}
+                     { ...register("memEmail", regOpts['memEmail']) } />
+              { errors.memEmail && <span className={"invalid-feedback"}>{errors.memEmail.message}</span> }
+            </CCol>
+          </CFormGroup>
+          <CFormGroup row>
+            <CCol md="6">
+              <CLabel htmlFor="memTel">전화번호</CLabel>
+              <input className={handleInputClass("memTel")} id="memTel" type={"text"} placeholder={"전화번호를 입력해주세요."}
+                     onKeyUp={handleChangePhoneNumber} { ...register("memTel", regOpts['memTel']) } />
+              { errors.memTel && <span className={"invalid-feedback"}>{errors.memTel.message}</span> }
+            </CCol>
+            <CCol md="6">
+              <CLabel htmlFor="memMobile">휴대폰번호</CLabel>
+              <input className={handleInputClass("memMobile")} id="memMobile" type={"text"} placeholder={"휴대폰번호를 입력해주세요."}
+                     onKeyUp={handleChangePhoneNumber} { ...register("memMobile", regOpts['memMobile']) } />
+              { errors.memMobile && <span className={"invalid-feedback"}>{errors.memMobile.message}</span> }
+            </CCol>
+          </CFormGroup>
+          <CRow className={"pl-3 pr-3"}>
+            {switchCommonHtml('useYn', '사용유무', 'info', '사용', '미사용', true)}
+            {switchCommonHtml('memIsLeave', '탈퇴유무', 'danger', '탈퇴', '미탈퇴', false)}
+            {switchCommonHtml('delYn', '삭제유무', 'danger', '삭제', '미삭제', false)}
+            {switchCommonHtml('memRcvSms', 'SMS수신여부', 'info', '사용', '미사용', true)}
+          </CRow>
+          <CFormGroup row>
+            <CCol md="12">
+              <CLabel htmlFor="memMemo">메모</CLabel>
+              <textarea className={"form-control textarea-height"} id="memMemo" rows="12" placeholder="메모를 입력해주세요." { ...register("memMemo") } />
+            </CCol>
+          </CFormGroup>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>
+          <CButton color="info" type="submit">등록</CButton>
+        </CModalFooter>
+      </form>
+    </CModal>
   );
 };
 
