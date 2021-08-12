@@ -1,10 +1,10 @@
 import React, { lazy, useEffect, useState } from 'react'
 import PageTableWidget from "../../widget/pageTableWidget";
 import { CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSelect, CSwitch } from "@coreui/react";
-import { getStr, getStrList } from "../../agent/store";
+
 import StrInsertModal from "./strInsertModal";
-import { getMem } from "../../agent/member";
 import StrUpdateModal from "./strUpdateModal";
+import { getStr, getStrList } from "../../agent/store";
 import { getInsprAreaList } from "../../agent/inspection";
 import { numCommaFormat } from "../../agent/commonIndex";
 
@@ -31,8 +31,13 @@ const StrMgr = props => {
   const [searchItem, setSearchItem] = useState({ searchWrd : "", areaCode : "", useYn : "Y" });
   const [strContent, setStrContent] = useState({});
   const [fileContent, setFileContent] = useState();
-  const [actionModal, setActionModal] = useState(false)             // Modal hook
-  const [modifyModal, setModifyModal] = useState(false)             // Modal hook
+  const [actionModal, setActionModal] = useState(false);            // Modal hook
+  const [modifyModal, setModifyModal] = useState(false);            // Modal hook
+
+  useEffect(() => {
+    handleInitTable();
+    handleInitListStrArea();
+  }, []);
 
   // 초기 테이블 셋팅
   const handleInitTable = () => getStrList(pageItem.page, pageItem.sizePerPage, searchItem).then(resp => {
@@ -40,16 +45,27 @@ const StrMgr = props => {
     setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
   });
 
-  useEffect(() => {
-    handleInitTable();
-    handleInitListStrArea();
-  }, []);
+  const handleInitListStrArea = () => getInsprAreaList().then(resp => {
+    if (resp.data['result']) {
+      let html = '';
+
+      for (let item of resp.data['resultList'])
+        html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
+
+      document.getElementById("areaCode").innerHTML += html;
+    }
+  });
 
   // 페이징 클릭 시
   const handleTableChange = (pageNation, param) => {
     pageItem.page = param.page;
     pageItem.sizePerPage = param.sizePerPage;
+    handleInitTable();
+  };
 
+  const handleChangeSearchType = e => {
+    const value = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
+    searchItem[e.target.id] = value;
     handleInitTable();
   };
 
@@ -70,23 +86,6 @@ const StrMgr = props => {
         alert("통신에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
       }
     })
-  };
-
-  const handleInitListStrArea = () => getInsprAreaList().then(resp => {
-    if (resp.data['result']) {
-      let html = '';
-
-      for (let item of resp.data['resultList'])
-        html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
-
-      document.getElementById("areaCode").innerHTML += html;
-    }
-  });
-
-  const handleChangeSearchType = e => {
-    const value = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
-    searchItem[e.target.id] = value;
-    handleInitTable();
   };
 
   return (
@@ -117,7 +116,8 @@ const StrMgr = props => {
                   </CCol>
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt pl-3">
                     <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-                    <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={handleChangeSearchType}  defaultChecked />
+                    <CSwitch className={'mx-1'} id={"useYn"} color={'info'} labelOn={'사용'} labelOff={'미사용'} onChange={handleChangeSearchType}
+                             defaultChecked />
                   </CFormGroup>
                   <button className={"btn btn-custom float-right mt-0"} onClick={e => setActionModal(true)}>등록</button>
                 </CCol>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch } from "@coreui/react";
 import PageTableWidget from "../../widget/pageTableWidget";
 import MemInsertModal from "../member/memInsertModal";
-import { getMem, getMemList } from "../../agent/member";
 import MemUpdateModal from "./memUpdateModal";
+import { getMem, getMemList } from "../../agent/member";
 import { numCommaFormat } from "../../agent/commonIndex";
 
 const authStyleFormatter = cell => {
@@ -17,7 +17,7 @@ const authStyleFormatter = cell => {
     default: cellStr = "";
   }
 
-  return (<h5 className="mr-0 mb-0"><CBadge color="primary">{cellStr}</CBadge></h5>);
+  return <h5 className="mr-0 mb-0"><CBadge color="primary">{cellStr}</CBadge></h5>;
 };
 
 const memUseStyleFormatter = cell =>
@@ -117,23 +117,26 @@ const MemMgr = () => {
                   <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt pl-3">
                     <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
-                    <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={handleClickSearchType} defaultChecked/>
+                    <CSwitch className={'mx-1'} id={"useYn"} color={'info'} labelOn={'사용'} labelOff={'미사용'} onChange={handleClickSearchType}
+                             defaultChecked />
                   </CFormGroup>
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt">
                     <CLabel htmlFor="memIsLeave" className="pr-1">탈퇴유무</CLabel>
-                    <CSwitch className={'mx-1'} color={'danger'} labelOn={'탈퇴'} labelOff={'미탈퇴'} onChange={handleClickSearchType} id={"leaveYn"} />
+                    <CSwitch className={'mx-1'} id={"leaveYn"} color={'danger'} labelOn={'탈퇴'} labelOff={'미탈퇴'} onChange={handleClickSearchType} />
                   </CFormGroup>
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt">
                     <CLabel htmlFor="exampleInputName2" className="pr-1">삭제유무</CLabel>
-                    <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} onChange={handleClickSearchType} id={"delYn"} />
+                    <CSwitch className={'mx-1'} id={"delYn"} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} onChange={handleClickSearchType} />
                   </CFormGroup>
                   <CFormGroup className="pr-3 d-inline-flex mb-0 ct-mt">
                     <CLabel htmlFor="exampleInputName2" className="pr-1">SMS수신여부</CLabel>
-                    <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} onChange={handleClickSearchType} id={"smsYn"} defaultChecked />
+                    <CSwitch className={'mx-1'} id={"smsYn"} color={'info'} labelOn={'사용'} labelOff={'미사용'} onChange={handleClickSearchType}
+                             defaultChecked />
                   </CFormGroup>
-                  <button className={"btn btn-custom float-right mt-0"} onClick={(e) => setActionModal(true)}>등록</button>
+                  <button className={"btn btn-custom float-right mt-0"} onClick={e => setActionModal(true)}>등록</button>
                 </CCol>
               </CRow>
+
               <PageTableWidget keyField={"userId"} data={repo} page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
                                onTableChange={handleTableChange} viewColumns={columns} rowEvents={rowEvents} />
             </CCardBody>
@@ -142,7 +145,7 @@ const MemMgr = () => {
       </CRow>
 
       <MemInsertModal modal={actionModal} setModal={setActionModal} handleInitTable={handleInitTable} />
-      <MemUpdateModal modal={modifyModal} setModal={setModifyModal} userContent={userContent} handleInitTable={handleInitTable}/>
+      <MemUpdateModal modal={modifyModal} setModal={setModifyModal} userContent={userContent} handleInitTable={handleInitTable} />
     </>
   );
 };

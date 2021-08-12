@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { getAreaList, generateList, getParentKey, dataList, insertAreaItem, deleteAreaItem, selectAreaItem, updateAreaItem } from "../../agent/area";
 import 'antd/dist/antd.css';
 import { Tree } from 'antd';
 import { CCard, CCardBody, CCardHeader, CCol, CInput, CRow } from '@coreui/react'
+import { getAreaList, generateList, getParentKey, dataList, insertAreaItem, deleteAreaItem, selectAreaItem, updateAreaItem } from "../../agent/area";
 import AreaUpdateMgr from "./areaUpdateMgr";
 
 let gData = [];
@@ -143,7 +143,7 @@ const AreaMgr = () => {
                   <h5 className={"mb-0 ml-0"}>전체 시장 목록</h5>
                 </div>
                 <div>
-                  <button className={"btn btn-danger float-right mt-0 ml-2"}  disabled={nodeLv2Btn} onClick={e => deleteNode()}>삭제</button>
+                  <button className={"btn btn-danger float-right mt-0 ml-2"} disabled={nodeLv2Btn} onClick={e => deleteNode()}>삭제</button>
                   <button className={"btn btn-custom float-right mt-0 ml-2"} id={"lv2Node"} disabled={nodeLv2Btn}
                           onClick={e => handleClickRegisterItem(e.target.id, nodeUpcode, nodeLevel)}>하위 레벨 등록</button>
                   <button className={"btn btn-custom float-right mt-0"} id={"lv1Node"}

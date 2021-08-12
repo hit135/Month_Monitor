@@ -1,8 +1,8 @@
 import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch } from "@coreui/react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { deleteMem, updateMem } from "../../agent/member";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
+import { deleteMem, updateMem } from "../../agent/member";
 import { convertPhoneNumber } from "../../agent/commonIndex";
 
 const MemUpdateModal = props => {

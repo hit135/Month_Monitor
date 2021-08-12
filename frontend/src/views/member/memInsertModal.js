@@ -98,28 +98,28 @@ const MemInsertModal = props => {
         <CModalBody>
            <CFormGroup row>
             <CCol md="6">
-              <CLabel htmlFor="userId">아이디<span className={"required-span"}> *</span></CLabel>
-              <input className={handleInputClass("userId")} id="userId" type={"text"} placeholder={"아이디를 입력해주세요."}
+              <CLabel htmlFor={"userId"}>아이디<span className={"required-span"}> *</span></CLabel>
+              <input className={handleInputClass("userId")} id={"userId"} type={"text"} placeholder={"아이디를 입력해주세요."}
                      onBlur={e => handleOnBlurUserId(e.target.value)} { ...rest } />
               { errors.userId && <span className={"invalid-feedback"}>{errors.userId.message}</span> }
             </CCol>
             <CCol md="6">
-              <CLabel htmlFor="memPwd">비밀번호<span className={"required-span"}> *</span></CLabel>
-              <input className={handleInputClass("memPwd")} id="memPwd" type={"password"} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"}
+              <CLabel htmlFor={"memPwd"}>비밀번호<span className={"required-span"}> *</span></CLabel>
+              <input className={handleInputClass("memPwd")} id={"memPwd"} type={"password"} placeholder={"특수문자 / 문자 / 숫자 포함 형태의 8~15자리"}
                      { ...register('memPwd', regOpts['memPwd']) } />
               { errors.memPwd && <span className={"invalid-feedback"}>{errors.memPwd.message}</span> }
             </CCol>
           </CFormGroup>
           <CFormGroup row>
             <CCol md="6">
-              <CLabel htmlFor="memName">사용자 이름<span className={"required-span"}> *</span></CLabel>
-              <input className={handleInputClass("memName")} id="memName" type={"text"} placeholder={"최소 2글자, 최대 50글자"}
+              <CLabel htmlFor={"memName"}>사용자 이름<span className={"required-span"}> *</span></CLabel>
+              <input className={handleInputClass("memName")} id={"memName"} type={"text"} placeholder={"최소 2글자, 최대 50글자"}
                      { ...register("memName", regOpts['memName']) } />
               { errors.memName && <span className={"invalid-feedback"}>{errors.memName.message}</span> }
             </CCol>
             <CCol md="6">
-              <CLabel htmlFor="memEmail">사용자 이메일</CLabel>
-              <input className={handleInputClass("memEmail")} id="memEmail" type={"text"} placeholder={"이메일을 입력해주세요."}
+              <CLabel htmlFor={"memEmail"}>사용자 이메일</CLabel>
+              <input className={handleInputClass("memEmail")} id={"memEmail"} type={"text"} placeholder={"이메일을 입력해주세요."}
                      { ...register("memEmail", regOpts['memEmail']) } />
               { errors.memEmail && <span className={"invalid-feedback"}>{errors.memEmail.message}</span> }
             </CCol>
@@ -127,13 +127,13 @@ const MemInsertModal = props => {
           <CFormGroup row>
             <CCol md="6">
               <CLabel htmlFor="memTel">전화번호</CLabel>
-              <input className={handleInputClass("memTel")} id="memTel" type={"text"} placeholder={"전화번호를 입력해주세요."}
+              <input className={handleInputClass("memTel")} id={"memTel"} type={"text"} placeholder={"전화번호를 입력해주세요."}
                      onKeyUp={handleChangePhoneNumber} { ...register("memTel", regOpts['memTel']) } />
               { errors.memTel && <span className={"invalid-feedback"}>{errors.memTel.message}</span> }
             </CCol>
             <CCol md="6">
               <CLabel htmlFor="memMobile">휴대폰번호</CLabel>
-              <input className={handleInputClass("memMobile")} id="memMobile" type={"text"} placeholder={"휴대폰번호를 입력해주세요."}
+              <input className={handleInputClass("memMobile")} id={"memMobile"} type={"text"} placeholder={"휴대폰번호를 입력해주세요."}
                      onKeyUp={handleChangePhoneNumber} { ...register("memMobile", regOpts['memMobile']) } />
               { errors.memMobile && <span className={"invalid-feedback"}>{errors.memMobile.message}</span> }
             </CCol>
@@ -146,8 +146,8 @@ const MemInsertModal = props => {
           </CRow>
           <CFormGroup row>
             <CCol md="12">
-              <CLabel htmlFor="memMemo">메모</CLabel>
-              <textarea className={"form-control textarea-height"} id="memMemo" rows="12" placeholder="메모를 입력해주세요." { ...register("memMemo") } />
+              <CLabel htmlFor={"memMemo"}>메모</CLabel>
+              <textarea className={"form-control textarea-height"} id={"memMemo"} rows="12" placeholder="메모를 입력해주세요." { ...register("memMemo") } />
             </CCol>
           </CFormGroup>
         </CModalBody>
