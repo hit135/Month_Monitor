@@ -4,6 +4,9 @@ export const API_ROOT = 'http://localhost:8081/api';    // 로컬
 // export const filePathName = "http://localhost:8081/localImgstore/";
 export const filePathName = "http://1.223.40.19:30081/imgstore/";
 
+export const numCommaFormat = value =>
+  (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
+
 export const convertPhoneNumber = str => {
   str = str.replace(/[^0-9]/g, '');
 
@@ -19,5 +22,18 @@ export const convertPhoneNumber = str => {
   return str;
 };
 
-export const numCommaFormat = value =>
-  (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
+export const handleChangePhoneNumber = e => {
+  e = e || window.e;
+  e.target.value = convertPhoneNumber(e.target.value.trim());
+};
+
+export const getInputValue = e => (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
+
+export let getValidInput = (errKey, keyVal, check) =>
+  errKey && "is-invalid form-control" || (!errKey && keyVal !== check) && "form-control is-valid" || (!errKey && keyVal === check) && "form-control";
+
+export let handleValidInputClass = (errors, key) =>
+  (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
+
+export let handleValidInputClassTest = (errors, key, getValues) =>
+  errors[key] && "is-invalid form-control" || (!errors[key] && getValues !== "") && "form-control is-valid" || (!errors[key] && getValues === "") && "form-control"

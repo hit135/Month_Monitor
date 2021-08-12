@@ -8,9 +8,10 @@ import PageTableWidget from "../../widget/pageTableWidget";
 import { getInsprAreaList, getInspectorList } from "../../agent/inspection";
 import InsprInsertModal from "./insprInsertModal";
 import InsprUpdateModal from "./insprUpdateModal";
+import { numCommaFormat } from "../../agent/commonIndex";
 
 const columns = [
-    { dataField: 'rowNo', text: 'NO.', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'right', height: '42px' } }
+    { dataField: 'rowNo', text: 'NO.', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'right', height: '42px' }, formatter: (cell) => numCommaFormat(cell) }
   , { dataField: 'inspId', text: '점검자 ID', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
   , { dataField: 'inspName', text: '점검자 이름', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
   , { dataField: 'inspEmail', text: '점검자 이메일', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left', height: '42px' } }
@@ -86,11 +87,13 @@ const InsprMgr = () => {
 
               <CFormGroup className={"d-flex align-items-center mb-0 pl-4"}>
                 <CLabel htmlFor={"useYn"} className={"mb-0 pr-1"}>사용 여부</CLabel>
-                <CSwitch className={'mx-1'} color={'info'} labelOn={'예'} labelOff={'아니오'} id={"useYn"}  onChange={handleChangeSearchType} defaultChecked/>
+                <CSwitch className={'mx-1'} color={'info'} labelOn={'예'} labelOff={'아니오'} id={"useYn"} onChange={handleChangeSearchType}
+                         defaultChecked />
               </CFormGroup>
               <CFormGroup className={"d-flex align-items-center mb-0 pl-3"}>
                 <CLabel htmlFor={"alarmUse"} className={"mb-0 pr-1"}>알림 여부</CLabel>
-                <CSwitch className={'mx-1'} color={'info'} labelOn={'예'} labelOff={'아니오'} id={"alarmUse"} onChange={handleChangeSearchType} defaultChecked/>
+                <CSwitch className={'mx-1'} color={'info'} labelOn={'예'} labelOff={'아니오'} id={"alarmUse"} onChange={handleChangeSearchType}
+                         defaultChecked />
               </CFormGroup>
               <CFormGroup className={"d-flex align-items-center mb-0 pl-3"}>
                 <CLabel htmlFor={"loginLock"} className={"mb-0 pr-1"}>로그인 제한 여부</CLabel>
