@@ -3,7 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { insertMem } from "../../agent/member";
-import { convertPhoneNumber, API_ROOT } from "../../agent/commonIndex";
+import { handleValidInputClass, handleChangePhoneNumber, API_ROOT } from "../../agent/commonIndex";
 
 const MemInsertModal = props => {
   const { modal, setModal, handleInitTable } = props;
@@ -16,13 +16,13 @@ const MemInsertModal = props => {
     if (id === "userId")
       return <CCol md={"6"}>
               <CLabel htmlFor={id}>{txt}{required && <span className={"required-span"}> *</span>}</CLabel>
-              <input className={handleInputClass(id)} id={id} type={type} placeholder={placeholder} onBlur={handle} { ...rest } />
+              <input className={handleValidInputClass(errors, id)} id={id} type={type} placeholder={placeholder} onBlur={handle} { ...rest } />
               { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
             </CCol>;
 
     return <CCol md={"6"}>
             <CLabel htmlFor={id}>{txt}{required && <span className={"required-span"}> *</span>}</CLabel>
-            <input className={handleInputClass(id)} id={id} type={type} placeholder={placeholder} onKeyUp={handle} {...register(id, regOpts[id])} />
+            <input className={handleValidInputClass(errors, id)} id={id} type={type} placeholder={placeholder} onKeyUp={handle} {...register(id, regOpts[id])} />
             {errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span>}
           </CCol>;
   }
@@ -34,15 +34,10 @@ const MemInsertModal = props => {
                { ...register(id) } />
     </CFormGroup>;
 
-  const setSwitchValue = e => setValue(e.target.id, (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value);
-
-  const handleChangePhoneNumber = e => {
-    e = e || window.e;
-    e.target.value = convertPhoneNumber(e.target.value.trim());
-  };
-
-  let handleInputClass = key =>
-    (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
+  const setSwitchValue = e => {
+    console.log(e);
+    setValue(e.target.id, (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value);
+  }
 
   const { onBlur, ...rest } = register("userId", {
       required: { value: true, message: '아이디를 입력해주세요.' }

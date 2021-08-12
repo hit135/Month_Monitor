@@ -2,6 +2,7 @@ import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHe
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
+import { handleValidInputClass } from "../../agent/commonIndex";
 import { getAreaList, getParentKey } from "../../agent/area";
 import { insertSnsr } from "../../agent/sensor";
 import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
@@ -25,21 +26,21 @@ const SnsrInsertModal = props => {
   let inputTextCmmHtml = (id, txt, placeholder, required=false) =>
     <CCol md="6">
       <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
-      <input className={handleInputClass(id)} id={id} type={"text"} placeholder={placeholder} { ...register(id, regOpts[id]) } />
+      <input className={handleValidInputClass(errors, id)} id={id} type={"text"} placeholder={placeholder} { ...register(id, regOpts[id]) } />
       { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
     </CCol>;
 
   let inputReadOnlyCmmHtml = (id, txt, placeholder, onclick) =>
     <CCol md="6">
       <CLabel htmlFor={id} className={"mb-0"}>{txt}</CLabel>
-      <input className={handleInputClass(id)} type={"text"} placeholder={placeholder} readOnly={true}
+      <input className={handleValidInputClass(errors, id)} type={"text"} placeholder={placeholder} readOnly={true}
              onClick={onclick} />
     </CCol>
 
   let inputNumberCmmHtml = (key, txt, initValue=0) =>
     <CCol md="6">
       <CLabel htmlFor={key} className={"mb-0"}>{txt}</CLabel>
-      <input className={handleInputClass(key)} type={"number"} value={initValue} { ...register(key, regOpts[key]) } />
+      <input className={handleValidInputClass(errors, key)} type={"number"} value={initValue} { ...register(key, regOpts[key]) } />
       { errors[key] && <span className={"invalid-feedback"}>{errors[key].message}</span> }
     </CCol>;
 
@@ -49,7 +50,7 @@ const SnsrInsertModal = props => {
         <CLabel htmlFor={key} className={"label-text"}>{txt}</CLabel>
       </CCol>
       <CCol xs="6" md="3">
-        <input className={handleInputClass(key)} type={"number"} value={initValue} { ...register(key, regOpts[key]) } />
+        <input className={handleValidInputClass(errors, key)} type={"number"} value={initValue} { ...register(key, regOpts[key]) } />
         { errors[key] && <span className={"invalid-feedback"}>{errors[key].message}</span> }
       </CCol>
     </>;
@@ -71,9 +72,6 @@ const SnsrInsertModal = props => {
   };
 
   const clickStrRow = e => setValue("strCode", e.strCode);
-
-  let handleInputClass = key =>
-    (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
 
   const regOpts = {
       snsrId: { required: { value: true, message: '센서아이디를 입력해주세요.' } }
@@ -117,7 +115,6 @@ const SnsrInsertModal = props => {
       alert("중복되는 센서아이디가 존재합니다. 확인 후 다시 시도해주세요.");
     } else {
       alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-      closeModal();
     }
   });
 

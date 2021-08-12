@@ -2,7 +2,7 @@ import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CM
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { DropzoneArea } from 'material-ui-dropzone';
-import { convertPhoneNumber, API_ROOT, filePathName } from "../../agent/commonIndex";
+import { handleValidInputClass, handleChangePhoneNumber, API_ROOT, filePathName } from "../../agent/commonIndex";
 import { deleteStr, insertStr, updateStr } from "../../agent/store";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
 import { getAreaList, getParentKey } from "../../agent/area";
@@ -81,14 +81,6 @@ const StrUpdateModal = props => {
 
   const setSwitchValue = e => setValue(e.target.id, (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value);
 
-  const handleChangePhoneNumber = e => {
-    e = e || window.e;
-    e.target.value = convertPhoneNumber(e.target.value.trim()) ;
-  };
-
-  let handleInputClass = key =>
-    (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
-
   const regOpts = {
       strName: {
           required: { value: true, message: '상점명을 입력해주세요.' }
@@ -159,69 +151,69 @@ const StrUpdateModal = props => {
 
   return (
     <>
-      <CModal show={modal} onClose={() => closeModal()} color="info" size="lg">
+      <CModal show={modal} onClose={closeModal} color={"info"} size={"lg"}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CModalHeader>
             <CModalTitle style={{ color: "#fff" }}>상점 수정</CModalTitle>
           </CModalHeader>
           <CModalBody>
             <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="strCode">상점코드<span className={"required-span"}> *</span></CLabel>
+              <CCol md={"6"}>
+                <CLabel htmlFor={"strCode"}>상점코드<span className={"required-span"}> *</span></CLabel>
                 <input className={"form-control"} type={"text"} readOnly={true} />
               </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="strName">상점명<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("strName")} type={"text"} placeholder={"상점명을 입력해주세요."}
+              <CCol md={"6"}>
+                <CLabel htmlFor={"strName"}>상점명<span className={"required-span"}> *</span></CLabel>
+                <input className={handleValidInputClass(errors, "strName")} type={"text"} placeholder={"상점명을 입력해주세요."}
                        { ...register("strName", regOpts["strName"]) } />
                 { errors.strName && <span className={"invalid-feedback"}>{errors.strName.message}</span> }
               </CCol>
             </CFormGroup>
             <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="areaCode">구역선택<span className={"required-span"}> *</span></CLabel>
+              <CCol md={"6"}>
+                <CLabel htmlFor={"areaCode"}>구역선택<span className={"required-span"}> *</span></CLabel>
                 <input className={"form-control"} type={"text"} placeholder={"구역을 선택해주세요."}
                        onClick={e => setOnAreaModal(true)} readOnly={true} />
               </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="strAddr">주소</CLabel>
-                <input className={handleInputClass("strAddr")} type={"text"} placeholder={"주소를 입력해주세요."}
+              <CCol md={"6"}>
+                <CLabel htmlFor={"strAddr"}>주소</CLabel>
+                <input className={handleValidInputClass(errors, "strAddr")} type={"text"} placeholder={"주소를 입력해주세요."}
                        { ...register("strAddr", regOpts["strAddr"] )} />
                 { errors.strAddr && <span className={"invalid-feedback"}>{errors.strAddr.message}</span> }
               </CCol>
             </CFormGroup>
             <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="strTel">전화번호</CLabel>
-                <input className={handleInputClass("strTel")} type={"text"} onKeyUp={handleChangePhoneNumber} placeholder={"전화번호를 입력해주세요."}
+              <CCol md={"6"}>
+                <CLabel htmlFor={"strTel"}>전화번호</CLabel>
+                <input className={handleValidInputClass(errors, "strTel")} type={"text"} onKeyUp={handleChangePhoneNumber} placeholder={"전화번호를 입력해주세요."}
                        { ...register("strTel",  regOpts["strTel"]) } />
                 { errors.strTel && <span className={"invalid-feedback"}>{errors.strTel.message}</span> }
               </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="strOwnTel">휴대폰번호</CLabel>
-                <input className={handleInputClass("strOwnTel")} type={"text"} onKeyUp={handleChangePhoneNumber} placeholder={"휴대폰번호를 입력해주세요."}
+              <CCol md={"6"}>
+                <CLabel htmlFor={"strOwnTel"}>휴대폰번호</CLabel>
+                <input className={handleValidInputClass(errors, "strOwnTel")} type={"text"} onKeyUp={handleChangePhoneNumber} placeholder={"휴대폰번호를 입력해주세요."}
                        { ...register("strOwnTel", regOpts["strOwnTel"]) } />
                 { errors.strOwnTel && <span className={"invalid-feedback"}>{errors.strOwnTel.message}</span> }
               </CCol>
             </CFormGroup>
             <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="strPosLat">구역위도</CLabel>
-                <input className={handleInputClass("strPosLat")} type={"text"} placeholder={"구역 위도를 입력해주세요."}
+              <CCol md={"6"}>
+                <CLabel htmlFor={"strPosLat"}>구역위도</CLabel>
+                <input className={handleValidInputClass(errors, "strPosLat")} type={"text"} placeholder={"구역 위도를 입력해주세요."}
                        { ...register("strPosLat", regOpts["strPosLat"]) } />
                 { errors.strPosLat && <span className={"invalid-feedback"}>{errors.strPosLat.message}</span> }
               </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="strPosLon">구역경도</CLabel>
-                <input className={handleInputClass("strPosLon")} type={"text"} placeholder={"구역 경도를 입력해주세요."}
+              <CCol md={"6"}>
+                <CLabel htmlFor={"strPosLon"}>구역경도</CLabel>
+                <input className={handleValidInputClass(errors, "strPosLon")} type={"text"} placeholder={"구역 경도를 입력해주세요."}
                        { ...register("strPosLon", regOpts["strPosLon"]) } />
                 { errors.strPosLon && <span className={"invalid-feedback"}>{errors.strPosLon.message}</span> }
               </CCol>
             </CFormGroup>
-            <CCol md="6">
+            <CCol md={"6"}>
               <CRow className={"pl-3 pr-3"} style={{ marginTop : '2.3rem' }}>
-                <CFormGroup className="pr-3 d-inline-flex">
-                  <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
+                <CFormGroup className={"pr-3 d-inline-flex"}>
+                  <CLabel htmlFor={"useYn"} className={"pr-1"}>사용유무</CLabel>
                   <CSwitch className={'mx-1'} color={'info'} labelOn={'사용'} labelOff={'미사용'} id={"useYn"} onChange={setSwitchValue} defaultChecked />
                 </CFormGroup>
               </CRow>
@@ -231,11 +223,11 @@ const StrUpdateModal = props => {
           <CModalFooter style={{ display: "block" }}>
             <div className={'d-flex'}>
               <div className={"mr-auto"}>
-                <CButton color="danger" className={"mr-auto"} onClick={() => handleClickDeleteStore()}>삭제</CButton>
+                <CButton color={"danger"} className={"mr-auto"} onClick={handleClickDeleteStore}>삭제</CButton>
               </div>
               <div>
-                <CButton className={"mr-2"} color="secondary" onClick={() => closeModal()}>취소</CButton>
-                <CButton color="info" type="submit">수정</CButton>
+                <CButton className={"mr-2"} color={"secondary"} onClick={closeModal}>취소</CButton>
+                <CButton color={"info"} type={"submit"}>수정</CButton>
               </div>
             </div>
           </CModalFooter>

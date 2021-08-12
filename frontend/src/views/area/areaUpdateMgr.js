@@ -2,7 +2,7 @@ import { CCard, CCardBody, CCardHeader, CCol, CLabel, CFormGroup, CButton, CSwit
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { API_ROOT } from "../../agent/commonIndex";
+import { handleValidInputClass, API_ROOT } from "../../agent/commonIndex";
 
 const AreaUpdateMgr = props => {
   let { areaContent, nodeLv2Btn, handleClickUpdateItem } = props;
@@ -39,9 +39,6 @@ const AreaUpdateMgr = props => {
     setAppSwitch(data => ({ ...data, [e.target.id]: (value === "Y") }));
     setValue(e.target.id, value);
   };
-
-  let handleInputClass = key =>
-    (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
 
   const handleOnBlurAreaCode = e => {
     if (!errors.areaCode && areaContent.areaCode !== e.target.value) {
@@ -108,7 +105,7 @@ const AreaUpdateMgr = props => {
               <CFormGroup row>
                 <CCol md="6">
                   <CLabel htmlFor={"areaCode"}>구역코드<span className={"required-span"}> *</span></CLabel>
-                  <input className={handleInputClass("areaCode")} id={"areaCode"} type={"text"} placeholder={"AREA_000000"}
+                  <input className={handleValidInputClass(errors, "areaCode")} id={"areaCode"} type={"text"} placeholder={"AREA_000000"}
                          onBlur={handleOnBlurAreaCode} { ...register("areaCode", regOpts['areaCode']) } />
                   { errors.areaCode && <span className={"invalid-feedback"}>{errors.areaCode.message}</span> }
                 </CCol>
@@ -120,7 +117,7 @@ const AreaUpdateMgr = props => {
               <CFormGroup row>
                 <CCol md="6">
                   <CLabel htmlFor={"areaName"}>구역명<span className={"required-span"}> *</span></CLabel>
-                  <input className={handleInputClass("areaName")} id={"areaName"} type={"text"} placeholder={"구역명을 입력해주세요."}
+                  <input className={handleValidInputClass(errors, "areaName")} id={"areaName"} type={"text"} placeholder={"구역명을 입력해주세요."}
                          { ...register("areaName", regOpts['areaName']) } />
                   { errors.areaName && <span className={"invalid-feedback"}>{errors.areaName.message}</span> }
                 </CCol>
@@ -137,13 +134,13 @@ const AreaUpdateMgr = props => {
               <CFormGroup row>
                 <CCol md="6">
                   <CLabel htmlFor={"areaAddr"}>주소</CLabel>
-                  <input className={handleInputClass("areaAddr")} id={"areaAddr"} type={"text"} placeholder={"주소를 입력해주세요."}
+                  <input className={handleValidInputClass(errors, "areaAddr")} id={"areaAddr"} type={"text"} placeholder={"주소를 입력해주세요."}
                          { ...register("areaAddr", regOpts['areaAddr']) }  />
                   { errors.areaAddr && <span className={"invalid-feedback"}>{errors.areaAddr.message}</span> }
                 </CCol>
                 <CCol md="6">
                   <CLabel htmlFor={"areaManager"}>구역담당자</CLabel>
-                  <input className={handleInputClass("areaManager")} id={"areaManager"} type={"text"} placeholder={"구역담당자를 입력해주세요."}
+                  <input className={handleValidInputClass(errors, "areaManager")} id={"areaManager"} type={"text"} placeholder={"구역담당자를 입력해주세요."}
                          { ...register("areaManager", regOpts['areaManager']) } />
                   { errors.areaManager && <span className={"invalid-feedback"}>{errors.areaManager.message}</span> }
                 </CCol>
@@ -151,13 +148,13 @@ const AreaUpdateMgr = props => {
               <CFormGroup row>
                 <CCol md="6">
                   <CLabel htmlFor={"areaPosLat"}>구역위도</CLabel>
-                  <input className={handleInputClass("areaPosLat")} id={"areaPosLat"} type={"text"} placeholder={"구역 위도를 입력해주세요."}
+                  <input className={handleValidInputClass(errors, "areaPosLat")} id={"areaPosLat"} type={"text"} placeholder={"구역 위도를 입력해주세요."}
                          { ...register("areaPosLat", regOpts['areaPosLat']) } />
                   { errors.areaPosLat && <span className={"invalid-feedback"}>{errors.areaPosLat.message}</span> }
                 </CCol>
                 <CCol md="6">
                   <CLabel htmlFor={"areaPosLon"}>구역경도</CLabel>
-                  <input className={handleInputClass("areaPosLon")} id={"areaPosLon"} type={"text"} placeholder={"구역 경도를 입력해주세요."}
+                  <input className={handleValidInputClass(errors, "areaPosLon")} id={"areaPosLon"} type={"text"} placeholder={"구역 경도를 입력해주세요."}
                          { ...register("areaPosLon", regOpts['areaPosLon']) } />
                   { errors.areaPosLon && <span className={"invalid-feedback"}>{errors.areaPosLon.message}</span> }
                 </CCol>

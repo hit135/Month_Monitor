@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { DropzoneArea } from 'material-ui-dropzone';
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import { convertPhoneNumber } from "../../agent/commonIndex";
+import { handleValidInputClass, handleChangePhoneNumber } from "../../agent/commonIndex";
 import { insertStr } from "../../agent/store";
 import { getAreaList, getParentKey } from "../../agent/area";
 
@@ -41,7 +41,7 @@ const StrInsertModal = props => {
   let inputTextCmmHtml = (id, txt, placeholder, required=false, keyUp) =>
     <CCol md="6">
       <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
-      <input className={handleInputClass(id)} id={id} type={"text"} placeholder={placeholder} onKeyUp={keyUp} { ...register(id, regOpts[id]) } />
+      <input className={handleValidInputClass(errors, id)} id={id} type={"text"} placeholder={placeholder} onKeyUp={keyUp} { ...register(id, regOpts[id]) } />
       { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
     </CCol>;
 
@@ -57,14 +57,6 @@ const StrInsertModal = props => {
   };
 
   const setSwitchValue = e => setValue(e.target.id, (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value);
-
-  const handleChangePhoneNumber = e => {
-    e = e || window.e;
-    e.target.value = convertPhoneNumber(e.target.value.trim()) ;
-  };
-
-  let handleInputClass = key =>
-    (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
 
   const regOpts = {
       strName: {

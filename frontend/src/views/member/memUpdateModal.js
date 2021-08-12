@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
 import { deleteMem, updateMem } from "../../agent/member";
-import { convertPhoneNumber } from "../../agent/commonIndex";
+import { handleValidInputClass, handleChangePhoneNumber } from "../../agent/commonIndex";
 
 const MemUpdateModal = props => {
   const { modal, setModal, userContent, handleInitTable } = props;
@@ -28,20 +28,14 @@ const MemUpdateModal = props => {
   const nodeClick = (e, node) => setValue("memAreaCode", node["key"]);
 
   const setSwitchValue = e => {
+    console.log(e);
+
     const value = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     setAppSwitch(data => ({ ...data, [e.target.id]: (value === "Y") }));
     setValue(e.target.id, value);
 
     console.log("1 : " + e.target.value + ", 2 : " + value);
   };
-
-  const handleChangePhoneNumber = e => {
-    e = e || window.e;
-    e.target.value = convertPhoneNumber(e.target.value.trim());
-  };
-
-  let handleInputClass = key =>
-    (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
 
   const regOpts = {
       memPwd: {
@@ -121,7 +115,7 @@ const MemUpdateModal = props => {
               </CCol>
               <CCol md={"6"}>
                 <CLabel htmlFor={"memPwd"}>비밀번호</CLabel>
-                <input className={handleInputClass("memPwd")} id={"memPwd"} type={"password"} placeholder={"비밀번호 입력 시 변경됩니다."}
+                <input className={handleValidInputClass(errors, "memPwd")} id={"memPwd"} type={"password"} placeholder={"비밀번호 입력 시 변경됩니다."}
                        { ...register('memPwd', regOpts['memPwd']) } />
                 { errors.memPwd && <span className={"invalid-feedback"}>{errors.memPwd.message}</span> }
               </CCol>
@@ -129,13 +123,13 @@ const MemUpdateModal = props => {
             <CFormGroup row>
               <CCol md={"6"}>
                 <CLabel htmlFor={"memName"}>사용자 이름<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("memName")} id={"memName"} type={"text"} placeholder={"최소 2글자, 최대 50글자"}
+                <input className={handleValidInputClass(errors,"memName")} id={"memName"} type={"text"} placeholder={"최소 2글자, 최대 50글자"}
                        { ...register("memName", regOpts['memName']) } />
                 { errors.memName && <span className={"invalid-feedback"}>{errors.memName.message}</span> }
               </CCol>
               <CCol md="6">
                 <CLabel htmlFor={"memEmail"}>사용자 이메일</CLabel>
-                <input className={handleInputClass("memEmail")} id={"memEmail"} type={"text"} placeholder={"이메일을 입력해주세요."}
+                <input className={handleValidInputClass("memEmail")} id={"memEmail"} type={"text"} placeholder={"이메일을 입력해주세요."}
                        { ...register("memEmail", regOpts['memEmail']) } />
                 { errors.memEmail && <span className={"invalid-feedback"}>{errors.memEmail.message}</span> }
               </CCol>
@@ -143,13 +137,13 @@ const MemUpdateModal = props => {
             <CFormGroup row>
               <CCol md={"6"}>
                 <CLabel htmlFor={"memTel"}>전화번호</CLabel>
-                <input className={handleInputClass("memTel")} id={"memTel"} type={"text"} placeholder={"전화번호를 입력해주세요."}
+                <input className={handleValidInputClass(errors,"memTel")} id={"memTel"} type={"text"} placeholder={"전화번호를 입력해주세요."}
                        onKeyUp={handleChangePhoneNumber} { ...register("memTel", regOpts['memTel']) } />
                 { errors.memTel && <span className={"invalid-feedback"}>{errors.memTel.message}</span> }
               </CCol>
               <CCol md={"6"}>
                 <CLabel htmlFor={"memMobile"}>휴대폰번호</CLabel>
-                <input className={handleInputClass("memMobile")} id={"memMobile"} type={"text"} placeholder={"휴대폰번호를 입력해주세요."}
+                <input className={handleValidInputClass(errors,"memMobile")} id={"memMobile"} type={"text"} placeholder={"휴대폰번호를 입력해주세요."}
                        onKeyUp={handleChangePhoneNumber} { ...register("memMobile", regOpts['memMobile']) } />
                 { errors.memMobile && <span className={"invalid-feedback"}>{errors.memMobile.message}</span> }
               </CCol>

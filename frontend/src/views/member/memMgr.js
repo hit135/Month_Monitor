@@ -44,7 +44,7 @@ const columns = [
   , { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: memUseStyleFormatter }
   , { dataField: 'delYn', text: '삭제유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: memDeleteStyleFormatter }
   , { dataField: 'memIsLeave', text: '탈퇴유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: memLeaveStyleFormatter }
-  , { dataField: 'memRsntDate', text: '최근접속일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } },
+  , { dataField: 'memRsntDate', text: '최근접속일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
 ];
 
 const MemMgr = () => {
@@ -84,6 +84,8 @@ const MemMgr = () => {
   };
 
   const handleClickSearchType = e => {
+    console.log(e);
+
     searchItem[e.target.id] = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     handleInitTable();
   };
