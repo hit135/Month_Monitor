@@ -71,6 +71,12 @@ const MemMgr = () => {
     handleInitTable();
   };
 
+  const handleSearchWrd = e => {
+    searchItem.searchWrd = e.target.value;
+    if (e.key === "Enter")
+      handleClickSearchBtn();
+  }
+
   // 검색 버튼 이벤트
   const handleClickSearchBtn = () => {
     pageItem.page = 1;
@@ -108,11 +114,7 @@ const MemMgr = () => {
               <CRow className={"mb-3"}>
                 <CCol md="12" xl="12">
                   <CCol sm="2" className={"float-left pl-0"}>
-                    <CInput placeholder={"검색어 입력"} onKeyUp={e => {
-                      searchItem.searchWrd = e.target.value;
-                      if (e.key === "Enter")
-                        handleClickSearchBtn();
-                    }} />
+                    <CInput placeholder={"검색어 입력"} onKeyUp={handleSearchWrd} />
                   </CCol>
                   <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
                   <CFormGroup className={"pr-3 d-inline-flex mb-0 ct-mt pl-3"}>

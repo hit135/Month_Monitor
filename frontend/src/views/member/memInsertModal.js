@@ -12,12 +12,20 @@ const MemInsertModal = props => {
     { defaultValues: { useYn: "Y", memIsLeave: "N", memRcvSms: "Y", delYn: "N", groupUse: "N" }, mode: "all" }
   );
 
-  let inputTextCmmHtml = (id, txt, type, placeholder, required=false, keyUp) =>
-    <CCol md="6">
-      <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
-      <input className={handleInputClass(id)} id={id} type={type} placeholder={placeholder} onKeyUp={keyUp} { ...register(id, regOpts[id]) } />
-      { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
-    </CCol>;
+  let inputTextCmmHtml = (id, txt, type, placeholder, required=false, handle) => {
+    if (id === "userId")
+      return <CCol md={"6"}>
+              <CLabel htmlFor={id}>{txt}{required && <span className={"required-span"}> *</span>}</CLabel>
+              <input className={handleInputClass(id)} id={id} type={type} placeholder={placeholder} onBlur={handle} { ...rest } />
+              { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
+            </CCol>;
+
+    return <CCol md={"6"}>
+            <CLabel htmlFor={id}>{txt}{required && <span className={"required-span"}> *</span>}</CLabel>
+            <input className={handleInputClass(id)} id={id} type={type} placeholder={placeholder} onKeyUp={handle} {...register(id, regOpts[id])} />
+            {errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span>}
+          </CCol>;
+  }
 
   let switchCmmHtml = (id, txt, color, labelOn, labelOff, defaultChecked) =>
     <CFormGroup className={"pr-3 d-inline-flex"}>
@@ -96,48 +104,45 @@ const MemInsertModal = props => {
   };
 
   return (
-    <CModal show={modal} onClose={closeModal} color={"info"} size={"lg"}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CModalHeader>
-          <CModalTitle style={{ color: "#fff" }}>회원 등록</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-           <CFormGroup row>
-            <CCol md={"6"}>
-              <CLabel htmlFor={"userId"}>아이디<span className={"required-span"}> *</span></CLabel>
-              <input className={handleInputClass("userId")} id={"userId"} type={"text"} placeholder={"아이디를 입력해주세요."}
-                     onBlur={handleOnBlurUserId} { ...rest } />
-              { errors.userId && <span className={"invalid-feedback"}>{errors.userId.message}</span> }
-            </CCol>
-            {inputTextCmmHtml("memPwd", "비밀번호", "password", "특수문자 / 문자 / 숫자 포함 형태의 8~15자리", true, null)}
-          </CFormGroup>
-          <CFormGroup row>
-            {inputTextCmmHtml("memName", "사용자 이름", "text", "최소 2글자, 최대 50글자", true, null)}
-            {inputTextCmmHtml("memEmail", "사용자 이메일", "text", "이메일을 입력해주세요.", false, null)}
-          </CFormGroup>
-          <CFormGroup row>
-            {inputTextCmmHtml("memTel", "전화번호", "text", "전화번호를 입력해주세요.", true, handleChangePhoneNumber)}
-            {inputTextCmmHtml("memMobile", "휴대폰번호", "text", "휴대폰번호를 입력해주세요.", false, handleChangePhoneNumber)}
-          </CFormGroup>
-          <CRow className={"pl-3 pr-3"}>
-            {switchCmmHtml('useYn', '사용유무', 'info', '사용', '미사용', true)}
-            {switchCmmHtml('memIsLeave', '탈퇴유무', 'danger', '탈퇴', '미탈퇴', false)}
-            {switchCmmHtml('delYn', '삭제유무', 'danger', '삭제', '미삭제', false)}
-            {switchCmmHtml('memRcvSms', 'SMS수신여부', 'info', '사용', '미사용', true)}
-          </CRow>
-          <CFormGroup row>
-            <CCol md={"12"}>
-              <CLabel htmlFor={"memMemo"}>메모</CLabel>
-              <textarea className={"form-control textarea-height"} id={"memMemo"} rows={"12"} placeholder={"메모를 입력해주세요."} { ...register("memMemo") } />
-            </CCol>
-          </CFormGroup>
-        </CModalBody>
-        <CModalFooter>
-          <CButton color={"secondary"} onClick={closeModal}>취소</CButton>
-          <CButton color={"info"} type={"submit"}>등록</CButton>
-        </CModalFooter>
-      </form>
-    </CModal>
+    <>
+      <CModal show={modal} onClose={closeModal} color={"info"} size={"lg"}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CModalHeader>
+            <CModalTitle style={{ color: "#fff" }}>회원 등록</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+             <CFormGroup row>
+              {inputTextCmmHtml("userId", "아이디", "text", "아이디를 입력해주세요.", true, handleOnBlurUserId)}
+              {inputTextCmmHtml("memPwd", "비밀번호", "password", "특수문자 / 문자 / 숫자 포함 형태의 8~15자리", true, null)}
+            </CFormGroup>
+            <CFormGroup row>
+              {inputTextCmmHtml("memName", "사용자 이름", "text", "최소 2글자, 최대 50글자", true, null)}
+              {inputTextCmmHtml("memEmail", "사용자 이메일", "text", "이메일을 입력해주세요.", false, null)}
+            </CFormGroup>
+            <CFormGroup row>
+              {inputTextCmmHtml("memTel", "전화번호", "text", "전화번호를 입력해주세요.", true, handleChangePhoneNumber)}
+              {inputTextCmmHtml("memMobile", "휴대폰번호", "text", "휴대폰번호를 입력해주세요.", false, handleChangePhoneNumber)}
+            </CFormGroup>
+            <CRow className={"pl-3 pr-3"}>
+              {switchCmmHtml('useYn', '사용유무', 'info', '사용', '미사용', true)}
+              {switchCmmHtml('memIsLeave', '탈퇴유무', 'danger', '탈퇴', '미탈퇴', false)}
+              {switchCmmHtml('delYn', '삭제유무', 'danger', '삭제', '미삭제', false)}
+              {switchCmmHtml('memRcvSms', 'SMS수신여부', 'info', '사용', '미사용', true)}
+            </CRow>
+            <CFormGroup row>
+              <CCol md={"12"}>
+                <CLabel htmlFor={"memMemo"}>메모</CLabel>
+                <textarea className={"form-control textarea-height"} id={"memMemo"} rows={"12"} placeholder={"메모를 입력해주세요."} { ...register("memMemo") } />
+              </CCol>
+            </CFormGroup>
+          </CModalBody>
+          <CModalFooter>
+            <CButton color={"secondary"} onClick={closeModal}>취소</CButton>
+            <CButton color={"info"} type={"submit"}>등록</CButton>
+          </CModalFooter>
+        </form>
+      </CModal>
+    </>
   );
 };
 

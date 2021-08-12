@@ -28,6 +28,7 @@ const StrUpdateModal = props => {
 
   useEffect(async () => {
     appSwitch.useYn = (strContent.useYn === "Y");
+
     delFileList = [];
     reset(strContent);
   }, [strContent]);
