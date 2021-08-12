@@ -70,7 +70,7 @@ const AreaMgr = () => {
     const index = item.title.indexOf(searchValue);
 
     const title = (index > -1) ?
-      <span>{item.title.substr(0, index)}<span className="site-tree-search-value">{searchValue}</span>{item.title.substr(index + searchValue.length)}</span> :
+      <span>{item.title.substr(0, index)}<span className={"site-tree-search-value"}>{searchValue}</span>{item.title.substr(index + searchValue.length)}</span> :
       <span>{item.title}</span>;
 
     return (item.children) ?
@@ -137,7 +137,7 @@ const AreaMgr = () => {
       <CCol md={5}>
         <CCard>
           <CCardHeader>
-            <CCol md="12" xl="12" className={"pl-0 pr-0"}>
+            <CCol md={"12"} xl={"12"} className={"pl-0 pr-0"}>
               <div className={"d-flex align-item-center"}>
                 <div className={"mr-auto"}>
                   <h5 className={"mb-0 ml-0"}>전체 시장 목록</h5>
@@ -154,7 +154,7 @@ const AreaMgr = () => {
           </CCardHeader>
           <CCardBody className={"pt-3"}>
             <CCol className={"pl-0"}>
-              <CCol sm="4" className={"float-left pl-0"}>
+              <CCol sm={"4"} className={"float-left pl-0"}>
                 <CInput placeholder="검색어 입력" onChange={e => setInputSearchValue(e.target.value) }
                         onKeyUp={e => { if (e.key === "Enter") clickSearchTree(); }} />
               </CCol>

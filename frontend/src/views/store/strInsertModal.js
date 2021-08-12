@@ -11,6 +11,7 @@ const StrInsertModal = props => {
   let gData = [];
 
   const { modal, setModal, handleInitTable } = props;
+
   const [onAreaModal, setOnAreaModal] = useState();
   const [initDropZone, setInitDropZone] = useState();
 
@@ -36,6 +37,13 @@ const StrInsertModal = props => {
         getDropRejectMessage={(file, rejectedFile, maxFileSize) => (file.size > maxFileSize) ? `파일의 사이즈가 너무 큽니다. (10MB)` : "허용되지 않은 파일입니다."}
         onChange={files => setValue("files", files)} />
     );
+
+  let inputTextCmmHtml = (id, txt, placeholder, required=false, keyUp) =>
+    <CCol md="6">
+      <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
+      <input className={handleInputClass(id)} id={id} type={"text"} placeholder={placeholder} onKeyUp={keyUp} { ...register(id, regOpts[id]) } />
+      { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
+    </CCol>;
 
   const initAreaCode = () => setValue("areaCode", "");
 
@@ -83,7 +91,6 @@ const StrInsertModal = props => {
       handleInitTable();
     } else {
       alert("상점 등록에 실패하였습니다. 잠시 후 다시 시도해주세요.");
-      closeModal();
     }
   });
 
@@ -95,36 +102,26 @@ const StrInsertModal = props => {
 
   return (
     <>
-      <CModal show={modal} onClose={() => closeModal()} color="info" size="lg">
+      <CModal show={modal} onClose={closeModal} color={"info"} size={"lg"}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CModalHeader>
             <CModalTitle style={{ color: "#fff" }}>상점 등록</CModalTitle>
           </CModalHeader>
           <CModalBody>
             <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="strName">상점명<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("strName")} id="strName" type={"text"} placeholder={"상점명을 입력해주세요."}
-                       { ...register("strName", regOpts["strName"]) } />
-                { errors.strName && <span className={"invalid-feedback"}>{errors.strName.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="areaCode">구역선택<span className={"required-span"}> *</span></CLabel>
-                <input className={"form-control"} type={"text"} id="areaCode" placeholder={"구역을 선택해주세요."} readOnly={true}
+              {inputTextCmmHtml("strName", "상점명", "상점명을 입력해주세요.", true,null)}
+              <CCol md={"6"}>
+                <CLabel htmlFor={"areaCode"}>구역선택<span className={"required-span"}> *</span></CLabel>
+                <input className={"form-control"} type={"text"} id={"areaCode"} placeholder={"구역을 선택해주세요."} readOnly={true}
                        onClick={e => setOnAreaModal(true)} { ...register("areaCode") } />
               </CCol>
             </CFormGroup>
             <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="strAddr">주소</CLabel>
-                <input className={handleInputClass("strAddr")} id="strAddr" type={"text"} placeholder={"주소를 입력해주세요."}
-                       { ...register("strAddr", regOpts["strAddr"] )} />
-                { errors.strAddr && <span className={"invalid-feedback"}>{errors.strAddr.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CRow className={"pl-3 pr-3"} style={{ marginTop : '2.3rem' }}>
-                  <CFormGroup className="pr-3 d-inline-flex">
-                    <CLabel htmlFor="useYn" className="pr-1">사용유무</CLabel>
+              {inputTextCmmHtml("strAddr", "주소", "주소를 입력하세요.", null)}
+              <CCol md={"6"}>
+                <CRow className={"pl-3 pr-3"} style={{ marginTop: '2.3rem' }}>
+                  <CFormGroup className={"pr-3 d-inline-flex"}>
+                    <CLabel htmlFor={"useYn"} className={"pr-1"}>사용유무</CLabel>
                     <CSwitch className={'mx-1'} id={"useYn"} color={'info'} labelOn={'사용'} labelOff={'미사용'} onChange={setSwitchValue}
                              defaultChecked />
                   </CFormGroup>
@@ -132,38 +129,18 @@ const StrInsertModal = props => {
               </CCol>
             </CFormGroup>
             <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="strTel">전화번호</CLabel>
-                <input className={handleInputClass("strTel")} id="strTel" type={"text"} placeholder={"전화번호를 입력해주세요."}
-                       onKeyUp={handleChangePhoneNumber} { ...register("strTel",  regOpts["strTel"]) } />
-                { errors.strTel && <span className={"invalid-feedback"}>{errors.strTel.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="strOwnTel">휴대폰번호</CLabel>
-                <input className={handleInputClass("strOwnTel")} id="strOwnTel" type={"text"} placeholder={"휴대폰번호를 입력해주세요."}
-                       onKeyUp={handleChangePhoneNumber} { ...register("strOwnTel", regOpts["strOwnTel"]) } />
-                { errors.strOwnTel && <span className={"invalid-feedback"}>{errors.strOwnTel.message}</span> }
-              </CCol>
+              {inputTextCmmHtml("strTel", "전화번호", "전화번호를 입력해주세요.", false, handleChangePhoneNumber)}
+              {inputTextCmmHtml("strOwnTel", "휴대폰번호", "휴대폰번호를 입력해주세요.", false, handleChangePhoneNumber)}
             </CFormGroup>
             <CFormGroup row>
-              <CCol md="6">
-                <CLabel htmlFor="strPosLat">구역위도</CLabel>
-                <input className={handleInputClass("strPosLat")} type={"text"} placeholder={"구역 위도를 입력해주세요."}
-                       { ...register("strPosLat", regOpts["strPosLat"]) } />
-                { errors.strPosLat && <span className={"invalid-feedback"}>{errors.strPosLat.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="strPosLon">구역경도</CLabel>
-                <input className={handleInputClass("strPosLon")} type={"text"} placeholder={"구역 경도를 입력해주세요."}
-                       { ...register("strPosLon", regOpts["strPosLon"]) } />
-                { errors.strPosLon && <span className={"invalid-feedback"}>{errors.strPosLon.message}</span> }
-              </CCol>
+              {inputTextCmmHtml("strPosLat", "구역위도", "구역 위도를 입력해주세요.", false, null)}
+              {inputTextCmmHtml("strPosLon", "구역경도", "구역 경도를 입력해주세요.", false, null)}
             </CFormGroup>
             <CRow id={"dropzone"} className={"pl-2 pr-2 mt-4"}>{initDropZone}</CRow>
           </CModalBody>
           <CModalFooter>
-            <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>
-            <CButton color="info" type="submit">등록</CButton>
+            <CButton color={"secondary"} onClick={closeModal}>취소</CButton>
+            <CButton color={"info"} type={"submit"}>등록</CButton>
           </CModalFooter>
         </form>
       </CModal>

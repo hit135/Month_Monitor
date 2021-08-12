@@ -3,10 +3,10 @@ import { CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, 
 import { Tree } from "antd";
 import { dataList, generateList, getAreaList, getParentKey } from "../../agent/area";
 import PageTableWidget from "../../widget/pageTableWidget";
-import { getSnsr, getSnsrList } from "../../agent/sensor";
-import { numCommaFormat } from "../../agent/commonIndex";
 import SnsrInsertModal from "./snsrInsertModal";
 import SnsrUpdateModal from "./snsrUpdateModal";
+import { getSnsr, getSnsrList } from "../../agent/sensor";
+import { numCommaFormat } from "../../agent/commonIndex";
 
 let gData = [];
 
@@ -55,10 +55,7 @@ const SnsrMgr = () => {
     }
   };
 
-  const filterTreeNode = node => {
-    const title = node.title.props.children;
-    return (title.indexOf(searchValue) !== -1);
-  };
+  const filterTreeNode = node => (node.title.props.children.indexOf(searchValue) !== -1);
 
   useEffect(() => {
     handleInitTree().then(r => {
@@ -87,6 +84,7 @@ const SnsrMgr = () => {
   const nodeClick = async (e, node) => {
     pageItem.page = 1;
     const parentKey = getParentKey(node.key, gData);
+
     searchItem.levelAreaCode = node["key"];
     searchItem.areaCode = (typeof parentKey !== 'undefined') ? parentKey : node["key"];
 
@@ -101,10 +99,8 @@ const SnsrMgr = () => {
       <span>{item.title.substr(0, index)}<span className="site-tree-search-value">{searchValue}</span>{item.title.substr(index + searchValue.length)}</span> :
       <span>{item.title}</span>;
 
-    if (item.children)
-      return { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) };
-
-    return { title, key: item.key };
+    return (item.children) ?
+      { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) } : { title, key: item.key };
   });
 
   // 초기 테이블 셋팅
@@ -145,70 +141,68 @@ const SnsrMgr = () => {
   };
 
   return (
-    <>
-      <CRow>
-        <CCol md={3}>
-          <CCard>
-            <CCardHeader>
-              <CCol md="12" xl="12" className={"pl-0 pr-0"}>
-                <div className={"d-flex align-item-center"}>
-                  <div className={"mr-auto"}>
-                    <h5 className={"mb-0 ml-0"}>전체 시장 목록</h5>
-                  </div>
+    <CRow>
+      <CCol md={3}>
+        <CCard>
+          <CCardHeader>
+            <CCol md="12" xl="12" className={"pl-0 pr-0"}>
+              <div className={"d-flex align-item-center"}>
+                <div className={"mr-auto"}>
+                  <h5 className={"mb-0 ml-0"}>전체 시장 목록</h5>
                 </div>
+              </div>
+            </CCol>
+          </CCardHeader>
+          <CCardBody className={"pt-3"}>
+            <CCol className={"pl-0"}>
+              <CCol sm="8" className={"float-left pl-0"}>
+                <CInput placeholder="검색어 입력" onChange={e => setInputSearchValue(e.target.value)}
+                        onKeyUp={e => { if (e.key === "Enter") clickSearchTree(); }} />
               </CCol>
-            </CCardHeader>
-            <CCardBody className={"pt-3"}>
-              <CCol className={"pl-0"}>
-                <CCol sm="8" className={"float-left pl-0"}>
-                  <CInput placeholder="검색어 입력" onChange={e => setInputSearchValue(e.target.value) }
-                          onKeyUp={e => { if (e.key === "Enter") clickSearchTree(); }} />
-                </CCol>
-                <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
-              </CCol>
-              <CRow className={"mb-3"}></CRow>
-              <Tree showLine={true} onExpand={onExpand} expandedKeys={expandedKeys} autoExpandParent={autoExpandParent}
-                    onClick={nodeClick} treeData={loop(gData)} filterTreeNode={filterTreeNode}/>
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol md={9}>
-          <CCard>
-            <CCardHeader>
-              <CCol md="12" xl="12" className={"pl-0 pr-0"}>
-                <div className={"d-flex align-item-center"}>
-                  <div className={"mr-auto"}>
-                    <h5 className={"mb-0 ml-0"}>센서 목록</h5>
-                  </div>
+              <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
+            </CCol>
+            <CRow className={"mb-3"}></CRow>
+            <Tree showLine={true} onExpand={onExpand} expandedKeys={expandedKeys} autoExpandParent={autoExpandParent}
+                  onClick={nodeClick} treeData={loop(gData)} filterTreeNode={filterTreeNode}/>
+          </CCardBody>
+        </CCard>
+      </CCol>
+      <CCol md={9}>
+        <CCard>
+          <CCardHeader>
+            <CCol md="12" xl="12" className={"pl-0 pr-0"}>
+              <div className={"d-flex align-item-center"}>
+                <div className={"mr-auto"}>
+                  <h5 className={"mb-0 ml-0"}>센서 목록</h5>
                 </div>
+              </div>
+            </CCol>
+          </CCardHeader>
+          <CCardBody className={"pt-3"}>
+            <CCol md="12" xl="12" className={"pl-0 pr-0 mb-2"}>
+              <CCol sm="2" className={"float-left pl-0"}>
+                <CInput placeholder="검색어 입력" onKeyUp={e => {
+                  searchItem.searchWrd = e.target.value;
+                  if (e.key === "Enter")
+                    handleClickSearchBtn();
+                }} />
               </CCol>
-            </CCardHeader>
-            <CCardBody className={"pt-3"}>
-              <CCol md="12" xl="12" className={"pl-0 pr-0 mb-2"}>
-                <CCol sm="2" className={"float-left pl-0"}>
-                  <CInput placeholder="검색어 입력" onKeyUp={e => {
-                    searchItem.searchWrd = e.target.value;
-                    if (e.key === "Enter")
-                      handleClickSearchBtn();
-                  }} />
-                </CCol>
-                <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
-                <CFormGroup className="pl-3 pr-3 d-inline-flex mb-0 ct-mt">
-                  <CLabel htmlFor="delYn" className="pr-1">삭제유무</CLabel>
-                  <CSwitch className={'mx-1'} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} id={"delYn"} onChange={handleClickSearchType} />
-                </CFormGroup>
-                <button className={"btn btn-custom float-right mt-0"} onClick={e => setInsertModal(true)}>등록</button>
-              </CCol>
-              <PageTableWidget keyField={"snsrId"} data={repo} page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
-                               onTableChange={handleTableChange} viewColumns={columns} rowEvents={rowEvents} />
-            </CCardBody>
-          </CCard>
-        </CCol>
+              <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
+              <CFormGroup className="pl-3 pr-3 d-inline-flex mb-0 ct-mt">
+                <CLabel htmlFor={"delYn"} className="pr-1">삭제유무</CLabel>
+                <CSwitch className={'mx-1'} id={"delYn"} color={'danger'} labelOn={'삭제'} labelOff={'미삭제'} onChange={handleClickSearchType} />
+              </CFormGroup>
+              <button className={"btn btn-custom float-right mt-0"} onClick={e => setInsertModal(true)}>등록</button>
+            </CCol>
+            <PageTableWidget keyField={"snsrId"} data={repo} page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
+                             onTableChange={handleTableChange} viewColumns={columns} rowEvents={rowEvents} />
+          </CCardBody>
+        </CCard>
+      </CCol>
 
-        <SnsrInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable} />
-        <SnsrUpdateModal modal={updateModal} setModal={setUpdateModal} snsrContent={snsrContent} handleInitTable={handleInitTable} />
-      </CRow>
-    </>
+      <SnsrInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable} />
+      <SnsrUpdateModal modal={updateModal} setModal={setUpdateModal} snsrContent={snsrContent} handleInitTable={handleInitTable} />
+    </CRow>
   );
 };
 

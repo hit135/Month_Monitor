@@ -43,9 +43,9 @@ const AreaUpdateMgr = props => {
   let handleInputClass = key =>
     (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
 
-  const handleOnBlurAreaCode = areaCode => {
-    if (!errors.areaCode && areaContent.areaCode !== areaCode) {
-      axios.get(`${API_ROOT}/dupAreaChk?areaCode=${areaCode}`).then(resp => {
+  const handleOnBlurAreaCode = e => {
+    if (!errors.areaCode && areaContent.areaCode !== e.target.value) {
+      axios.get(`${API_ROOT}/dupAreaChk?areaCode=${e.target.value}`).then(resp => {
         if (resp.data["result"] !== 0) {
           setValue("areaCode", "");
           setError("areaCode", { type: "dupAreaCode", message: "중복되는 구역코드가 존재합니다. 다른 코드로 등록해주세요." });
@@ -108,7 +108,7 @@ const AreaUpdateMgr = props => {
               <CCol md="6">
                 <CLabel htmlFor={"areaCode"}>구역코드<span className={"required-span"}> *</span></CLabel>
                 <input className={handleInputClass("areaCode")} id={"areaCode"} type={"text"} placeholder={"AREA_000000"}
-                       onBlur={e => handleOnBlurAreaCode(e.target.value)} { ...register("areaCode", regOpts['areaCode']) } />
+                       onBlur={handleOnBlurAreaCode} { ...register("areaCode", regOpts['areaCode']) } />
                 { errors.areaCode && <span className={"invalid-feedback"}>{errors.areaCode.message}</span> }
               </CCol>
               <CCol md="6">
@@ -172,7 +172,7 @@ const AreaUpdateMgr = props => {
             </CRow>
             <div className={'d-flex'}>
               <div className={"ml-auto mt-4"}>
-                <CButton color="info" type="submit" disabled={nodeLv2Btn}>수정</CButton>
+                <CButton color={"info"} type={"submit"} disabled={nodeLv2Btn}>수정</CButton>
               </div>
             </div>
           </form>

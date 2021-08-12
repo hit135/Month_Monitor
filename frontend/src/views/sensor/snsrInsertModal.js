@@ -22,14 +22,28 @@ const SnsrInsertModal = props => {
     }
   );
 
-  let inputSnsrValueCommonHtml = (key, txt, initValue=0) =>
+  let inputTextCmmHtml = (id, txt, placeholder, required=false) =>
+    <CCol md="6">
+      <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
+      <input className={handleInputClass(id)} id={id} type={"text"} placeholder={placeholder} { ...register(id, regOpts[id]) } />
+      { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
+    </CCol>;
+
+  let inputReadOnlyCmmHtml = (id, txt, placeholder, onclick) =>
+    <CCol md="6">
+      <CLabel htmlFor={id} className={"mb-0"}>{txt}</CLabel>
+      <input className={handleInputClass(id)} type={"text"} placeholder={placeholder} readOnly={true}
+             onClick={onclick} />
+    </CCol>
+
+  let inputNumberCmmHtml = (key, txt, initValue=0) =>
     <CCol md="6">
       <CLabel htmlFor={key} className={"mb-0"}>{txt}</CLabel>
       <input className={handleInputClass(key)} type={"number"} value={initValue} { ...register(key, regOpts[key]) } />
       { errors[key] && <span className={"invalid-feedback"}>{errors[key].message}</span> }
     </CCol>;
 
-  let inputSnsrValueCommonHtml2 = (key, txt, initValue=0) =>
+  let inputNumberCmmHtml2 = (key, txt, initValue=0) =>
     <>
       <CCol md="3">
         <CLabel htmlFor={key} className={"label-text"}>{txt}</CLabel>
@@ -114,89 +128,56 @@ const SnsrInsertModal = props => {
 
   return (
     <>
-      <CModal show={modal} onClose={() => closeModal()} color="info">
+      <CModal show={modal} onClose={closeModal} color={"info"}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CModalHeader>
             <CModalTitle style={{ color: "#fff" }}>센서 등록</CModalTitle>
           </CModalHeader>
           <CModalBody>
             <CFormGroup row>
+              {inputTextCmmHtml("snsrId", "센서 아이디", "센서아이디를 입력해주세요.", true)}
+              {inputTextCmmHtml("snsrNick", "센서명", "센서명을 입력해주세요.", true)}
+              {inputReadOnlyCmmHtml("areaCode", "구역선택", "구역을 선택해주세요.", e => setOnAreaModal(true))}
+              {inputReadOnlyCmmHtml("strCode", "상점선택", "상점을 선택해주세요.", e => setOnStrModal(true))}
               <CCol md="6">
-                <CLabel htmlFor="snsrId" className={"mb-0"}>센서 아이디<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("snsrId")} type={"text"} placeholder={"센서아이디를 입력해주세요."}
-                       { ...register("snsrId", regOpts["snsrId"]) } />
-                { errors.snsrId && <span className={"invalid-feedback"}>{errors.snsrId.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="snsrNick" className={"mb-0"}>센서명<span className={"required-span"}> *</span></CLabel>
-                <input className={handleInputClass("snsrNick")} type={"text"} placeholder={"센서명을 입력해주세요."}
-                       { ...register("snsrNick", regOpts["snsrNick"]) } />
-                { errors.snsrNick && <span className={"invalid-feedback"}>{errors.snsrNick.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="areaCode" className={"mb-0"}>구역선택</CLabel>
-                <input className={handleInputClass("areaCode")} type={"text"} placeholder={"구역을 선택해주세요."} readOnly={true}
-                       onClick={e => setOnAreaModal(true)} />
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="strCode"  className={"mb-0"}>상점선택</CLabel>
-                <input className={handleInputClass("strCode")} type={"text"} placeholder={"상점을 선택해주세요."} readOnly={true}
-                       onClick={e => setOnStrModal(true)} />
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="channel" className={"mb-0"}>채널</CLabel>
-                <select className={"form-control"}>
+                <CLabel htmlFor={"channel"} className={"mb-0"}>채널</CLabel>
+                <select className={"form-control"} id={"channel"} { ...register("channel") }>
                   <option key={1} value={1}>1</option>
                   <option key={2} value={2}>2</option>
                   <option key={3} value={3}>3</option>
                   <option key={4} value={4}>4</option>
                 </select>
               </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="snsrAddr" className={"mb-0"}>주소</CLabel>
-                <input className={handleInputClass("snsrAddr")} type={"text"} placeholder={"주소를 입력해주세요."}
-                       { ...register("snsrAddr", regOpts["snsrAddr"]) } />
-                { errors.snsrAddr && <span className={"invalid-feedback"}>{errors.snsrAddr.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="snsrPosLat" className={"mb-0"}>구역위도</CLabel>
-                <input className={handleInputClass("snsrPosLat")} type={"text"} placeholder={"구역 위도를 입력해주세요."}
-                       { ...register("snsrPosLat", regOpts["snsrPosLat"]) } />
-                { errors.snsrPosLat && <span className={"invalid-feedback"}>{errors.snsrPosLat.message}</span> }
-              </CCol>
-              <CCol md="6">
-                <CLabel htmlFor="snsrPosLon" className={"mb-0"}>구역경도</CLabel>
-                <input className={handleInputClass("snsrPosLon")} type={"text"} placeholder={"구역 경도를 입력해주세요."}
-                       { ...register("snsrPosLon", regOpts["snsrPosLat"]) } />
-                { errors.snsrPosLon && <span className={"invalid-feedback"}>{errors.snsrPosLon.message}</span> }
-              </CCol>
+              {inputTextCmmHtml("snsrAddr", "주소", "주소를 입력해주세요.", false)}
+              {inputTextCmmHtml("snsrPosLat", "구역위도", "구역 위도를 입력해주세요.", false)}
+              {inputTextCmmHtml("snsrPosLon", "구역경도", "구역 경도를 입력해주세요.", false)}
             </CFormGroup>
             <CFormGroup row>
-              {inputSnsrValueCommonHtml("sVol", "차단기용량", 20)}
-              {inputSnsrValueCommonHtml("sSec", "전송주기", 240)}
-              {inputSnsrValueCommonHtml("sOc1V1", "1차 전류 경보 임계값#1", 100)}
-              {inputSnsrValueCommonHtml("sOc1V2", "1차 전류 경보 임계값#2", 120)}
-              {inputSnsrValueCommonHtml("sOc1T1", "1차 전류 경보 임계시간#1", 60)}
-              {inputSnsrValueCommonHtml("sOc1T2", "1차 전류 경보 임계시간#2", 30)}
-              {inputSnsrValueCommonHtml("sOc2V1", "2차 전류 경보 임계값#1", 120)}
-              {inputSnsrValueCommonHtml("sOc2V2", "2차 전류 경보 임계값#2", 130)}
-              {inputSnsrValueCommonHtml("sOc2T1", "2차 전류 경보 임계시간#1", 60)}
-              {inputSnsrValueCommonHtml("sOc2T2", "2차 전류 경보 임계시간#2", 10)}
+              {inputNumberCmmHtml("sVol", "차단기용량", 20)}
+              {inputNumberCmmHtml("sSec", "전송주기", 240)}
+              {inputNumberCmmHtml("sOc1V1", "1차 전류 경보 임계값#1", 100)}
+              {inputNumberCmmHtml("sOc1V2", "1차 전류 경보 임계값#2", 120)}
+              {inputNumberCmmHtml("sOc1T1", "1차 전류 경보 임계시간#1", 60)}
+              {inputNumberCmmHtml("sOc1T2", "1차 전류 경보 임계시간#2", 30)}
+              {inputNumberCmmHtml("sOc2V1", "2차 전류 경보 임계값#1", 120)}
+              {inputNumberCmmHtml("sOc2V2", "2차 전류 경보 임계값#2", 130)}
+              {inputNumberCmmHtml("sOc2T1", "2차 전류 경보 임계시간#1", 60)}
+              {inputNumberCmmHtml("sOc2T2", "2차 전류 경보 임계시간#2", 10)}
             </CFormGroup>
             <CFormGroup row>
-              {inputSnsrValueCommonHtml2("sIgo1V", "1차 IGO 임계값", 15)}
-              {inputSnsrValueCommonHtml2("sIgo1T", "1차 IGO 임계시간", 10)}
-              {inputSnsrValueCommonHtml2("sIgo2V", "2차 IGO 임계값", 17)}
-              {inputSnsrValueCommonHtml2("sIgo2T", "2차 IGO 임계시간", 10)}
-              {inputSnsrValueCommonHtml2("sIgr1V", "1차 IGR 임계값", 3)}
-              {inputSnsrValueCommonHtml2("sIgr1T", "1차 IGR 임계시간", 10)}
-              {inputSnsrValueCommonHtml2("sIgr2V", "2차 IGR 임계값", 5)}
-              {inputSnsrValueCommonHtml2("sIgr2T", "2차 IGR 임계시간", 120)}
+              {inputNumberCmmHtml2("sIgo1V", "1차 IGO 임계값", 15)}
+              {inputNumberCmmHtml2("sIgo1T", "1차 IGO 임계시간", 10)}
+              {inputNumberCmmHtml2("sIgo2V", "2차 IGO 임계값", 17)}
+              {inputNumberCmmHtml2("sIgo2T", "2차 IGO 임계시간", 10)}
+              {inputNumberCmmHtml2("sIgr1V", "1차 IGR 임계값", 3)}
+              {inputNumberCmmHtml2("sIgr1T", "1차 IGR 임계시간", 10)}
+              {inputNumberCmmHtml2("sIgr2V", "2차 IGR 임계값", 5)}
+              {inputNumberCmmHtml2("sIgr2T", "2차 IGR 임계시간", 120)}
             </CFormGroup>
           </CModalBody>
           <CModalFooter>
-            <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>
-            <CButton color="info" type="submit">등록</CButton>
+            <CButton color={"secondary"} onClick={closeModal}>취소</CButton>
+            <CButton color={"info"} type={"submit"}>등록</CButton>
           </CModalFooter>
         </form>
       </CModal>
