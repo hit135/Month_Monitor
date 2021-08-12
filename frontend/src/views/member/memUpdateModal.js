@@ -28,8 +28,6 @@ const MemUpdateModal = props => {
   const nodeClick = (e, node) => setValue("memAreaCode", node["key"]);
 
   const setSwitchValue = e => {
-    console.log(e);
-
     const value = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
     setAppSwitch(data => ({ ...data, [e.target.id]: (value === "Y") }));
     setValue(e.target.id, value);
@@ -158,23 +156,19 @@ const MemUpdateModal = props => {
             <CRow className={"pl-3 pr-3 mt-4"}>
               <CFormGroup className={"pr-3 d-inline-flex"}>
                 <CLabel htmlFor={"useYn"} className={"pr-1"}>사용유무</CLabel>
-                <CSwitch className={'mx-1'} id={"useYn"} color={"info"} labelOn={"사용"} labelOff={"미사용"} onChange={setSwitchValue} checked={appSwitch.useYn}
-                         { ...register("useYn") } />
+                <CSwitch className={'mx-1'} id={"useYn"} color={"info"} labelOn={"사용"} labelOff={"미사용"} onChange={setSwitchValue} checked={appSwitch.useYn} />
               </CFormGroup>
               <CFormGroup className={"pr-3 d-inline-flex"}>
                 <CLabel htmlFor={"memIsLeave"} className={"pr-1"}>탈퇴유무</CLabel>
-                <CSwitch className={'mx-1'} id={"memIsLeave"} color={"danger"} labelOn={"탈퇴"} labelOff={"미탈퇴"} onChange={setSwitchValue} checked={appSwitch.memIsLeave}
-                         { ...register("memIsLeave") } />
+                <CSwitch className={'mx-1'} id={"memIsLeave"} color={"danger"} labelOn={"탈퇴"} labelOff={"미탈퇴"} onChange={setSwitchValue} checked={appSwitch.memIsLeave} />
               </CFormGroup>
               <CFormGroup className={"pr-3 d-inline-flex"}>
                 <CLabel htmlFor={"delYn"} className={"pr-1"}>삭제유무</CLabel>
-                <CSwitch className={'mx-1'} id={"delYn"} color={"danger"} labelOn={"삭제"} labelOff={"미삭제"} onChange={setSwitchValue} checked={appSwitch.delYn}
-                         { ...register("delYn") } />
+                <CSwitch className={'mx-1'} id={"delYn"} color={"danger"} labelOn={"삭제"} labelOff={"미삭제"} onChange={setSwitchValue} checked={appSwitch.delYn} />
               </CFormGroup>
               <CFormGroup className={"pr-3 d-inline-flex"}>
                 <CLabel htmlFor={"memRcvSms"} className={"pr-1"}>SMS수신여부</CLabel>
-                <CSwitch className={'mx-1'} id={"memRcvSms"} color={"info"} labelOn={"사용"} labelOff={"미사용"} onChange={setSwitchValue} checked={appSwitch.memRcvSms}
-                         { ...register("memRcvSms") } />
+                <CSwitch className={'mx-1'} id={"memRcvSms"} color={"info"} labelOn={"사용"} labelOff={"미사용"} onChange={setSwitchValue} checked={appSwitch.memRcvSms} />
               </CFormGroup>
             </CRow>
             <CFormGroup row>

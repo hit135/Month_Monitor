@@ -27,5 +27,14 @@ export const handleChangePhoneNumber = e => {
   e.target.value = convertPhoneNumber(e.target.value.trim());
 };
 
+export let handleValidInput = (errors, key, getValues) =>
+  errors[key] && "is-invalid form-control" || (!errors[key] && getValues !== "") && "form-control is-valid" || (!errors[key] && getValues === "") && "form-control"
+
+export let handleValidInputPos = (errors, key, getValues) =>
+  errors[key] && "is-invalid form-control" || (!errors[key] && getValues !== null) && "form-control is-valid" || (!errors[key] && getValues === null) && "form-control"
+
 export let handleValidInputClass = (errors, key) =>
   (Object.keys(errors).length === 0) ? "form-control" : ((typeof errors[key] !== 'undefined') ? "is-invalid form-control" : "is-valid form-control");
+
+export let handleValidInputClassTest = (errors, key, getValues) =>
+  errors[key] && "is-invalid form-control" || (!errors[key] && getValues !== "") && "form-control is-valid" || (!errors[key] && getValues === "") && "form-control"

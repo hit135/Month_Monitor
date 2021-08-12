@@ -30,8 +30,7 @@ const MemInsertModal = props => {
   let switchCmmHtml = (id, txt, color, labelOn, labelOff, defaultChecked) =>
     <CFormGroup className={"pr-3 d-inline-flex"}>
       <CLabel htmlFor={id} className={"pr-1"}>{txt}</CLabel>
-      <CSwitch className={'mx-1'} id={id} color={color} labelOn={labelOn} labelOff={labelOff} onChange={setSwitchValue} defaultChecked={defaultChecked}
-               { ...register(id) } />
+      <CSwitch className={'mx-1'} id={id} color={color} labelOn={labelOn} labelOff={labelOff} onChange={setSwitchValue} defaultChecked={defaultChecked} />
     </CFormGroup>;
 
   const setSwitchValue = e => {

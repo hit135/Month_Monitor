@@ -68,8 +68,6 @@ const SnsrMgr = () => {
   // 초기 테이블 셋팅
   const handleInitTree = async (page = 1, sizePerPage = 10) =>
     await getAreaList(page, sizePerPage).then(resp => {
-      console.log(resp);
-
       if (resp.data["result"] === "success") {
         const data = [{ title : "전체", children: [], key: "all" }];
         // data.push();
