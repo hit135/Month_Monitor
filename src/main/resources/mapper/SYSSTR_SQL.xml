@@ -2,14 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSStrRepo">
+
     <select id="SELECT_CNT_SYS_STR" parameterType="SYSStrDomain" resultType="int">
         SELECT COUNT(*)
           FROM F_STORE FS
                 LEFT OUTER JOIN F_MEMBER FM
                     ON FM.USERID = FS.USERID
          WHERE 1 = 1
-           <if test='areaCode != ""'>AND FS.AREACODE = #{areaCode}</if>
-           <if test='searchWrd != null and searchWrd !=""'>
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND FS.AREACODE = #{areaCode}</if>
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
            AND (
                   FS.STRNAME LIKE CONCAT('%', #{searchWrd}, '%')
                OR FS.STRCODE LIKE CONCAT('%', #{searchWrd}, '%')
@@ -46,8 +47,8 @@
                                     LEFT OUTER JOIN F_MEMBER FM
                                           ON FM.USERID = FS.USERID
                            WHERE 1 = 1
-                              <if test='areaCode != ""'>AND FS.AREACODE = #{areaCode}</if>
-                              <if test='searchWrd != null and searchWrd !=""'>
+                              <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND FS.AREACODE = #{areaCode}</if>
+                              <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
                               AND (
                                      FS.STRNAME LIKE CONCAT('%', #{searchWrd}, '%')
                                   OR FS.STRCODE LIKE CONCAT('%', #{searchWrd}, '%')
@@ -74,9 +75,7 @@
         <selectKey keyProperty="generateKey" resultType="int" order="AFTER">
             SELECT NEXT_ID AS generateKey FROM COMTECOPSEQ WHERE TABLE_NAME = #{keyFied}
         </selectKey>
-        UPDATE COMTECOPSEQ
-           SET NEXT_ID = NEXT_ID + 1
-         WHERE TABLE_NAME = #{keyFied}
+        UPDATE COMTECOPSEQ SET NEXT_ID = NEXT_ID + 1 WHERE TABLE_NAME = #{keyFied}
     </update>
 
     <insert id="INSERT_SYS_STR" parameterType="SYSStrDomain">
@@ -94,7 +93,7 @@
                   , AREACODE
                   , LEVELAREACODE
         ) values (
-                    CONCAT('FS_STR_',LPAD( #{generateKey} ,'13','0'))
+                    CONCAT('FS_STR_', LPAD(#{generateKey} ,'13','0'))
                   , #{strName}
                   , #{strAddr}
                   , #{strOrder}

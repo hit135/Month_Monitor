@@ -48,81 +48,98 @@ public class MMainController {
     }
 
     @RequestMapping(value="/mainArea")
-    public ModelAndView mainArea(HttpServletRequest req) {
+    public ModelAndView mainArea(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_main_area");
-        String panel_index = req.getParameter("panel_index");
-        String areacode = req.getParameter("areacode");
-        mav.addObject("prm_panel_index", panel_index);
-        mav.addObject("prm_areacode", areacode);
+
+        try {
+            String panel_index = req.getParameter("panel_index");
+            String areacode = req.getParameter("areacode");
+            mav.addObject("prm_panel_index", panel_index);
+            mav.addObject("prm_areacode", areacode);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
         return mav;
     }
 
     @RequestMapping(value="/sensorCountAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> sensorCountAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> sensorCountAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             return mainRepo.SELECT_SENSOR_COUNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/areaListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> areaListAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> areaListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             return mainRepo.SELECT_AREA_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/sensorListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> sensorListAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> sensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             return mainRepo.SELECT_SENSOR_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/areaSensorCountAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> areaSensorCountAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> areaSensorCountAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mainRepo.SELECT_AREA_SENSOR_COUNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/areaStoreListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> areaStoreListAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> areaStoreListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mainRepo.SELECT_AREA_STORE_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/areaSensorListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> areaSensorListAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> areaSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
@@ -130,96 +147,111 @@ public class MMainController {
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/storeSearchAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> storeSearchAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> storeSearchAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("search", req.getParameter("search"));
             return mainRepo.SELECT_STORE_SEARCH(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/checkSensorListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> checkSensorListAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> checkSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             return mainRepo.SELECT_CHECK_SENSOR_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/mainAreaDataChartAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaDataChartAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> mainAreaDataChartAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mainRepo.SELECT_MAIN_AREA_DATA_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/mainAreaLogChartAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaLogChartAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> mainAreaLogChartAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mainRepo.SELECT_MAIN_AREA_LOG_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/mainAreaDataChartWeekAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaDataChartWeekAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> mainAreaDataChartWeekAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mainRepo.SELECT_MAIN_AREA_DATA_CHART_WEEK(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/mainAreaLogChartWeekAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaLogChartWeekAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> mainAreaLogChartWeekAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mainRepo.SELECT_MAIN_AREA_LOG_CHART_WEEK(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/mainAreaMapSensorListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaMapSensorListAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> mainAreaMapSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mainRepo.SELECT_MAIN_AREA_MAP_SENSOR_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 

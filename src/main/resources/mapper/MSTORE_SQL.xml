@@ -5,138 +5,144 @@
 
     <select id="SELECT_EVENT_TABLE_INFO" parameterType="map" resultType="map">
         SELECT BACKUPYEAR, MIN(MINDATE) AS MINDATE, MAX(MAXDATE) AS MAXDATE
-        FROM ((SELECT '' AS BACKUPYEAR, DATE_FORMAT(MIN(REGDATE), '%Y-%m-%d') AS MINDATE, DATE_FORMAT(MAX(REGDATE), '%Y-%m-%d') AS MAXDATE FROM F_SENSOR_LOG)
-              UNION
-              (SELECT '_2021' AS BACKUPYEAR, DATE_FORMAT(MIN(REGDATE), '%Y-%m-%d') AS MINDATE, DATE_FORMAT(MAX(REGDATE), '%Y-%m-%d') AS MAXDATE FROM F_SENSOR_LOG_2021)
-              UNION
-              (SELECT '_2020' AS BACKUPYEAR, DATE_FORMAT(MIN(REGDATE), '%Y-%m-%d') AS MINDATE, DATE_FORMAT(MAX(REGDATE), '%Y-%m-%d') AS MAXDATE FROM F_SENSOR_LOG_2020)) A
-        WHERE #{regdt} BETWEEN MINDATE AND MAXDATE
+          FROM (
+                 ( SELECT '' AS BACKUPYEAR, DATE_FORMAT(MIN(REGDATE), '%Y-%m-%d') AS MINDATE, DATE_FORMAT(MAX(REGDATE), '%Y-%m-%d') AS MAXDATE FROM F_SENSOR_LOG )
+                 UNION
+                 ( SELECT '_2021' AS BACKUPYEAR, DATE_FORMAT(MIN(REGDATE), '%Y-%m-%d') AS MINDATE, DATE_FORMAT(MAX(REGDATE), '%Y-%m-%d') AS MAXDATE FROM F_SENSOR_LOG_2021 )
+                 UNION
+                 ( SELECT '_2020' AS BACKUPYEAR, DATE_FORMAT(MIN(REGDATE), '%Y-%m-%d') AS MINDATE, DATE_FORMAT(MAX(REGDATE), '%Y-%m-%d') AS MAXDATE FROM F_SENSOR_LOG_2020 )
+              ) A
+          WHERE #{regdt} BETWEEN MINDATE AND MAXDATE
     </select>
 
     <select id="SELECT_STORE_INFO" parameterType="map" resultType="map">
         <![CDATA[
         SELECT A.AREACODE, A.STRCODE, A.STRNAME, A.STRADDR, A.STRTEL, A.STROWNTEL, A.STRPOSLAT, A.STRPOSLON
-        FROM F_STORE A
-                 LEFT JOIN F_SENSOR_INFO B ON A.AREACODE = B.AREACODE
-                       AND A.STRCODE = B.STRCODE
-        WHERE B.SNSRID = #{snsrid}
+          FROM F_STORE A
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.AREACODE = B.AREACODE
+                    AND A.STRCODE = B.STRCODE
+         WHERE B.SNSRID = #{snsrid}
         ]]>
     </select>
 
     <select id="SELECT_SENSOR_INFO" parameterType="map" resultType="map">
         <![CDATA[
-        SELECT A.AREACODE, A.SNSRID, MAX(B.OCALM+B.IGOALM+B.IGRALM) AS ALMCNT
-        FROM F_SENSOR_INFO A LEFT JOIN F_SENSOR_LOG B ON A.SNSRID=B.SNSRID
-        WHERE A.AREACODE = #{areacode}
-        AND A.STRCODE = #{strcode}
-        GROUP BY A.AREACODE, A.SNSRID
-        ORDER BY 3 DESC, A.SNSRID
+        SELECT A.AREACODE, A.SNSRID, MAX(B.OCALM + B.IGOALM + B.IGRALM) AS ALMCNT
+          FROM F_SENSOR_INFO A
+                LEFT JOIN F_SENSOR_LOG B
+                    ON A.SNSRID = B.SNSRID
+         WHERE A.AREACODE = #{areacode}
+           AND A.STRCODE = #{strcode}
+         GROUP BY A.AREACODE, A.SNSRID
+         ORDER BY 3 DESC, A.SNSRID
         ]]>
     </select>
 
     <select id="SELECT_LIST_STORE_SENSOR" parameterType="map" resultType="map">
-        SELECT C.AREACODE, C.AREANAME,
-               C2.AREACODE, C2.AREANAME,
-               B.STRCODE, B.STRNAME,
-               A.PANELNAME, A.SNSRID,
-               A.SNSRSEQ, A.SNSRNICK,
-               D.STATE, D.DATACNT,
-               A.SVOL,
-               A.SOC1V1, A.SOC1V2,
-               A.SOC1T1, A.SOC1T2,
-               A.SOC2V1, A.SOC2V2,
-               A.SOC2T1, A.SOC2T2,
-               A.SIGO1V, A.SIGO2V,
-               A.SIGO1T, A.SIGO2T,
-               A.SIGR1V, A.SIGR2V,
-               A.SIGR1T, A.SIGR2T
-        FROM F_SENSOR_INFO A
-                 LEFT JOIN F_STORE B
-                           ON A.AREACODE = B.AREACODE
-                               AND A.STRCODE = B.STRCODE
-                 LEFT JOIN F_LEVEL_AREA C
-                           ON B.AREACODE = C.AREACODE
-                 LEFT JOIN F_LEVEL_AREA C2
-                           ON B.LEVELAREACODE = C2.AREACODE
-                 LEFT JOIN (SELECT SNSRID, MAX(DATACNT) AS DATACNT, MAX(STATE) AS STATE
-                            FROM (SELECT SNSRID,
-                                         COUNT(*) AS DATACNT,
-                                         CASE
-                                             WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN '3'
-                                             WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '1') > 0 THEN '2'
-                                             END AS STATE
-                                  FROM F_SENSOR_LOG
-                                  WHERE REGDATE > DATE_ADD(NOW(), INTERVAL -30 MINUTE)
-                                  GROUP BY SNSRID
-                                  UNION
-                                  SELECT SNSRID, COUNT(*) AS DATACNT, CASE WHEN COUNT(*) > 0 THEN '1' END AS STATE
-                                  FROM F_SENSOR_DATA
-                                  WHERE SNSRRCVTIME > DATE_ADD(NOW(), INTERVAL -30 MINUTE)
-                                  GROUP BY SNSRID) A
-                            GROUP BY SNSRID
-                            ORDER BY 2 DESC, SNSRID) D ON A.SNSRID = D.SNSRID
-        WHERE B.STRCODE = #{strcode} AND C.AREACODE = #{areacode}
-        ORDER BY D.STATE DESC, D.DATACNT DESC, A.PANELNAME, B.STRNAME, A.SNSRNICK
+        SELECT C.AREACODE, C.AREANAME
+             , C2.AREACODE, C2.AREANAME
+             , B.STRCODE, B.STRNAME
+             , A.PANELNAME, A.SNSRID
+             , A.SNSRSEQ, A.SNSRNICK
+             , D.STATE, D.DATACNT
+             , A.SVOL
+             , A.SOC1V1, A.SOC1V2, A.SOC1T1, A.SOC1T2, A.SOC2V1, A.SOC2V2, A.SOC2T1, A.SOC2T2
+             , A.SIGO1V, A.SIGO2V, A.SIGO1T, A.SIGO2T, A.SIGR1V, A.SIGR2V, A.SIGR1T, A.SIGR2T
+          FROM F_SENSOR_INFO A
+                LEFT JOIN F_STORE B
+                    ON A.AREACODE = B.AREACODE
+                    AND A.STRCODE = B.STRCODE
+                LEFT JOIN F_LEVEL_AREA C
+                    ON B.AREACODE = C.AREACODE
+                LEFT JOIN F_LEVEL_AREA C2
+                    ON B.LEVELAREACODE = C2.AREACODE
+                LEFT JOIN ( SELECT SNSRID, MAX(DATACNT) AS DATACNT, MAX(STATE) AS STATE
+                              FROM ( SELECT SNSRID
+                                          , COUNT(*) AS DATACNT
+                                          , CASE WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN '3'
+                                                 WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '1') > 0 THEN '2'
+                                            END AS STATE
+                                       FROM F_SENSOR_LOG
+                                      WHERE REGDATE > DATE_ADD(NOW(), INTERVAL -30 MINUTE)
+                                      GROUP BY SNSRID
+                                      UNION
+                                     SELECT SNSRID, COUNT(*) AS DATACNT, CASE WHEN COUNT(*) > 0 THEN '1' END AS STATE
+                                       FROM F_SENSOR_DATA
+                                      WHERE SNSRRCVTIME > DATE_ADD(NOW(), INTERVAL -30 MINUTE)
+                                      GROUP BY SNSRID ) A
+                             GROUP BY SNSRID
+                             ORDER BY 2 DESC, SNSRID ) D
+                            ON A.SNSRID = D.SNSRID
+         WHERE B.STRCODE = #{strcode}
+           AND C.AREACODE = #{areacode}
+         ORDER BY D.STATE DESC, D.DATACNT DESC, A.PANELNAME, B.STRNAME, A.SNSRNICK
     </select>
 
     <select id="SELECT_STORE_SENSOR_DATA" parameterType="map" resultType="map">
-        SELECT
-        <choose>
-            <when test='datatype=="m"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME,'%Y-%m'),'%Y-%m-%d') AS REGDT,</when>
-            <when test='datatype=="d"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME,'%Y-%m-%d'),'%Y-%m-%d') AS REGDT,</when>
-            <when test='datatype=="h"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME,'%Y-%m-%d %H'),'%Y-%m-%d %H') AS REGDT,
-            </when>
-            <otherwise>C.SNSRRCVTIME AS REGDT,</otherwise>
-        </choose>
-        AVG(C.SNSRKWH) AS KWH,
-        AVG(C.SNSRWATT) AS WATT,
-        AVG(C.SNSRVOLT) AS VOLT,
-        AVG(C.SNSRAMPERE) AS AMPERE,
-        AVG(C.SNSRHZ) AS HZ,
-        AVG(C.SNSRPF) AS PF,
-        AVG(C.SNSRIGO) AS IGO,
-        AVG(C.SNSRIGR) AS IGR,
-        AVG(C.SNSRIGC) AS IGC,
-        AVG(C.SNSRREG) AS REG
-        FROM F_SENSOR_INFO A
-        LEFT JOIN F_STORE B ON A.STRCODE = B.STRCODE
-        LEFT JOIN ${tblSensorData} C ON A.SNSRID = C.SNSRID
-        WHERE B.STRCODE = #{strcode}
-        <if test='snsrid!=null and snsrid!=""'>AND A.SNSRID = #{snsrid}</if>
-        <if test='termtype=="m"'>
-            AND C.SNSRRCVTIME BETWEEN STR_TO_DATE(#{regdt}, '%Y-%m-%d')
-            AND DATE_ADD(STR_TO_DATE(#{regdt}, '%Y-%m-%d'), INTERVAL ${dtsize} MONTH)
-        </if>
-        <if test='termtype!="m"'>
-            AND C.SNSRRCVTIME BETWEEN STR_TO_DATE(#{regdt}, '%Y-%m-%d')
-            AND DATE_ADD(STR_TO_DATE(#{regdt}, '%Y-%m-%d'), INTERVAL ${dtsize} DAY)
-        </if>
-        GROUP BY 1
-        ORDER BY 1 ${order}
+        SELECT <choose>
+                   <when test='datatype == "m"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME,'%Y-%m'),'%Y-%m-%d') AS REGDT,</when>
+                   <when test='datatype == "d"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME,'%Y-%m-%d'),'%Y-%m-%d') AS REGDT,</when>
+                   <when test='datatype == "h"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME,'%Y-%m-%d %H'),'%Y-%m-%d %H') AS REGDT,</when>
+                   <otherwise>C.SNSRRCVTIME AS REGDT,</otherwise>
+               </choose>
+               AVG(C.SNSRKWH) AS KWH
+             , AVG(C.SNSRWATT) AS WATT
+             , AVG(C.SNSRVOLT) AS VOLT
+             , AVG(C.SNSRAMPERE) AS AMPERE
+             , AVG(C.SNSRHZ) AS HZ
+             , AVG(C.SNSRPF) AS PF
+             , AVG(C.SNSRIGO) AS IGO
+             , AVG(C.SNSRIGR) AS IGR
+             , AVG(C.SNSRIGC) AS IGC
+             , AVG(C.SNSRREG) AS REG
+          FROM F_SENSOR_INFO A
+                LEFT JOIN F_STORE B
+                    ON A.STRCODE = B.STRCODE
+                LEFT JOIN ${tblSensorData} C
+                    ON A.SNSRID = C.SNSRID
+         WHERE B.STRCODE = #{strcode}
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">AND A.SNSRID = #{snsrid}</if>
+           <if test='termtype == "m"'>
+           AND C.SNSRRCVTIME
+               BETWEEN STR_TO_DATE(#{regdt}, '%Y-%m-%d')
+                   AND DATE_ADD(STR_TO_DATE(#{regdt}, '%Y-%m-%d'), INTERVAL ${dtsize} MONTH)
+           </if>
+           <if test='termtype != "m"'>
+           AND C.SNSRRCVTIME
+               BETWEEN STR_TO_DATE(#{regdt}, '%Y-%m-%d')
+                   AND DATE_ADD(STR_TO_DATE(#{regdt}, '%Y-%m-%d'), INTERVAL ${dtsize} DAY)
+           </if>
+         GROUP BY 1
+         ORDER BY 1 ${order}
     </select>
 
     <select id="SELECT_LIST_SENSOR" parameterType="map" resultType="map">
-        SELECT A.PANELNAME, A.SNSRID, A.SNSRNICK, A.SNSRMGPS, D.DATACNT, B.STRPOSLAT, B.STRPOSLON,
-               CASE WHEN C.STATE IS NOT NULL THEN C.STATE
-                    WHEN C.STATE IS NULL AND D.DATACNT>0 THEN 'NORMAL'
-                    ELSE 'DISCON' END AS STATE
-        FROM F_SENSOR_INFO A
-                 LEFT JOIN F_STORE B ON A.AREACODE = B.AREACODE AND A.STRCODE = B.STRCODE
-                 LEFT JOIN (SELECT SNSRID,
-                                   CASE
-                                       WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN 'WARNING'
-                                       WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '1') > 0 THEN 'CAUTION'
-                                       END AS STATE
-                            FROM F_SENSOR_LOG
-                            WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
-                            GROUP BY SNSRID) C ON A.SNSRID = C.SNSRID
-                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS DATACNT
-                            FROM F_SENSOR_DATA
-                            WHERE SNSRRCVTIME > DATE_ADD(NOW(), INTERVAL -1 HOUR)
-                            GROUP BY SNSRID) D ON A.SNSRID = D.SNSRID
-        WHERE B.STRCODE=#{strcode}
-          AND B.AREACODE=#{areacode}
-        ORDER BY 6 DESC, D.DATACNT DESC, A.PANELNAME, A.SNSRNICK
+        SELECT A.PANELNAME, A.SNSRID, A.SNSRNICK, A.SNSRMGPS, D.DATACNT, B.STRPOSLAT, B.STRPOSLON
+             , CASE WHEN C.STATE IS NOT NULL THEN C.STATE
+                    WHEN C.STATE IS NULL AND D.DATACNT > 0 THEN 'NORMAL'
+                    ELSE 'DISCON'
+               END AS STATE
+          FROM F_SENSOR_INFO A
+                LEFT JOIN F_STORE B
+                    ON A.AREACODE = B.AREACODE
+                    AND A.STRCODE = B.STRCODE
+                LEFT JOIN ( SELECT SNSRID
+                                 , CASE WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN 'WARNING'
+                                        WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '1') > 0 THEN 'CAUTION'
+                                   END AS STATE
+                              FROM F_SENSOR_LOG
+                             WHERE REGDATE > DATE_FORMAT(NOW(), '%Y-%m-%d')
+                             GROUP BY SNSRID ) C
+                    ON A.SNSRID = C.SNSRID
+                LEFT JOIN ( SELECT SNSRID, COUNT(*) AS DATACNT
+                              FROM F_SENSOR_DATA
+                             WHERE SNSRRCVTIME > DATE_ADD(NOW(), INTERVAL -1 HOUR)
+                             GROUP BY SNSRID ) D
+                    ON A.SNSRID = D.SNSRID
+         WHERE B.STRCODE = #{strcode}
+           AND B.AREACODE = #{areacode}
+         ORDER BY 6 DESC, D.DATACNT DESC, A.PANELNAME, A.SNSRNICK
     </select>
 
     <select id="SELECT_STORE_IMG" parameterType="map" resultType="map">
@@ -156,92 +162,91 @@
     </select>
 
     <select id="SELECT_DATA_LOG_LIST" parameterType="map" resultType="map">
-        SELECT A.DSEQ,
-               DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME,
-               DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d') AS REGDATE,
-               A.SNSRID,
-               A.SNSRKWH,
-               A.SNSRVOLT,
-               A.SNSRWATT,
-               A.SNSRAMPERE,
-               A.SNSRHZ,
-               A.SNSRPF,
-               A.SNSRREG,
-               A.SNSRRSSI,
-               A.SNSRIGR,
-               A.SNSRIGO,
-               A.SNSRIGC,
-               B.OCALM,
-               B.IGOALM,
-               B.IGRALM,
-               B.LCAUSE,
-               CASE
+        SELECT A.DSEQ
+             , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+             , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d') AS REGDATE
+             , A.SNSRID
+             , A.SNSRKWH
+             , A.SNSRVOLT
+             , A.SNSRWATT
+             , A.SNSRAMPERE
+             , A.SNSRHZ
+             , A.SNSRPF
+             , A.SNSRREG
+             , A.SNSRRSSI
+             , A.SNSRIGR
+             , A.SNSRIGO
+             , A.SNSRIGC
+             , B.OCALM
+             , B.IGOALM
+             , B.IGRALM
+             , B.LCAUSE
+             , CASE
                    WHEN INSTR(CONCAT(OCALM,IGOALM,IGRALM), '2') > 0 THEN 'DANGER'
                    WHEN INSTR(CONCAT(OCALM,IGOALM,IGRALM), '1') > 0 THEN 'WARN'
-                   END AS STATE,
-               CASE
-                   WHEN OCALM > 0 THEN 'AMPERE'
-                   WHEN IGOALM > 0 THEN 'IGO'
-                   WHEN IGRALM > 0 THEN 'IGR'
-                   END AS ALMTYPE
-        FROM ${tblSensorData} A
-                 LEFT JOIN ${tblSensorLog} B ON A.SNSRID = B.SNSRID
-                           AND <![CDATA[ A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED)-5 AND B.DSEQ+5 ]]>
-                 LEFT JOIN F_SENSOR_INFO C ON A.SNSRID = C.SNSRID
-        WHERE 1=1
-            <if test='regdt != null and regdt != ""'>
-                AND A.SNSRRCVTIME BETWEEN STR_TO_DATE(#{regdt}, '%Y-%m-%d')
-                AND STR_TO_DATE(DATE_ADD(#{regdt}, INTERVAL 1 DAY), '%Y-%m-%d')
-            </if>
-            <if test='regdt == null or regdt == ""'>
-                AND A.SNSRRCVTIME > DATE_FORMAT(NOW(), '%Y-%m-%d')
-            </if>
-          AND C.AREACODE = #{areacode}
-          AND C.STRCODE = #{strcode}
-        ORDER BY A.SNSRRCVTIME DESC
+               END AS STATE
+             , CASE WHEN OCALM > 0 THEN 'AMPERE' WHEN IGOALM > 0 THEN 'IGO' WHEN IGRALM > 0 THEN 'IGR' END AS ALMTYPE
+          FROM ${tblSensorData} A
+                LEFT JOIN ${tblSensorLog} B
+                    ON A.SNSRID = B.SNSRID
+                    AND <![CDATA[ A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED) - 5 AND B.DSEQ + 5 ]]>
+                LEFT JOIN F_SENSOR_INFO C
+                    ON A.SNSRID = C.SNSRID
+         WHERE 1 = 1
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(regdt)">
+           AND A.SNSRRCVTIME BETWEEN STR_TO_DATE(#{regdt}, '%Y-%m-%d')
+           AND STR_TO_DATE(DATE_ADD(#{regdt}, INTERVAL 1 DAY), '%Y-%m-%d')
+           </if>
+           <if test="@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(regdt)">
+           AND A.SNSRRCVTIME > DATE_FORMAT(NOW(), '%Y-%m-%d')
+           </if>
+           AND C.AREACODE = #{areacode}
+           AND C.STRCODE = #{strcode}
+         ORDER BY A.SNSRRCVTIME DESC
     </select>
 
     <select id="SELECT_SENSOR_USEKWH_MONTH" parameterType="map" resultType="map">
-        SELECT MAX(SNSRKWH)-MIN(SNSRKWH) AS USEKWH
-        FROM ${tblSensorData} A
-        WHERE 1=1
-            AND A.SNSRRCVTIME BETWEEN STR_TO_DATE(CONCAT(SUBSTR(#{regdt},1,7),'-01'), '%Y-%m-%d')
-            AND DATE_ADD(STR_TO_DATE(CONCAT(SUBSTR(#{regdt},1,7),'-01'), '%Y-%m-%d'), INTERVAL 1 MONTH)
-        AND SNSRID = #{snsrid}
+        SELECT MAX(SNSRKWH) - MIN(SNSRKWH) AS USEKWH
+          FROM ${tblSensorData} A
+         WHERE 1 = 1
+           AND A.SNSRRCVTIME
+                BETWEEN STR_TO_DATE(CONCAT(SUBSTR(#{regdt}, 1, 7),'-01'), '%Y-%m-%d')
+                    AND DATE_ADD(STR_TO_DATE(CONCAT(SUBSTR(#{regdt}, 1, 7),'-01'), '%Y-%m-%d'), INTERVAL 1 MONTH)
+           AND SNSRID = #{snsrid}
     </select>
 
     <select id="SELECT_LOG_WEEK_STAT" parameterType="map" resultType="map">
         <![CDATA[
-        SELECT A.SDATE,
-               DAYOFWEEK(A.SDATE) AS WEEK,
-               IFNULL(IFNULL(C.DANGER, B.DANGER),0) AS DANGER,
-               IFNULL(IFNULL(C.WARN, B.WARN),0) AS WARN
-        FROM ( SELECT DATE_FORMAT(NOW() - INTERVAL (A.A) DAY, '%Y-%m-%d') AS SDATE
-         FROM (SELECT 0 AS A UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
-               UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
-               UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 ) AS A) A
-        LEFT JOIN
-        (SELECT SDATE,
-                SUM(IGR2ND + IGO2ND + OC2ND)                   AS DANGER,
-                SUM(IGR1ST + IGO1ST + OC1ST)                   AS WARN
-         FROM F_ELEC_SENSOR_STAT
-         WHERE AREACODE = #{areacode} AND STRCODE = #{strcode}
-           AND SDATE > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -13 DAY), '%Y-%m-%d')
-          GROUP BY AREACODE, STRCODE
-        ) B
-        ON A.SDATE = B.SDATE
-        LEFT JOIN
-        (SELECT DATE_FORMAT(A.REGDATE, '%Y-%m-%d')                                        AS SDATE,
-                SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGER,
-                SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARN
-         FROM F_SENSOR_LOG A LEFT JOIN F_SENSOR_INFO B ON A.SNSRID=B.SNSRID
-         WHERE B.AREACODE = #{areacode}
-           AND B.STRCODE = #{strcode}
-           AND A.REGDATE > NOW() - INTERVAL 13 DAY
-         GROUP BY 1) C
-        ON A.SDATE = C.SDATE
+        SELECT A.SDATE
+             , DAYOFWEEK(A.SDATE)                       AS WEEK
+             , IFNULL(IFNULL(C.DANGER, B.DANGER), 0)    AS DANGER
+             , IFNULL(IFNULL(C.WARN, B.WARN), 0)        AS WARN
+          FROM ( SELECT DATE_FORMAT(NOW() - INTERVAL (A.A) DAY, '%Y-%m-%d') AS SDATE
+                   FROM ( SELECT 0 AS A UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                           UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+                           UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 ) AS A ) A
+                            LEFT JOIN ( SELECT SDATE
+                                             , SUM(IGR2ND + IGO2ND + OC2ND) AS DANGER
+                                             , SUM(IGR1ST + IGO1ST + OC1ST) AS WARN
+                                          FROM F_ELEC_SENSOR_STAT
+                                         WHERE AREACODE = #{areacode}
+                                           AND STRCODE = #{strcode}
+                                           AND SDATE > DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -13 DAY), '%Y-%m-%d')
+                                         GROUP BY AREACODE, STRCODE ) B
+                                ON A.SDATE = B.SDATE
+                            LEFT JOIN ( SELECT DATE_FORMAT(A.REGDATE, '%Y-%m-%d')                                                   AS SDATE
+                                             , SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGER
+                                             , SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARN
+                                          FROM F_SENSOR_LOG A
+                                                LEFT JOIN F_SENSOR_INFO B
+                                                    ON A.SNSRID = B.SNSRID
+                                         WHERE B.AREACODE = #{areacode}
+                                           AND B.STRCODE = #{strcode}
+                                           AND A.REGDATE > NOW() - INTERVAL 13 DAY
+                                         GROUP BY 1 ) C
+                                ON A.SDATE = C.SDATE
          ORDER BY A.SDATE ASC
-         ]]>
+        ]]>
     </select>
 
     <insert id="INSERT_SENSOR_CHECK" parameterType="map">
@@ -251,10 +256,10 @@
 
     <update id="UPDATE_SENSOR_CHECK" parameterType="map">
         UPDATE F_SENSOR_CHECK
-        SET PROCDATE  = NOW(),
-            CHECKSTAT = 'END'
-        WHERE SNSRID = #{snsrid}
-          AND CHECKSTAT = 'ING'
+           SET PROCDATE  = NOW()
+             , CHECKSTAT = 'END'
+         WHERE SNSRID = #{snsrid}
+           AND CHECKSTAT = 'ING'
     </update>
 
 </mapper>

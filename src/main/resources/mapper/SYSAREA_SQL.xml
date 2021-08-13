@@ -3,11 +3,12 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSAreaRepo">
     <select id="SELECT_LIST_SYS_AREA" parameterType="SYSAreaDomain" resultType="SYSAreaDomain">
-        SELECT A.AREACODE as 'key'
-             , A.AREACODE as areaCode
-             , A.UPAREACODE as upAreaCode
+        SELECT A.AREACODE AS 'key'
+             , A.AREACODE AS areaCode
+             , A.UPAREACODE AS upAreaCode
              , CONCAT(
-                   A.AREANAME, ' ('
+                   A.AREANAME
+                 , ' ('
                  , IFNULL(
                      CASE WHEN A.AREALEVEL = 1 THEN (SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE)
                           WHEN A.AREALEVEL = 2 THEN (SELECT COUNT(LEVELAREACODE) AS STORECNT FROM F_STORE WHERE A.UPAREACODE = AREACODE AND A.AREACODE = LEVELAREACODE GROUP BY AREACODE)
@@ -15,12 +16,12 @@
                  , 0)
                  , ')'
                ) AS title
-             , A.AREALEVEL as areaLevel
+             , A.AREALEVEL AS areaLevel
              , IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE A.AREACODE = AREACODE GROUP BY AREACODE), 0) AS storeCnt
-         FROM F_LEVEL_AREA A
-        WHERE 1 = 1
+          FROM F_LEVEL_AREA A
+         WHERE 1 = 1
 --           AND USEYN = 'Y'
-     ORDER BY AREALEVEL, AREAORDER
+         ORDER BY AREALEVEL, AREAORDER
     </select>
 
     <insert id="INSERT_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">
@@ -78,28 +79,24 @@
              , FA.GUCODE                                        AS guCode
              , IFNULL((SELECT COUNT(AREACODE) FROM F_LEVEL_AREA B WHERE B.UPAREACODE = FA.UPAREACODE), 0) AS orderCnt
              , FM.USERID as userId
-        FROM F_LEVEL_AREA FA
-        LEFT JOIN F_MEMBER FM ON FA.AREACODE = FM.MEMAREACODE
-        WHERE 1 = 1
-          AND FA.AREACODE = #{areaCode}
+          FROM F_LEVEL_AREA FA
+                LEFT JOIN F_MEMBER FM
+                    ON FA.AREACODE = FM.MEMAREACODE
+         WHERE 1 = 1
+           AND FA.AREACODE = #{areaCode}
     </select>
 
     <delete id="DELETE_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">
-        DELETE FROM F_LEVEL_AREA
-              WHERE AREACODE = #{areaCode}
+        DELETE FROM F_LEVEL_AREA WHERE AREACODE = #{areaCode}
     </delete>
 
     <update id="UPDATE_SYS_AREA_ORDER" parameterType="SYSAreaDomain">
-        UPDATE   F_LEVEL_AREA A
-          JOIN     (SELECT @rank := 0) r
-           SET      A.AREAORDER = @rank:= (@rank+1)
+        UPDATE F_LEVEL_AREA A
+                JOIN (SELECT @rank := 0) r
+           SET A.AREAORDER = @rank:= (@rank+1)
          WHERE A.UPAREACODE = #{upAreaCode}
-        <if test="!areaOrderType">
-            ORDER BY A.AREAORDER, UPDATEDATE DESC
-        </if>
-        <if test="areaOrderType">
-            ORDER BY A.AREAORDER
-        </if>
+         <if test="!areaOrderType">ORDER BY A.AREAORDER, UPDATEDATE DESC</if>
+         <if test="areaOrderType">ORDER BY A.AREAORDER</if>
     </update>
 
 </mapper>

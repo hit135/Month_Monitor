@@ -4,7 +4,7 @@ import kr.fscom.firsens.mng.repository.MStoreRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
+
+import org.thymeleaf.util.StringUtils;
 
 /**
  * 설명
@@ -43,102 +45,128 @@ public class MStoreController {
     }
 
     @RequestMapping(value="/storeInfo")
-    public ModelAndView storeInfo(HttpServletRequest req) {
+    public ModelAndView storeInfo(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_store_info");
-        String areacode = req.getParameter("areacode");
-        String strcode = req.getParameter("strcode");
-        String snsrid = req.getParameter("snsrid");
-        if(StringUtils.isEmpty(strcode)) {
-            String[] code = getAreaStoreCode(snsrid);
-            areacode = code[0];
-            strcode = code[1];
+
+        try {
+            String areacode = req.getParameter("areacode");
+            String strcode = req.getParameter("strcode");
+            String snsrid = req.getParameter("snsrid");
+
+            if (StringUtils.isEmptyOrWhitespace(strcode)) {
+                String[] code = getAreaStoreCode(snsrid);
+                areacode = code[0];
+                strcode = code[1];
+            }
+
+            if (StringUtils.isEmptyOrWhitespace(snsrid))
+                snsrid = getSensorCode(areacode, strcode);
+
+            mav.addObject("prm_areacode", areacode);
+            mav.addObject("prm_strcode", strcode);
+            mav.addObject("prm_snsrid", snsrid);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
         }
-        if(StringUtils.isEmpty(snsrid)) {
-            snsrid = getSensorCode(areacode, strcode);
-        }
-        mav.addObject("prm_areacode", areacode);
-        mav.addObject("prm_strcode", strcode);
-        mav.addObject("prm_snsrid", snsrid);
+
         return mav;
     }
 
     @RequestMapping(value="/storeInfoAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> storeInfoAjax(HttpServletRequest req) {
+    public List<HashMap<String,Object>> storeInfoAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
             return storeRepo.SELECT_STORE_INFO(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/storeLog")
-    public ModelAndView storeLog(HttpServletRequest req) {
+    public ModelAndView storeLog(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_store_log");
-        String areacode = req.getParameter("areacode");
-        String strcode = req.getParameter("strcode");
-        String snsrid = req.getParameter("snsrid");
-        if(StringUtils.isEmpty(strcode)) {
-            String[] code = getAreaStoreCode(snsrid);
-            areacode = code[0];
-            strcode = code[1];
+
+        try {
+            String areacode = req.getParameter("areacode");
+            String strcode = req.getParameter("strcode");
+            String snsrid = req.getParameter("snsrid");
+
+            if (StringUtils.isEmptyOrWhitespace(strcode)) {
+                String[] code = getAreaStoreCode(snsrid);
+                areacode = code[0];
+                strcode = code[1];
+            }
+
+            mav.addObject("prm_areacode", areacode);
+            mav.addObject("prm_strcode", strcode);
+            mav.addObject("prm_snsrid", snsrid);
+            mav.addObject("prm_regdate", req.getParameter("regdate"));
+            mav.addObject("prm_checktype", req.getParameter("checktype"));
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
         }
-        mav.addObject("prm_areacode", areacode);
-        mav.addObject("prm_strcode", strcode);
-        mav.addObject("prm_snsrid", snsrid);
-        mav.addObject("prm_regdate", req.getParameter("regdate"));
-        mav.addObject("prm_checktype", req.getParameter("checktype"));
+
         return mav;
     }
 
     @RequestMapping(value="/storeChart")
-    public ModelAndView storeChart(HttpServletRequest req) {
+    public ModelAndView storeChart(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_store_chart");
-        String areacode = req.getParameter("areacode");
-        String strcode = req.getParameter("strcode");
-        String snsrid = req.getParameter("snsrid");
-        if(StringUtils.isEmpty(strcode)) {
-            String[] code = getAreaStoreCode(snsrid);
-            areacode = code[0];
-            strcode = code[1];
+
+        try {
+            String areacode = req.getParameter("areacode");
+            String strcode = req.getParameter("strcode");
+            String snsrid = req.getParameter("snsrid");
+
+            if (StringUtils.isEmptyOrWhitespace(strcode)) {
+                String[] code = getAreaStoreCode(snsrid);
+                areacode = code[0];
+                strcode = code[1];
+            }
+
+            if (StringUtils.isEmptyOrWhitespace(snsrid))
+                snsrid = getSensorCode(areacode, strcode);
+
+            mav.addObject("prm_areacode", areacode);
+            mav.addObject("prm_strcode", strcode);
+            mav.addObject("prm_snsrid", snsrid);
+            mav.addObject("prm_regdate", req.getParameter("regdate"));
+            mav.addObject("prm_almtype", req.getParameter("almtype"));
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
         }
-        if(StringUtils.isEmpty(snsrid)) {
-            snsrid = getSensorCode(areacode, strcode);
-        }
-        mav.addObject("prm_areacode", areacode);
-        mav.addObject("prm_strcode", strcode);
-        mav.addObject("prm_snsrid", snsrid);
-        mav.addObject("prm_regdate", req.getParameter("regdate"));
-        mav.addObject("prm_almtype", req.getParameter("almtype"));
+
         return mav;
     }
 
     @RequestMapping(value = "/listStoreSensor")
     @ResponseBody
-    public List<HashMap<String, Object>> listStoreSensor(
-        HttpServletRequest req
-    ) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public List<HashMap<String, Object>> listStoreSensor(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+
             return storeRepo.SELECT_LIST_STORE_SENSOR(prm);
         } catch (Exception e) {
             System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value = "/listStoreSensorData")
     @ResponseBody
-    public List<HashMap<String, Object>> listStoreSensorData(
-        HttpServletRequest req
-    ) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public List<HashMap<String, Object>> listStoreSensorData(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             String termtype = ("m".equals(req.getParameter("termtype"))) ? "m" : "d";
             String datatype = req.getParameter("datatype");
@@ -147,174 +175,189 @@ public class MStoreController {
             String snsrid = req.getParameter("snsrid");
             String order = req.getParameter("order");
             String dtsize = req.getParameter("dtsize");
-            if (regdt.length() == 7) regdt += "-01";
+
+            if (regdt.length() == 7)
+                regdt += "-01";
+
             if ("desc".equals(order)) prm.put("order", "DESC");
-            else prm.put("order", "ASC");
-            if (dtsize == null) dtsize = "1";
+            else                      prm.put("order", "ASC");
+
+            if (dtsize == null)
+                dtsize = "1";
+
             prm.put("regdt", regdt);
+
             HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
             prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
-            snsrid = ("TOTAL".equals(snsrid)) ? null : snsrid;
             prm.put("termtype", termtype);
             prm.put("datatype", datatype);
             prm.put("strcode", strcode);
+            snsrid = ("TOTAL".equals(snsrid)) ? null : snsrid;
             prm.put("snsrid", snsrid);
             prm.put("dtsize", dtsize);
+
             return storeRepo.SELECT_STORE_SENSOR_DATA(prm);
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value = "/listSensorAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> listSensorAjax(
-        HttpServletRequest req
-    ) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public List<HashMap<String, Object>> listSensorAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+
             return storeRepo.SELECT_LIST_SENSOR(prm);
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value = "/storeImgAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> storeImgAjax(
-        HttpServletRequest req
-    ) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public List<HashMap<String, Object>> storeImgAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+
             return storeRepo.SELECT_STORE_IMG(prm);
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value = "/dataLogListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> dataLogListAjax(
-        HttpServletRequest req
-    ) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public List<HashMap<String, Object>> dataLogListAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             String regdt = req.getParameter("regdt");
             prm.put("tblSensorData", "F_SENSOR_DATA");
             prm.put("tblSensorLog", "F_SENSOR_LOG");
-            if(!StringUtils.isEmpty(regdt)) {
+
+            if (!StringUtils.isEmpty(regdt)) {
                 prm.put("regdt", regdt);
+
                 HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
                 prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
             }
+
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+
             return storeRepo.SELECT_DATA_LOG_LIST(prm);
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value = "/sensorUsekwhMonthAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> sensorUsekwhMonthAjax(
-        HttpServletRequest req
-    ) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public List<HashMap<String, Object>> sensorUsekwhMonthAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             String regdt = req.getParameter("regdt");
             prm.put("tblSensorData", "F_SENSOR_DATA");
             prm.put("tblSensorLog", "F_SENSOR_LOG");
-            if(!StringUtils.isEmpty(regdt)) {
+
+            if (!StringUtils.isEmpty(regdt)) {
                 prm.put("regdt", regdt);
+
                 HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
                 prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
             }
+
             prm.put("snsrid", req.getParameter("snsrid"));
+
             return storeRepo.SELECT_SENSOR_USEKWH_MONTH(prm);
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value = "/logWeekStatAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> logWeekStatAjax(
-        HttpServletRequest req
-    ) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public List<HashMap<String, Object>> logWeekStatAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+
             return storeRepo.SELECT_LOG_WEEK_STAT(prm);
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value = "/startCheckAjax")
     @ResponseBody
-    public String startCheckAjax(
-        HttpServletRequest req
-    ) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public String startCheckAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
             storeRepo.INSERT_SENSOR_CHECK(prm);
             return "success";
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value = "/endCheckAjax")
     @ResponseBody
-    public String endCheckAjax(
-        HttpServletRequest req
-    ) {
+    public String endCheckAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<String, Object>();
+
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
             storeRepo.UPDATE_SENSOR_CHECK(prm);
             return "success";
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     private String[] getAreaStoreCode(String snsrid) {
         String[] ret = new String[2];
+
         try {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("snsrid", snsrid);
+
             List<HashMap<String, Object>> store = storeRepo.SELECT_STORE_INFO(prm);
             ret[0] = (String) store.get(0).get("AREACODE");
             ret[1] = (String) store.get(0).get("STRCODE");
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return ret;
     }
 
@@ -323,11 +366,14 @@ public class MStoreController {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("areacode", areacode);
             prm.put("strcode", strcode);
+
             List<HashMap<String, Object>> sensor = storeRepo.SELECT_SENSOR_INFO(prm);
             return (String) sensor.get(0).get("SNSRID");
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
+
 }

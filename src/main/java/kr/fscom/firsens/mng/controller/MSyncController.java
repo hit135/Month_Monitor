@@ -1,12 +1,13 @@
 package kr.fscom.firsens.mng.controller;
 
-import kr.fscom.firsens.mng.repository.MMainRepo;
 import kr.fscom.firsens.mng.repository.MStoreRepo;
 import kr.fscom.firsens.mng.repository.MSyncRepo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
+
+import org.thymeleaf.util.StringUtils;
 
 /**
  * 설명
@@ -54,59 +57,64 @@ public class MSyncController {
 
     @RequestMapping(value="/dataCntListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> dataCntListAjax(HttpServletRequest req) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public List<HashMap<String, Object>> dataCntListAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             String regdt = req.getParameter("regdt");
             prm.put("tblSensorData", "F_SENSOR_DATA");
             prm.put("regdt", regdt);
-            if(!StringUtils.isEmpty(regdt)) {
+
+            if (!StringUtils.isEmpty(regdt)) {
                 HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
             }
+
             return syncRepo.SELECT_DATA_CNT_LIST(prm);
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value="/sensorDataCntListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> sensorDataCntListAjax(HttpServletRequest req) {
+    public List<HashMap<String, Object>> sensorDataCntListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<String, Object>();
         try {
             String regdt = req.getParameter("regdt");
             prm.put("tblSensorData", "F_SENSOR_DATA");
             prm.put("regdt", regdt);
-            if(!StringUtils.isEmpty(regdt)) {
+
+            if (!StringUtils.isEmpty(regdt)) {
                 HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
             }
+
             return syncRepo.SELECT_SENSOR_DATA_CNT_LIST(prm);
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
 
     @RequestMapping(value = "/requestSyncAjax")
     @ResponseBody
-    public String requestSyncAjax(
-        HttpServletRequest req
-    ) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+    public String requestSyncAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
             prm.put("reqcont", req.getParameter("reqcont"));
             syncRepo.INSERT_SENSOR_CHECK(prm);
             return "success";
         } catch (Exception e) {
-            System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
         }
+
         return null;
     }
+
 }
