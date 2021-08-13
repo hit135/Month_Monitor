@@ -12,7 +12,7 @@ import { getInputValue, getValidInput } from "../../agent/commonIndex";
 const SnsrInsertModal = props => {
   let gData = [];
 
-  const { modal, setModal, handleInitTable } = props
+  const { modal, setModal, handleInitTable } = props;
   const [onAreaModal, setOnAreaModal] = useState();
   const [onStrModal, setOnStrModal] = useState();
 
