@@ -37,12 +37,13 @@ function PageStrTableModalWidget(props) {
   });
 
   // 초기 테이블 셋팅
-  const handleInitTable = () => {
-    getStrList(pageItem.page, pageItem.sizePerPage, searchItem).then(function (resp) {
-      setRepo(resp.data["resultList"]);
-      setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]})
+  const handleInitTable = () =>
+    getStrList(pageItem.page, pageItem.sizePerPage, searchItem).then(resp => {
+      if (resp.data['result']) {
+        setRepo(resp.data["resultList"]);
+        setPageItem({ page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"] });
+      }
     });
-  }
 
   useEffect(() => {
     handleInitTable();

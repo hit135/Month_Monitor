@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -47,9 +44,9 @@ public class SYSSimulController {
     }
 
     @GetMapping("/simulList")
-    public HashMap<String, Object> listPageSimul(String simulType, int page, int size, String areaCode, String searchWrd, String regDate) throws Exception {
-        LOG.info("■■■■■■■■■■■■■■■ 시뮬레이션 목록 요청 시작 : (simulType : {}, page : {}, size: {}, areaCode: {}, searchWrd:{}, regDate: {})"
-                , simulType, page, size, areaCode, searchWrd, regDate);
+    public HashMap<String, Object> listPageSimul(String simulType, int page, int size, String areaCode, String regDate) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 시뮬레이션 목록 요청 시작 : (simulType : {}, page : {}, size : {}, areaCode : {}, regDate : {})"
+                , simulType, page, size, areaCode, regDate);
 
         HashMap<String, Object> rtn = new HashMap<>();
         boolean result = false;
@@ -62,7 +59,6 @@ public class SYSSimulController {
                 put("sizePerPage", size);
                 put("page", (page - 1) * size);
                 put("areaCode", areaCode);
-                put("searchWrd", searchWrd);
                 put("regDate", regDate);
             }};
 
@@ -82,6 +78,54 @@ public class SYSSimulController {
             LOG.error("■■■■■■■■■■■■■■■ 시뮬레이션 목록 요청 SQL 오류 : {}", ex.getMessage());
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 시뮬레이션 목록 요청 오류 : {}", ex.getMessage());
+        } finally {
+            rtn.put("result", result);
+        }
+
+        return rtn;
+    }
+
+    @PostMapping("/simulPreview")
+    public HashMap<String, Object> listPageSimul(@RequestBody HashMap<String, Object> param) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 시뮬레이션 미리보기 요청 시작");
+
+        HashMap<String, Object> rtn = new HashMap<>();
+        HashMap<String, Object> resultData = new HashMap<>();
+        boolean result = false;
+
+        try {
+            if ("simul1".equals(param.get("simulType"))) {
+                resultData = sysSimulRepo.SELECT_SYS_PREVIEW_URGENT_ISSUE(param);
+            } else if ("simul2".equals(param.get("simulType"))) {
+                HashMap<String, Object> resultData1 = sysSimulRepo.SELECT_SYS_PREVIEW_NORMAL_ELEC_ISSUE(param);
+                List<HashMap<String, Object>> resultData2 = sysSimulRepo.LIST_SYS_PREVIEW_NORMAL_KWH_ISSUE(param);
+
+                resultData.put("areaCode", resultData1.get("areaCode"));
+                resultData.put("strCode", resultData1.get("strCode"));
+                resultData.put("areaName", resultData1.get("areaName"));
+                resultData.put("strName", resultData1.get("strName"));
+                resultData.put("snsrIgrAvg", resultData1.get("snsrIgrAvg"));
+                resultData.put("snsrIgoGrade", resultData1.get("snsrIgoGrade"));
+                resultData.put("snsrIgrRank", resultData1.get("snsrIgrRank"));
+                resultData.put("oc", resultData1.get("oc"));
+                resultData.put("ig", resultData1.get("ig"));
+                resultData.put("startDate", resultData1.get("startDate"));
+                resultData.put("endDate", resultData1.get("endDate"));
+                resultData.put("strCnt", resultData1.get("strCnt"));
+
+                resultData.put("snsrKwhDailyAvg", resultData2.get(0).get("snsrKwhDailyAvg"));
+                resultData.put("snsrKwhWeeklyAvg", resultData2.get(0).get("snsrKwhWeeklyAvg"));
+                resultData.put("snsrKwhRank", resultData2.get(0).get("snsrKwhRank"));
+                resultData.put("snsrKwhCompare", (double) resultData2.get(0).get("snsrKwhDailyAvg") - (double) resultData2.get(1).get("snsrKwhDailyAvg"));
+            }
+
+            rtn.put("resultData", resultData);
+
+            result = true;
+        } catch (SQLException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 시뮬레이션 미리보기 요청 SQL 오류 : {}", ex.getMessage());
+        } catch (Exception ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 시뮬레이션 미리보기 요청 오류 : {}", ex.getMessage());
         } finally {
             rtn.put("result", result);
         }

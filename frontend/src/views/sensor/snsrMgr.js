@@ -104,8 +104,10 @@ const SnsrMgr = () => {
 
   // 초기 테이블 셋팅
   const handleInitTable = () => getSnsrList(pageItem.page, pageItem.sizePerPage, searchItem).then(resp => {
-    setRepo(resp.data["resultList"]);
-    setPageItem({ page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"] });
+    if (resp.data['result']) {
+      setRepo(resp.data["resultList"]);
+      setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]});
+    }
   });
 
   // 페이징 클릭 시
