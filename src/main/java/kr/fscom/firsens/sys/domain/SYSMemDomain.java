@@ -1,4 +1,5 @@
 package kr.fscom.firsens.sys.domain;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -28,6 +29,7 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY, getterVisibility=JsonAutoDetect.Visibility.NONE,
         setterVisibility=JsonAutoDetect.Visibility.NONE, creatorVisibility= JsonAutoDetect.Visibility.NONE)
 public class SYSMemDomain {
+
     @JsonProperty("rowNum")         private String rowNum;
     @JsonProperty("userId")         private String userId = "";             /* 사용자 ID */
     @JsonProperty("userIdKey")      private String userIdKey = "";          /* 사용자 ID 키값용 */
@@ -68,4 +70,5 @@ public class SYSMemDomain {
     private int sizePerStrPage;
     private String searchWrd = "";
     private String disconYn = "";
+
 }

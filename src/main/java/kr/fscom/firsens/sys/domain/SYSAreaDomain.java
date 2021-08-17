@@ -28,6 +28,7 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY, getterVisibility=JsonAutoDetect.Visibility.NONE,
         setterVisibility=JsonAutoDetect.Visibility.NONE, creatorVisibility= JsonAutoDetect.Visibility.NONE)
 public class SYSAreaDomain {
+
     @JsonProperty("areaCode")           private String areaCode = "";                   // 구역코드
     @JsonProperty("areaName")           private String areaName = "";                   // 구역명
     @JsonProperty("areaOrder")          private String areaOrder = "";                  // 구역 순서
@@ -59,4 +60,5 @@ public class SYSAreaDomain {
     private int sizePerPage;
     private String searchWrd = "";
     private String isUse = "";
+
 }

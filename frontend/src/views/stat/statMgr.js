@@ -8,4 +8,4 @@ const StatMgr = () => {
   )
 }
 
-export default StatMgr
+export default StatMgr;

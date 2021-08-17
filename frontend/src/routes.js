@@ -9,6 +9,7 @@ const Inspr = React.lazy(() => import('./views/inspection/insprMgr'));
 const Insp = React.lazy(() => import('./views/inspection/inspMgr'));
 const Push = React.lazy(() => import('./views/push/pushMgr'));
 const Stat = React.lazy(() => import('./views/stat/statMgr'));
+const Simul = React.lazy(() => import('./views/simul/simulMgr'));
 
 // const Toaster = React.lazy(() => import('./views/notifications/toaster/Toaster'));
 // const Tables = React.lazy(() => import('./views/base/tables/Tables'));
@@ -46,16 +47,17 @@ const Stat = React.lazy(() => import('./views/stat/statMgr'));
 // const User = React.lazy(() => import('./views/users/User'));
 
 const routes = [
-  { path: '/', exact: true, name: '홈' },
-  { path: '/area', name: '구역관리', component: Area },
-  { path: '/mem', name: '회원관리', component: Member },
-  { path: '/str', name: '상점관리', component: Store },
-  { path: '/snsr', name: '센서관리', component: Sensor },
-  { path: '/snsru', name: '센서갱신관리', component: SensorUpd },
-  { path: '/inspr', name: '점검자관리', component: Inspr },
-  { path: '/insp', name: '점검관리', component: Insp },
-  { path: '/push', name: '발송이력', component: Push },
-  { path: '/stat', name: '통계', component: Stat },
+    { path: '/', exact: true, name: '홈' }
+  , { path: '/area', name: '구역관리', component: Area }
+  , { path: '/mem', name: '회원관리', component: Member }
+  , { path: '/str', name: '상점관리', component: Store }
+  , { path: '/snsr', name: '센서관리', component: Sensor }
+  , { path: '/snsru', name: '센서갱신관리', component: SensorUpd }
+  , { path: '/inspr', name: '점검자관리', component: Inspr }
+  , { path: '/insp', name: '점검관리', component: Insp }
+  , { path: '/push', name: '발송이력', component: Push }
+  , { path: '/stat', name: '통계', component: Stat }
+  , { path: '/simul', name: '시뮬레이션', component: Simul }
 
 
 

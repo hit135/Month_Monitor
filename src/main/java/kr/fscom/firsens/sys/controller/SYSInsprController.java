@@ -25,7 +25,7 @@ public class SYSInsprController {
     public SYSInsprController(SYSInsprRepo sysInsprRepo) { this.sysInsprRepo = sysInsprRepo; }
 
     @PostMapping("/listInsprArea")
-    public HashMap<String, Object> listPageInspectors() throws Exception {
+    public HashMap<String, Object> listPageInsprArea() throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         List<HashMap<String, Object>> resultList = new ArrayList<>();
         boolean result = false;

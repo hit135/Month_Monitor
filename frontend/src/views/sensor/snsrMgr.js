@@ -12,12 +12,12 @@ import { getInputValue, numCommaFormat } from "../../agent/commonIndex";
 let gData = [];
 
 const columns = [
-    { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right' }, formatter: numCommaFormat }
-  , { dataField: 'snsrSeq', text: '센서코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } }
-  , { dataField: 'snsrId', text: '센서아이디', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } }
-  , { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } }
-  , { dataField: 'snsrNick', text: '센서명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } }
-  , { dataField: 'regDate', text: '등록일자', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } }
+    { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'right' }, formatter: numCommaFormat }
+  , { dataField: 'snsrSeq', text: '센서코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
+  , { dataField: 'snsrId', text: '센서아이디', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
+  , { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
+  , { dataField: 'snsrNick', text: '센서명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
+  , { dataField: 'regDate', text: '등록일자', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
 ];
 
 const SnsrMgr = () => {
@@ -70,11 +70,11 @@ const SnsrMgr = () => {
   const handleInitTree = async (page = 1, sizePerPage = 10) =>
     await getAreaList(page, sizePerPage).then(resp => {
       if (resp.data["result"] === "success") {
-        const data = [{ title : "전체", children: [], key: "all" }];
+        const data = [{ title: "전체", children: [], key: "all" }];
         // data.push();
 
         resp.data["resultList"].map((item, idx) => data.push(item));
-        data.push({ title : "알수없음", children: [], key: "none" });
+        data.push({ title: "알수없음", children: [], key: "none" });
         gData = data;
       }
     });

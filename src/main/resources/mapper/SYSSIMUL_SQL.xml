@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.fscom.firsens.sys.repository.SYSSimulRepo">
+
+    <select id="LIST_SYS_SIMULRAREA" resultType="map">
+        SELECT AREACODE AS areaCode
+             , AREANAME AS areaName
+          FROM F_LEVEL_AREA
+         WHERE AREALEVEL = 1 AND USEYN = 'Y' AND DELYN = 'N'
+         ORDER BY AREACODE
+    </select>
+
+    <select id="CNT_SENSOR_LOG" parameterType="map" resultType="int">
+        SELECT COUNT(LSEQ)
+          FROM V_ALL_SENSOR_LOG_MAP
+         WHERE ( REGDATE BETWEEN CONCAT(#{regDate}, ' 00:00:00') AND CONCAT(#{regDate}, ' 23:59:59') )
+           AND ( OCALM + IGOALM + IGRALM ) > 0
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND AREACODE = #{areaCode}</if>
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
+           AND (
+                  STRCODE  LIKE CONCAT('%', #{searchWrd}, '%')
+               OR STRNAME  LIKE CONCAT('%', #{searchWrd}, '%')
+               OR LCAUSE   LIKE CONCAT('%', #{searchWrd}, '%')
+           )
+           </if>
+    </select>
+
+    <select id="LIST_SENSOR_LOG" parameterType="map" resultType="map">
+        SELECT LSEQ AS lSeq
+             , AREANAME AS areaName
+             , STRNAME AS strName
+             , SNSRNICK AS snsrNick
+             , LCAUSE AS lCause
+          FROM V_ALL_SENSOR_LOG_MAP
+         WHERE ( REGDATE BETWEEN CONCAT(#{regDate}, ' 00:00:00') AND CONCAT(#{regDate}, ' 23:59:59') )
+           AND ( OCALM + IGOALM + IGRALM ) > 0
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND AREACODE = #{areaCode}</if>
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
+           AND (
+                  STRCODE  LIKE CONCAT('%', #{searchWrd}, '%')
+               OR STRNAME  LIKE CONCAT('%', #{searchWrd}, '%')
+               OR LCAUSE   LIKE CONCAT('%', #{searchWrd}, '%')
+           )
+           </if>
+         ORDER BY REGDATE DESC
+         LIMIT #{page}, #{sizePerPage}
+    </select>
+
+    <select id="CNT_STORE" parameterType="map" resultType="int">
+        SELECT COUNT(STRCODE)
+          FROM F_STORE
+         WHERE 1 = 1
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND AREACODE = #{areaCode}</if>
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
+           AND (
+                  STRCODE  LIKE CONCAT('%', #{searchWrd}, '%')
+               OR STRNAME  LIKE CONCAT('%', #{searchWrd}, '%')
+           )
+           </if>
+         ORDER BY STRCODE DESC
+    </select>
+
+    <select id="LIST_STORE" parameterType="map" resultType="map">
+        SELECT Z.*
+          FROM ( SELECT @ROWNUM := @ROWNUM + 1  AS rowNum
+                      , A.*
+                   FROM ( SELECT S.STRCODE AS strCode
+                               , S.STRNAME AS strName
+                               , S.AREACODE AS areaCode
+                               , ( SELECT AREANAME
+                                     FROM F_LEVEL_AREA
+                                    WHERE AREACODE = S.AREACODE AND AREALEVEL = 1 AND DELYN = 'N' ) AS areaName
+                               , S.REGDATE
+                            FROM F_STORE S
+                           WHERE S.USEYN = 'Y'
+                             AND S.DELYN = 'N'
+                             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND S.AREACODE = #{areaCode}</if>
+                             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
+                             AND (
+                                    S.STRCODE  LIKE CONCAT('%', #{searchWrd}, '%')
+                                 OR S.STRNAME  LIKE CONCAT('%', #{searchWrd}, '%')
+                             )
+                             </if>
+                           ORDER BY S.STRCODE DESC
+                        ) A
+               ) Z
+         LIMIT #{page}, #{sizePerPage}
+    </select>
+
+</mapper>

@@ -65,4 +65,5 @@ public class SYSStrDomain implements Serializable {
     private int sizePerPage;
     private String searchWrd = "";
     private String isUse = "";
+
 }

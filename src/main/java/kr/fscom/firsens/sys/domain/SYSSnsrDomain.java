@@ -28,6 +28,7 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY, getterVisibility=JsonAutoDetect.Visibility.NONE,
         setterVisibility=JsonAutoDetect.Visibility.NONE, creatorVisibility= JsonAutoDetect.Visibility.NONE)
 public class SYSSnsrDomain {
+
     @JsonProperty("rowNum")          private int rowNum = 0;                     // 순번
     @JsonProperty("snsrSeq")         private String snsrSeq = "";                // 센서 SEQ
     @JsonProperty("snsrId")          private String snsrId = "";                 // 센서 ID
@@ -109,4 +110,5 @@ public class SYSSnsrDomain {
     private int sizePerPage;
     private int sizePerStrPage;
     private String searchWrd = "";
+
 }

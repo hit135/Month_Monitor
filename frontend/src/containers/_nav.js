@@ -11,6 +11,7 @@ const _nav = [
   , { _tag: 'CSidebarNavItem', name: '점검관리', to: '/insp', icon: <CIcon name="cil-list" customClasses="c-sidebar-nav-icon" /> }
   , { _tag: 'CSidebarNavItem', name: '발송이력', to: '/push', icon: <CIcon name="cil-bell" customClasses="c-sidebar-nav-icon" /> }
   , { _tag: 'CSidebarNavItem', name: '통계', to: '/stat', icon: <CIcon name="cil-chart-pie" customClasses="c-sidebar-nav-icon" /> }
+  , { _tag: 'CSidebarNavItem', name: '시뮬레이션', to: '/simul', icon: <CIcon name="cil-chart-pie" customClasses="c-sidebar-nav-icon" /> }
 ];
 
 export default _nav;

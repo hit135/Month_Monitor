@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSSnsrRepo">
+
     <select id="SELECT_CNT_SYS_SNSR" parameterType="SYSSnsrDomain" resultType="int">
         SELECT COUNT(*)
           FROM F_SENSOR_INFO SI
