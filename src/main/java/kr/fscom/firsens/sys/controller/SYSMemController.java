@@ -36,6 +36,7 @@ public class SYSMemController {
 
         HashMap<String, Object> rtn = new HashMap<>();
         List<HashMap<String, Object>> memberList = new ArrayList<>();
+        String result = "fail";
 
         try {
             domain.setSizePerPage(size);
@@ -51,13 +52,13 @@ public class SYSMemController {
 
             rtn.put("resultList", memberList);
             rtn.put("totalElements", resultCnt);
-            rtn.put("result", "success");
+            result = "success";
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 목록 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 목록 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -66,18 +67,20 @@ public class SYSMemController {
     @GetMapping("/modalMem")
     public HashMap<String, Object> listPageModalMem(String searchWrd) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 회원 모달목록 시작 : (searchWrd : {})", searchWrd);
+
         HashMap<String, Object> rtn = new HashMap<>();
+        String result = "fail";
 
         try {
             List<HashMap<String, Object>> resultList = sysMemRepo.SELECT_MODAL_SYS_MEM(searchWrd);
             rtn.put("resultList", resultList);
-            rtn.put("result", "success");
+            result = "success";
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 모달목록 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 모달목록 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -93,13 +96,12 @@ public class SYSMemController {
 
         try {
             result = sysMemRepo.SELECT_CHK_MEM_ID(domain);
-            rtn.put("result", result);
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 ID 중복검사 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 ID 중복검사 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -110,40 +112,39 @@ public class SYSMemController {
     @PostMapping(value = "/insertMem")
     public HashMap<String, Object> insertMem(@RequestBody SYSMemDomain domain, HttpSession session) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 회원 등록 시작");
-        HashMap<String, Object> rtn = new HashMap<String, Object>();
+
+        HashMap<String, Object> rtn = new HashMap<>();
+        String result = "fail";
 
         try {
-            String sha256MemPwd = sha256Encrypt.getHex(domain.getMemPwd(), domain.getUserId());
-            domain.setMemPwd(sha256MemPwd);
+            if (!StringUtils.isEmptyOrWhitespace(domain.getUserId()) || StringUtils.isEmptyOrWhitespace(domain.getMemPwd())) {
+                String sha256MemPwd = sha256Encrypt.getHex(domain.getMemPwd(), domain.getUserId());
+                domain.setMemPwd(sha256MemPwd);
 
-            int result = 0;
+                if (sysMemRepo.INSERT_SYS_MEM(domain) > 0)
+                    result = "success";
 
-            if (!StringUtils.isEmptyOrWhitespace(domain.getUserId()) || StringUtils.isEmptyOrWhitespace(domain.getMemPwd()))
-                result = sysMemRepo.INSERT_SYS_MEM(domain);
-
-            rtn.put("result", (result > 0) ? "success" : "fail");
-
-//
-//            if (domain.getUserId() != null && domain.getUserId().length() > 0) {
-//                // 회원이 소유한 모든 상점 공백 처리
-//                sysMemRepo.UPDATE_SYS_STORE_RESET_OWNER(domain.getUserId());
-//
-//                // 신규로 등록한 상점으로 업데이트
-//                if (domain.getStoreList() != null) {
-//                    for (Map<String, String> m : domain.getStoreList()) {
-//                        Map<String, String> map = new HashMap<>();
-//                        map.put("userId", domain.getUserId());
-//                        map.put("storeCode", m.get("storeCode").toString());
-//                        sysMemRepo.UPDATE_SYS_MEM_WITH_STORE(map);
-//                    }
-//                }
-//            }
+                //            if (domain.getUserId() != null && domain.getUserId().length() > 0) {
+                //                // 회원이 소유한 모든 상점 공백 처리
+                //                sysMemRepo.UPDATE_SYS_STORE_RESET_OWNER(domain.getUserId());
+                //
+                //                // 신규로 등록한 상점으로 업데이트
+                //                if (domain.getStoreList() != null) {
+                //                    for (Map<String, String> m : domain.getStoreList()) {
+                //                        Map<String, String> map = new HashMap<>();
+                //                        map.put("userId", domain.getUserId());
+                //                        map.put("storeCode", m.get("storeCode").toString());
+                //                        sysMemRepo.UPDATE_SYS_MEM_WITH_STORE(map);
+                //                    }
+                //                }
+                //            }
+            }
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 등록 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 등록 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -153,17 +154,19 @@ public class SYSMemController {
     @PostMapping("/selectMem")
     public HashMap<String, Object> selectMem(@RequestBody SYSMemDomain domain) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 회원 상세목록 요청 시작 : (userId : {})", domain.getUserId());
+
         HashMap<String, Object> rtn = new HashMap<>();
+        String result = "fail";
 
         try {
             rtn.put("content", sysMemRepo.SELECT_SYS_MEM(domain));
-            rtn.put("result", "success");
+            result = "success";
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 상세목록 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 상세목록 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -173,7 +176,9 @@ public class SYSMemController {
     @PostMapping("/updateMem")
     public HashMap<String, Object> updateMem(@RequestBody SYSMemDomain domain) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 회원 수정 요청 시작 : (userId : {})", domain.getUserId());
+
         HashMap<String, Object> rtn = new HashMap<>();
+        String result = "fail";
 
         try {
             if (!StringUtils.isEmptyOrWhitespace(domain.getMemPwd())) {
@@ -181,14 +186,14 @@ public class SYSMemController {
                 domain.setMemPwd(sha256MemPwd);
             }
 
-            int result = sysMemRepo.UPDATE_SYS_MEM(domain);
-            rtn.put("result", (result > 0) ? "success" : "fail");
+            if (sysMemRepo.UPDATE_SYS_MEM(domain) > 0)
+                result = "success";
         } catch (SQLException e) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 수정 요청 SQL 오류 : {}", e.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 수정 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -197,20 +202,19 @@ public class SYSMemController {
     @PostMapping("/deleteMem")
     public HashMap<String, Object> deleteMem(@RequestBody SYSMemDomain domain) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 회원 영구 삭제 요청 시작 : (userId : {})", domain.getUserId());
+
         HashMap<String, Object> rtn = new HashMap<>();
+        String result = "fail";
 
         try {
-            int result = 0;
-            if (!StringUtils.isEmptyOrWhitespace(domain.getUserId()))
-                result = sysMemRepo.DELETE_SYS_MEM(domain);
-
-            rtn.put("result", (result > 0) ? "success" : "fail");
+            if (!StringUtils.isEmptyOrWhitespace(domain.getUserId()) && sysMemRepo.DELETE_SYS_MEM(domain) > 0)
+                result = "success";
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 영구 삭제 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 영구 삭제 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;

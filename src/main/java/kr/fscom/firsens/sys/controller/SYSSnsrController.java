@@ -38,6 +38,7 @@ public class SYSSnsrController {
 
         HashMap<String, Object> rtn = new HashMap<>();
         List<HashMap<String, Object>> sensorList = new ArrayList<>();
+        String result = "fail";
 
         try {
             domain.setSizePerPage(size);
@@ -54,13 +55,13 @@ public class SYSSnsrController {
 
             rtn.put("resultList", sensorList);
             rtn.put("totalElements", resultCnt);
-            rtn.put("result", "success");
+            result = "success";
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서 목록 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서 목록 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -69,7 +70,9 @@ public class SYSSnsrController {
     @PostMapping("/insertSnsr")
     public HashMap<String, Object> insertSnsr(@RequestBody SYSSnsrDomain domain) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 센서 등록 요청 시작");
+
         HashMap<String, Object> rtn = new HashMap<>();
+        String result = "fail";
 
         try {
             if (!StringUtils.isEmptyOrWhitespace(domain.getSnsrId())) {
@@ -100,16 +103,16 @@ public class SYSSnsrController {
                         domain.setSnsrMGps(domain.getSnsrPosLat() + "," + domain.getSnsrPosLon());
                     }
 
-                    int result = sysSnsrRepo.INSERT_SYS_SNSR(domain);
-                    rtn.put("result", result > 0 ? "success" : "fail");
+                    if (sysSnsrRepo.INSERT_SYS_SNSR(domain) > 0)
+                        result = "success";
                 }
             }
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서 등록 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서 등록 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -118,7 +121,9 @@ public class SYSSnsrController {
     @PostMapping("/selectSnsr")
     public HashMap<String, Object> selectSnsr(@RequestBody SYSSnsrDomain domain) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 센서조회 요청 시작 : (SYSSnsrDomain : {})", domain);
+
         HashMap<String, Object> rtn = new HashMap<>();
+        String result = "fail";
 
         try {
             if (!StringUtils.isEmptyOrWhitespace(domain.getSnsrId())) {
@@ -130,16 +135,14 @@ public class SYSSnsrController {
                 }
 
                 rtn.put("content", vo);
-                rtn.put("result", "success");
-            } else {
-                rtn.put("result", "fail");
+                result = "success";
             }
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서조회 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서조회 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -148,18 +151,15 @@ public class SYSSnsrController {
     @PostMapping("/updateSnsr")
     public HashMap<String, Object> updateSnsr(@RequestBody SYSSnsrDomain domain) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 센서 수정 요청 시작 : (snsrId : {}, snsrSeq : {})", domain.getSnsrId(), domain.getSnsrSeq());
+
         HashMap<String, Object> rtn = new HashMap<>();
+        String result = "fail";
 
         try {
-            if (!domain.getSnsrId().equals(domain.getUpdSnsrId())) {
-                int duplicateCnt = sysSnsrRepo.SELECT_CHK_SYS_SNSRID(domain);           // 센서 아이디 중복 체크
-                if (duplicateCnt > 0) {
-                    rtn.put("result", "duplicate");
-                    return rtn;
-                }
-            }
-
-            if (!StringUtils.isEmptyOrWhitespace(domain.getSnsrId())) {
+            // 센서 아이디 중복 체크
+            if (!domain.getSnsrId().equals(domain.getUpdSnsrId()) && sysSnsrRepo.SELECT_CHK_SYS_SNSRID(domain) > 0) {
+                result = "duplicate";
+            } else if (!StringUtils.isEmptyOrWhitespace(domain.getSnsrId())) {
                 if (StringUtils.isEmpty(domain.getAreaCode())) {      // 구역코드 없을 경우 상위, 하위 "0"
                     domain.setAreaCode("0");
                     domain.setLevelAreaCode("0");
@@ -173,15 +173,15 @@ public class SYSSnsrController {
                 else
                     domain.setSnsrMGps("");
 
-                int result = sysSnsrRepo.UPDATE_SYS_SNSR(domain);
-                rtn.put("result", (result > 0) ? "success" : "fail");
+                if (sysSnsrRepo.UPDATE_SYS_SNSR(domain) > 0);
+                    result = "success";
             }
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서 수정 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서 수정 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;
@@ -190,21 +190,19 @@ public class SYSSnsrController {
     @PostMapping("/deleteSnsr")
     public HashMap<String, Object> deleteSnsr(@RequestBody SYSSnsrDomain domain) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 센서 삭제 요청 시작 : (snsrId : {}, snsrSeq : {})", domain.getSnsrId(), domain.getSnsrSeq());
+
         HashMap<String, Object> rtn = new HashMap<>();
+        String result = "fail";
 
         try {
-            if (!StringUtils.isEmptyOrWhitespace(domain.getSnsrId())) {
-                int result = sysSnsrRepo.DELETE_SYS_SNSR(domain);
-                rtn.put("result", (result > 0) ? "success" : "fail");
-            } else {
-                rtn.put("result", "fail");
-            }
+            if (!StringUtils.isEmptyOrWhitespace(domain.getSnsrId()) && sysSnsrRepo.DELETE_SYS_SNSR(domain) > 0)
+                result = "success";
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서 삭제 요청 SQL 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서 삭제 요청 오류 : {}", ex.getMessage());
-            rtn.put("result", "fail");
+        } finally {
+            rtn.put("result", result);
         }
 
         return rtn;

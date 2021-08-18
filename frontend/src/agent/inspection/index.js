@@ -17,3 +17,5 @@ export const getInspectorList = (page, size, searchItem) =>
 
 export const getDupChkInspId = map => axios.post(`${API_ROOT}/selectDupChkInspId`, map);
 export const insertInspector = map => axios.post(`${API_ROOT}/insertInspector`, map);
+export const getInspector = inspId => axios.post(`${API_ROOT}/selectInspector`, inspId);
+export const updateInspector = map => axios.post(`${API_ROOT}/updateInspector`, map);
