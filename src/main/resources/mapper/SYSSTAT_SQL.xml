@@ -3,7 +3,39 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSStatRepo">
 
-    <select id="SELECT_SYS_STAT_AREA_INFO_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_TYPE_GUCODE" resultType="map">
+        SELECT A.GUCODE         AS guCode
+             , A.GRPCODE        AS grpCode
+             , A.GUNAME         AS guName
+          FROM F_GUCODE A
+         WHERE A.USEYN = 'Y'
+      ORDER BY A.GUCODE
+    </select>
+
+    <select id="SELECT_TYPE_AREACODE" resultType="map">
+        SELECT A.AREACODE   AS areaCode
+             , A.AREANAME   AS areaName
+          FROM F_LEVEL_AREA A
+         WHERE A.USEYN = 'Y'
+           AND A.AREALEVEL = 1
+      ORDER BY A.AREAORDER
+    </select>
+
+    <select id="SELECT_SYS_STAT_GU_INFO_STAT" parameterType="String" resultType="map">
+        SELECT L.AREANAME AS areaName
+             , L.AREAADDR AS areaAddr
+             , L.AREACODE AS areaCode
+             , COUNT(DISTINCT S.STRCODE) AS stCnt
+             , COUNT(DISTINCT I.SNSRSEQ) AS snsrCnt
+        FROM (SELECT * FROM F_LEVEL_AREA S WHERE AREALEVEL = 1 AND GUCODE = #{guCode} AND DELYN = 'N') L
+                 LEFT JOIN ( SELECT * FROM F_STORE WHERE USEYN = 'Y' AND DELYN = 'N' ) S
+                           ON S.AREACODE = L.AREACODE
+                 LEFT JOIN ( SELECT AREACODE, STRCODE, SNSRSEQ FROM F_SENSOR_INFO WHERE DELYN = 'N' ) I
+                           ON S.AREACODE = I.AREACODE
+        GROUP BY areaName
+    </select>
+
+    <select id="SELECT_SYS_STAT_AREA_INFO_STAT" parameterType="String" resultType="map">
         SELECT L.AREANAME AS areaName
              , L.AREAADDR AS areaAddr
              , COUNT(DISTINCT S.STRCODE) AS stCnt
