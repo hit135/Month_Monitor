@@ -15,5 +15,7 @@ public interface SYSInsprRepo {
     int CNT_SYS_INSPECTORS(HashMap<String, Object> map) throws Exception;
     int CNT_SYS_DUPCHK_INSPID(HashMap<String, Object> map) throws Exception;
     int INSERT_SYS_INSPECTOR(HashMap<String, Object> map) throws Exception;
+    HashMap<String, Object> SELECT_SYS_INSPECTOR(String param) throws Exception;
+    int UPDATE_SYS_INSPECTOR(HashMap<String, Object> map) throws Exception;
 
 }

@@ -96,6 +96,7 @@ public class SYSSimulController {
         try {
             if ("simul1".equals(param.get("simulType"))) {
                 resultData = sysSimulRepo.SELECT_SYS_PREVIEW_URGENT_ISSUE(param);
+                resultData.put("link", "http://1.223.40.19h:30080/mobile/store/issue?lSeq=" + resultData.get("lSeq"));
             } else if ("simul2".equals(param.get("simulType"))) {
                 HashMap<String, Object> resultData1 = sysSimulRepo.SELECT_SYS_PREVIEW_NORMAL_ELEC_ISSUE(param);
                 List<HashMap<String, Object>> resultData2 = sysSimulRepo.LIST_SYS_PREVIEW_NORMAL_KWH_ISSUE(param);
@@ -117,6 +118,8 @@ public class SYSSimulController {
                 resultData.put("snsrKwhWeeklyAvg", resultData2.get(0).get("snsrKwhWeeklyAvg"));
                 resultData.put("snsrKwhRank", resultData2.get(0).get("snsrKwhRank"));
                 resultData.put("snsrKwhCompare", (double) resultData2.get(0).get("snsrKwhDailyAvg") - (double) resultData2.get(1).get("snsrKwhDailyAvg"));
+
+                resultData.put("link", "http://1.223.40.19h:30080/mobile/store/report?areaCode=" + resultData.get("areaCode") + "&strCode=" + resultData.get("strCode"));
             }
 
             rtn.put("resultData", resultData);

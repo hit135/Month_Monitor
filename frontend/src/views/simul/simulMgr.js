@@ -22,11 +22,11 @@ const columns1 = [
 const columns2 = [
    { dataField: 'rowNum', text: 'No.', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'right', height: '42px', width: '5rem' }
     , formatter: numCommaFormat }
-  , { dataField: 'areaCode', text: '시장코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
+  , { dataField: 'areaCode', text: '시장코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'areaName', text: '시장', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
-  , { dataField: 'strCode', text: '상점코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
+  , { dataField: 'strCode', text: '상점코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'strName', text: '상점', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
-  , { dataField: 'regDate', text: '등록일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
+  , { dataField: 'regDate', text: '등록일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
 ];
 
 
@@ -63,14 +63,14 @@ const SimulMgr = () => {
 
     if (Object.keys(preview).length > 0) {
       if (simulType === 'simul1') {
-        txt += '<p>[전기안전 긴급이벤트]</p>';
+        txt += '<p>[시뮬레이션 - 전기안전 긴급이벤트]</p>';
         txt += `<p>■ ${preview['areaName']} ${preview['strName']}<br/>금일 누설전류 위험발생 (${preview['regDate']})</p>`;
 
         if (preview['lCause'].indexOf("과전류") > -1)
           txt += `<p>과전류 수치가 ${preview['snsrAmpere']} mA 이상으로 전기위험 상황이 발생했습니다.<br/>(과전류 수치가 ${preview['soc1V1']} mA 이하가 정상상태입니다.)</p>`;
 
         if (preview['lCause'].indexOf("Igo") > -1)
-          txt += `<p>IGO 수치가 ${preview['snsrIgo']} mA 이상으로 전기위험 상황이 발생했습니다.<br/>(IGO 수치가 ${preview['sigr1V']} mA 이하가 정상상태입니다.)</p>`;
+          txt += `<p>IGO 수치가 ${preview['snsrIgo']} mA 이상으로 전기위험 상황이 발생했습니다.<br/>(IGO 수치가 ${preview['sigo1V']} mA 이하가 정상상태입니다.)</p>`;
 
         if (preview['lCause'].indexOf("Igr") > -1)
           txt += `<p>IGR 수치가 ${preview['snsrIgr']} mA 이상으로 전기위험 상황이 발생했습니다.<br/>(IGR 수치가 ${preview['sigr1V']} mA 이하가 정상상태입니다.)</p>`;
