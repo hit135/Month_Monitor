@@ -16,19 +16,28 @@ import CIcon from "@coreui/icons-react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import {ko} from "date-fns/esm/locale";
-import {areaStatusComponent, getSelectGroup, getStatInfo} from "../../agent/stat";
+import {
+  areaStatusComponent, areaTotalChartStatComp,
+  areaTotalWarningComp,
+  getSelectGroup,
+  getStatInfo, levelAreaStatComp, levelStoreStatComp
+} from "../../agent/stat";
 
 const StatMgr = () => {
-  const [typeValue, setTypeValue] = useState("");
+  const [typeValue, setTypeValue] = useState("areaCode");
   const [startDate, setStartDate] = useState(new Date('2021-01-01'));
   const [endDate, setEndDate] = useState(new Date());
   const [topBtnValue, setTopBtnValue] = useState("시장보고");
   const [guCode, setGuCode] = useState("30110");
   const [areaCode, setAreaCode] = useState("AREA_000003");
   const [areaState, setAreaState] = useState();
+  const [areaTotalWarning, setAreaTotalWarning] = useState();
+  const [areaHourlyStat, setAreaHourlyStat] = useState();
+  const [levelAreaStat, setLevelAreaStat] = useState();
+  const [levelStrStat, setLevelStrStat] = useState();
 
-  useEffect(() => {
-    handleClickBtnGroup("areaCode")
+  useEffect(async () => {
+    await handleClickBtnGroup("areaCode")
     handleClickSearchStat();
   }, [])
 
@@ -57,16 +66,37 @@ const StatMgr = () => {
   }
 
   const handleClickSearchStat = () => {
-    getStatInfo(typeValue, guCode, areaCode).then(resp => {
+    getStatInfo(typeValue, guCode, areaCode, startDate, endDate).then(resp => {
+      let areaName;
       if (resp.data['result'] === "success") {
-        if(resp.data["resultList"].length > 1) {
-          resp.data["resultList"].map((item, idx) => {
-            setAreaState(areaStatusComponent(item.areaName, startDate, endDate, item.areaAddr));
+        if(resp.data["infoStat"].length > 1) {
+          let compList = [];
+          resp.data["infoStat"].map((item, idx) => {
+            compList.push(areaStatusComponent(item.areaName, startDate, endDate, item.areaAddr));
           })
+          setAreaState(compList);
         } else {
-          const temp = resp.data["resultList"];
+          const temp = resp.data["infoStat"];
+          areaName = temp.areaName;
           setAreaState(areaStatusComponent(temp.areaName, startDate, endDate, temp.areaAddr));
         }
+
+        setAreaTotalWarning(areaTotalWarningComp(areaName, resp.data["weekMonthStat"]));
+        setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+
+        if(resp.data["levelAreaStat"].length > 0) {
+          setLevelAreaStat(levelAreaStatComp(areaName, resp.data["levelAreaStat"]));
+        } else {
+          setLevelAreaStat("");
+        }
+
+        if(resp.data["levelStrStat"].length > 0) {
+          setLevelStrStat(levelStoreStatComp(areaName, resp.data["levelStrStat"]));
+        } else {
+          setLevelStrStat("");
+        }
+      } else {
+        alert("서버 통신에 오류가 발생했습니다.");
       }
     });
   }
@@ -87,6 +117,7 @@ const StatMgr = () => {
                         key={item.name}
                         className="mx-0"
                         active={item.name === topBtnValue}
+                        disabled={item.name === '구청보고'}
                         onClick={(e) => { setTopBtnValue(e.target.innerHTML); handleClickBtnGroup(item.type); }}
                       >
                       {item.name}
@@ -116,10 +147,13 @@ const StatMgr = () => {
           </CCardHeader>
           <CCardBody>
             {areaState}
+            {areaTotalWarning}
+            {areaHourlyStat}
+            {levelAreaStat}
+            {levelStrStat}
           </CCardBody>
         </CCard>
       </CCol>
-
     </>
   )
 }

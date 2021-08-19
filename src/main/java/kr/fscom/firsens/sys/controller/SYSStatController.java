@@ -37,14 +37,26 @@ public class SYSStatController {
     }
 
     @GetMapping(value = "/statInfo")
-    public HashMap<String, Object> statInfo(String type, String guCode, String areaCode) throws Exception {
+    public HashMap<String, Object> statInfo(String type, String guCode, String areaCode, String startDate, String endDate) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
-
+        HashMap<String, Object> paramMap = new HashMap<>();
         try {
-            if(type.equals("guCode"))
-                rtn.put("resultList", sysStatRepo.SELECT_SYS_STAT_GU_INFO_STAT(guCode));
-            else
-                rtn.put("resultList", sysStatRepo.SELECT_SYS_STAT_AREA_INFO_STAT(areaCode));
+            paramMap.put("type", type);
+            paramMap.put("startDate", startDate);
+            paramMap.put("endDate", endDate);
+            if(type.equals("guCode")) {
+                paramMap.put("guCode", guCode);
+                rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_GU_INFO_STAT(guCode));
+            } else {
+                paramMap.put("areaCode", areaCode);
+                rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_AREA_INFO_STAT(areaCode));
+                rtn.put("weekMonthStat", sysStatRepo.LIST_SYS_STAT_AREA_MONTHLY_STAT(paramMap));
+                rtn.put("hourlyStat", sysStatRepo.LIST_SYS_STAT_AREA_HOURLY_STAT(paramMap));
+                rtn.put("dayOfWeekStat", sysStatRepo.LIST_SYS_STAT_AREA_DAYOFWEEK_STAT(paramMap));
+                rtn.put("levelAreaStat", sysStatRepo.LIST_SYS_STAT_LEVEL_AREA_STAT(paramMap));
+                rtn.put("levelStrStat", sysStatRepo.LIST_SYS_STAT_STR_EVENT_STAT(paramMap));
+            }
+
             rtn.put("result", "success");
         } catch (Exception e) {
             rtn.put("result", "fail");
