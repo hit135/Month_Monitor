@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.fscom.firsens.sys.repository.SYSPushRepo">
+
+    <select id="CNT_SYS_PUSH" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+          FROM F_PUSH_LOG
+         WHERE 1 = 1
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
+           AND (    PUSHMSG LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR SNSRSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
+           </if>
+    </select>
+
+    <select id="LIST_SYS_PUSH" parameterType="map" resultType="map">
+        SELECT T.*
+          FROM ( SELECT ROW_NUMBER() over (ORDER BY Z.pushLog) AS rowNon
+                      , Z.*
+                   FROM ( SELECT PUSHLOG AS pushLog
+                               , SNSRSEQ AS snsrSeq
+                               , PUSHMSG AS pushMsg
+                               , DATE_FORMAT(PUSHSTIME, '%Y-%m-%d %H:%i:%s') AS pushStime
+                               , USERID AS userId
+                               , PUSHRSLT AS pushRslt
+                               , RESENDSEQ AS resendSeq
+                               , TOINFO AS toInfo
+                               , FROMINFO AS fromInfo
+                               , SENDRESULT AS sendResult
+                            FROM F_PUSH_LOG
+                           WHERE 1 = 1
+                             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
+                             AND (    PUSHMSG LIKE CONCAT('%', #{searchWrd}, '%')
+                                   OR SNSRSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
+                             </if>
+                           ORDER BY PUSHLOG DESC
+                        ) Z
+               ) T
+         LIMIT #{page}, #{sizePerPage}
+    </select>
+
+    <select id="CNT_SYS_SMS" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+          FROM F_SMS_LOG
+         WHERE 1 = 1
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
+           AND (    SMSMSG LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR SMSSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
+           </if>
+    </select>
+
+    <select id="LIST_SYS_SMS" parameterType="map" resultType="map">
+        SELECT T.*
+          FROM ( SELECT ROW_NUMBER() over (ORDER BY Z.smsSeq) AS rowNon
+                      , Z.*
+                   FROM ( SELECT SMSSEQ AS smsSeq
+                               , SNSRSEQ AS snsrSeq
+                               , SMSMSG AS smsMsg
+                               , DATE_FORMAT(SMSSTIME, '%Y-%m-%d %H:%i:%s') AS smsStime
+                               , USERID AS userId
+                               , SMSRCV AS smsRcv
+                               , SMSRSLT AS smsRslt
+                               , SMSTYPE AS smsType
+                               , SMSLEVEL AS smsLevel
+                               , RESENDSEQ AS resendSeq
+                               , SNSRID AS snsrId
+                            FROM F_SMS_LOG
+                           WHERE 1 = 1
+                             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
+                             AND (    SMSMSG LIKE CONCAT('%', #{searchWrd}, '%')
+                                   OR SMSSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
+                             </if>
+                          ORDER BY SMSSEQ desc
+                        ) Z
+               ) T
+         LIMIT #{page}, #{sizePerPage}
+    </select>
+
+</mapper>
