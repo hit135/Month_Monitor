@@ -64,7 +64,7 @@
     </select>
 
     <select id="SELECT_ONE_SYS_AREA_ITEM" parameterType="String" resultType="SYSAreaDomain">
-        SELECT FA.AREANAME                                      AS areaName
+        SELECT DISTINCT FA.AREANAME                                      AS areaName
              , FA.AREACODE                                      AS areaCode
              , FA.UPAREACODE                                    AS upAreaCode
              , FA.USEYN                                         AS useYn
@@ -78,7 +78,6 @@
              , FA.AREATEL                                       AS areaTel
              , FA.GUCODE                                        AS guCode
              , IFNULL((SELECT COUNT(AREACODE) FROM F_LEVEL_AREA B WHERE B.UPAREACODE = FA.UPAREACODE), 0) AS orderCnt
-             , FM.USERID as userId
           FROM F_LEVEL_AREA FA
                 LEFT JOIN F_MEMBER FM
                     ON FA.AREACODE = FM.MEMAREACODE
