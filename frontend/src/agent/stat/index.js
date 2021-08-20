@@ -1,5 +1,6 @@
 import {API_ROOT, formatDate, numCommaFormat} from "../commonIndex";
 import {CButton, CCol, CRow} from "@coreui/react";
+import { ResponsiveBar } from '@nivo/bar'
 import React from "react";
 const axios = require('axios');
 
@@ -16,6 +17,14 @@ export const getStatInfo = (type, guCode, areaCode, startDate, endDate) =>
     , `endDate=${formatDate(endDate)}`
     ].join('&'));
 
+export const getStatInfoList = (type, guCode, areaCode, startDate, endDate) =>
+  axios.get([
+    `${API_ROOT}/statInfoList?type=${type}`
+    , `guCode=${guCode}`
+    , `areaCode=${areaCode}`
+    , `startDate=${formatDate(startDate)}`
+    , `endDate=${formatDate(endDate)}`
+  ].join('&'));
 
 // 전기안전현황 컴포넌트
 export const areaStatusComponent = (areaName, startDate, endDate, areaAddr) => {
@@ -48,8 +57,22 @@ export const areaStatusComponent = (areaName, startDate, endDate, areaAddr) => {
 
 // 전기안전 경보 발생현황(종합) 컴포넌트
 export const areaTotalWarningComp = (areaName, item) => {
+  let chartData = [];
   let totalWarning1stNum = item[12]["oc1st"] + item[12]["igo1st"] + item[12]["igr1st"];
   let totalWarning2ndNum = item[12]["oc2nd"] + item[12]["igo2nd"] + item[12]["igr2nd"];
+  item.map((item, idx) => {
+    if( idx !== 12) {
+      chartData.push({
+        "label" : (idx + 1) + "월",
+        "과전류 1차 경보" : item["oc1st"],
+        "과전류 2차 경보" : item["oc2nd"],
+        "전체누설전류 1차 경보" : item["igo1st"],
+        "전체누설전류 2차 경보" : item["igo2nd"],
+        "저항누설전류 1차 경보" : item["igr1st"],
+        "저항누설전류 2차 경보" : item["igr2nd"],
+      })
+    }
+  });
   return (
     <div className={"mt-5"}>
       <h5>{areaName} 전기안전 경보 발생 현황</h5>
@@ -255,15 +278,187 @@ export const areaTotalWarningComp = (areaName, item) => {
         </tr>
         </tbody>
       </table>
+
+      <CRow>
+        <CCol md={"12"} style={{ height: "60vh"}}>
+          <ResponsiveBar
+            data={chartData}
+            keys={[ '과전류 1차 경보', '과전류 2차 경보', '전체누설전류 1차 경보', '전체누설전류 2차 경보', '저항누설전류 1차 경보', '저항누설전류 2차 경보' ]}
+            indexBy="label"
+            margin={{ top: 50, right: 30, bottom: 100, left: 60 }}
+            padding={0.2}
+            innerPadding={1}
+            groupMode="grouped"
+            valueScale={{ type: 'linear' }}
+            indexScale={{ type: 'band', round: true }}
+            valueFormat={{ format: '', enabled: false }}
+            colors={{ scheme: 'paired' }}
+            borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: '월별 Event발생 건수',
+              legendPosition: 'middle',
+              legendOffset: 32
+            }}
+            axisLeft={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legendPosition: 'middle',
+              legendOffset: -40
+            }}
+            borderRadius={4}
+            borderWidth={1}
+            labelSkipWidth={12}
+            labelSkipHeight={12}
+            labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+            legends={[
+              {
+                dataFrom: 'keys',
+                anchor: 'bottom',
+                direction: 'row',
+                justify: false,
+                translateX: 10,
+                translateY: 85,
+                itemsSpacing: 21,
+                itemWidth: 130,
+                itemHeight: 61,
+                itemDirection: 'left-to-right',
+                itemOpacity: 0.85,
+                symbolSize: 20,
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemOpacity: 1
+                    }
+                  }
+                ]
+              }
+            ]}
+          />
+        </CCol>
+      </CRow>
     </div>
   );
 }
 
+const areaHourlDayStatChart = (key, data) => (
+  <ResponsiveBar
+    data={data}
+    keys={key}
+    indexBy="label"
+    margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+    padding={0.2}
+    innerPadding={1}
+    groupMode="grouped"
+    valueScale={{ type: 'linear' }}
+    indexScale={{ type: 'band', round: true }}
+    valueFormat={{ format: '', enabled: false }}
+    colors={{ scheme: 'nivo' }}
+    borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+    axisTop={null}
+    axisRight={null}
+    axisBottom={{
+      tickSize: 5,
+      tickPadding: 5,
+      tickRotation: 0,
+      legendPosition: 'middle',
+      legendOffset: 32
+    }}
+    axisLeft={{
+      tickSize: 5,
+      tickPadding: 5,
+      tickRotation: 0,
+      legendPosition: 'middle',
+      legendOffset: -40
+    }}
+    borderRadius={4}
+    borderWidth={1}
+    labelSkipWidth={12}
+    labelSkipHeight={12}
+    labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+    legends={[
+      {
+        dataFrom: 'keys',
+        anchor: 'bottom-right',
+        direction: 'column',
+        justify: false,
+        translateX: 120,
+        translateY: 0,
+        itemsSpacing: 2,
+        itemWidth: 100,
+        itemHeight: 20,
+        itemDirection: 'left-to-right',
+        itemOpacity: 0.85,
+        symbolSize: 20,
+        effects: [
+          {
+            on: 'hover',
+            style: {
+              itemOpacity: 1
+            }
+          }
+        ]
+      }
+    ]}
+  />
+)
+
 export const areaTotalChartStatComp = (item1, item2) => {
+  let hourOcChartData = [];
+  let hourIgoChartData = [];
+  let hourIgrChartData = [];
+  let dayOcChartData = [];
+  let dayIgoChartData = [];
+  let dayIgrChartData = [];
+  let keys = ["주의", "경고"];
+  item1.map((item, idx) => {
+    hourOcChartData.push({
+      "label" : item["hour"],
+      "주의" : item["ocWarningCnt"],
+      "경고" : item["ocDangerCnt"],
+    });
+    hourIgoChartData.push({
+      "label" : item["hour"],
+      "주의" : item["igoWarningCnt"],
+      "경고" : item["igoDangerCnt"],
+    });
+    hourIgrChartData.push({
+      "label" : item["hour"],
+      "주의" : item["igrWarningCnt"],
+      "경고" : item["igrDangerCnt"],
+    });
+  });
+
+  item2.map((items, idx)=> {
+    dayOcChartData.push({
+      "label" : items["dayName"],
+      "주의" : items["oc1stCnt"],
+      "경고" : items["oc2ndCnt"],
+    });
+
+    dayIgoChartData.push({
+      "label" : items["dayName"],
+      "주의" : items["igo1stCnt"],
+      "경고" : items["igo2ndCnt"],
+    });
+
+    dayIgrChartData.push({
+      "label" : items["dayName"],
+      "주의" : items["igr1stCnt"],
+      "경고" : items["igr2ndCnt"],
+    });
+  });
+
   return (
     <div>
       <CRow>
-        <CCol md={"6"}>
+        <CCol md={"5"}>
           <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 과전류 발생현황</span>
           <table className="table table-sm table-bordered mb-0" id="wme_area_oc_warning_hourly_table">
             <tbody>
@@ -312,13 +507,13 @@ export const areaTotalChartStatComp = (item1, item2) => {
             </tbody>
           </table>
         </CCol>
-        <CCol md={"6"}>
-
+        <CCol md={"7"} style={{ height: "35vh"}}>
+          {areaHourlDayStatChart(keys, hourOcChartData)}
         </CCol>
       </CRow>
 
       <CRow>
-        <CCol md={"6"}>
+        <CCol md={"5"}>
           <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 요일별 과전류 발생현황</span>
           <table className="table table-sm table-bordered mb-0" id="wme_area_igo_danger_dayofweek_table">
             <tbody>
@@ -373,13 +568,13 @@ export const areaTotalChartStatComp = (item1, item2) => {
             </tbody>
           </table>
         </CCol>
-        <CCol md={"6"}>
-
+        <CCol md={"7"} style={{ height: "35vh"}}>
+          {areaHourlDayStatChart(keys, dayOcChartData)}
         </CCol>
       </CRow>
 
       <CRow>
-        <CCol md={"6"}>
+        <CCol md={"5"}>
           <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 전체누설전류(IGO) 발생현황</span>
           <table className="table table-sm table-bordered mb-0" id="wme_area_oc_warning_hourly_table">
             <tbody>
@@ -428,13 +623,13 @@ export const areaTotalChartStatComp = (item1, item2) => {
             </tbody>
           </table>
         </CCol>
-        <CCol md={"6"}>
-
+        <CCol md={"7"} style={{ height: "35vh"}}>
+          {areaHourlDayStatChart(keys, hourIgoChartData)}
         </CCol>
       </CRow>
 
       <CRow>
-        <CCol md={"6"}>
+        <CCol md={"5"}>
           <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 요일별 전체누설전류(IGO) 발생현황</span>
           <table className="table table-sm table-bordered mb-0" id="wme_area_igo_danger_dayofweek_table">
             <tbody>
@@ -489,13 +684,13 @@ export const areaTotalChartStatComp = (item1, item2) => {
             </tbody>
           </table>
         </CCol>
-        <CCol md={"6"}>
-
+        <CCol md={"7"} style={{ height: "35vh"}}>
+          {areaHourlDayStatChart(keys, dayIgoChartData)}
         </CCol>
       </CRow>
 
       <CRow>
-        <CCol md={"6"}>
+        <CCol md={"5"}>
           <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 전체누설전류(IGR) 발생현황</span>
           <table className="table table-sm table-bordered mb-0" id="wme_area_oc_warning_hourly_table">
             <tbody>
@@ -544,13 +739,13 @@ export const areaTotalChartStatComp = (item1, item2) => {
             </tbody>
           </table>
         </CCol>
-        <CCol md={"6"}>
-
+        <CCol md={"7"} style={{ height: "35vh"}}>
+          {areaHourlDayStatChart(keys, hourIgrChartData)}
         </CCol>
       </CRow>
 
       <CRow>
-        <CCol md={"6"}>
+        <CCol md={"5"}>
           <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 요일별 전체누설전류(IGR) 발생현황</span>
           <table className="table table-sm table-bordered mb-0" id="wme_area_igo_danger_dayofweek_table">
             <tbody>
@@ -605,8 +800,8 @@ export const areaTotalChartStatComp = (item1, item2) => {
             </tbody>
           </table>
         </CCol>
-        <CCol md={"6"}>
-
+        <CCol md={"7"} style={{ height: "35vh"}}>
+          {areaHourlDayStatChart(keys, dayIgrChartData)}
         </CCol>
       </CRow>
     </div>
@@ -702,7 +897,6 @@ export const levelStoreStatComp = (areaName, item) => {
 
 // 전기사용량 현황
 export const areaKwhStatComp = (areaName, item) => {
-  console.log(item);
   return (
     <div className={"mt-4"}>
       <h5>{areaName} 전기사용량 현황(종합)</h5>
@@ -910,7 +1104,6 @@ export const areaTotalKwhComp = (item, item2) => {
 }
 
 export const strKwhStatComp = (areaName, item) => {
-  console.log(item);
   return (
     <div>
       <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>상점별 전력사용량</span>
