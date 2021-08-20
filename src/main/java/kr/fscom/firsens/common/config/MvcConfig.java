@@ -1,5 +1,6 @@
-package kr.fscom.firsens.common;
+package kr.fscom.firsens.common.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
@@ -29,6 +30,24 @@ import java.io.IOException;
 @EnableWebMvc
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private MNGConInterceptor mngConInterceptor;
+
+    @Autowired
+    private MNGNotConInterceptor mngNotConInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(mngConInterceptor)
+                .addPathPatterns("/mng/**")
+                .excludePathPatterns("/mng/loginPage", "/mng/selectRsaKeyAjax", "/mng/loginAjax", "/mng/logout");
+
+        registry.addInterceptor(mngConInterceptor).addPathPatterns("/adm/**");
+
+        registry.addInterceptor(mngNotConInterceptor)
+                .addPathPatterns("/mng/loginPage", "/mng/selectRsaKeyAjax", "/mng/loginAjax");
+    }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -67,7 +86,5 @@ public class MvcConfig implements WebMvcConfigurer {
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
     }
-
-
 
 }

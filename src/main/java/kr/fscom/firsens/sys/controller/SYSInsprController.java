@@ -1,6 +1,6 @@
 package kr.fscom.firsens.sys.controller;
 
-import kr.fscom.firsens.common.security.Sha256Encrypt;
+import kr.fscom.firsens.common.keycrypt.KeyEncrypt;
 import kr.fscom.firsens.sys.repository.SYSInsprRepo;
 
 import org.slf4j.Logger;
@@ -19,7 +19,6 @@ import java.util.List;
 public class SYSInsprController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SYSInsprController.class);
-    Sha256Encrypt sha256Encrypt = new Sha256Encrypt();
 
     private final SYSInsprRepo sysInsprRepo;
 
@@ -112,7 +111,7 @@ public class SYSInsprController {
         boolean result = false;
 
         try {
-            String sha256InspPass = sha256Encrypt.getHex((String) param.get("inspPass"), (String) param.get("inspId"));
+            String sha256InspPass = new KeyEncrypt().sha256Encryption((String) param.get("inspPass"), (String) param.get("inspId"));
             param.put("inspPass", sha256InspPass);
             int ins = sysInsprRepo.INSERT_SYS_INSPECTOR(param);
 
@@ -149,7 +148,7 @@ public class SYSInsprController {
 
         try {
             if (!StringUtils.isEmptyOrWhitespace((String) param.get("inspPass"))) {
-                String sha256InspPass = sha256Encrypt.getHex((String) param.get("inspPass"), (String) param.get("inspId"));
+                String sha256InspPass = new KeyEncrypt().sha256Encryption((String) param.get("inspPass"), (String) param.get("inspId"));
                 param.put("inspPass", sha256InspPass);
             }
 

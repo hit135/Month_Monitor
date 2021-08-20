@@ -1,8 +1,11 @@
 package kr.fscom.firsens.mng.controller;
 
 import kr.fscom.firsens.mng.repository.MMainRepo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,24 +39,36 @@ public class MMainController {
     private static final Logger LOG = LoggerFactory.getLogger(MMainController.class);
     private final MMainRepo mainRepo;
 
+    @Value("${globals.naver.clientId}")
+    private String naverClientId;
+
     @Autowired
     public MMainController(MMainRepo repo) {
         this.mainRepo = repo;
     }
 
-    @RequestMapping(value="/main")
-    public ModelAndView main(HttpServletRequest req) {
+    @RequestMapping(value = "/main")
+    public ModelAndView main(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_main");
+
+        try {
+            String naverMap = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization";
+            mav.addObject("naverMap", naverMap);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
         return mav;
     }
 
-    @RequestMapping(value="/mainArea")
+    @RequestMapping(value = "/mainArea")
     public ModelAndView mainArea(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_main_area");
 
         try {
             String panel_index = req.getParameter("panel_index");
             String areacode = req.getParameter("areacode");
+
             mav.addObject("prm_panel_index", panel_index);
             mav.addObject("prm_areacode", areacode);
         } catch (Exception e) {
@@ -63,7 +78,7 @@ public class MMainController {
         return mav;
     }
 
-    @RequestMapping(value="/sensorCountAjax")
+    @RequestMapping(value = "/sensorCountAjax")
     @ResponseBody
     public List<HashMap<String,Object>> sensorCountAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -77,7 +92,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/areaListAjax")
+    @RequestMapping(value = "/areaListAjax")
     @ResponseBody
     public List<HashMap<String,Object>> areaListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -91,7 +106,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/sensorListAjax")
+    @RequestMapping(value = "/sensorListAjax")
     @ResponseBody
     public List<HashMap<String,Object>> sensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -105,7 +120,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/areaSensorCountAjax")
+    @RequestMapping(value = "/areaSensorCountAjax")
     @ResponseBody
     public List<HashMap<String,Object>> areaSensorCountAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -120,7 +135,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/areaStoreListAjax")
+    @RequestMapping(value = "/areaStoreListAjax")
     @ResponseBody
     public List<HashMap<String,Object>> areaStoreListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -135,7 +150,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/areaSensorListAjax")
+    @RequestMapping(value = "/areaSensorListAjax")
     @ResponseBody
     public List<HashMap<String,Object>> areaSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -151,7 +166,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/storeSearchAjax")
+    @RequestMapping(value = "/storeSearchAjax")
     @ResponseBody
     public List<HashMap<String,Object>> storeSearchAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -166,7 +181,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/checkSensorListAjax")
+    @RequestMapping(value = "/checkSensorListAjax")
     @ResponseBody
     public List<HashMap<String,Object>> checkSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -180,7 +195,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/mainAreaDataChartAjax")
+    @RequestMapping(value = "/mainAreaDataChartAjax")
     @ResponseBody
     public List<HashMap<String,Object>> mainAreaDataChartAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -195,7 +210,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/mainAreaLogChartAjax")
+    @RequestMapping(value = "/mainAreaLogChartAjax")
     @ResponseBody
     public List<HashMap<String,Object>> mainAreaLogChartAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -210,7 +225,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/mainAreaDataChartWeekAjax")
+    @RequestMapping(value = "/mainAreaDataChartWeekAjax")
     @ResponseBody
     public List<HashMap<String,Object>> mainAreaDataChartWeekAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -225,7 +240,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/mainAreaLogChartWeekAjax")
+    @RequestMapping(value = "/mainAreaLogChartWeekAjax")
     @ResponseBody
     public List<HashMap<String,Object>> mainAreaLogChartWeekAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -240,7 +255,7 @@ public class MMainController {
         return null;
     }
 
-    @RequestMapping(value="/mainAreaMapSensorListAjax")
+    @RequestMapping(value = "/mainAreaMapSensorListAjax")
     @ResponseBody
     public List<HashMap<String,Object>> mainAreaMapSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();

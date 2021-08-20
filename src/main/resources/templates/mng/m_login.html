@@ -1,0 +1,129 @@
+<!-- 2021.04.13 최초 작성 -->
+
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="ko" />
+<head>
+<title>fireSens</title>
+<th:block th:replace="mng/layout/m_head"></th:block>
+<link rel="stylesheet" th:href="@{/fs/css/login.css}" />
+
+<style>
+  #page-logo {
+    width: 16.875rem;
+    overflow: hidden;
+    text-align: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -ms-flex-positive: 0;
+    -webkit-box-flex: 0;
+    flex-grow: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    min-height: 1px;
+    padding: 0 2rem;
+    background: #ffffff;
+    border-bottom: 1px solid #eaeaea;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+
+  #mng_challenge_logo { width: 100px; height: 100%; }
+</style>
+</head>
+
+<body>
+<div class="blankpage-form-field">
+  <div id="page-logo"
+       class="m-0 p-1 w-100 d-flex align-items-center justify-content-center rounded border-bottom-left-radius-0 border-bottom-right-radius-0 px-4">
+    <img id="mng_challenge_logo" th:src="@{/fs/img/logo.png}" alt="스마트챌린지 로고" aria-roledescription="logo" />
+    <br/>
+    <span class="page-logo-text mr-1">스마트챌린지 관리웹</span>
+  </div><!-- /.page-logo -->
+  <div class="card p-4 border-top-left-radius-0 border-top-right-radius-0">
+    <div class="form-group">
+      <label class="form-label" for="mng_user_id">ID</label>
+      <input type="text" id="mng_user_id" class="form-control" placeholder="아이디를 입력하세요." value="admin" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="mng_mem_pwd">비밀번호</label>
+      <input type="password" id="mng_mem_pwd" class="form-control" placeholder="password" value="admin@1212" />
+      <!-- <span class="help-block"> Your password </span> -->
+    </div>
+    <button type="button" class="btn btn-success float-right mt-1" onclick="fn_mng_loginAjax();">접속</button>
+  </div><!-- /.card -->
+</div>
+</body>
+
+<link id="contextPathHolder" th:data-contextPath="${#httpServletRequest.getContextPath()}" />
+
+<script th:src="@{/fs/js/polyfill.min.js}"></script>
+<script th:src="@{/fs/js/rsa/jsbn.js}"></script>
+<script th:src="@{/fs/js/rsa/prng4.js}"></script>
+<script th:src="@{/fs/js/rsa/rng.js}"></script>
+<script th:src="@{/fs/js/rsa/rsa.js}"></script>
+
+<script>
+  var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
+
+  var MNG_RSA_PUBLIC_KEY_MODULUS = "", MNG_RSA_PUBLIC_KEY_EXPONENT = "";
+
+  $(document).ready(function () {
+    fn_mng_selectRsaKey();
+  });
+
+  function fn_mng_selectRsaKey() {
+    $.ajax({
+       url: contextPath + '/mng/selectRsaKeyAjax'
+     , async: false
+     , dataType: 'json'
+     , method: 'post'
+    }).done(function(data) {
+      if (data['result']) {
+        if (typeof data['rsaPublicKeyModulus'] != 'undefined' && data['rsaPublicKeyModulus'] != null
+            && typeof data['rsaPublicKeyExponent'] != 'undefined' && data['rsaPublicKeyExponent'] != null) {
+          MNG_RSA_PUBLIC_KEY_MODULUS = data['rsaPublicKeyModulus'].toString();
+          MNG_RSA_PUBLIC_KEY_EXPONENT = data['rsaPublicKeyExponent'].toString();
+        }
+      } else {
+        console.log("error RSA !!!");
+      }
+    }).fail(function (e) {
+      console.log(e);
+      console.log("error RSA !!!");
+    });
+  }
+
+  function fn_mng_rsaEnc(value) {
+    var rsa = new RSAKey();
+    rsa.setPublic(MNG_RSA_PUBLIC_KEY_MODULUS, MNG_RSA_PUBLIC_KEY_EXPONENT);
+
+    var encValue = rsa.encrypt(value);     // 사용자 ID와 비밀번호를 RSA로 암호화한다.
+    return encValue;
+  }
+
+  function fn_mng_loginAjax() {
+    $.ajax({
+       url: contextPath + '/mng/loginAjax'
+     , data: JSON.stringify({ "userId": fn_mng_rsaEnc($("#mng_user_id").val()), "memPwd": fn_mng_rsaEnc($("#mng_mem_pwd").val()) })
+     , dataType: 'json'
+     , method: 'post'
+     , contentType: 'application/json'
+     , async: false
+    }).done(function (data) {
+      if (data['result']) {
+        alert("로그인하였습니다.");
+        location.href = contextPath + '/mng/main';
+      } else {
+        Swal.fire('로그인 오류', '로그인 도중 오류가 발생했습니다.', 'error');
+        fn_mng_selectRsaKey();
+      }
+    }).fail(function (e) {
+      console.log(e);
+      fn_mng_selectRsaKey();
+    });
+  }
+</script>
+</html>

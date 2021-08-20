@@ -1,6 +1,6 @@
 package kr.fscom.firsens.sys.controller;
 
-import kr.fscom.firsens.common.security.Sha256Encrypt;
+import kr.fscom.firsens.common.keycrypt.KeyEncrypt;
 import kr.fscom.firsens.sys.domain.SYSMemDomain;
 import kr.fscom.firsens.sys.repository.SYSMemRepo;
 
@@ -24,7 +24,6 @@ public class SYSMemController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SYSMemController.class);
     private final SYSMemRepo sysMemRepo;
-    Sha256Encrypt sha256Encrypt = new Sha256Encrypt();
 
     @Autowired
     public SYSMemController(SYSMemRepo sysMemRepo) { this.sysMemRepo = sysMemRepo; }
@@ -118,7 +117,7 @@ public class SYSMemController {
 
         try {
             if (!StringUtils.isEmptyOrWhitespace(domain.getUserId()) || StringUtils.isEmptyOrWhitespace(domain.getMemPwd())) {
-                String sha256MemPwd = sha256Encrypt.getHex(domain.getMemPwd(), domain.getUserId());
+                String sha256MemPwd = new KeyEncrypt().sha256Encryption(domain.getMemPwd(), domain.getUserId());
                 domain.setMemPwd(sha256MemPwd);
 
                 if (sysMemRepo.INSERT_SYS_MEM(domain) > 0)
@@ -182,7 +181,7 @@ public class SYSMemController {
 
         try {
             if (!StringUtils.isEmptyOrWhitespace(domain.getMemPwd())) {
-                String sha256MemPwd = sha256Encrypt.getHex(domain.getMemPwd(), domain.getUserId());
+                String sha256MemPwd = new KeyEncrypt().sha256Encryption(domain.getMemPwd(), domain.getUserId());
                 domain.setMemPwd(sha256MemPwd);
             }
 

@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,6 +40,9 @@ public class MStoreController {
     private static final Logger LOG = LoggerFactory.getLogger(MStoreController.class);
     private final MStoreRepo storeRepo;
 
+    @Value("${globals.naver.clientId}")
+    private String naverClientId;
+
     @Autowired
     public MStoreController(MStoreRepo repo) {
         this.storeRepo = repo;
@@ -65,6 +69,9 @@ public class MStoreController {
             mav.addObject("prm_areacode", areacode);
             mav.addObject("prm_strcode", strcode);
             mav.addObject("prm_snsrid", snsrid);
+
+            String naverMap = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization";
+            mav.addObject("naverMap", naverMap);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
