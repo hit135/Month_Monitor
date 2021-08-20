@@ -25,29 +25,15 @@
         </div><!-- /#carouselExampleIndicators -->
       </div><!-- /.store-img -->
       <table class="store-meta w-100">
-        <tr class="store-name">
-          <th>상점명</th>
-          <td class="store-name-cont"></td>
-        </tr>
-        <tr class="store-addr">
-          <th>주소</th>
-          <td class="store-addr-cont"></td>
-        </tr>
-        <tr class="store-tel">
-          <th>연락처</th>
-          <td class="store-tel-cont"></td>
-        </tr>
-        <tr class="store-owntel">
-          <th>상점주</th>
-          <td class="store-owntel-cont"></td>
-        </tr>
-        <tr class="store-owntel">
-          <td colspan="2"><div class="store-info-sensor-list"></div></td>
-        </tr>
+        <tr class="store-name"><th>상점명</th><td class="store-name-cont"></td></tr>
+        <tr class="store-addr"><th>주소</th><td class="store-addr-cont"></td></tr>
+        <tr class="store-tel"><th>연락처</th><td class="store-tel-cont"></td></tr>
+        <tr class="store-owntel"><th>상점주</th><td class="store-owntel-cont"></td></tr>
+        <tr class="store-owntel"><td colspan="2"><div class="store-info-sensor-list"></div></td></tr>
       </table>
     </div><!-- /.store-img -->
     <div class="col-md-8 m-md-0 col-12 m-3">
-      <h3 style="margin:10px 0; border-bottom:2px solid #ddd;">오늘 경보 이력</h3>
+      <h3 style="margin: 10px 0; border-bottom: 2px solid #ddd;">오늘 경보 이력</h3>
 
       <div>
         <div class="row pl-2">
@@ -55,15 +41,15 @@
             <div class="form-group custom-control custom-checkbox custom-control-inline">
               <input type="checkbox" class="custom-control-input" id="check-total">
               <label class="custom-control-label" for="check-total">전체</label>
-            </div><!-- /.form-group -->
+            </div><!-- /#check-total -->
             <div class="form-group custom-control custom-checkbox custom-control-inline">
               <input type="checkbox" class="custom-control-input" id="check-danger" checked="checked">
               <label class="custom-control-label" for="check-danger">경고</label>
-            </div><!-- /.form-group -->
+            </div><!-- /#check-danger -->
             <div class="form-group custom-control custom-checkbox custom-control-inline">
               <input type="checkbox" class="custom-control-input" id="check-warn">
               <label class="custom-control-label" for="check-warn">주의</label>
-            </div><!-- /.form-group -->
+            </div><!-- /#check-warn -->
 
             <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_showDataLog();">조회</button>
           </div><!-- /.col-12 align-middle -->
@@ -167,7 +153,7 @@
 
       $('.store-info').on('click', '.btn-check-start', function() {
         if (confirm('점검 등록할까요?')) {
-          $.post($('#contextRoot').val() + '/mng/startCheckAjax', { snsrid: $(this).attr('data-snsrid') } ,function(d) {
+          $.post($('#contextRoot').val() + '/mng/startCheckAjax', { snsrid: $(this).attr('data-snsrid') }, function(d) {
             if (d == 'success') {
               alert('점검 등록 되었습니다.');
 
@@ -214,25 +200,29 @@
         $('.store-info #check-warn').prop('checked', false);
       }
 
-      if ($('.store-info #check-danger:checked').length + $('.store-info #check-warn:checked').length == 0)
+      if ($('.store-info #check-danger:checked').length + $('.store-info #check-warn:checked').length == 0) {
         $('.store-info #check-total').prop('checked', true);
-      else
+      } else {
         $('.store-info #check-total').prop('checked', false);
+      }
 
       fn_showDataLog();
     }
 
     function fn_showDataLog() {
-      if ($('.store-info #check-total:checked').length > 0)
+      if ($('.store-info #check-total:checked').length > 0) {
         $('.store-datalog-list p').show();
-      else
+      } else {
         $('.store-datalog-list p').hide();
+      }
 
-      if ($('.store-info #check-danger:checked').length > 0)
+      if ($('.store-info #check-danger:checked').length > 0) {
         $('.store-datalog-list p.DANGER').show();
+      }
 
-      if ($('.store-info #check-warn:checked').length > 0)
+      if ($('.store-info #check-warn:checked').length > 0) {
         $('.store-datalog-list p.WARN').show();
+      }
     }
 
     function fn_getStoreInfo() {
@@ -244,8 +234,8 @@
       });
     }
 
-    let map = null;
-    let marker = [];
+    var map = null;
+    var marker = [];
 
     function fn_setSensor(d) {
       let markImg = {
@@ -257,7 +247,8 @@
       };
 
       let markZindex = { NORMAL: 1, DISCON: 0, WARNING: 3, CAUTION: 2 };
-      if (!map) {
+
+      if (map == null) {
         let options = { center: new naver.maps.LatLng(33.450701, 126.570667), zoom: 17 };
         map = new naver.maps.Map($('.store-map')[0], options);
       }
@@ -399,8 +390,9 @@
               warn_bar.attr('data-regdate', temp[i].SDATE);
               warn_bar.attr('data-checktype','warn');
 
-              if (temp[i].WEEK == 7)
+              if (temp[i].WEEK == 7) {
                 a = 'this';
+              }
             }
 
             let this_week = temp[temp.length - 1].WEEK;
@@ -437,10 +429,10 @@
                 d[i].STATE = 'danger';
                 d[i].CNT = d[i].DANGER;
                 d[i].CNT2 = d[i].WARN;
-              } else if(d[i].WARN > 0) {
+              } else if (d[i].WARN > 0) {
                 d[i].STATE = 'warn';
                 d[i].CNT = d[i].WARN;
-              } else if(d[i].CON == 0) {
+              } else if (d[i].CON == 0) {
                 d[i].STATE = 'discon';
               }
 
