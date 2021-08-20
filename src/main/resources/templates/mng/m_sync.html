@@ -1,98 +1,124 @@
 <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <th:block th:replace="mng/layout/m_head"></th:block>
-    <style type="text/css">
-      .sync-data-cnt p { margin:5px; border-bottom:1px solid #ddd; }
-      .sync-data-cnt span { display:inline-block; width:100px; text-align:right; }
-      .sync-data-cnt-list { border-right:1px solid #000; height:700px; overflow-y:scroll; }
-      .sync-sensor-data-cnt p { margin:5px; border-bottom:1px solid #ddd; }
-      .sync-sensor-data-cnt p.warn { background:#dbc969; font-weight:bold; }
-      .sync-sensor-data-cnt span { display:inline-block; width:130px; text-align:right; }
-      .sync-sensor-data-cnt-list { height:700px; overflow-y:scroll; }
-      .sync-sensor-data-cnt-list .sync { display:none; color:#d00; }
-      .sync-sensor-data-cnt-list .SYNC .sync { display:inline-block; }
-      .sync-sensor-data-cnt-list .SYNC .btn-sensor-data-cnt { display:none; }
-    </style>
-  </head>
-  <body class="mod-bg-1 mod-nav-link">
-    <input id="contextRoot" type="hidden" th:value="${#httpServletRequest.getContextPath()}" />
-    <div class="row">
-      <div class="col-12">
-        <h1>데이터 동기화</h1>
-        <div class="form-group custom-control-inline">
-          <input class="form-control" id="regdt" type="month"/>
-        </div>
-      </div>
+<html lang="en">
+<head>
+<th:block th:replace="mng/layout/m_head"></th:block>
+<style type="text/css">
+  .sync-data-cnt p { margin: 5px; border-bottom: 1px solid #ddd; }
+  .sync-data-cnt span { display: inline-block; width: 100px; text-align: right; }
+  .sync-data-cnt-list { border-right: 1px solid #000; height: 700px; overflow-y: scroll; }
+  .sync-sensor-data-cnt p { margin: 5px; border-bottom: 1px solid #ddd; }
+  .sync-sensor-data-cnt p.warn { background: #dbc969; font-weight:bold; }
+  .sync-sensor-data-cnt span { display: inline-block; width: 130px; text-align: right; }
+  .sync-sensor-data-cnt-list { height: 700px; overflow-y: scroll; }
+  .sync-sensor-data-cnt-list .sync { display: none; color: #d00; }
+  .sync-sensor-data-cnt-list .SYNC .sync { display: inline-block; }
+  .sync-sensor-data-cnt-list .SYNC .btn-sensor-data-cnt { display: none; }
+</style>
+</head>
+
+<body class="mod-bg-1 mod-nav-link">
+<input id="contextRoot" type="hidden" th:value="${#httpServletRequest.getContextPath()}" />
+
+<div class="row">
+  <div class="col-12">
+    <h1>데이터 동기화</h1>
+    <div class="form-group custom-control-inline">
+      <input class="form-control" id="regdt" type="month" />
     </div>
-    <div class="row">
-      <div class="col-4 sync-data-cnt">
-        <p><span>날짜</span><span>센서수</span><span>데이터수</span><span>선택보기</span></p>
-        <div class="sync-data-cnt-list"></div>
-      </div>
-      <div class="col-8 sync-sensor-data-cnt">
-        <p><span>시장명</span><span>센서ID</span><span>센서명</span><span>day-2</span><span>day-1</span><span>day<b class="sync-sensor-data-regdt"></b></span><span>상태</span></p>
-        <div class="sync-sensor-data-cnt-list"></div>
-      </div>
-    </div>
+  </div>
+</div><!-- /.row -->
+<div class="row">
+  <div class="col-4 sync-data-cnt">
+    <p><span>날짜</span><span>센서수</span><span>데이터수</span><span>선택보기</span></p>
+    <div class="sync-data-cnt-list"></div>
+  </div>
+  <div class="col-8 sync-sensor-data-cnt">
+    <p><span>시장명</span><span>센서ID</span><span>센서명</span><span>day-2</span><span>day-1</span><span>day<b class="sync-sensor-data-regdt"></b></span><span>상태</span></p>
+    <div class="sync-sensor-data-cnt-list"></div>
+  </div>
+</div><!-- /.row -->
 
-    <script type="text/javascript">
-      $(function() {
-        fn_init();
-      });
+<script type="text/javascript">
+  $(function() {
+    fn_init();
+  });
 
-      function fn_init() {
-        $.template('data-cnt', '<p><span>{{html DATE}}</span><span>{{html SNSRCNT}}</span><span>{{html DATACNT}}</span>' +
-          '<span><button type="button" class="btn-data-cnt btn btn-xs btn-outline-info waves-effect waves-themed"' +
-          '  data-regdt="{{html DATE}}">Detail</button></span></p>');
-        $.template('sensor-data-cnt', '<p class="{{html DATASTAT}}"><span>{{html AREANAME}}</span><span>{{html SNSRID}}</span><span>{{html SNSRNICK}}</span>' +
-          '<span>{{html DAY2}}</span><span>{{html DAY1}}</span><span>{{html DAY}}</span>' +
-          '<span class="{{html CHECKSTAT}}"><button type="button" class="btn-sensor-data-cnt btn btn-xs btn-outline-info waves-effect waves-themed"' +
-          ' data-snsrid="{{html SNSRID}}" data-regdt="{{html SDATE}}">동기화요청</button><b class="sync">{{html REQCONT}} 요청</b></span></p>');
-        $('#regdt').on('change', fn_getDataCntList);
-        $('.sync-data-cnt-list').on('click', '.btn-data-cnt', function() { fn_getSensorDataCntList($(this).attr('data-regdt')); });
-        $('.sync-sensor-data-cnt-list').on('click', '.btn-sensor-data-cnt', function() { fn_requestSync($(this).attr('data-snsrid'),$(this).attr('data-regdt')); });
-        $('#regdt').val(fn_dateToString(new Date()).slice(0, 7));
-        fn_getDataCntList();
+  function fn_init() {
+    $.template(
+      'data-cnt',
+      '<p>' +
+        '<span>{{html DATE}}</span><span>{{html SNSRCNT}}</span><span>{{html DATACNT}}</span>' +
+        '<span><button type="button" class="btn-data-cnt btn btn-xs btn-outline-info waves-effect waves-themed" data-regdt="{{html DATE}}">Detail</button></span>' +
+      '</p>'
+    );
+
+    $.template(
+      'sensor-data-cnt',
+      '<p class="{{html DATASTAT}}">' +
+        '<span>{{html AREANAME}}</span><span>{{html SNSRID}}</span><span>{{html SNSRNICK}}</span>' +
+        '<span>{{html DAY2}}</span><span>{{html DAY1}}</span><span>{{html DAY}}</span>' +
+        '<span class="{{html CHECKSTAT}}">' +
+          '<button type="button" class="btn-sensor-data-cnt btn btn-xs btn-outline-info waves-effect waves-themed" data-snsrid="{{html SNSRID}}" data-regdt="{{html SDATE}}">동기화요청</button>' +
+          '<b class="sync">{{html REQCONT}} 요청</b>' +
+        '</span>' +
+      '</p>'
+    );
+
+    $('#regdt').on('change', fn_getDataCntList);
+
+    $('.sync-data-cnt-list').on('click', '.btn-data-cnt', function() {
+      fn_getSensorDataCntList($(this).attr('data-regdt'));
+    });
+
+    $('.sync-sensor-data-cnt-list').on('click', '.btn-sensor-data-cnt', function() {
+      fn_requestSync($(this).attr('data-snsrid'), $(this).attr('data-regdt'));
+    });
+
+    $('#regdt').val(fn_dateToString(new Date()).slice(0, 7));
+
+    fn_getDataCntList();
+  }
+
+  function fn_getDataCntList() {
+    $.post($('#contextRoot').val() + '/mng/dataCntListAjax', { regdt: $('#regdt').val() }, function(d) {
+      $('.sync-data-cnt-list').html('');
+
+      for (let i = 0; i < d.length; i++)
+        $('.sync-data-cnt-list').append($.tmpl('data-cnt', d[i]));
+    });
+  }
+
+  function fn_getSensorDataCntList(regdt) {
+    $.post($('#contextRoot').val()+'/mng/sensorDataCntListAjax', { regdt:regdt }, function(d) {
+      $('.sync-sensor-data-regdt').text('');
+      $('.sync-sensor-data-cnt-list').html('');
+
+      for(let i = 0; i < d.length; i++) {
+        if (d[i].DAY < d[i].DAY1 / 2)
+          d[i].DATASTAT = 'warn';
+
+        $('.sync-sensor-data-cnt-list').append($.tmpl('sensor-data-cnt', d[i]));
       }
 
-      function fn_getDataCntList() {
-        $.post($('#contextRoot').val()+'/mng/dataCntListAjax',
-          { regdt:$('#regdt').val() }, function(d) {
-            $('.sync-data-cnt-list').html('');
-            for(var i=0; i<d.length; i++) $('.sync-data-cnt-list').append($.tmpl('data-cnt',d[i]));
-          });
-      }
+      $('.sync-sensor-data-regdt').text('(' + d[0].SDATE + ')');
+    });
+  }
 
-      function fn_getSensorDataCntList(regdt) {
-        $.post($('#contextRoot').val()+'/mng/sensorDataCntListAjax',
-          { regdt:regdt }, function(d) {
-            $('.sync-sensor-data-regdt').text('');
-            $('.sync-sensor-data-cnt-list').html('');
-            for(var i=0; i<d.length; i++) {
-              if(d[i].DAY < d[i].DAY1/2) d[i].DATASTAT = 'warn';
-              $('.sync-sensor-data-cnt-list').append($.tmpl('sensor-data-cnt',d[i]));
-            }
-            $('.sync-sensor-data-regdt').text('('+d[0].SDATE+')');
-          });
+  function fn_requestSync(snsrid, reqcont) {
+    $.post($('#contextRoot').val() + '/mng/requestSyncAjax', { snsrid: snsrid, reqcont: reqcont }, function(d) {
+      if (d == 'success') {
+        alert('동기화를 요청했습니다.');
+        fn_getSensorDataCntList(reqcont.replace('|', '-').replace('|', '-'));
+      } else {
+        alert('동기화요청을 실패하였습니다.');
       }
+    });
+  }
 
-      function fn_requestSync(snsrid, reqcont) {
-        $.post($('#contextRoot').val()+'/mng/requestSyncAjax',
-          { snsrid:snsrid, reqcont:reqcont }, function(d) {
-            if(d=='success') {
-              alert('동기화를 요청했습니다.');
-              fn_getSensorDataCntList(reqcont.replace('|','-').replace('|','-'));
-            } else {
-              alert('동기화요청을 실패하였습니다.');
-            }
-          });
-      }
-
-      function fn_dateToString(d) {
-        return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
-          ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
-      }
-    </script>
-  </body>
+  function fn_dateToString(d) {
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
+      ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+  }
+</script>
+</body>
 </html>

@@ -184,7 +184,7 @@
     });
 
     $('.center-main-cont').on('click', '.js-panel-collapse', function() {
-      var id = '#' + $(this).attr('data-id');
+      let id = '#' + $(this).attr('data-id');
 
       if ($(this).hasClass('on')) {
         $(this).removeClass('on');
@@ -198,7 +198,7 @@
     });
 
     $('.center-main-cont').on('click', '.js-panel-fullscreen', function() {
-      var id = '#' + $(this).attr('data-id');
+      let id = '#' + $(this).attr('data-id');
       if ($(this).hasClass('on')) {
         $(this).removeClass('on');
         $(id).removeClass('panel-fullscreen');
@@ -219,7 +219,7 @@
     });
   }
 
-  var refreshTime = window.setInterval(function() {
+  let refreshTime = window.setInterval(function() {
     let date = new Date();
     let mins = date.getMinutes();
 
@@ -278,14 +278,15 @@
   }
 
   function fn_getAreaStoreList(code, strcode, snsrid) {
-    var on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
-    if (strcode)
+    let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
+    if (strcode) {
       on_strcode = strcode;
+    }
 
     $.post($('#contextRoot').val() + '/mng/areaStoreListAjax', { areacode: code }, function(d) {
       $('.center-left-sensor-list').html('');
 
-      for (var i = 0; i < d.length; i++) {
+      for (let i = 0; i < d.length; i++) {
         d[i].CNT = 0;
 
         if (d[i].DANGER > 0) {
@@ -302,9 +303,10 @@
         $('.center-left-sensor-list').append($.tmpl('center-left-store', d[i]));
       }
 
-      var on_obj = $('.center-left-sensor-list p[data-strcode="' + on_strcode + '"]')[0];
-      if (!on_obj)
+      let on_obj = $('.center-left-sensor-list p[data-strcode="' + on_strcode + '"]')[0];
+      if (!on_obj) {
         on_obj = $('.center-left-sensor-list p')[0];
+      }
 
       $(on_obj).addClass('on');
 
@@ -321,20 +323,18 @@
   }
 
   function fn_clickContPage(p) {
-    var prm = {};
+    let prm = {};
     prm.areacode = $('.center-left-sensor-list p.on').attr('data-areacode');
     prm.strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
 
     if (p)
       prm = p;
 
-    var page = $('.center-cont-top-btn.on').attr('data-page');
+    let page = $('.center-cont-top-btn.on').attr('data-page');
 
     $.post($('#contextRoot').val() + '/mng/store' + page, prm, function(d) {
-      var $temp = $('<div>');
+      let $temp = $('<div>');
       $temp.html(d);
-
-      console.log($temp.find('.sub-cont'));
 
       $('.center-cont-page').html($temp.find('.sub-cont'));
     });
@@ -343,8 +343,8 @@
   function fn_initMainAreaList() {
     window.min_category = [];
 
-    for (var i = 0; i < 24; i++) {
-      for (var j = 0; j < 6; j++) {
+    for (let i = 0; i < 24; i++) {
+      for (let j = 0; j < 6; j++) {
         window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
       }
     }
@@ -357,32 +357,32 @@
         window.areaIndex = {};
         window.lv1cnt = 0;
 
-        for (var i = d.length - 1; i >= 0; i--) {
+        for (let i = d.length - 1; i >= 0; i--) {
           if (d[i].LEVEL != 1) {
             window.lv1cnt++;
             window.areaIndex[d[i].CODE] = i;
 
             $.post(
-              $('#contextRoot').val() + '/mng/mainArea'
+                $('#contextRoot').val() + '/mng/mainArea'
               , { panel_index: 'panel-' + d[i].CODE, areacode: d[i].CODE }
               , function(cont) {
-                var $temp = $('<div>');
-                $temp.html(cont);
+                  let $temp = $('<div>');
+                  $temp.html(cont);
 
-                $('.center-main-cont .sortable-grid').append($temp.find('.sub-cont').html());
+                  $('.center-main-cont .sortable-grid').append($temp.find('.sub-cont').html());
 
-                if (window.lv1cnt == $('.center-main-cont .panel').length) {
-                  $('#center-main-cont').smartPanel({ localStorage: true });
+                  if (window.lv1cnt == $('.center-main-cont .panel').length) {
+                    $('#center-main-cont').smartPanel({ localStorage: true });
 
-                  $($('.center-main-cont .js-panel-collapse')[0]).addClass("on");
-                  $($('.center-main-cont .panel-container')[0]).addClass('show');
-                  $($('.center-main-cont .js-panel-collapse')[1]).addClass("on");
-                  $($('.center-main-cont .panel-container')[1]).addClass('show');
+                    $($('.center-main-cont .js-panel-collapse')[0]).addClass("on");
+                    $($('.center-main-cont .panel-container')[0]).addClass('show');
+                    $($('.center-main-cont .js-panel-collapse')[1]).addClass("on");
+                    $($('.center-main-cont .panel-container')[1]).addClass('show');
+                  }
+
+                  window.center_name = 'main';
+                  fn_toggleCenterCont();
                 }
-
-                window.center_name = 'main';
-                fn_toggleCenterCont();
-              }
             );
           }
         }
@@ -412,15 +412,15 @@
         window.area = d;
         window.areaIndex = {};
 
-        for (var i = d.length - 1; i >= 0; i--) {
+        for (let i = d.length - 1; i >= 0; i--) {
           if (d[i].LEVEL != 1) {
             window.areaIndex[d[i].CODE] = i;
           }
         }
 
-        var show_panel = $('.center-main-cont .panel-container');
+        let show_panel = $('.center-main-cont .panel-container');
 
-        for (var i = 0; i < show_panel.length; i++) {
+        for (let i = 0; i < show_panel.length; i++) {
           fn_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
         }
       }
@@ -428,7 +428,7 @@
   }
 
   function fn_setMainArea(i, id) {
-    var panel_id = 'panel-' + i;
+    let panel_id = 'panel-' + i;
 
     $('#' + panel_id + ' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
     $('#' + panel_id + ' .center-main-area-count-store').text(window.area[window.areaIndex[i]].STORE);
@@ -537,7 +537,7 @@
   }
 
   function fn_setChartWeek(title, target, data, colors) {
-    var opt = {
+    let opt = {
         series: []
       , chart: { height: 250, type: 'bar', id: target, animations: { enabled: false } }
       , title: { text: title, align: 'left' }
@@ -609,7 +609,7 @@
   }
 
   function fn_tapCenterMainPage() {
-    var page_name = $('.panel.panel-fullscreen .center-main-cont-top-btn.on').attr('data-page');
+    let page_name = $('.panel.panel-fullscreen .center-main-cont-top-btn.on').attr('data-page');
     $('.panel.panel-fullscreen [class^=center-main-page]').removeClass('on');
     $('.panel.panel-fullscreen .center-main-page-' + page_name).addClass('on');
 

@@ -2,30 +2,27 @@
 
 <div class="row">
   <div class="col-md-2 col-12">
-    <a th:href="@{/mng/main}"><img th:src="@{/fs/img/logo.png}" alt="Firesens LOGO"/></a>
+    <a th:href="@{/mng/main}"><img th:src="@{/fs/img/logo.png}" alt="Firesens LOGO" /></a>
     <a type="button" data-toggle="modal" data-target=".default-example-modal-left-sm" style="position: absolute; top: 1.2rem; margin-left: 1rem;">
       <i class="fal fa-list" style="font-size: 2rem;"></i>
     </a>
-  </div>
+  </div><!-- /.col-md-2 col-12 -->
   <div class="col-md-8 col-12">
     <div class="row">
-
       <div class="col-md-4 col-12 d-md-block d-none">
         <div class="top-date"></div>
         <div class="top-time"></div>
       </div>
-      <div class="col-md-4 col-6" style="font-weight:900; font-size:30px; color:#0b3251; text-shadow:1px 1px 3px #000; text-align:center;">Firesens 전체 관제</div>
+      <div class="col-md-4 col-6" style="font-weight: 900; font-size: 30px; color: #0b3251; text-shadow: 1px 1px 3px #000; text-align: center;">Firesens 전체 관제</div>
       <div class="col-md-4 col-6 text-right position-relative">
         <div class="top-search form-group custom-control-inline position-relative m-0" role="content">
-          <input type="text" class="top-search-text form-control bg-subtlelight" placeholder="상점 검색">
-          <button type="button" class="btn btn-sm btn-success waves-effect waves-themed">
-            <i class="fal fa-search"></i>
-          </button>
+          <input type="text" class="top-search-text form-control bg-subtlelight" placeholder="상점 검색" />
+          <button type="button" class="btn btn-sm btn-success waves-effect waves-themed"><i class="fal fa-search"></i></button>
         </div>
         <div class="top-search-result"></div>
       </div>
-    </div>
-    <div style="font-weight:900; font-size:20px; text-align:center; margin-top:20px; border-bottom:2px solid #000;">오늘 센서 현황</div>
+    </div><!-- /.row -->
+    <div style="font-weight: 900; font-size: 20px; text-align: center; margin-top: 20px; border-bottom: 2px solid #000;">오늘 센서 현황</div>
     <div class="row sensor-stat">
       <div class="col-md-3 col-6 p-1">
         <div class="bg-primary rounded overflow-hidden position-relative">
@@ -36,9 +33,9 @@
               <small class="m-0 l-h-n">&nbsp;</small>
             </h3>
           </div>
-          <i class="fal fa-sensor position-absolute pos-top opacity-15" style="font-size:4rem"></i>
-        </div>
-      </div>
+          <i class="fal fa-sensor position-absolute pos-top opacity-15" style="font-size: 4rem"></i>
+        </div><!-- /.bg-primary rounded overflow-hidden position-relative -->
+      </div><!-- /.col-md-3 col-6 p-1 -->
       <div class="col-md-3 col-6 p-1">
         <div class="bg-danger rounded overflow-hidden position-relative">
           <div class="text-center">
@@ -48,9 +45,9 @@
               <small class="m-0 l-h-n">발생 <span class="COUNT-COUNTDANGER"></span></small>
             </h3>
           </div>
-          <i class="fal fa-siren-on position-absolute pos-top opacity-15" style="font-size:4rem"></i>
-        </div>
-      </div>
+          <i class="fal fa-siren-on position-absolute pos-top opacity-15" style="font-size: 4rem"></i>
+        </div><!-- /.bg-danger rounded overflow-hidden position-relative -->
+      </div><!-- /.col-md-3 col-6 p-1 -->
       <div class="col-md-3 col-6 p-1">
         <div class="bg-warning rounded overflow-hidden position-relative">
           <div class="text-center">
@@ -60,9 +57,9 @@
               <small class="m-0 l-h-n">발생 <span class="COUNT-COUNTWARN"></span></small>
             </h3>
           </div>
-          <i class="fal fa-exclamation-triangle position-absolute pos-top opacity-15" style="font-size:4rem"></i>
-        </div>
-      </div>
+          <i class="fal fa-exclamation-triangle position-absolute pos-top opacity-15" style="font-size: 4rem"></i>
+        </div><!-- /.bg-warning rounded overflow-hidden position-relative -->
+      </div><!-- /.col-md-3 col-6 p-1 -->
       <div class="col-md-3 col-6 p-1">
         <div class="bg-secondary rounded overflow-hidden position-relative">
           <div class="text-center">
@@ -72,18 +69,19 @@
               <small class="m-0 l-h-n">&nbsp;</small>
             </h3>
           </div>
-          <i class="fal fa-wifi-slash position-absolute pos-top opacity-15" style="font-size:4rem"></i>
-        </div>
-      </div>
-    </div>
-  </div>
+          <i class="fal fa-wifi-slash position-absolute pos-top opacity-15" style="font-size: 4rem"></i>
+        </div><!-- /.bg-secondary rounded overflow-hidden position-relative -->
+      </div><!-- /.col-md-3 col-6 p-1 -->
+    </div><!-- /.row sensor-stat -->
+  </div><!-- /.col-md-8 col-12 -->
   <div class="col-md-2 col-12 d-md-block d-none">
-    <img th:src="@{/fs/img/logo-morit.png}" style="width:55px;" alt="morit"/>
-    <img th:src="@{/fs/img/logo-daejeon.png}" style="width:55px; margin-left:20px;" alt="daejeon"/>
-    <img th:src="@{/fs/img/logo-dicia.png}" style="width:55px; margin-left:20px;" alt="dicia"/>
-    <img th:src="@{/fs/img/logo-fs.png}" style="width:55px; margin-left:20px;" alt="fs"/>
-  </div>
+    <img th:src="@{/fs/img/logo-morit.png}" style="width:55px;" alt="morit" />
+    <img th:src="@{/fs/img/logo-daejeon.png}" style="width:55px; margin-left:20px;" alt="daejeon" />
+    <img th:src="@{/fs/img/logo-dicia.png}" style="width:55px; margin-left:20px;" alt="dicia" />
+    <img th:src="@{/fs/img/logo-fs.png}" style="width:55px; margin-left:20px;" alt="fs" />
+  </div><!-- /.col-md-2 col-12 d-md-block d-none -->
 </div>
+
 <script type="text/javascript">
   $(function() {
     fn_initTop();
@@ -91,17 +89,25 @@
 
   function fn_initTop() {
     fn_getSensorCount();
-    $.template('top-search-result','<p data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}">{{html STRNAME}} [{{html AREANAME}}]</p>');
+
+    $.template(
+      'top-search-result',
+      '<p data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}">{{html STRNAME}} [{{html AREANAME}}]</p>'
+    );
+
     $('.top-search-text').on('keyup', fn_searchStore);
     $('.top-search button').on('click', fn_searchStore);
-    $('.top-search-result').on('click','p',function() {
+
+    $('.top-search-result').on('click', 'p', function() {
       fn_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
       $('.top-search-result').html('');
     });
+
     setInterval(function() {
-      var w = ['일','월','화','수','목','금','토'];
-      var now_str = fn_dateToString(new Date());
-      $('.top-date').text(now_str.substring(0,10)+' ('+w[new Date().getDay()]+')');
+      let w = ['일', '월', '화', '수', '목', '금', '토'];
+      let now_str = fn_dateToString(new Date());
+
+      $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
       $('.top-time').text(now_str.substring(11));
     }, 1000);
   }
@@ -111,8 +117,10 @@
   }
 
   function fn_getSensorCount() {
-    $.post($('#contextRoot').val()+'/mng/sensorCountAjax',{},function(d) {
-      for(var i=0; i<d.length; i++) $('.COUNT-'+d[i].TERM+d[i].TYPE).text(d[i].CNT);
+    $.post($('#contextRoot').val() + '/mng/sensorCountAjax', {}, function(d) {
+      for (let i = 0; i < d.length; i++) {
+        $('.COUNT-' + d[i].TERM + d[i].TYPE).text(d[i].CNT);
+      }
     });
   }
 
@@ -122,11 +130,9 @@
   }
 
   function fn_searchStore() {
-    $.post($('#contextRoot').val()+'/mng/storeSearchAjax',{
-      search: $('.top-search-text').val()
-    }, function(d) {
+    $.post($('#contextRoot').val() + '/mng/storeSearchAjax', { search: $('.top-search-text').val() }, function(d) {
       $('.top-search-result').html('');
-      $('.top-search-result').append($.tmpl('top-search-result',d));
+      $('.top-search-result').append($.tmpl('top-search-result', d));
     });
   }
 </script>

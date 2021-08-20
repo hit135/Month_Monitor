@@ -35,6 +35,7 @@ import org.thymeleaf.util.StringUtils;
  * </pre>
  * @since : 2021-07-20
  */
+
 @RestController
 @RequestMapping("/mng")
 public class MSyncController {
@@ -51,8 +52,7 @@ public class MSyncController {
 
     @RequestMapping(value="/sync")
     public ModelAndView sync(HttpServletRequest req) {
-        ModelAndView mav = new ModelAndView("mng/m_sync");
-        return mav;
+        return new ModelAndView("mng/m_sync");
     }
 
     @RequestMapping(value="/dataCntListAjax")
@@ -81,7 +81,8 @@ public class MSyncController {
     @RequestMapping(value="/sensorDataCntListAjax")
     @ResponseBody
     public List<HashMap<String, Object>> sensorDataCntListAjax(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+        HashMap<String, Object> prm = new HashMap<>();
+
         try {
             String regdt = req.getParameter("regdt");
             prm.put("tblSensorData", "F_SENSOR_DATA");
