@@ -3,6 +3,7 @@ import {CButton, CCol, CRow} from "@coreui/react";
 import React from "react";
 const axios = require('axios');
 
+
 export const getSelectGroup = (type) =>
   axios.get( `${API_ROOT}/selectGroup?type=${type}`)
 
@@ -617,8 +618,8 @@ export const levelAreaStatComp = (areaName, item) => {
   return (
     <div className={"mt-4"}>
       <h5>{areaName} 내 시장별 현황</h5>
-      <table className="table table-sm table-bordered mb-0" id="wme_level_area_table">
-        <tbody>
+      <table className="table table-sm table-bordered mb-0" >
+        <tbody id="wme_level_area_table">
         <tr>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소시장명</td>
           <td colSpan="2" className="wme_table_td_title text-center">과전류경보</td>
@@ -635,10 +636,9 @@ export const levelAreaStatComp = (areaName, item) => {
           <td className="wme_table_td_title text-center">1차</td>
           <td className="wme_table_td_title text-center">2차</td>
         </tr>
-
         {
           item.map((item2, idx) => (
-            <tr className="wme_str_event_tr">
+            <tr className="wme_str_event_tr" key={idx}>
               <td className="text-center">{item2['areaName']}</td>
               <td className="text-right">{item2['oc1st']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['oc2nd']?.toLocaleString() || 0}</td>
@@ -657,12 +657,13 @@ export const levelAreaStatComp = (areaName, item) => {
   )
 }
 
+// 내상점별 현황
 export const levelStoreStatComp = (areaName, item) => {
   return (
     <div className={"mt-4"}>
       <h5>{areaName} 내 상점별 현황</h5>
-      <table className="table table-sm table-bordered mb-0" id="wme_str_event_table">
-        <tbody>
+      <table className="table table-sm table-bordered mb-0" >
+        <tbody id="wme_str_event_table">
         <tr>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>상점명</td>
           <td colSpan="2" className="wme_table_td_title text-center">과전류경보</td>
@@ -679,10 +680,9 @@ export const levelStoreStatComp = (areaName, item) => {
           <td className="wme_table_td_title text-center">1차</td>
           <td className="wme_table_td_title text-center">2차</td>
         </tr>
-        </tbody>
         {
           item.map((item2, idx) => (
-            <tr className="wme_str_event_tr">
+            <tr className="wme_str_event_tr" key={idx}>
               <td className="text-center">{item2['strName']}</td>
               <td className="text-right">{item2['oc1st']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['oc2nd']?.toLocaleString() || 0}</td>
@@ -694,7 +694,246 @@ export const levelStoreStatComp = (areaName, item) => {
             </tr>
           ))
         }
+        </tbody>
       </table>
     </div>
   )
+}
+
+// 전기사용량 현황
+export const areaKwhStatComp = (areaName, item) => {
+  console.log(item);
+  return (
+    <div className={"mt-4"}>
+      <h5>{areaName} 전기사용량 현황(종합)</h5>
+      <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>전기사용량 현황(종합)</span>
+      <CRow>
+        <CCol md={"6"}>
+          <table className="table table-sm table-bordered mb-0">
+            <tbody>
+            <tr>
+              <td className="wme_table_td_title text-center"> </td>
+              <td className="wme_table_td_title text-center">사용량(Kwh)</td>
+              <td className="wme_table_td_title text-center">비율(%)</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">전기사용량</td>
+              <td className="text-right">{Math.round(item['snsrKwh'])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item['snsrKwhPer'])?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">누설전력량</td>
+              <td className="text-right">{Math.round(item['snsrIgo'])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item['snsrIgoPer'])?.toLocaleString() || 0}</td>
+            </tr>
+            </tbody>
+          </table>
+        </CCol>
+        <CCol md={"6"}>
+        </CCol>
+      </CRow>
+    </div>
+  );
+}
+
+// 전기사용량 상세 현황
+export const areaKwhStatYearComp = item => {
+  return (
+    <div>
+      <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>전기사용량 현황(상세)</span>
+      <table className="table table-sm table-bordered mb-0" id="wme_area_kwh_monthly_table">
+        <tbody>
+        <tr>
+          <td className="wme_table_td_title"> </td>
+          <td colSpan="13" className="wme_table_td_title text-center">월별 전력사용량(Kwh)</td>
+        </tr>
+        <tr>
+          <td className="wme_table_td_title text-center">월</td>
+          <td className="wme_table_td_title text-center">1월</td>
+          <td className="wme_table_td_title text-center">2월</td>
+          <td className="wme_table_td_title text-center">3월</td>
+          <td className="wme_table_td_title text-center">4월</td>
+          <td className="wme_table_td_title text-center">5월</td>
+          <td className="wme_table_td_title text-center">6월</td>
+          <td className="wme_table_td_title text-center">7월</td>
+          <td className="wme_table_td_title text-center">8월</td>
+          <td className="wme_table_td_title text-center">9월</td>
+          <td className="wme_table_td_title text-center">10월</td>
+          <td className="wme_table_td_title text-center">11월</td>
+          <td className="wme_table_td_title text-center">12월</td>
+          <td className="wme_table_td_title text-center">계</td>
+        </tr>
+        <tr>
+          <td className="wme_table_td_title text-center">전력사용량</td>
+          <td className="text-right">{Math.round(item[0]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[1]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[2]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[3]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[4]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[5]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[6]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[7]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[8]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[9]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[10]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[11]["snsrKwh"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[12]["snsrKwh"])?.toLocaleString() || 0}</td>
+        </tr>
+        <tr>
+          <td className="wme_table_td_title text-center">누설전력량</td>
+          <td className="text-right">{Math.round(item[0]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[1]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[2]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[3]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[4]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[5]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[6]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[7]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[8]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[9]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[10]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[11]["snsrIgo"])?.toLocaleString() || 0}</td>
+          <td className="text-right">{Math.round(item[12]["snsrIgo"])?.toLocaleString() || 0}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// 시간대별 전력사용량, 요일별 전력사용량
+export const areaTotalKwhComp = (item, item2) => {
+  return (
+    <div>
+      <CRow>
+        <CCol md={"6"}>
+          <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 전력사용량</span>
+          <table className="table table-sm table-bordered mb-0" id="wme_area_oc_warning_hourly_table">
+            <tbody>
+            <tr>
+              <td className="wme_table_td_title text-center">시간대</td>
+              <td className="wme_table_td_title text-center">사용량(kWh)</td>
+              <td className="wme_table_td_title text-center">비율(%)</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">0 ~ 3</td>
+              <td className="text-right">{item[0]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[0]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">4 ~ 7</td>
+              <td className="text-right">{item[1]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[1]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">8 ~ 11</td>
+              <td className="text-right">{item[2]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[2]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">12 ~ 15</td>
+              <td className="text-right">{item[3]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[3]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">16 ~ 19</td>
+              <td className="text-right">{item[4]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[4]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">20 ~ 23</td>
+              <td className="text-right">{item[5]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[5]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            </tbody>
+          </table>
+        </CCol>
+        <CCol md={"6"}>
+
+        </CCol>
+      </CRow>
+
+      <CRow>
+        <CCol md={"6"}>
+          <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 요일별 전력사용량</span>
+          <table className="table table-sm table-bordered mb-0" id="wme_area_oc_warning_hourly_table">
+            <tbody>
+            <tr>
+              <td className="wme_table_td_title text-center">시간대</td>
+              <td className="wme_table_td_title text-center">사용량(kWh)</td>
+              <td className="wme_table_td_title text-center">비율(%)</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">일요일</td>
+              <td className="text-right">{item2[0]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2[0]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">월요일</td>
+              <td className="text-right">{item2[1]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2[1]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">화요일</td>
+              <td className="text-right">{item2[2]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2[2]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">수요일</td>
+              <td className="text-right">{item2[3]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2[3]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">목요일</td>
+              <td className="text-right">{item2[4]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2[4]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">금요일</td>
+              <td className="text-right">{item2[5]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2[5]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">토요일</td>
+              <td className="text-right">{item2[6]["snsrKwh"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2[6]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+            </tr>
+            </tbody>
+          </table>
+        </CCol>
+        <CCol md={"6"}>
+
+        </CCol>
+      </CRow>
+    </div>
+  );
+}
+
+export const strKwhStatComp = (areaName, item) => {
+  console.log(item);
+  return (
+    <div>
+      <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>상점별 전력사용량</span>
+      <table className="table table-sm table-bordered mb-0" id="wme_str_kwh_table">
+        <tbody>
+        <tr>
+          <td className="wme_table_td_title text-center">상점명</td>
+          <td className="wme_table_td_title text-center">소비전력(kWh)</td>
+          <td className="wme_table_td_title text-center">누설전류(kWh)</td>
+          <td className="wme_table_td_title text-center">비고</td>
+        </tr>
+        {
+          item.map((item2, idx) => (
+            <tr className="wme_str_kwh_tr" key={idx}>
+            <td className="text-center">{item2["strName"]}</td>
+            <td className="text-right">{item2["snsrKwh"]?.toLocaleString() || 0}</td>
+            <td className="text-right">{item2["snsrIgo"]?.toLocaleString() || 0}</td>
+            <td> </td>
+            </tr>
+          ))
+        }
+        </tbody>
+      </table>
+    </div>
+  );
 }

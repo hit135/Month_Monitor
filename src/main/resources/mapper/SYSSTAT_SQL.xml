@@ -181,17 +181,15 @@
 
     <select id="SELECT_SYS_STAT_AREA_KWHIGO_STAT" parameterType="map" resultType="map">
         SELECT S.SNSRKWH AS snsrKwh
-        , (S.SNSRKWH * 100 / SNSRSUM) AS snsrKwhPer
-        , S.SNSRIGO AS snsrIgo
-        , (S.SNSRIGO * 100 / SNSRSUM) AS snsrIgoPer
-        FROM ( SELECT SUM(SNSRKWHDAILY) AS SNSRKWH
-        , SUM(SNSRIGOAVG) AS SNSRIGO
-        , SUM(SNSRKWHDAILY) + SUM(SNSRIGOAVG) AS SNSRSUM
-        FROM F_ELEC_SENSOR_STAT
-        WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
-        AND AREACODE = #{areaCode}
-        <if test='"str".equals(type)'>AND STRCODE = #{strCode}</if>
-        <if test='"snsr".equals(type)'>AND (SNSRID = #{snsrId} OR SNSRSEQ = #{snsrSeq})</if>
+             , (S.SNSRKWH * 100 / SNSRSUM) AS snsrKwhPer
+             , S.SNSRIGO AS snsrIgo
+             , (S.SNSRIGO * 100 / SNSRSUM) AS snsrIgoPer
+          FROM ( SELECT SUM(SNSRKWHDAILY) AS SNSRKWH
+                      , SUM(SNSRIGOAVG) AS SNSRIGO
+                      , SUM(SNSRKWHDAILY) + SUM(SNSRIGOAVG) AS SNSRSUM
+                   FROM F_ELEC_SENSOR_STAT
+                  WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
+                    AND AREACODE = #{areaCode}
         ) S
     </select>
 
@@ -310,7 +308,7 @@
                  AND SDATE BETWEEN #{startDate} AND #{endDate}
                GROUP BY AREACODE, STRCODE ) S
         ORDER BY (S.SNSRKWH) DESC
-            LIMIT 5
+            LIMIT 15
     </select>
 
 </mapper>

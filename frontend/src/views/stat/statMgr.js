@@ -3,24 +3,22 @@ import {
   CButton,
   CButtonGroup,
   CCard,
-  CCardBody, CCardFooter,
+  CCardBody,
   CCardHeader,
   CCol,
-  CFormGroup,
-  CInput,
-  CLabel, CProgress,
-  CRow, CSelect,
-  CSwitch
+  CSelect,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import {ko} from "date-fns/esm/locale";
+import { ResponsiveBar } from '@nivo/bar'
 import {
-  areaStatusComponent, areaTotalChartStatComp,
+  areaKwhStatComp, areaKwhStatYearComp,
+  areaStatusComponent, areaTotalChartStatComp, areaTotalKwhComp,
   areaTotalWarningComp,
   getSelectGroup,
-  getStatInfo, levelAreaStatComp, levelStoreStatComp
+  getStatInfo, levelAreaStatComp, levelStoreStatComp, strKwhStatComp
 } from "../../agent/stat";
 
 const StatMgr = () => {
@@ -35,6 +33,10 @@ const StatMgr = () => {
   const [areaHourlyStat, setAreaHourlyStat] = useState();
   const [levelAreaStat, setLevelAreaStat] = useState();
   const [levelStrStat, setLevelStrStat] = useState();
+  const [areaKwhStat, setAreaKwhStat] = useState();
+  const [areaKwhYearStat, setAreaKwhYearStat] = useState();
+  const [areaKwhHourlyStat, setAreaKwhHourlyStat] = useState();
+  const [strKwhStat, setStrKwhStat] = useState();
 
   useEffect(async () => {
     await handleClickBtnGroup("areaCode")
@@ -67,6 +69,7 @@ const StatMgr = () => {
 
   const handleClickSearchStat = () => {
     getStatInfo(typeValue, guCode, areaCode, startDate, endDate).then(resp => {
+      console.log(resp);
       let areaName;
       if (resp.data['result'] === "success") {
         if(resp.data["infoStat"].length > 1) {
@@ -84,17 +87,37 @@ const StatMgr = () => {
         setAreaTotalWarning(areaTotalWarningComp(areaName, resp.data["weekMonthStat"]));
         setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
 
-        if(resp.data["levelAreaStat"].length > 0) {
-          setLevelAreaStat(levelAreaStatComp(areaName, resp.data["levelAreaStat"]));
-        } else {
+        if(resp.data["levelAreaStat"] !== null)
+          if(resp.data["levelAreaStat"].length > 0)
+            setLevelAreaStat(levelAreaStatComp(areaName, resp.data["levelAreaStat"]));
+        else
           setLevelAreaStat("");
-        }
 
-        if(resp.data["levelStrStat"].length > 0) {
-          setLevelStrStat(levelStoreStatComp(areaName, resp.data["levelStrStat"]));
-        } else {
+        if(resp.data["levelStrStat"] !== null)
+          if(resp.data["levelStrStat"].length > 0)
+            setLevelStrStat(levelStoreStatComp(areaName, resp.data["levelStrStat"]));
+        else
           setLevelStrStat("");
-        }
+
+        if(resp.data["areaKwhStat"] !== null)
+          if(resp.data["areaKwhStat"].length > 0)
+            setAreaKwhStat(areaKwhStatComp(areaName, resp.data["areaKwhStat"]));
+        else
+          setAreaKwhStat("");
+
+        if(resp.data["weekMonthStat"] !== null)
+          if(resp.data["weekMonthStat"].length > 0)
+            setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"]));
+        else
+          setAreaKwhYearStat("");
+
+        setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+
+        if(resp.data["weekMonthStat"] !== null)
+          if(resp.data["weekMonthStat"].length > 0)
+            setStrKwhStat(strKwhStatComp(areaName, resp.data["areaStrKwhStat"]))
+        else
+          setStrKwhStat("");
       } else {
         alert("서버 통신에 오류가 발생했습니다.");
       }
@@ -103,7 +126,7 @@ const StatMgr = () => {
 
   return (
     <>
-      <CCol md={"12"} style={{ paddingLeft : "10rem", paddingRight: "10rem"}}>
+      <CCol md={"12"} style={{ paddingLeft : "15rem", paddingRight: "15rem"}}>
         <CCard>
           <CCardHeader>
             <div className={'d-flex justify-content-between'}>
@@ -151,6 +174,10 @@ const StatMgr = () => {
             {areaHourlyStat}
             {levelAreaStat}
             {levelStrStat}
+            {areaKwhStat}
+            {areaKwhYearStat}
+            {areaKwhHourlyStat}
+            {strKwhStat}
           </CCardBody>
         </CCard>
       </CCol>
