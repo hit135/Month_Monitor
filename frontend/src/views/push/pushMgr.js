@@ -26,9 +26,7 @@ const PushMgr = () => {
 
   const [repo, setRepo] = useState([]);               // 리스트 state
 
-  useEffect(() => {
-    handleInitTable()
-  }, []);
+  useEffect(() => handleInitTable(), []);
 
   // 초기 테이블 셋팅
   const handleInitTable = () =>
