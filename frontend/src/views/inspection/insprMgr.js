@@ -5,10 +5,10 @@ import 'react-datepicker/dist/react-datepicker.min.css';
 import { ko } from "date-fns/esm/locale";
 
 import PageTableWidget from "../../widget/pageTableWidget";
-import { getInsprAreaList, getInspectorList } from "../../agent/inspection";
+import { getInsprAreaList, getInspectorList, getInspector } from "../../agent/inspection";
 import InsprInsertModal from "./insprInsertModal";
 import InsprUpdateModal from "./insprUpdateModal";
-import { numCommaFormat } from "../../agent/commonIndex";
+import { numCommaFormat, getInputValue } from "../../agent/commonIndex";
 
 const columns = [
     { dataField: 'rowNo', text: 'NO.', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'right', height: '42px' }, formatter: (cell) => numCommaFormat(cell) }
@@ -29,6 +29,7 @@ const InsprMgr = () => {
   const [searchItem, setSearchItem] = useState({ searchWrd: "", useYn: "Y", alarmUse: "Y", loginLock: "N", inspAreaCode: "" });
   const [insertModal, setInsertModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+  const [userContent, setUserContent] = useState({});
 
   useEffect(() => {
     handleInitListInsprArea();
@@ -58,20 +59,27 @@ const InsprMgr = () => {
   };
 
   const handleChangeSearchType = (e) => {
-    const value = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
-    searchItem[e.target.id] = value;
+    searchItem[e.target.id] = getInputValue(e);
     handleInitTable();
   };
 
   const handleTableChange = (pageNation, param) => {
     pageItem.page = param.page;
     pageItem.sizePerPage = param.sizePerPage;
-
     handleInitTable();
   };
 
-  const handleClickShowInsertModal = () => { setInsertModal(true); }
-  const handleClickShowUpdateModal = () => { setUpdateModal(true); }
+  // 행 클릭 시
+  const rowEvents = {
+    onClick: (e, row, rowIndex) => getInspector(row.inspId).then(resp => {
+      if (resp.data["result"]) {
+        setUserContent(resp.data["resultData"]);
+        setUpdateModal(true);
+      } else {
+        alert("통신에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      }
+    })
+  };
 
   return (
     <>
@@ -110,19 +118,19 @@ const InsprMgr = () => {
               </div>
             </div>
             <div>
-              <CButton className={"btn btn-custom float-right mt-0"} onClick={handleClickShowInsertModal}>등록</CButton>
+              <CButton className={"btn btn-custom float-right mt-0"} onClick={e => setInsertModal(true)}>등록</CButton>
             </div>
           </div>
 
           <PageTableWidget
             keyField={"inspId"} data={repo} viewColumns={columns}
             page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
-            onTableChange={handleTableChange}
-          />
+            onTableChange={handleTableChange} rowEvents={rowEvents} />
         </CCardBody>
       </CCard>
-      <InsprInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable}/>
-      <InsprUpdateModal modal={updateModal} setModal={setUpdateModal} handleInitTable={handleInitTable} />
+
+      <InsprInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable} />
+      <InsprUpdateModal modal={updateModal} setModal={setUpdateModal} userContent={userContent} handleInitTable={handleInitTable} />
     </>
   );
 };

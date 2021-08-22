@@ -183,25 +183,20 @@ public class SYSSimulController {
             String toinfo = (String) param.get("toinfo");
             String frominfo = "01022787929";
 
-            String parameters =
-                    "{\"message\":{" +
-                        "\"to\":\"" + toinfo + "\"," +
-                        "\"from\":\"" + frominfo + "\"," +
-                        "\"text\":\"" + msg_text + "\"," +
-                        "\"type\":\"ATA\"," +
-                        "\"kakaoOptions\":{" +
-                            "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
-                            "\"templateId\":\"KA01TP210610053058529fTcXQXWb0mz\"," +
-                            "\"disableSms\":\"true\"," +
-                            "\"buttons\": " +
-                                "[{\"buttonName\":\"바로가기\"," +
-                                    "\"buttonType\":\"WL\"," +
-                                    "\"linkMo\":\"" + param.get("linkMo") + "\"," +
-                                    "\"linkPc\":\"" + param.get("linkPc") + "\"" +
-                                "}]" +
-                            "}" +
-                        "}" +
-                    "}";
+            String parameters = "{\"message\":{" +
+                                "\"to\":\"" + toinfo + "\"," +
+                                "\"from\":\"" + frominfo + "\"," +
+                                "\"text\":\"" + msg_text + "\"," +
+                                "\"type\":\"ATA\"," +
+                                "\"kakaoOptions\":{" +
+                                "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
+                                "\"templateId\":\"KA01TP210610053058529fTcXQXWb0mz\"," +
+                                "\"disableSms\":\"true\"," +
+                                "\"buttons\": [{\"buttonName\":\"바로가기\"," +
+                                "\"buttonType\":\"WL\"," +
+                                "\"linkMo\":\"" + param.get("linkMo") + "\"," +
+                                "\"linkPc\":\"\"" + param.get("linkPc") + "\"" +
+                                "}]}}}";
 
             URL url = new URL(targetUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();

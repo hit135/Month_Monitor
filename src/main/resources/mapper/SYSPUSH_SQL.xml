@@ -15,9 +15,9 @@
 
     <select id="LIST_SYS_PUSH" parameterType="map" resultType="map">
         SELECT T.*
-          FROM ( SELECT ROW_NUMBER() over (ORDER BY Z.pushLog) AS rowNon
+          FROM ( SELECT ROW_NUMBER() over (ORDER BY Z.pushSeq) AS rowNon
                       , Z.*
-                   FROM ( SELECT PUSHLOG AS pushLog
+                   FROM ( SELECT PUSHSEQ AS pushSeq
                                , SNSRSEQ AS snsrSeq
                                , PUSHMSG AS pushMsg
                                , DATE_FORMAT(PUSHSTIME, '%Y-%m-%d %H:%i:%s') AS pushStime
@@ -33,7 +33,7 @@
                              AND (    PUSHMSG LIKE CONCAT('%', #{searchWrd}, '%')
                                    OR SNSRSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
                              </if>
-                           ORDER BY PUSHLOG DESC
+                           ORDER BY PUSHSEQ DESC
                         ) Z
                ) T
          LIMIT #{page}, #{sizePerPage}

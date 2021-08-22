@@ -103,7 +103,7 @@ const MemMgr = () => {
         setUserContent(resp.data["content"]);
         setModifyModal(true);
       } else {
-        alert("통신에 오륙가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        alert("통신에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
       }
     })
   };

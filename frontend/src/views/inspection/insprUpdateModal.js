@@ -14,14 +14,12 @@ import {useForm} from "react-hook-form";
 import {getInsprAreaList} from "../../agent/inspection";
 
 const InsprUpdateModal = (props) => {
-  const { modal, setModal } = props;
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, setFocus, setError } = useForm(
-    {
-      defaultValues: {
+  const { modal, setModal, userContent, handleInitTable } = props;
+  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ mode: "all" });
 
-      }, mode: "all"
-    }
-  );
+  useEffect(() => {
+    reset(userContent);
+  }, [userContent]);
 
   useEffect(() => {
     handleInitListInsprArea();

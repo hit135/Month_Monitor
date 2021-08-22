@@ -130,6 +130,7 @@ public class SYSInsprController {
         boolean result = false;
 
         try {
+            inspId = inspId.replaceFirst(".$","");
             resultData = sysInsprRepo.SELECT_SYS_INSPECTOR(inspId);
             result = true;
         } catch (Exception e) {
