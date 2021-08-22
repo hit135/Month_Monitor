@@ -1,16 +1,36 @@
 package kr.fscom.firsens.sys.controller;
 
+import kr.fscom.firsens.common.cookie.CommonCookie;
 import kr.fscom.firsens.sys.repository.SYSSimulRepo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -23,6 +43,8 @@ public class SYSSimulController {
     public SYSSimulController(SYSSimulRepo sysSimulRepo) {
         this.sysSimulRepo = sysSimulRepo;
     }
+
+    CommonCookie commonCookie = new CommonCookie();
 
     @PostMapping("/listSimulArea")
     public HashMap<String, Object> listPageSimulArea() throws Exception {
@@ -135,5 +157,99 @@ public class SYSSimulController {
 
         return rtn;
     }
+
+    @RequestMapping(value = "/sendSimulPush")
+    @ResponseBody
+    public HashMap<String, Object> sendSimulPush(HttpServletRequest req, @RequestBody HashMap<String, Object> param) {
+        HashMap<String, Object> prm = new HashMap<String, Object>();
+        HashMap<String, Object> ret = new HashMap<String, Object>();
+
+        try {
+            String apiKey = "NCS6IS9H8EY6IZ8Z";
+            String apiSecret = "CERFHKFEXFGJPCJIKUD7XENTPXPKIW8N";
+            String salt = UUID.randomUUID().toString().replaceAll("-", "");
+            String date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split("\\[")[0];
+
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+
+            String signature = new String(Hex.encodeHex(sha256_HMAC.doFinal((date + salt).getBytes(StandardCharsets.UTF_8))));
+            String auth = "HMAC-SHA256 ApiKey=" + apiKey + ", Date=" + date + ", salt=" + salt + ", signature=" + signature;
+            String targetUrl = "https://msg.purplebook.io/api/messages/v4/send";
+            String msg_text = (String) param.get("msgText");
+            String userid = "admin";
+
+            String toinfo = (String) param.get("toinfo");
+            String frominfo = "01022787929";
+
+            String parameters =
+                    "{\"message\":{" +
+                        "\"to\":\"" + toinfo + "\"," +
+                        "\"from\":\"" + frominfo + "\"," +
+                        "\"text\":\"" + msg_text + "\"," +
+                        "\"type\":\"ATA\"," +
+                        "\"kakaoOptions\":{" +
+                            "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
+                            "\"templateId\":\"KA01TP210610053058529fTcXQXWb0mz\"," +
+                            "\"disableSms\":\"true\"," +
+                            "\"buttons\": " +
+                                "[{\"buttonName\":\"바로가기\"," +
+                                    "\"buttonType\":\"WL\"," +
+                                    "\"linkMo\":\"" + param.get("linkMo") + "\"," +
+                                    "\"linkPc\":\"" + param.get("linkPc") + "\"" +
+                                "}]" +
+                            "}" +
+                        "}" +
+                    "}";
+
+            URL url = new URL(targetUrl);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+            con.setRequestMethod("POST");
+
+            con.setRequestProperty("Authorization", auth);
+            con.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            System.out.println("Parameters : " + parameters);
+            OutputStreamWriter osw = new OutputStreamWriter(wr);
+            osw.write(parameters, 0, parameters.length());
+            //wr.writeBytes(parameters);
+            osw.close();
+            wr.flush();
+            wr.close();
+
+            int responseCode = con.getResponseCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            String line;
+            StringBuffer response = new StringBuffer();
+
+            while ((line = in.readLine()) != null)
+                response.append(line);
+
+            in.close();
+
+            //System.out.println("HTTP response code : " + responseCode);
+            //System.out.println("HTTP body : " + response.toString());
+            ret.put("result", response.toString());
+
+            prm.put("snsrseq", req.getParameter("snsrseq"));
+            prm.put("pushmsg", parameters);
+            prm.put("userid", userid);
+            prm.put("sendresult", responseCode + " " + response.toString());
+            prm.put("toinfo", toinfo);
+            prm.put("frominfo", frominfo);
+
+            sysSimulRepo.INSERT_SYS_PUSH(prm);
+        } catch (Exception e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        }
+
+        return ret;
+    }
+
 
 }

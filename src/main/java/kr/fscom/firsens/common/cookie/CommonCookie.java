@@ -80,4 +80,35 @@ public class CommonCookie {
         resp.addCookie(cookie);
     }
 
+    /**
+     * @Method Name : selectCookieMap
+     * @작성일 : 2021-04-30
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 로그인 계정의 정보 반환(token 제외)
+     * @return String
+     */
+    public HashMap<String, Object> selectCookieMap(HttpServletRequest req, String paramName) {
+        HashMap<String, Object> rtn = new HashMap<>();
+        Cookie[] cookies = req.getCookies();
+
+        if (cookies != null && cookies.length > 0) {
+            for (int i = 0; i < cookies.length; i++) {
+                if (paramName.equals(cookies[i].getName())) {
+                    String[] StringArr = cookies[i].getValue().split("&");
+
+                    for (String arr : StringArr) {
+                        String key = arr.split(":")[0];
+                        String val = arr.split(":")[1];
+
+                        if (key.indexOf("Jwt") == -1)
+                            rtn.put(key, val);
+                    }
+                }
+            }
+        }
+
+        return rtn;
+    }
+
 }

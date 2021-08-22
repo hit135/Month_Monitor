@@ -28,7 +28,9 @@
 
     <select id="LIST_SYS_SENSOR_LOG" parameterType="map" resultType="map">
         SELECT LSEQ AS lSeq
+             , AREACODE AS areaCode
              , AREANAME AS areaName
+             , STRCODE AS strCode
              , STRNAME AS strName
              , SNSRNICK AS snsrNick
              , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS regDate
@@ -177,5 +179,10 @@
          WHERE Z.areaCode = #{areaCode}
            AND Z.strCode = #{strCode}
     </select>
+
+    <insert id="INSERT_PUSH" parameterType="map">
+        INSERT INTO F_PUSH_LOG (SNSRSEQ, PUSHMSG, PUSHSTIME, USERID, SENDRESULT, RESENDSEQ, TOINFO, FROMINFO)
+        VALUES (#{snsrseq}, #{pushmsg},NOW(), #{userid}, #{sendresult}, #{resendseq}, #{toinfo}, #{frominfo})
+    </insert>
 
 </mapper>

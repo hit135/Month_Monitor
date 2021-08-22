@@ -14,3 +14,4 @@ export const getSimulList = (simulType, page, size, areaCode, regDate) =>
   ].join('&'));
 
 export const getSimulPreview = map => axios.post(`${API_ROOT}/simulPreview`, map);
+export const sendSimulPush = map => axios.post(`${API_ROOT}/sendSimulPush`, map);

@@ -6,13 +6,15 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import { ko } from "date-fns/esm/locale";
 
-import { getSimulAreaList, getSimulList, getSimulPreview } from "../../agent/simul";
+import { getSimulAreaList, getSimulList, getSimulPreview, sendSimulPush } from "../../agent/simul";
 import { numCommaFormat } from "../../agent/commonIndex";
 
 const columns1 = [
     { dataField: 'lSeq', text: 'Log no.', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'right', height: '42px', width: '5rem' }
       , formatter: numCommaFormat }
+  , { dataField: 'areaCode', text: '시장코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'areaName', text: '시장', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
+  , { dataField: 'strCode', text: '상점코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'strName', text: '상점', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
   , { dataField: 'snsrNick', text: '센서', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
   , { dataField: 'regDate', text: '등록날짜', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
@@ -29,15 +31,14 @@ const columns2 = [
   , { dataField: 'regDate', text: '등록일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
 ];
 
-
 const SimulMgr = () => {
   const [repo, setRepo] = useState([]);   // 리스트 hook
   const [simulType, setSimulType] = useState('simul1');
+  const [phoneNum, setPhoneNum] = useState('');
   const [pageItem, setPageItem] = useState({ page: 1, sizePerPage: 10 }); // 페이징 hook
   const [selectedAreaCode, setSelectedAreaCode] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [preview, setPreview] = useState({});
-  const [phoneNum, setPhoneNum] = useState('');
 
   const simulRadioHtml = (className, id, value, txt) =>
     <span className={className}>
@@ -156,18 +157,47 @@ const SimulMgr = () => {
     onClick: (e, row, rowIndex) => {
       let map = {};
       map['simulType'] = simulType;
+      map['areaCode'] = row['areaCode'];
+      map['strCode'] = row['strCode'];
+      document.getElementById("selectedAreaCode").innerText = row['areaCode'];
+      document.getElementById("selectedStrCode").innerText = row['strCode'];
 
       if (simulType === 'simul1') {
         map['lSeq'] = row['lSeq'];
+        document.getElementById("selectedLSeq").innerText = row['lSeq'];
       } else if (simulType === 'simul2') {
-        map['areaCode'] = row['areaCode'];
         map['areaName'] = row['areaName'];
-        map['strCode'] = row['strCode'];
         map['strName'] = row['strName'];
       }
 
       getSimulPreview(map).then(resp => setPreview((resp.data['result']) ? resp.data['resultData'] : []));
     }
+  };
+
+  const clickSendSimulPush = () => {
+    let map = {};
+    map['toinfo'] = phoneNum;
+    map['msgText'] = document.getElementById("sendPreview").innerText.replace(/(<([^>]+)>)/ig,"\n");
+
+    let areaCode = document.getElementById("selectedAreaCode").innerText;
+    let strCode = document.getElementById("selectedStrCode").innerText;
+
+    if (simulType == 'simul1') {
+      let lSeq = document.getElementById("selectedLSeq").innerText;
+
+      map['linkMo'] = "http://1.223.40.19:30080/mobile/store/issue?areaCode=" + areaCode + "&strCode=" + strCode + "&lSeq=" + lSeq;
+      map['linkPc'] = "http://1.223.40.19:30080/mobile/store/issue?areaCode=" + areaCode + "&strCode=" + strCode + "&lSeq=" + lSeq;
+    } else if (simulType == 'simul2') {
+      map['linkMo'] = "http://1.223.40.19:30080/mobile/store/report?areaCode=" + areaCode + "&strCode=" + strCode;
+      map['linkPc'] = "http://1.223.40.19:30080/mobile/store/report?areaCode=" + areaCode + "&strCode=" + strCode;
+    }
+
+    sendSimulPush(map).then(resp => {
+      if (resp.data['result'])
+        alert("발송되었습니다.");
+      else
+        alert("발송중 오류가 발생했습니다.");
+    });
   };
 
   return (
@@ -199,10 +229,13 @@ const SimulMgr = () => {
           </CCol>
           <CCol md={'3'}>
             <h5>메시지 전송 연락처 입력</h5>
-            <input id={'phoneNum'} style={{ width: '100%' }} />
-            <button className={'mt-1 btn btn-custom-info'} id={"sendBtn"}>전송</button>
+            <input type={"text"} style={{ width: '100%' }} onChange={e => setPhoneNum(e.target.value)} />
+            <button className={'mt-1 btn btn-custom-info'} id={"sendBtn"} onClick={clickSendSimulPush}>전송</button>
 
             <h5 className={'mt-4'}>미리보기</h5>
+            <div id={"selectedAreaCode"}></div>
+            <div id={"selectedStrCode"}></div>
+            <div id={"selectedLSeq"}></div>
             <div className={'p-1'} id={'sendPreview'} style={{ border: '1px solid black' }}>
               <p>항목을 선택하세요</p>
             </div>
