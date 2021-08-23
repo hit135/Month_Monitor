@@ -23,6 +23,7 @@ const columns2 = [
   , { dataField: 'snsrSeq', text: 'SNSR SEQ', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' } }
   , { dataField: 'smsRcv', text: '수신인', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'smsLevel', text: 'LEVEL', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
+  , { dataField: 'smsType', text: '구분', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'smsRslt', text: '발송결과', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'smsStime', text: '발송일시', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
   , { dataField: 'smsMsg', text: '발송내용', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
@@ -61,6 +62,18 @@ const PushMgr = () => {
     handleInitTable();
   };
 
+  const handleSearchWrd = e => {
+    searchItem.searchWrd = e.target.value;
+    if (e.key === "Enter")
+      handleClickSearchBtn();
+  };
+
+  // 검색 버튼 이벤트
+  const handleClickSearchBtn = () => {
+    pageItem.page = 1;
+    handleInitTable();
+  };
+
   return (
     <CCard>
       <CCardHeader>
@@ -92,11 +105,15 @@ const PushMgr = () => {
               <label className={'ml-1'} htmlFor={'radioN'}>{'미발송'}</label>
             </span>
           </span>
+          <span>
+            <CInput placeholder={"검색어 입력"} onKeyUp={handleSearchWrd} />
+          </span>
           <span className={'d-flex'}>
             <DatePicker locale={ko} selected={startDate} dateFormat="yyyy-MM-dd" onChange={(date) => setStartDate(date)} />
             <span className={'ml-1'}>~</span>
             <DatePicker className={'ml-1'} locale={ko} selected={endDate} dateFormat="yyyy-MM-dd" onChange={(date) => setEndDate(date)} />
           </span>
+          <button className={"btn btn-custom-info mt-0"} onClick={handleClickSearchBtn}>검색</button>
         </div>
       </CCardHeader>
       <CCardBody>

@@ -9,8 +9,10 @@
          WHERE PUSHSTIME BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59')
            <if test='!"all".equals(isSuccess)'>AND PUSHRSLT = #{isSuccess}</if>
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
-           AND (    PUSHMSG LIKE CONCAT('%', #{searchWrd}, '%')
-                 OR SNSRSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
+           AND (    PUSHMSG  LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR SNSRSEQ  LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR TOINFO   LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR FROMINFO LIKE CONCAT('%', #{searchWrd}, '%') )
            </if>
     </select>
 
@@ -29,8 +31,10 @@
          WHERE PUSHSTIME BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59')
            <if test='!"all".equals(isSuccess)'>AND PUSHRSLT = #{isSuccess}</if>
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
-           AND (    PUSHMSG LIKE CONCAT('%', #{searchWrd}, '%')
-                 OR SNSRSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
+           AND (    PUSHMSG  LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR SNSRSEQ  LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR TOINFO   LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR FROMINFO LIKE CONCAT('%', #{searchWrd}, '%') )
            </if>
          ORDER BY PUSHSEQ DESC
          LIMIT #{page}, #{sizePerPage}
@@ -42,8 +46,10 @@
          WHERE SMSSTIME BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59')
            <if test='!"all".equals(isSuccess)'>AND SMSRSLT = #{isSuccess}</if>
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
-           AND (    SMSMSG LIKE CONCAT('%', #{searchWrd}, '%')
-                 OR SMSSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
+           AND (    SMSMSG   LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR SMSSEQ   LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR SMSLEVEL LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR SMSTYPE  LIKE CONCAT('%', #{searchWrd}, '%') )
            </if>
     </select>
 
@@ -65,7 +71,9 @@
            <if test='!"all".equals(isSuccess)'>AND SMSRSLT = #{isSuccess}</if>
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
            AND (    SMSMSG LIKE CONCAT('%', #{searchWrd}, '%')
-                 OR SMSSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
+                 OR SMSSEQ LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR SMSLEVEL LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR SMSTYPE  LIKE CONCAT('%', #{searchWrd}, '%') )
            </if>
          ORDER BY SMSSEQ desc
          LIMIT #{page}, #{sizePerPage}
