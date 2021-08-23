@@ -183,13 +183,9 @@ public class SYSSimulController {
                                 "\"type\":\"ATA\"," +
                                 "\"kakaoOptions\":{" +
                                 "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
-                                "\"templateId\":\"KA01TP210610053058529fTcXQXWb0mz\"," +
-                                "\"disableSms\":\"true\"," +
-                                "\"buttons\": [{\"buttonName\":\"바로가기\"," +
-                                "\"buttonType\":\"WL\"," +
-                                "\"linkMo\":\"" + linkMo + "\"," +
-                                "\"linkPc\":\"" + linkPc + "\"" +
-                                "}]}}}";
+                                "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
+                                "\"disableSms\":\"true\"" +
+                                "}}}";
 
             URL url = new URL(targetUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
