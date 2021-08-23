@@ -73,6 +73,8 @@ const InsprMgr = () => {
   const rowEvents = {
     onClick: (e, row, rowIndex) => getInspector(row.inspId).then(resp => {
       if (resp.data["result"]) {
+        console.log(resp.data['resultData']);
+
         setUserContent(resp.data["resultData"]);
         setUpdateModal(true);
       } else {
@@ -122,10 +124,8 @@ const InsprMgr = () => {
             </div>
           </div>
 
-          <PageTableWidget
-            keyField={"inspId"} data={repo} viewColumns={columns}
-            page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
-            onTableChange={handleTableChange} rowEvents={rowEvents} />
+          <PageTableWidget keyField={"inspId"} data={repo} page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
+                           onTableChange={handleTableChange} viewColumns={columns} rowEvents={rowEvents} />
         </CCardBody>
       </CCard>
 

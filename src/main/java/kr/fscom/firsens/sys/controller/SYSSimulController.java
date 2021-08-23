@@ -168,8 +168,7 @@ public class SYSSimulController {
             String signature = new String(Hex.encodeHex(sha256_HMAC.doFinal((date + salt).getBytes(StandardCharsets.UTF_8))));
             String auth = "HMAC-SHA256 ApiKey=" + apiKey + ", Date=" + date + ", salt=" + salt + ", signature=" + signature;
             String targetUrl = "https://msg.purplebook.io/api/messages/v4/send";
-            // String msg_text = ((String) param.get("msgText")).replaceAll("\\n", "\\\\n");
-            String msg_text = "FS 전기화재예방센터입니다.\\n전기안전경보가 발생하였습니다.\\n확인해주세요.";
+            String msg_text = ((String) param.get("msgText")).replaceAll("\\n", "\\\\n");
             String userid = "admin";
 
             String toinfo = (String) param.get("toinfo");
