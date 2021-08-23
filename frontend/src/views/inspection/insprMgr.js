@@ -1,5 +1,5 @@
-import React, { lazy, useEffect, useState } from 'react'
-import { CCard, CCardHeader, CCardBody, CRow, CCol, CButton, CInput, CSelect, CFormGroup, CLabel, CSwitch } from '@coreui/react'
+import React, { lazy, useEffect, useState } from 'react';
+import { CCard, CCardHeader, CCardBody, CRow, CCol, CButton, CInput, CSelect, CFormGroup, CLabel, CSwitch } from '@coreui/react';
 
 import PageTableWidget from "../../widget/pageTableWidget";
 import { getInsprAreaList, getInspectorList, getInspector } from "../../agent/inspection";

@@ -16,3 +16,5 @@ export const insertSnsr = array => axios.post(`${API_ROOT}/insertSnsr`, array);
 export const getSnsr = id => axios.post(`${API_ROOT}/selectSnsr`, { snsrId: id });
 export const updateSnsr = array => axios.post(`${API_ROOT}/updateSnsr`, array);
 export const deleteSnsr = id => axios.post(`${API_ROOT}/deleteSnsr`, { snsrId: id });
+
+export const getSnsruList = (page, sizePerPage) => axios.post(`${API_ROOT}/snsru?page=${page}&size=${sizePerPage}`);

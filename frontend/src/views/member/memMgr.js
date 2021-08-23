@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch } from "@coreui/react";
+
 import PageTableWidget from "../../widget/pageTableWidget";
 import MemInsertModal from "../member/memInsertModal";
 import MemUpdateModal from "./memUpdateModal";
