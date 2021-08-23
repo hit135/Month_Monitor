@@ -6,7 +6,8 @@
     <select id="CNT_SYS_PUSH" parameterType="map" resultType="int">
         SELECT COUNT(*)
           FROM F_PUSH_LOG
-         WHERE 1 = 1
+         WHERE PUSHSTIME BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59')
+           <if test='!"all".equals(isSuccess)'>AND PUSHRSLT = #{isSuccess}</if>
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
            AND (    PUSHMSG LIKE CONCAT('%', #{searchWrd}, '%')
                  OR SNSRSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
@@ -25,7 +26,8 @@
              , FROMINFO AS fromInfo
              , SENDRESULT AS sendResult
           FROM F_PUSH_LOG
-         WHERE 1 = 1
+         WHERE PUSHSTIME BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59')
+           <if test='!"all".equals(isSuccess)'>AND PUSHRSLT = #{isSuccess}</if>
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
            AND (    PUSHMSG LIKE CONCAT('%', #{searchWrd}, '%')
                  OR SNSRSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
@@ -37,7 +39,8 @@
     <select id="CNT_SYS_SMS" parameterType="map" resultType="int">
         SELECT COUNT(*)
           FROM F_SMS_LOG
-         WHERE 1 = 1
+         WHERE SMSSTIME BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59')
+           <if test='!"all".equals(isSuccess)'>AND SMSRSLT = #{isSuccess}</if>
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
            AND (    SMSMSG LIKE CONCAT('%', #{searchWrd}, '%')
                  OR SMSSEQ LIKE CONCAT('%', #{searchWrd}, '%') )
@@ -51,13 +54,15 @@
              , DATE_FORMAT(SMSSTIME, '%Y-%m-%d %H:%i:%s') AS smsStime
              , USERID AS userId
              , SMSRCV AS smsRcv
+             , SMSLEVEL AS smsLevel
              , SMSRSLT AS smsRslt
              , SMSTYPE AS smsType
              , SMSLEVEL AS smsLevel
              , RESENDSEQ AS resendSeq
              , SNSRID AS snsrId
           FROM F_SMS_LOG
-         WHERE 1 = 1
+         WHERE SMSSTIME BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 23:59:59')
+           <if test='!"all".equals(isSuccess)'>AND SMSRSLT = #{isSuccess}</if>
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
            AND (    SMSMSG LIKE CONCAT('%', #{searchWrd}, '%')
                  OR SMSSEQ LIKE CONCAT('%', #{searchWrd}, '%') )

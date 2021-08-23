@@ -79,10 +79,9 @@ const SimulMgr = () => {
         let areaCode = document.getElementById("selectedAreaCode").innerText;
         let strCode = document.getElementById("selectedStrCode").innerText;
         let lSeq = document.getElementById("selectedLSeq").innerText;
-
         txt += `<p>링크 : http://1.223.40.19:30080/mobile/store/issue?areaCode=${areaCode}&strCode=${strCode}&lSeq=${lSeq}</p>`;
       } else if (simulType === 'simul2') {
-        txt += '<p>[전기안전 정기보고]</p>';
+        txt += '<p>[시뮬레이션 - 전기안전 정기보고]</p>';
         txt += `<p>■ ${preview['areaName']} ${preview['strName']}</p>`;
 
         txt += `<p>`
@@ -113,6 +112,10 @@ const SimulMgr = () => {
           txt += `<p>※ 전주대비 전력소비가 적습니다.</p>`;
         else
           txt += `<p>※ 전주대비 전력소비가 동일합니다.</p>`;
+
+        let areaCode = document.getElementById("selectedAreaCode").innerText;
+        let strCode = document.getElementById("selectedStrCode").innerText;
+        txt += `<p>링크 : http://1.223.40.19:30080/mobile/store/report?areaCode=${areaCode}&strCode=${strCode}</p>`;
       }
     } else {
       txt += '<p>항목을 선택하세요.</p>';
@@ -174,6 +177,7 @@ const SimulMgr = () => {
       } else if (simulType === 'simul2') {
         map['areaName'] = row['areaName'];
         map['strName'] = row['strName'];
+        document.getElementById("selectedLSeq").innerText = '0';
       }
 
       getSimulPreview(map).then(resp => setPreview((resp.data['result']) ? resp.data['resultData'] : []));

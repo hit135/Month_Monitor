@@ -173,19 +173,33 @@ public class SYSSimulController {
 
             String toinfo = (String) param.get("toinfo");
             String frominfo = "01022787929";
-            String linkMo = (String) param.get("linkMo");
-            String linkPc = (String) param.get("linkPc");
+//            String linkMo = (String) param.get("linkMo");
+//            String linkPc = (String) param.get("linkPc");
 
-            String parameters = "{\"message\":{" +
-                                "\"to\":\"" + toinfo + "\"," +
-                                "\"from\":\"" + frominfo + "\"," +
-                                "\"text\":\"" + msg_text + "\"," +
-                                "\"type\":\"ATA\"," +
-                                "\"kakaoOptions\":{" +
-                                "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
-                                "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
-                                "\"disableSms\":\"true\"" +
-                                "}}}";
+            String parameters = "";
+            if (msg_text.indexOf("시뮬레이션 - 전기안전 긴급이벤트") > -1) {
+                parameters = "{\"message\":{" +
+                             "\"to\":\"" + toinfo + "\"," +
+                             "\"from\":\"" + frominfo + "\"," +
+                             "\"text\":\"" + msg_text + "\"," +
+                             "\"type\":\"ATA\"," +
+                             "\"kakaoOptions\":{" +
+                             "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
+                             "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
+                             "\"disableSms\":\"true\"" +
+                             "}}}";
+            } else {
+                parameters = "{\"message\":{" +
+                             "\"to\":\"" + toinfo + "\"," +
+                             "\"from\":\"" + frominfo + "\"," +
+                             "\"text\":\"" + msg_text + "\"," +
+                             "\"type\":\"ATA\"," +
+                             "\"kakaoOptions\":{" +
+                             "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
+                             "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
+                             "\"disableSms\":\"true\"" +
+                             "}}}";
+            }
 
             URL url = new URL(targetUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
