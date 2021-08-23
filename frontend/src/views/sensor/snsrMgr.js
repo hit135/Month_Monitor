@@ -12,12 +12,12 @@ import { getInputValue, numCommaFormat } from "../../agent/commonIndex";
 let gData = [];
 
 const columns = [
-    { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'right' }, formatter: numCommaFormat }
-  , { dataField: 'snsrSeq', text: '센서코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
-  , { dataField: 'snsrId', text: '센서아이디', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
-  , { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
-  , { dataField: 'snsrNick', text: '센서명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
-  , { dataField: 'regDate', text: '등록일자', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: {  textAlign: 'center' } }
+    { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'right' }, formatter: numCommaFormat }
+  , { dataField: 'snsrSeq', text: '센서코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
+  , { dataField: 'snsrId', text: '센서아이디', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
+  , { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
+  , { dataField: 'snsrNick', text: '센서명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
+  , { dataField: 'regDate', text: '등록일자', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
 ];
 
 const SnsrMgr = () => {

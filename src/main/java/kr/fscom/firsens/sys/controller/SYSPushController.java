@@ -28,8 +28,10 @@ public class SYSPushController {
     }
 
     @GetMapping("/pushs")
-    public HashMap<String, Object> listPagePush(String type, int page, int size, String searchWrd) throws Exception {
-        LOG.info("■■■■■■■■■■■■■■■ 발송 이력 목록 조회 시작 : (type : {}, page : {}, size : {}, searchWrd : {})", type, page, size, searchWrd);
+    public HashMap<String, Object> listPagePush(
+            String type, int page, int size, String startDate, String endDate, String searchWrd, String isSuccess) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 발송 이력 목록 조회 시작 : (type : {}, page : {}, size : {}, startDate : {}, endDate : {}, searchWrd : {}, isSuccess : {})"
+                , type, page, size, startDate, endDate, searchWrd, isSuccess);
 
         HashMap<String, Object> rtn = new HashMap<>();
         List<HashMap<String, Object>> resultList = new ArrayList<>();
@@ -40,7 +42,10 @@ public class SYSPushController {
             HashMap<String, Object> param = new HashMap() {{
                 put("sizePerPage", size);
                 put("page", (page - 1) * size);
+                put("startDate", startDate);
+                put("endDate", endDate);
                 put("searchWrd", searchWrd);
+                put("isSuccess", isSuccess);
             }};
 
             if ("push".equals(type)) {

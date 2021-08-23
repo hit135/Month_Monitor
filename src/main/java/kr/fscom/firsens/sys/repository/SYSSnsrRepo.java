@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface SYSSnsrRepo {
+
     // 센서목록 카운트
     int SELECT_CNT_SYS_SNSR(SYSSnsrDomain domain) throws Exception;
     // 센서목록
@@ -26,4 +27,13 @@ public interface SYSSnsrRepo {
     int DELETE_SYS_SNSR(SYSSnsrDomain domain) throws Exception;
     // 센서키
     int GENERATE_SNSR_CODE(SYSSnsrDomain domain) throws Exception;
+
+    // 센서 갱신 목록
+    List<HashMap<String, Object>> LIST_SYS_SNSRU(HashMap<String, Object> param) throws Exception;
+    int CNT_SYS_SNSRU(HashMap<String, Object> param) throws Exception;
+    int INSERT_SYS_SNSRU(HashMap<String, Object> param) throws Exception;
+    HashMap<String, Object> SELECT_SYS_SNSRU(String param) throws Exception;
+    int UPDATE_SYS_SNSRU(HashMap<String, Object> param) throws Exception;
+    int DELETE_SYS_SNSRU(String param) throws Exception;
+
 }

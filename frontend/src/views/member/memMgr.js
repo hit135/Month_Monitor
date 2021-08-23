@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch } from "@coreui/react";
+
 import PageTableWidget from "../../widget/pageTableWidget";
 import MemInsertModal from "../member/memInsertModal";
 import MemUpdateModal from "./memUpdateModal";
@@ -34,7 +35,7 @@ const storeCountStyleFormatter = cell =>
 
 const columns = [
     { dataField: 'rowNum', text: '순번', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px', width: '5rem' }
-      , formatter: cell => numCommaFormat(cell) }
+      , formatter: numCommaFormat }
   , { dataField: 'userId', text: 'ID', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'left' } }
   , { dataField: 'memName', text: '이름', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'left' } }
   , { dataField: 'memLevel', text: '권한', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: authStyleFormatter }

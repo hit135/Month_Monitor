@@ -3,34 +3,25 @@ package kr.fscom.firsens.sys.controller;
 import kr.fscom.firsens.common.cookie.CommonCookie;
 import kr.fscom.firsens.sys.repository.SYSSimulRepo;
 
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -177,26 +168,38 @@ public class SYSSimulController {
             String signature = new String(Hex.encodeHex(sha256_HMAC.doFinal((date + salt).getBytes(StandardCharsets.UTF_8))));
             String auth = "HMAC-SHA256 ApiKey=" + apiKey + ", Date=" + date + ", salt=" + salt + ", signature=" + signature;
             String targetUrl = "https://msg.purplebook.io/api/messages/v4/send";
-            String msg_text = (String) param.get("msgText");
+            String msg_text = ((String) param.get("msgText")).replaceAll("\\n", "\\\\n");
             String userid = "admin";
 
             String toinfo = (String) param.get("toinfo");
             String frominfo = "01022787929";
+//            String linkMo = (String) param.get("linkMo");
+//            String linkPc = (String) param.get("linkPc");
 
-            String parameters = "{\"message\":{" +
-                                "\"to\":\"" + toinfo + "\"," +
-                                "\"from\":\"" + frominfo + "\"," +
-                                "\"text\":\"" + msg_text + "\"," +
-                                "\"type\":\"ATA\"," +
-                                "\"kakaoOptions\":{" +
-                                "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
-                                "\"templateId\":\"KA01TP210610053058529fTcXQXWb0mz\"," +
-                                "\"disableSms\":\"true\"," +
-                                "\"buttons\": [{\"buttonName\":\"바로가기\"," +
-                                "\"buttonType\":\"WL\"," +
-                                "\"linkMo\":\"" + param.get("linkMo") + "\"," +
-                                "\"linkPc\":\"\"" + param.get("linkPc") + "\"" +
-                                "}]}}}";
+            String parameters = "";
+            if (msg_text.indexOf("시뮬레이션 - 전기안전 긴급이벤트") > -1) {
+                parameters = "{\"message\":{" +
+                             "\"to\":\"" + toinfo + "\"," +
+                             "\"from\":\"" + frominfo + "\"," +
+                             "\"text\":\"" + msg_text + "\"," +
+                             "\"type\":\"ATA\"," +
+                             "\"kakaoOptions\":{" +
+                             "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
+                             "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
+                             "\"disableSms\":\"true\"" +
+                             "}}}";
+            } else {
+                parameters = "{\"message\":{" +
+                             "\"to\":\"" + toinfo + "\"," +
+                             "\"from\":\"" + frominfo + "\"," +
+                             "\"text\":\"" + msg_text + "\"," +
+                             "\"type\":\"ATA\"," +
+                             "\"kakaoOptions\":{" +
+                             "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
+                             "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
+                             "\"disableSms\":\"true\"" +
+                             "}}}";
+            }
 
             URL url = new URL(targetUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();

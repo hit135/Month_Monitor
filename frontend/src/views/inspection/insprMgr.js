@@ -1,8 +1,5 @@
-import React, { lazy, useEffect, useState } from 'react'
-import { CCard, CCardHeader, CCardBody, CRow, CCol, CButton, CInput, CSelect, CFormGroup, CLabel, CSwitch } from '@coreui/react'
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.min.css';
-import { ko } from "date-fns/esm/locale";
+import React, { lazy, useEffect, useState } from 'react';
+import { CCard, CCardHeader, CCardBody, CRow, CCol, CButton, CInput, CSelect, CFormGroup, CLabel, CSwitch } from '@coreui/react';
 
 import PageTableWidget from "../../widget/pageTableWidget";
 import { getInsprAreaList, getInspectorList, getInspector } from "../../agent/inspection";
@@ -95,13 +92,11 @@ const InsprMgr = () => {
 
               <CFormGroup className={"d-flex align-items-center mb-0 pl-4"}>
                 <CLabel htmlFor={"useYn"} className={"mb-0 pr-1"}>사용 여부</CLabel>
-                <CSwitch className={'mx-1'} color={'info'} labelOn={'예'} labelOff={'아니오'} id={"useYn"} onChange={handleChangeSearchType}
-                         defaultChecked />
+                <CSwitch className={'mx-1'} color={'info'} labelOn={'예'} labelOff={'아니오'} id={"useYn"} onChange={handleChangeSearchType} defaultChecked />
               </CFormGroup>
               <CFormGroup className={"d-flex align-items-center mb-0 pl-3"}>
                 <CLabel htmlFor={"alarmUse"} className={"mb-0 pr-1"}>알림 여부</CLabel>
-                <CSwitch className={'mx-1'} color={'info'} labelOn={'예'} labelOff={'아니오'} id={"alarmUse"} onChange={handleChangeSearchType}
-                         defaultChecked />
+                <CSwitch className={'mx-1'} color={'info'} labelOn={'예'} labelOff={'아니오'} id={"alarmUse"} onChange={handleChangeSearchType} defaultChecked />
               </CFormGroup>
               <CFormGroup className={"d-flex align-items-center mb-0 pl-3"}>
                 <CLabel htmlFor={"loginLock"} className={"mb-0 pr-1"}>로그인 제한 여부</CLabel>
@@ -122,10 +117,8 @@ const InsprMgr = () => {
             </div>
           </div>
 
-          <PageTableWidget
-            keyField={"inspId"} data={repo} viewColumns={columns}
-            page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
-            onTableChange={handleTableChange} rowEvents={rowEvents} />
+          <PageTableWidget keyField={"inspId"} data={repo} page={pageItem.page} sizePerPage={pageItem.sizePerPage} totalSize={pageItem.totalElementsCount}
+                           onTableChange={handleTableChange} viewColumns={columns} rowEvents={rowEvents} />
         </CCardBody>
       </CCard>
 

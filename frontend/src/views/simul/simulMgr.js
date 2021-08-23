@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from 'react'
+import React, { lazy, useEffect, useState } from 'react';
 import { CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSelect, CSwitch } from "@coreui/react";
 
 import PageTableWidget from "../../widget/pageTableWidget";
@@ -75,8 +75,13 @@ const SimulMgr = () => {
 
         if (preview['lCause'].indexOf("Igr") > -1)
           txt += `<p>IGR 수치가 ${preview['snsrIgr']} mA 이상으로 전기위험 상황이 발생했습니다.<br/>(IGR 수치가 ${preview['sigr1V']} mA 이하가 정상상태입니다.)</p>`;
+
+        let areaCode = document.getElementById("selectedAreaCode").innerText;
+        let strCode = document.getElementById("selectedStrCode").innerText;
+        let lSeq = document.getElementById("selectedLSeq").innerText;
+        txt += `<p>링크 : http://1.223.40.19:30080/mobile/store/issue?areaCode=${areaCode}&strCode=${strCode}&lSeq=${lSeq}</p>`;
       } else if (simulType === 'simul2') {
-        txt += '<p>[전기안전 정기보고]</p>';
+        txt += '<p>[시뮬레이션 - 전기안전 정기보고]</p>';
         txt += `<p>■ ${preview['areaName']} ${preview['strName']}</p>`;
 
         txt += `<p>`
@@ -107,6 +112,10 @@ const SimulMgr = () => {
           txt += `<p>※ 전주대비 전력소비가 적습니다.</p>`;
         else
           txt += `<p>※ 전주대비 전력소비가 동일합니다.</p>`;
+
+        let areaCode = document.getElementById("selectedAreaCode").innerText;
+        let strCode = document.getElementById("selectedStrCode").innerText;
+        txt += `<p>링크 : http://1.223.40.19:30080/mobile/store/report?areaCode=${areaCode}&strCode=${strCode}</p>`;
       }
     } else {
       txt += '<p>항목을 선택하세요.</p>';
@@ -168,6 +177,7 @@ const SimulMgr = () => {
       } else if (simulType === 'simul2') {
         map['areaName'] = row['areaName'];
         map['strName'] = row['strName'];
+        document.getElementById("selectedLSeq").innerText = '0';
       }
 
       getSimulPreview(map).then(resp => setPreview((resp.data['result']) ? resp.data['resultData'] : []));
@@ -177,20 +187,20 @@ const SimulMgr = () => {
   const clickSendSimulPush = () => {
     let map = {};
     map['toinfo'] = phoneNum;
-    map['msgText'] = document.getElementById("sendPreview").innerText.replace(/(<([^>]+)>)/ig,"\n");
+    map['msgText'] = document.getElementById("sendPreview").innerText;
 
-    let areaCode = document.getElementById("selectedAreaCode").innerText;
-    let strCode = document.getElementById("selectedStrCode").innerText;
-
-    if (simulType == 'simul1') {
-      let lSeq = document.getElementById("selectedLSeq").innerText;
-
-      map['linkMo'] = "http://1.223.40.19:30080/mobile/store/issue?areaCode=" + areaCode + "&strCode=" + strCode + "&lSeq=" + lSeq;
-      map['linkPc'] = "http://1.223.40.19:30080/mobile/store/issue?areaCode=" + areaCode + "&strCode=" + strCode + "&lSeq=" + lSeq;
-    } else if (simulType == 'simul2') {
-      map['linkMo'] = "http://1.223.40.19:30080/mobile/store/report?areaCode=" + areaCode + "&strCode=" + strCode;
-      map['linkPc'] = "http://1.223.40.19:30080/mobile/store/report?areaCode=" + areaCode + "&strCode=" + strCode;
-    }
+    // let areaCode = document.getElementById("selectedAreaCode").innerText;
+    // let strCode = document.getElementById("selectedStrCode").innerText;
+    //
+    // if (simulType == 'simul1') {
+    //   let lSeq = document.getElementById("selectedLSeq").innerText;
+    //
+    //   map['linkMo'] = "http://1.223.40.19:30080/mobile/store/issue?areaCode=" + areaCode + "&strCode=" + strCode + "&lSeq=" + lSeq;
+    //   map['linkPc'] = "http://1.223.40.19:30080/mobile/store/issue?areaCode=" + areaCode + "&strCode=" + strCode + "&lSeq=" + lSeq;
+    // } else if (simulType == 'simul2') {
+    //   map['linkMo'] = "http://1.223.40.19:30080/mobile/store/report?areaCode=" + areaCode + "&strCode=" + strCode;
+    //   map['linkPc'] = "http://1.223.40.19:30080/mobile/store/report?areaCode=" + areaCode + "&strCode=" + strCode;
+    // }
 
     sendSimulPush(map).then(resp => {
       if (resp.data['result'])

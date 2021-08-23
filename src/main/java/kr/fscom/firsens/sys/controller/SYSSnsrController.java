@@ -2,6 +2,7 @@ package kr.fscom.firsens.sys.controller;
 
 import kr.fscom.firsens.sys.domain.SYSAreaDomain;
 import kr.fscom.firsens.sys.domain.SYSSnsrDomain;
+
 import kr.fscom.firsens.sys.repository.SYSAreaRepo;
 import kr.fscom.firsens.sys.repository.SYSSnsrRepo;
 
@@ -207,5 +208,112 @@ public class SYSSnsrController {
 
         return rtn;
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @GetMapping("/snsrus")
+    public HashMap<String, Object> listPageSnsru(int page, int size) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 센서 갱신 이력 목록 요청 시작 : ({}, page : {}, size : {})", page, size);
+
+        HashMap<String, Object> rtn = new HashMap<>();
+        List<HashMap<String, Object>> sensoruList = new ArrayList<>();
+        int resultCnt = 0;
+        String result = "fail";
+
+        try {
+            HashMap<String, Object> param = new HashMap() {{
+                put("sizePerPage", size);
+                put("page", (page - 1) * size);
+            }};
+
+            sensoruList = sysSnsrRepo.LIST_SYS_SNSRU(param);
+            resultCnt = sysSnsrRepo.CNT_SYS_SNSRU(param);
+
+            rtn.put("resultList", sensoruList);
+            rtn.put("totalElements", resultCnt);
+
+            result = "success";
+        } catch (SQLException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 목록 요청 SQL 오류 : {}", ex.getMessage());
+        } catch (Exception ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 목록 요청 오류 : {}", ex.getMessage());
+        } finally {
+            rtn.put("result", result);
+        }
+
+        return rtn;
+    }
+
+    @PostMapping("/insertSnsru")
+    public boolean insertSnsru(@RequestBody HashMap<String, Object> param) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 센서 갱신 등록 요청 시작");
+        boolean result = false;
+
+        try {
+            int ins = sysSnsrRepo.INSERT_SYS_SNSRU(param);
+            result = true;
+        } catch (SQLException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 등록 요청 SQL 오류 : {}", ex.getMessage());
+        } catch (Exception ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 등록 요청 오류 : {}", ex.getMessage());
+        }
+
+        return result;
+    }
+
+    @PostMapping("/selectSnsru")
+    public HashMap<String, Object> selectSnsru(@RequestBody String seq) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 센서 갱신 내용 상세 요청 시작 : (seq : {})", seq);
+
+        HashMap<String, Object> rtn = new HashMap<>();
+        boolean result = false;
+
+        try {
+            rtn.put("resultData", sysSnsrRepo.SELECT_SYS_SNSRU(seq));
+            result = true;
+        } catch (SQLException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 내용 상세 요청 SQL 오류 : {}", ex.getMessage());
+        } catch (Exception ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 내용 상세 요청 오류 : {}", ex.getMessage());
+        } finally {
+            rtn.put("result", result);
+        }
+
+        return rtn;
+    }
+
+    @PostMapping("/updateSnsru")
+    public boolean updateSnsru(@RequestBody HashMap<String, Object> param) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 센서 갱신 내용 수정 요청 시작");
+        boolean result = false;
+
+        try {
+            int upd = sysSnsrRepo.UPDATE_SYS_SNSRU(param);
+            result = true;
+        } catch (SQLException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 내용 수정 요청 SQL 오류 : {}", ex.getMessage());
+        } catch (Exception ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 내용 수정 요청 오류 : {}", ex.getMessage());
+        }
+
+        return result;
+    }
+
+    @PostMapping("/deleteSnsru")
+    public boolean deleteSnsru(@RequestBody String seq) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 센서 갱신 내용 삭제 요청 시작 : (seq : {})", seq);
+        boolean result = false;
+
+        try {
+            int del = sysSnsrRepo.DELETE_SYS_SNSRU(seq);
+            result = true;
+        } catch (SQLException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 내용 삭제 요청 SQL 오류 : {}", ex.getMessage());
+        } catch (Exception ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 내용 삭제 요청 오류 : {}", ex.getMessage());
+        }
+
+        return result;
+    }
+
 
 }
