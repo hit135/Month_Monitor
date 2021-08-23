@@ -260,6 +260,27 @@ public class SYSSnsrController {
         return result;
     }
 
+    @PostMapping("/selectSnsru")
+    public HashMap<String, Object> selectSnsru(@RequestBody String seq) throws Exception {
+        LOG.info("■■■■■■■■■■■■■■■ 센서 갱신 내용 상세 요청 시작 : (seq : {})", seq);
+
+        HashMap<String, Object> rtn = new HashMap<>();
+        boolean result = false;
+
+        try {
+            rtn.put("resultData", sysSnsrRepo.SELECT_SYS_SNSRU(seq));
+            result = true;
+        } catch (SQLException ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 내용 상세 요청 SQL 오류 : {}", ex.getMessage());
+        } catch (Exception ex) {
+            LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 내용 상세 요청 오류 : {}", ex.getMessage());
+        } finally {
+            rtn.put("result", result);
+        }
+
+        return rtn;
+    }
+
     @PostMapping("/updateSnsru")
     public boolean updateSnsru(@RequestBody HashMap<String, Object> param) throws Exception {
         LOG.info("■■■■■■■■■■■■■■■ 센서 갱신 내용 수정 요청 시작");
@@ -279,11 +300,11 @@ public class SYSSnsrController {
 
     @PostMapping("/deleteSnsru")
     public boolean deleteSnsru(@RequestBody String seq) throws Exception {
-        LOG.info("■■■■■■■■■■■■■■■ 센서 갱신 내용 삭제 요청 시작");
+        LOG.info("■■■■■■■■■■■■■■■ 센서 갱신 내용 삭제 요청 시작 : (seq : {})", seq);
         boolean result = false;
 
         try {
-            int upd = sysSnsrRepo.DELETE_SYS_SNSRU(seq);
+            int del = sysSnsrRepo.DELETE_SYS_SNSRU(seq);
             result = true;
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 센서 갱신 내용 삭제 요청 SQL 오류 : {}", ex.getMessage());

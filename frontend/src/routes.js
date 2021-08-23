@@ -52,7 +52,7 @@ const routes = [
   , { path: '/mem', name: '회원관리', component: Member }
   , { path: '/str', name: '상점관리', component: Store }
   , { path: '/snsr', name: '센서관리', component: Sensor }
-  , { path: '/snsru', name: '센서갱신관리', component: SensorUpd }
+  , { path: '/snsru', name: '센서갱신이력관리', component: SensorUpd }
   , { path: '/inspr', name: '점검자관리', component: Inspr }
   , { path: '/insp', name: '점검관리', component: Insp }
   , { path: '/push', name: '발송이력', component: Push }

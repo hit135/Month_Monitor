@@ -6,7 +6,7 @@ const _nav = [
   , { _tag: 'CSidebarNavItem', name: '회원관리', to: '/mem', icon: <CIcon name="cil-user" customClasses="c-sidebar-nav-icon" /> }
   , { _tag: 'CSidebarNavItem', name: '상점관리', to: '/str', icon: <CIcon name="cil-basket" customClasses="c-sidebar-nav-icon" /> }
   , { _tag: 'CSidebarNavItem', name: '센서관리', to: '/snsr', icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" /> }
-  , { _tag: 'CSidebarNavItem', name: '센서갱신관리', to: '/snsru', icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" /> }
+  , { _tag: 'CSidebarNavItem', name: '센서갱신이력관리', to: '/snsru', icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" /> }
   , { _tag: 'CSidebarNavItem', name: '점검자관리', to: '/inspr', icon: <CIcon name="cil-user" customClasses="c-sidebar-nav-icon" /> }
   , { _tag: 'CSidebarNavItem', name: '점검관리', to: '/insp', icon: <CIcon name="cil-list" customClasses="c-sidebar-nav-icon" /> }
   , { _tag: 'CSidebarNavItem', name: '발송이력', to: '/push', icon: <CIcon name="cil-bell" customClasses="c-sidebar-nav-icon" /> }

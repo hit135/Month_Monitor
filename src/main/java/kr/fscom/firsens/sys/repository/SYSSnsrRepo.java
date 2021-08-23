@@ -32,6 +32,7 @@ public interface SYSSnsrRepo {
     List<HashMap<String, Object>> LIST_SYS_SNSRU(HashMap<String, Object> param) throws Exception;
     int CNT_SYS_SNSRU(HashMap<String, Object> param) throws Exception;
     int INSERT_SYS_SNSRU(HashMap<String, Object> param) throws Exception;
+    HashMap<String, Object> SELECT_SYS_SNSRU(String param) throws Exception;
     int UPDATE_SYS_SNSRU(HashMap<String, Object> param) throws Exception;
     int DELETE_SYS_SNSRU(String param) throws Exception;
 

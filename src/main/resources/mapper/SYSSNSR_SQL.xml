@@ -241,6 +241,14 @@
         VALUES (#{dateTime}, #{content})
     </insert>
 
+    <select id="SELECT_SYS_SNSRU" parameterType="string" resultType="map">
+        SELECT SEQ AS seq
+             , DATE_FORMAT(DATETIME, '%Y-%m-%d %H:%i:%s') AS dateTime
+             , CONTENT AS content
+          FROM F_SENSOR_INFO_UPDATE_LOG
+         WHERE SEQ = #{seq}
+    </select>
+
     <update id="UPDATE_SYS_SNSRU" parameterType="map">
         UPDATE F_SENSOR_INFO_UPDATE_LOG SET CONTENT = #{content} WHERE SEQ = #{seq}
     </update>
