@@ -1,12 +1,14 @@
-import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSelect } from "@coreui/react";
-import React, { useEffect } from "react";
+import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSelect, CSwitch, CRow } from "@coreui/react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { getInsprAreaList, updateInspector } from "../../agent/inspection";
-import { getValidInput,  handleChangePhoneNumber } from "../../agent/commonIndex";
+import { getInputValue, getValidInput, handleChangePhoneNumber } from "../../agent/commonIndex";
 
-const InsprUpdateModal = (props) => {
+const InsprUpdateModal = props => {
   const { modal, setModal, userContent, handleInitTable } = props;
+  const [appSwitch, setAppSwitch] = useState({ alarmUse: true, pushUse: true, smsUse: true, useYn: true });
+
   const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ mode: "all" });
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,9 +19,20 @@ const InsprUpdateModal = (props) => {
              {...register(id, regOpts[id])} />
       { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
     </CCol>;
+
+  let switchCmmHtml = (id, txt, checked) =>
+    <CFormGroup className={"pr-3 d-inline-flex"}>
+      <CLabel htmlFor={id} className={"pr-1"}>{txt}</CLabel>
+      <CSwitch className={'mx-1'} id={id} color={"info"} labelOn={"사용"} labelOff={"미사용"} onChange={setUpdSwitchValue} checked={checked} />
+    </CFormGroup>;
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
+    appSwitch.alarmUse = (userContent.alarmUse === "Y");
+    appSwitch.pushUse = (userContent.pushUse === "Y");
+    appSwitch.smsUse = (userContent.smsUse === "Y");
+    appSwitch.useYn = (userContent.useYn === "Y");
+
     reset(userContent);
   }, [userContent]);
 
@@ -36,8 +49,16 @@ const InsprUpdateModal = (props) => {
           html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
 
         document.getElementById("insprUpdInspAreaCode").innerHTML += html;
+
+        let sel = document.getElementById("insprUpdInspAreaCode");
       }
     });
+  };
+
+  const setUpdSwitchValue = e => {
+    const value = getInputValue(e);
+    setAppSwitch(data => ({ ...data, [e.target.id]: (value === "Y") }));
+    setValue(e.target.id, value);
   };
 
   const regOpts = {
@@ -53,13 +74,13 @@ const InsprUpdateModal = (props) => {
         , pattern: { value: /^[가-힣]{2,50}[0-9]*$|[a-zA-Z]{2,25}\s[a-zA-Z]{2,25}$/, message: '이름 형식에 맞게 입력하세요.' }
       }
     , inspEmail: {
-        pattern: {
-            value: /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
-          , message: "이메일 형식에 맞게 입력해주세요."
-        }
+          pattern: {
+              value: /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
+            , message: "이메일 형식에 맞게 입력해주세요."
+          }
       }
-    , inspTel: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요." } }
-    , inspMobile: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요." } }
+    , inspTel: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message: "전화번호 형식에 맞게 입력해주세요." } }
+    , inspMobile: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message: "휴대폰번호 형식에 맞게 입력해주세요." } }
     , inspShopName: {
           minLength: { value: 2, message: "2자 이상 입력하세요." }
         , maxLength: { value: 100, message: "100자 내로 입력하세요." }
@@ -71,7 +92,7 @@ const InsprUpdateModal = (props) => {
   };
 
   const onSubmit = (data, e) => {
-    if (window.confirm("수정하시겠습니까?")) {
+    if (window.confirm("점검자 정보를 수정하시겠습니까?")) {
       updateInspector(data).then(resp => {
         if (resp['data']) {
           alert("점검자 수정이 완료되었습니다.");
@@ -131,10 +152,16 @@ const InsprUpdateModal = (props) => {
               { errors.inspAddr && <span className={"invalid-feedback"}>{errors.inspAddr.message}</span> }
             </CCol>
           </CFormGroup>
+          <CRow className={"pl-3 pr-3"}>
+            {switchCmmHtml('alarmUse', '알림유무', appSwitch.alarmUse)}
+            {switchCmmHtml('pushUse', 'PUSH 유무', appSwitch.pushUse)}
+            {switchCmmHtml('smsUse', 'SMS 유무', appSwitch.smsUse)}
+            {switchCmmHtml('useYn', '사용유무', appSwitch.useYn)}
+          </CRow>
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={closeModal}>취소</CButton>
-          <CButton color="info" type={"submit"}>수정</CButton>
+          <CButton className={"mr-2"} color={"secondary"} onClick={closeModal}>취소</CButton>
+          <CButton color={"info"} type={"submit"}>수정</CButton>
         </CModalFooter>
       </form>
     </CModal>

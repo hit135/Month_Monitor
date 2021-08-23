@@ -31,9 +31,9 @@ const InsprInsertModal = props => {
       for (let item of resp.data['resultList'])
         html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
 
-      document.getElementById("modalInsInspAreaCode").innerHTML += html;
+      document.getElementById("insprInsInspAreaCode").innerHTML += html;
 
-      let sel = document.getElementById("modalInsInspAreaCode");
+      let sel = document.getElementById("insprInsInspAreaCode");
       setValue("inspAreaCode", sel.options[sel.selectedIndex].value);
     } else {
       alert("점검자 소속 시장 목록을 불러오는 도중 오류가 발생했습니다.");
@@ -95,7 +95,7 @@ const InsprInsertModal = props => {
   };
 
   const onSubmit = (data, e) => {
-    if (window.confirm("등록하시겠습니까?")) {
+    if (window.confirm("점검자 정보를 등록하시겠습니까?")) {
       insertInspector(data).then(resp => {
         if (resp['data']) {
           alert("점검자 등록이 완료되었습니다.");
@@ -128,7 +128,7 @@ const InsprInsertModal = props => {
           <CModalBody>
             <CFormGroup row>
               <CCol md="6">
-                <CLabel for={"inspId"}>점검자 ID<span className={"required-span"}> *</span></CLabel>
+                <CLabel htmlFor={"inspId"}>점검자 ID<span className={"required-span"}> *</span></CLabel>
                 <input className={getValidInput(errors["inspId"], getValues("inspId"), "")} id={"inspId"} type={"text"}
                        placeholder={"5~20자 내로 입력하세요."} { ...register("inspId", regOpts["inspId"]) } />
                 { errors.inspId && <span className={"invalid-feedback"}>{errors.inspId.message}</span> }
@@ -145,8 +145,8 @@ const InsprInsertModal = props => {
             </CFormGroup>
             <CFormGroup row>
               <CCol md="6">
-                <CLabel htmlFor={"inspAreaCode"}>점검자 소속 시장</CLabel>
-                <CSelect id={"modalInsInspAreaCode"} { ...register("inspAreaCode") }></CSelect>
+                <CLabel htmlFor={"insprInsInspAreaCode"}>점검자 소속 시장</CLabel>
+                <CSelect id={"insprInsInspAreaCode"} { ...register("inspAreaCode") }></CSelect>
               </CCol>
               {inputCmmHtml("inspShopName", "점검자 소속 업체", "text", "2~100자 내로 입력하세요.", false, null)}
             </CFormGroup>
@@ -160,7 +160,7 @@ const InsprInsertModal = props => {
             </CFormGroup>
           </CModalBody>
           <CModalFooter>
-            <CButton color="secondary" onClick={() => closeModal()}>취소</CButton>
+            <CButton color="secondary" onClick={closeModal}>취소</CButton>
             <CButton color="info" type="submit">등록</CButton>
           </CModalFooter>
         </form>
