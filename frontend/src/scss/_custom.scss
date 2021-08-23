@@ -78,3 +78,14 @@ table tr {
   max-width: 100%;
   display: block;
 }
+
+@media print {
+  /* 크롬에만 적용 */
+  @media all and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: .001dpcm) {
+
+  }
+  .printRow {
+    page-break-after: always !important;
+    font-size: 1.1rem;
+  }
+}

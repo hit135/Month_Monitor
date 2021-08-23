@@ -54,7 +54,7 @@
          WHERE AREACODE = #{areaCode}
            AND USEYN = 'Y'
            AND DELYN = 'N'
-           AND STRCODE LIKE CONCAT('%', #{searchWrd})
+           AND STRCODE LIKE CONCAT('%', #{strCode})
     </select>
 
     <select id="SELECT_SYS_STAT_SNSR_INFO" parameterType="map" resultType="map">
@@ -104,6 +104,13 @@
                                            AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
                                          GROUP BY AREACODE, DATE_FORMAT(DATETIME, '%H')
                                         </when>
+                                        <when test='"store".equals(type)'>
+                                            FROM F_CRN_SNSR_ELEC_EVT_STAT
+                                            WHERE AREACODE = #{areaCode}
+                                            AND STRCODE = #{strCode}
+                                            AND (DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23'))
+                                            GROUP BY AREACODE, STRCODE, DATE_FORMAT(DATETIME, '%H')
+                                        </when>
                                     </choose>
                                      ORDER BY HOUR ) A
                                         ON T.HOUR = A.HOUR
@@ -125,6 +132,13 @@
                                                     WHERE AREACODE = #{areaCode}
                                                       AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
                                                     GROUP BY AREACODE
+                                                </when>
+                                                <when test='"store".equals(type)'>
+                                                    FROM F_CRN_SNSR_KWH_HIST
+                                                    WHERE AREACODE = #{areaCode}
+                                                    AND STRCODE = #{strCode}
+                                                    AND (DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23'))
+                                                    GROUP BY AREACODE, STRCODE
                                                 </when>
                                             </choose>
                                             ) K
@@ -173,6 +187,10 @@
                                          FROM F_CRN_AREA_ELEC_DAILY_STAT
                                         WHERE AREACODE = #{areaCode}
                                     </when>
+                                    <when test='"store".equals(type)'>
+                                        FROM F_ELEC_SENSOR_STAT
+                                        WHERE AREACODE = #{areaCode} AND STRCODE = #{strCode}
+                                    </when>
                                 </choose>
                                    AND ( SDATE BETWEEN #{startDate} AND #{endDate} )
                                  GROUP BY DAYOFWEEK(SDATE) ) A
@@ -190,6 +208,7 @@
                    FROM F_ELEC_SENSOR_STAT
                   WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
                     AND AREACODE = #{areaCode}
+                   <if test='"store".equals(type)'>AND STRCODE = #{strCode}</if>
         ) S
     </select>
 
@@ -224,8 +243,7 @@
         FROM F_ELEC_SENSOR_STAT
         WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
         AND AREACODE = #{areaCode}
-        <if test='"str".equals(type)'>AND STRCODE = #{strCode}</if>
-        <if test='"snsr".equals(type)'>AND (SNSRID = #{snsrId} OR SNSRSEQ = #{snsrSeq})</if>
+        <if test='"store".equals(type)'>AND STRCODE = #{strCode}</if>
         GROUP BY DATE_FORMAT(SDATE, '%m') ) E
         ON T.SDATE = E.SDATE
         UNION ALL
@@ -245,8 +263,7 @@
         FROM F_ELEC_SENSOR_STAT
         WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
         AND AREACODE = #{areaCode}
-        <if test='"str".equals(type)'>AND STRCODE = #{strCode}</if>
-        <if test='"snsr".equals(type)'>AND (SNSRID = #{snsrId} OR SNSRSEQ = #{snsrSeq})</if>
+        <if test='"store".equals(type)'>AND STRCODE = #{strCode}</if>
         ORDER BY sDate
     </select>
 
@@ -270,7 +287,7 @@
 
     <select id="LIST_SYS_STAT_STR_EVENT_STAT" parameterType="map" resultType="map">
         SELECT S.STRCODE AS strCode
-             , ( SELECT DISTINCT STRNAME FROM F_STORE WHERE STRCODE = S.STRCODE ) AS strName
+             , ( SELECT DISTINCT STRNAME FROM F_STORE WHERE STRCODE = S.STRCODE AND AREACODE = #{areaCode}) AS strName
              , S.OC1ST AS oc1st
              , S.OC2ND AS oc2nd
              , S.IGO1ST AS igo1st
@@ -297,7 +314,7 @@
 
     <select id="LIST_SYS_STAT_STR_KWH_STAT" parameterType="map" resultType="map">
         SELECT S.STRCODE AS strCode
-             , ( SELECT DISTINCT STRNAME FROM F_STORE WHERE STRCODE = S.STRCODE ) AS strName
+             , ( SELECT DISTINCT STRNAME FROM F_STORE WHERE STRCODE = S.STRCODE AND AREACODE = #{areaCode} ) AS strName
              , S.SNSRKWH AS snsrKwh
              , S.SNSRIGO AS snsrIgo
         FROM ( SELECT STRCODE

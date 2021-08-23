@@ -1,18 +1,19 @@
 import {API_ROOT, formatDate, numCommaFormat} from "../commonIndex";
 import {CButton, CCol, CRow} from "@coreui/react";
-import { ResponsiveBar } from '@nivo/bar'
+import { ResponsiveBar  } from '@nivo/bar'
+import { ResponsivePie } from '@nivo/pie'
 import React from "react";
 const axios = require('axios');
-
 
 export const getSelectGroup = (type) =>
   axios.get( `${API_ROOT}/selectGroup?type=${type}`)
 
-export const getStatInfo = (type, guCode, areaCode, startDate, endDate) =>
+export const getStatInfo = (type, guCode, areaCode, startDate, endDate, strCode) =>
   axios.get([
       `${API_ROOT}/statInfo?type=${type}`
     , `guCode=${guCode}`
     , `areaCode=${areaCode}`
+    , `strCode=${strCode}`
     , `startDate=${formatDate(startDate)}`
     , `endDate=${formatDate(endDate)}`
     ].join('&'));
@@ -27,15 +28,15 @@ export const getStatInfoList = (type, guCode, areaCode, startDate, endDate) =>
   ].join('&'));
 
 // 전기안전현황 컴포넌트
-export const areaStatusComponent = (areaName, startDate, endDate, areaAddr) => {
+export const areaStatusComponent = (areaName, startDate, endDate, areaAddr, strName) => {
   return (
     <div>
-      <h5>{areaName} 전기안전 현황</h5>
+      <h5>{areaName} {strName} 전기안전 현황</h5>
       <table className="table table-sm table-bordered mb-0">
         <tbody>
         <tr>
           <td className="wme_table_td_title">대상</td>
-          <td>{areaName}</td>
+          <td>{areaName} {strName}</td>
           <td className="wme_table_td_title">설치일자</td>
           <td>2020년 10월 12일</td>
         </tr>
@@ -56,7 +57,7 @@ export const areaStatusComponent = (areaName, startDate, endDate, areaAddr) => {
 }
 
 // 전기안전 경보 발생현황(종합) 컴포넌트
-export const areaTotalWarningComp = (areaName, item) => {
+export const areaTotalWarningComp = (areaName, item, strName) => {
   let chartData = [];
   let totalWarning1stNum = item[12]["oc1st"] + item[12]["igo1st"] + item[12]["igr1st"];
   let totalWarning2ndNum = item[12]["oc2nd"] + item[12]["igo2nd"] + item[12]["igr2nd"];
@@ -75,7 +76,7 @@ export const areaTotalWarningComp = (areaName, item) => {
   });
   return (
     <div className={"mt-5"}>
-      <h5>{areaName} 전기안전 경보 발생 현황</h5>
+      <h5>{areaName} {strName} 전기안전 경보 발생 현황</h5>
       <span className={"mb-2"} style={{fontSize: "1rem", display: "block"}}>전기안전 경보 발생 현황(종합)</span>
       <table className="table table-sm table-bordered mb-0">
         <colgroup>
@@ -347,7 +348,7 @@ export const areaTotalWarningComp = (areaName, item) => {
   );
 }
 
-const areaHourlDayStatChart = (key, data) => (
+const areaHourlDayStatChart = (key, data, color) => (
   <ResponsiveBar
     data={data}
     keys={key}
@@ -359,7 +360,7 @@ const areaHourlDayStatChart = (key, data) => (
     valueScale={{ type: 'linear' }}
     indexScale={{ type: 'band', round: true }}
     valueFormat={{ format: '', enabled: false }}
-    colors={{ scheme: 'nivo' }}
+    colors={{ scheme: color }}
     borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
     axisTop={null}
     axisRight={null}
@@ -508,7 +509,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
           </table>
         </CCol>
         <CCol md={"7"} style={{ height: "35vh"}}>
-          {areaHourlDayStatChart(keys, hourOcChartData)}
+          {areaHourlDayStatChart(keys, hourOcChartData, "nivo")}
         </CCol>
       </CRow>
 
@@ -569,7 +570,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
           </table>
         </CCol>
         <CCol md={"7"} style={{ height: "35vh"}}>
-          {areaHourlDayStatChart(keys, dayOcChartData)}
+          {areaHourlDayStatChart(keys, dayOcChartData, "nivo")}
         </CCol>
       </CRow>
 
@@ -624,7 +625,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
           </table>
         </CCol>
         <CCol md={"7"} style={{ height: "35vh"}}>
-          {areaHourlDayStatChart(keys, hourIgoChartData)}
+          {areaHourlDayStatChart(keys, hourIgoChartData, 'nivo')}
         </CCol>
       </CRow>
 
@@ -685,7 +686,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
           </table>
         </CCol>
         <CCol md={"7"} style={{ height: "35vh"}}>
-          {areaHourlDayStatChart(keys, dayIgoChartData)}
+          {areaHourlDayStatChart(keys, dayIgoChartData, "nivo")}
         </CCol>
       </CRow>
 
@@ -740,7 +741,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
           </table>
         </CCol>
         <CCol md={"7"} style={{ height: "35vh"}}>
-          {areaHourlDayStatChart(keys, hourIgrChartData)}
+          {areaHourlDayStatChart(keys, hourIgrChartData, "nivo")}
         </CCol>
       </CRow>
 
@@ -801,7 +802,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
           </table>
         </CCol>
         <CCol md={"7"} style={{ height: "35vh"}}>
-          {areaHourlDayStatChart(keys, dayIgrChartData)}
+          {areaHourlDayStatChart(keys, dayIgrChartData, "nivo")}
         </CCol>
       </CRow>
     </div>
@@ -897,12 +898,24 @@ export const levelStoreStatComp = (areaName, item) => {
 
 // 전기사용량 현황
 export const areaKwhStatComp = (areaName, item) => {
+  let pieChartData = [];
+  pieChartData.push({
+    "id" : "전기사용량",
+    "label": "전기사용량",
+    "value": Math.round(item["snsrKwh"]),
+    "color": "hsl(171, 70%, 50%)"
+  }, {
+    "id" : "누설전력량",
+    "label": "누설전력량",
+    "value": Math.round(item["snsrIgo"]),
+    "color": "hsl(175, 70%, 50%)"
+  });
   return (
     <div className={"mt-4"}>
       <h5>{areaName} 전기사용량 현황(종합)</h5>
-      <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>전기사용량 현황(종합)</span>
       <CRow>
         <CCol md={"6"}>
+          <span className={"mb-2"} style={{fontSize: "1rem", display: "block", marginTop: "7vh"}}>전기사용량 현황(종합)</span>
           <table className="table table-sm table-bordered mb-0">
             <tbody>
             <tr>
@@ -923,7 +936,83 @@ export const areaKwhStatComp = (areaName, item) => {
             </tbody>
           </table>
         </CCol>
-        <CCol md={"6"}>
+        <CCol md={"6"} style={{ height: "35vh"}}>
+          <ResponsivePie
+            data={pieChartData}
+            margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+            innerRadius={0.5}
+            padAngle={0.7}
+            colors={{ scheme: 'set3' }}
+            cornerRadius={3}
+            activeOuterRadiusOffset={8}
+            borderWidth={1}
+            borderColor={{ from: 'color', modifiers: [ [ 'darker', 0.2 ] ] }}
+            arcLinkLabelsSkipAngle={10}
+            arcLinkLabelsTextColor="#333333"
+            arcLinkLabelsThickness={2}
+            arcLinkLabelsColor={{ from: 'color' }}
+            arcLabelsSkipAngle={10}
+            arcLabelsTextColor={{ from: 'color', modifiers: [ [ 'darker', 2 ] ] }}
+            defs={[
+              {
+                id: 'dots',
+                // type: 'patternDots',
+                background: 'inherit',
+                color: 'rgba(255, 255, 255, 0.3)',
+                rotation: -45,
+                lineWidth: 6,
+                spacing: 10
+              },
+              {
+                id: 'lines',
+                type: 'patternLines',
+                background: 'inherit',
+                color: 'rgba(255, 255, 255, 0.3)',
+                rotation: -45,
+                lineWidth: 6,
+                spacing: 10
+              }
+            ]}
+            fill={[
+              {
+                match: {
+                  id: '누설전력량'
+                },
+                id: 'dots'
+              },
+              {
+                match: {
+                  id: '전기사용량'
+                },
+                id: 'lines'
+              }
+            ]}
+            legends={[
+              {
+                anchor: 'bottom',
+                direction: 'row',
+                justify: false,
+                translateX: 0,
+                translateY: 56,
+                itemsSpacing: 0,
+                itemWidth: 100,
+                itemHeight: 18,
+                itemTextColor: '#999',
+                itemDirection: 'left-to-right',
+                itemOpacity: 1,
+                symbolSize: 18,
+                symbolShape: 'circle',
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemTextColor: '#000'
+                    }
+                  }
+                ]
+              }
+            ]}
+          />
         </CCol>
       </CRow>
     </div>
@@ -932,6 +1021,17 @@ export const areaKwhStatComp = (areaName, item) => {
 
 // 전기사용량 상세 현황
 export const areaKwhStatYearComp = item => {
+  let chartData = [];
+  item.map((item, idx) => {
+    if( idx !== 12) {
+      chartData.push({
+        "label" : (idx + 1) + "월",
+        "전력사용량" : Math.round(item["snsrKwh"]),
+        "누설전력량" : Math.round(item["snsrIgo"]),
+      })
+    }
+  });
+
   return (
     <div>
       <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>전기사용량 현황(상세)</span>
@@ -991,16 +1091,91 @@ export const areaKwhStatYearComp = item => {
         </tr>
         </tbody>
       </table>
+      <CRow>
+        <CCol md={"12"} style={{ height: "50vh"}}>
+          <ResponsiveBar
+            data={chartData}
+            keys={[ "전력사용량", "누설전력량" ]}
+            indexBy="label"
+            margin={{ top: 50, right: 30, bottom: 100, left: 60 }}
+            padding={0.2}
+            innerPadding={1}
+            groupMode="grouped"
+            valueScale={{ type: 'linear' }}
+            indexScale={{ type: 'band', round: true }}
+            valueFormat={{ format: '', enabled: false }}
+            colors={{ scheme: 'set3' }}
+            borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+            axisTop={null}
+            axisRight={null}
+            axisLeft={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legendPosition: 'middle',
+              legendOffset: -40
+            }}
+            borderRadius={4}
+            borderWidth={1}
+            labelSkipWidth={12}
+            labelSkipHeight={12}
+            labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+            legends={[
+              {
+                dataFrom: 'keys',
+                anchor: 'bottom',
+                direction: 'row',
+                justify: false,
+                translateX: 10,
+                translateY: 85,
+                itemsSpacing: 21,
+                itemWidth: 130,
+                itemHeight: 61,
+                itemDirection: 'left-to-right',
+                itemOpacity: 0.85,
+                symbolSize: 20,
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemOpacity: 1
+                    }
+                  }
+                ]
+              }
+            ]}
+          />
+        </CCol>
+      </CRow>
     </div>
   );
 }
 
 // 시간대별 전력사용량, 요일별 전력사용량
 export const areaTotalKwhComp = (item, item2) => {
+  console.log(item, item2);
+  let hourKwhData = [];
+  let dayKwhData = [];
+  let keys = ["사용량(kWh)"];
+
+  item.map((item, idx) => {
+    hourKwhData.push({
+      "label" : item["hour"],
+      "사용량(kWh)" : Math.round(item["snsrKwh"])
+    });
+  });
+
+  item2.map((items, idx)=> {
+    dayKwhData.push({
+      "label" : items["dayName"],
+      "사용량(kWh)" : Math.round(items["snsrKwh"])
+    });
+  });
+
   return (
     <div>
       <CRow>
-        <CCol md={"6"}>
+        <CCol md={"5"}>
           <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 전력사용량</span>
           <table className="table table-sm table-bordered mb-0" id="wme_area_oc_warning_hourly_table">
             <tbody>
@@ -1042,13 +1217,13 @@ export const areaTotalKwhComp = (item, item2) => {
             </tbody>
           </table>
         </CCol>
-        <CCol md={"6"}>
-
+        <CCol md={"7"} style={{ height: "35vh"}}>
+          {areaHourlDayStatChart(keys, hourKwhData, "set3")}
         </CCol>
       </CRow>
 
       <CRow>
-        <CCol md={"6"}>
+        <CCol md={"5"}>
           <span className={"mb-2 mt-2"} style={{fontSize: "1rem", display: "block"}}>* 요일별 전력사용량</span>
           <table className="table table-sm table-bordered mb-0" id="wme_area_oc_warning_hourly_table">
             <tbody>
@@ -1095,8 +1270,8 @@ export const areaTotalKwhComp = (item, item2) => {
             </tbody>
           </table>
         </CCol>
-        <CCol md={"6"}>
-
+        <CCol md={"7"} style={{ height: "35vh"}}>
+          {areaHourlDayStatChart(keys, dayKwhData, "set3")}
         </CCol>
       </CRow>
     </div>

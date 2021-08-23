@@ -15,6 +15,7 @@ import {getModalStrList, getStr, getStrList} from "../agent/store";
 import {getInsprAreaList} from "../agent/inspection";
 import PageTableWidget from "./pageTableWidget";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import {getSelectGroup} from "../agent/stat";
 
 function PageStrTableModalWidget(props) {
   const viewColumns = [
@@ -22,7 +23,7 @@ function PageStrTableModalWidget(props) {
     { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'center' } },
   ]
   const {
-    onStrModal, setOnStrModal, clickStrRow, initStrCode
+    onStrModal, setOnStrModal, clickStrRow, initStrCode, areaId
   } = props;
 
   const [repo, setRepo] = useState([]);               // 리스트 hook
@@ -46,9 +47,13 @@ function PageStrTableModalWidget(props) {
     });
 
   useEffect(() => {
-    handleInitTable();
+    searchItem.areaCode = "";
+    searchItem.searchWrd = "";
+    pageItem.page = 1;
+    document.getElementById("searchWrd").value = "";
     handleInitListStrArea();
-  }, []);
+    handleInitTable();
+  }, [onStrModal]);
 
   // 페이징 클릭 시
   const handleTableChange = (pageNation, param) => {
@@ -72,21 +77,24 @@ function PageStrTableModalWidget(props) {
   };
 
   const handleInitListStrArea = () => {
-    getInsprAreaList().then(resp => {
-      if (resp.data['result']) {
+    getSelectGroup().then(resp => {
+      if (resp.data['result'] === "success") {
         let html = '';
 
         for (let item of resp.data['resultList'])
           html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
 
-        document.getElementById("areaCode").innerHTML += html;
+        document.getElementById(areaId).innerHTML += html;
       }
     });
   }
 
   const handleChangeSearchType = (e) => {
     const value = (e.target.type === 'checkbox') ? (e.target.checked ? 'Y' : 'N') : e.target.value;
-    searchItem[e.target.id] = value;
+    if(e.target.id === "areaSelect" || e.target.id === "areaSelect2")
+      searchItem["areaCode"] = value;
+    else
+      searchItem[e.target.id] = value;
     pageItem.page = 1;
     handleInitTable();
   };
@@ -104,7 +112,7 @@ function PageStrTableModalWidget(props) {
         </CModalHeader>
         <CModalBody className={"strModal"}>
           <CCol sm="5" className={"float-left pl-0"}>
-            <CInput placeholder="검색어 입력" onKeyUp={(e) => {
+            <CInput placeholder="검색어 입력" id={"searchWrd"} onKeyUp={(e) => {
               searchItem.searchWrd = e.target.value;
               if(e.key === "Enter") handleClickSearchBtn()
             }} />
@@ -112,7 +120,7 @@ function PageStrTableModalWidget(props) {
           <button className={"btn btn-custom-info mt-0 float-left"} onClick={handleClickSearchBtn}>검색</button>
 
           <CCol sm="5" className={"float-left pl-2 pr-0 mb-2"}>
-            <CSelect id={'areaCode'} onChange={handleChangeSearchType}>
+            <CSelect id={areaId} onChange={handleChangeSearchType}>
               <option value={''}>시장 전체</option>
             </CSelect>
           </CCol>
