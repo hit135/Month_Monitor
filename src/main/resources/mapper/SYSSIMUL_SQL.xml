@@ -180,7 +180,7 @@
            AND Z.strCode = #{strCode}
     </select>
 
-    <insert id="INSERT_PUSH" parameterType="map">
+    <insert id="INSERT_SYS_PUSH" parameterType="map">
         INSERT INTO F_PUSH_LOG (SNSRSEQ, PUSHMSG, PUSHSTIME, USERID, SENDRESULT, RESENDSEQ, TOINFO, FROMINFO)
         VALUES (#{snsrseq}, #{pushmsg},NOW(), #{userid}, #{sendresult}, #{resendseq}, #{toinfo}, #{frominfo})
     </insert>

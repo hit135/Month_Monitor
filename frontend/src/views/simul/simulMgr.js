@@ -177,7 +177,7 @@ const SimulMgr = () => {
   const clickSendSimulPush = () => {
     let map = {};
     map['toinfo'] = phoneNum;
-    map['msgText'] = document.getElementById("sendPreview").innerText.replace(/(<([^>]+)>)/ig,"\n");
+    map['msgText'] = document.getElementById("sendPreview").innerText;
 
     let areaCode = document.getElementById("selectedAreaCode").innerText;
     let strCode = document.getElementById("selectedStrCode").innerText;
