@@ -196,7 +196,7 @@ public class SYSSimulController {
                              "\"type\":\"ATA\"," +
                              "\"kakaoOptions\":{" +
                              "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
-                             "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
+                             "\"templateId\":\"KA01TP210823080223539jyGNGvWMXxt\"," +
                              "\"disableSms\":\"true\"" +
                              "}}}";
             }
