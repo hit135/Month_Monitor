@@ -195,9 +195,9 @@ public class SYSSimulController {
                              "\"text\":\"" + msg_text + "\"," +
                              "\"type\":\"ATA\"," +
                              "\"kakaoOptions\":{" +
-                             "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
-                             "\"templateId\":\"KA01TP210823080223539jyGNGvWMXxt\"," +
-                             "\"disableSms\":\"true\"" +
+                                 "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
+                                 "\"templateId\":\"KA01TP210823080223539jyGNGvWMXxt\"," +
+                                 "\"disableSms\":\"true\"" +
                              "}}}";
             }
 
@@ -248,6 +248,107 @@ public class SYSSimulController {
 
         return ret;
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @RequestMapping(value = "/sendSimulSpPush")
+    @ResponseBody
+    public HashMap<String, Object> sendSimulSpPush(HttpServletRequest req, @RequestBody HashMap<String, Object> param) {
+        HashMap<String, Object> prm = new HashMap<String, Object>();
+        HashMap<String, Object> ret = new HashMap<String, Object>();
+
+        try {
+            String apiKey = "NCS6IS9H8EY6IZ8Z";
+            String apiSecret = "CERFHKFEXFGJPCJIKUD7XENTPXPKIW8N";
+            String salt = UUID.randomUUID().toString().replaceAll("-", "");
+            String date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split("\\[")[0];
+
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+
+            String signature = new String(Hex.encodeHex(sha256_HMAC.doFinal((date + salt).getBytes(StandardCharsets.UTF_8))));
+            String auth = "HMAC-SHA256 ApiKey=" + apiKey + ", Date=" + date + ", salt=" + salt + ", signature=" + signature;
+            String targetUrl = "https://msg.purplebook.io/api/messages/v4/send";
+
+            String msg_text =
+                "[전기화재예방] 전기 위험발생안내\\n\\n" +
+                "■ 시장명: 도마큰시장\\n\\n" +
+                "■ 상점명: k2\\n\\n" +
+                "■ 발생일시: 2021년 08월 23일 15시 30분\\n\\n" +
+                "■ 발생정보:\\n" +
+                "누전(IGO) 수치가 40mA 이상 발생(전기안전법상 1mA이하가 정상입니다)\\n\\n" +
+                "■ 조치방법:\\n" +
+                "상점내 전기설비에 대해 전기전문가에게 점검받을 것을 권장합니다.";
+
+            String userid = "admin";
+
+            String toinfo = (String) param.get("toinfo");
+            String frominfo = "01022787929";
+            String linkMo = "http://1.223.40.19:30080/mobile/store/issue/push";
+            String linkPc = "http://1.223.40.19:30080/mobile/store/issue/push";
+
+            String parameters = "{\"message\":{" +
+                                 "\"to\":\"" + toinfo + "\"," +
+                                 "\"from\":\"" + frominfo + "\"," +
+                                 "\"text\":\"" + msg_text + "\"," +
+                                 "\"type\":\"ATA\"," +
+                                 "\"kakaoOptions\":{" +
+                                     "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
+                                     "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
+                                     "\"disableSms\":\"true\"" +
+                                     "\"buttons\": " +
+                                     "[{\"buttonName\":\"상세보기\"," +
+                                         "\"buttonType\":\"WL\"," +
+                                         "\"linkMo\":\"" + param.get("linkMo") + "\"," +
+                                         "\"linkPc\":\"" + param.get("linkPc") + "\"" +
+                                     "}]" +
+                                     "}" +
+                                 "}}}";
+
+            URL url = new URL(targetUrl);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+            con.setRequestMethod("POST");
+
+            con.setRequestProperty("Authorization", auth);
+            con.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            System.out.println("Parameters : " + parameters);
+            OutputStreamWriter osw = new OutputStreamWriter(wr);
+            osw.write(parameters, 0, parameters.length());
+            //wr.writeBytes(parameters);
+            osw.close();
+            wr.flush();
+            wr.close();
+
+            int responseCode = con.getResponseCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            String line;
+            StringBuffer response = new StringBuffer();
+
+            while ((line = in.readLine()) != null)
+                response.append(line);
+
+            in.close();
+
+            ret.put("result", response.toString());
+
+            prm.put("snsrseq", req.getParameter("snsrseq"));
+            prm.put("pushmsg", parameters);
+            prm.put("userid", userid);
+            prm.put("sendresult", responseCode + " " + response.toString());
+            prm.put("toinfo", toinfo);
+            prm.put("frominfo", frominfo);
+
+            sysSimulRepo.INSERT_SYS_PUSH(prm);
+        } catch (Exception e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        }
+
+        return ret;
+    }
 
 }

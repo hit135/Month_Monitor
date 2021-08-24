@@ -3,13 +3,14 @@ import React from 'react';
 const Area = React.lazy(() => import('./views/area/areaMgr'));
 const Member = React.lazy(() => import('./views/member/memMgr'));
 const Sensor = React.lazy(() => import('./views/sensor/snsrMgr'));
-const SensorUpd = React.lazy(() => import('./views/sensor/snsruMgr'));
 const Store = React.lazy(() => import('./views/store/strMgr'));
 const Inspr = React.lazy(() => import('./views/inspection/insprMgr'));
 const Insp = React.lazy(() => import('./views/inspection/inspMgr'));
 const Push = React.lazy(() => import('./views/push/pushMgr'));
 const Stat = React.lazy(() => import('./views/stat/statMgr'));
+const SensorUpd = React.lazy(() => import('./views/sensor/snsruMgr'));
 const Simul = React.lazy(() => import('./views/simul/simulMgr'));
+const SimulSp = React.lazy(() => import('./views/simul/simulSpMgr'));
 
 // const Toaster = React.lazy(() => import('./views/notifications/toaster/Toaster'));
 // const Tables = React.lazy(() => import('./views/base/tables/Tables'));
@@ -52,13 +53,13 @@ const routes = [
   , { path: '/mem', name: '회원관리', component: Member }
   , { path: '/str', name: '상점관리', component: Store }
   , { path: '/snsr', name: '센서관리', component: Sensor }
-  , { path: '/snsru', name: '센서갱신이력관리', component: SensorUpd }
   , { path: '/inspr', name: '점검자관리', component: Inspr }
   , { path: '/insp', name: '점검관리', component: Insp }
   , { path: '/push', name: '발송이력', component: Push }
   , { path: '/stat', name: '통계', component: Stat }
+  , { path: '/snsru', name: '센서갱신이력관리', component: SensorUpd }
   , { path: '/simul', name: '시뮬레이션', component: Simul }
-
+  , { path: '/simulSp', name: '시뮬레이션샘플', component: SimulSp }
 
 
 

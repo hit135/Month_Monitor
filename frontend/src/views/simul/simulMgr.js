@@ -206,7 +206,7 @@ const SimulMgr = () => {
       if (resp.data['result'])
         alert("발송되었습니다.");
       else
-        alert("발송중 오류가 발생했습니다.");
+        alert("발송 도중 오류가 발생했습니다.");
     });
   };
 
