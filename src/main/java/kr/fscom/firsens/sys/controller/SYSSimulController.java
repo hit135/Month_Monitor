@@ -205,7 +205,6 @@ public class SYSSimulController {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
             con.setRequestMethod("POST");
-
             con.setRequestProperty("Authorization", auth);
             con.setRequestProperty("Content-Type", "application/json;charset=utf-8");
 
@@ -230,8 +229,6 @@ public class SYSSimulController {
 
             in.close();
 
-            //System.out.println("HTTP response code : " + responseCode);
-            //System.out.println("HTTP body : " + response.toString());
             ret.put("result", response.toString());
 
             prm.put("snsrseq", req.getParameter("snsrseq"));
@@ -240,6 +237,7 @@ public class SYSSimulController {
             prm.put("sendresult", responseCode + " " + response.toString());
             prm.put("toinfo", toinfo);
             prm.put("frominfo", frominfo);
+            prm.put("pushRslt", "Y");
 
             sysSimulRepo.INSERT_SYS_PUSH(prm);
         } catch (Exception e) {
@@ -270,46 +268,38 @@ public class SYSSimulController {
             String auth = "HMAC-SHA256 ApiKey=" + apiKey + ", Date=" + date + ", salt=" + salt + ", signature=" + signature;
             String targetUrl = "https://msg.purplebook.io/api/messages/v4/send";
 
-            String msg_text =
-                "[전기화재예방] 전기 위험발생안내\\n\\n" +
-                "■ 시장명: 도마큰시장\\n\\n" +
-                "■ 상점명: k2\\n\\n" +
-                "■ 발생일시: 2021년 08월 23일 15시 30분\\n\\n" +
-                "■ 발생정보:\\n" +
-                "누전(IGO) 수치가 40mA 이상 발생(전기안전법상 1mA이하가 정상입니다)\\n\\n" +
-                "■ 조치방법:\\n" +
-                "상점내 전기설비에 대해 전기전문가에게 점검받을 것을 권장합니다.";
+            StringBuffer msg_text = new StringBuffer();
+            msg_text.append("[전기화재예방] 전기 위험발생안내\\n\\n");
+            msg_text.append("■ 시장명: 도마큰시장\\n\\n");
+            msg_text.append("■ 상점명: k2\\n\\n");
+            msg_text.append("■ 발생일시: 2021년 08월 23일 15시 30분\\n\\n");
+            msg_text.append("■ 발생정보:\\n");
+            msg_text.append("누전(IGO) 수치가 40mA 이상 발생(전기안전법상 1mA이하가 정상입니다)\\n\\n");
+            msg_text.append("■ 조치방법:\\n");
+            msg_text.append("상점내 전기설비에 대해 전기전문가에게 점검받을 것을 권장합니다.\\n\\n");
+            msg_text.append("■ 링크:\\n");
+            msg_text.append("http://1.223.40.19:30080/mobile/store/issue/push");
 
             String userid = "admin";
-
             String toinfo = (String) param.get("toinfo");
             String frominfo = "01022787929";
-            String linkMo = "http://1.223.40.19:30080/mobile/store/issue/push";
-            String linkPc = "http://1.223.40.19:30080/mobile/store/issue/push";
 
-            String parameters = "{\"message\":{" +
-                                 "\"to\":\"" + toinfo + "\"," +
-                                 "\"from\":\"" + frominfo + "\"," +
-                                 "\"text\":\"" + msg_text + "\"," +
-                                 "\"type\":\"ATA\"," +
-                                 "\"kakaoOptions\":{" +
-                                     "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
-                                     "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
-                                     "\"disableSms\":\"true\"" +
-                                     "\"buttons\": " +
-                                     "[{\"buttonName\":\"상세보기\"," +
-                                         "\"buttonType\":\"WL\"," +
-                                         "\"linkMo\":\"" + param.get("linkMo") + "\"," +
-                                         "\"linkPc\":\"" + param.get("linkPc") + "\"" +
-                                     "}]" +
-                                     "}" +
-                                 "}}}";
+            StringBuffer parameters = new StringBuffer();
+            parameters.append("{\"message\":{");
+            parameters.append("\"to\":\"" + toinfo + "\",");
+            parameters.append("\"from\":\"" + frominfo + "\",");
+            parameters.append("\"text\":\"" + msg_text + "\",");
+            parameters.append("\"type\":\"ATA\",");
+            parameters.append("\"kakaoOptions\":{");
+            parameters.append("\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\",");
+            parameters.append("\"templateId\":\"KA01TP210824025929118Wp0XVbiNKfG\",");
+            parameters.append("\"disableSms\":\"true\"");
+            parameters.append("}}}");
 
             URL url = new URL(targetUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
             con.setRequestMethod("POST");
-
             con.setRequestProperty("Authorization", auth);
             con.setRequestProperty("Content-Type", "application/json;charset=utf-8");
 
@@ -317,7 +307,7 @@ public class SYSSimulController {
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             System.out.println("Parameters : " + parameters);
             OutputStreamWriter osw = new OutputStreamWriter(wr);
-            osw.write(parameters, 0, parameters.length());
+            osw.write(parameters.toString(), 0, parameters.length());
             //wr.writeBytes(parameters);
             osw.close();
             wr.flush();
@@ -342,6 +332,7 @@ public class SYSSimulController {
             prm.put("sendresult", responseCode + " " + response.toString());
             prm.put("toinfo", toinfo);
             prm.put("frominfo", frominfo);
+            prm.put("pushRslt", "Y");
 
             sysSimulRepo.INSERT_SYS_PUSH(prm);
         } catch (Exception e) {

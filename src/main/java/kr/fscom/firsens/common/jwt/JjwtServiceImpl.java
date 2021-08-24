@@ -3,6 +3,9 @@ package kr.fscom.firsens.common.jwt;
 import io.jsonwebtoken.*;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -31,6 +34,7 @@ import java.util.HashMap;
 @Service("jjwtService")
 public class JjwtServiceImpl implements JjwtService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(JjwtServiceImpl.class);
     private static final String SALT = "firesensSecret";
 
     /**
@@ -43,14 +47,20 @@ public class JjwtServiceImpl implements JjwtService {
      */
     @Override
     public <T> String createToken(String key, T data, String subject) {
-        return Jwts
-            .builder()
-            .setHeaderParam("typ", "JWT")
-            .setHeaderParam("regDate", System.currentTimeMillis())
-            .setSubject(subject)
-            .claim(key, data)
-            .signWith(SignatureAlgorithm.HS256, this.generateKey())
-            .compact();
+        String rtn = "";
+
+        try {
+            rtn = Jwts.builder()
+                      .setHeaderParam("typ", "JWT")
+                      .setHeaderParam("regDate", System.currentTimeMillis())
+                      .setSubject(subject).claim(key, data)
+                      .signWith(SignatureAlgorithm.HS256, this.generateKey())
+                      .compact();
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return rtn;
     }
 
     /**
@@ -63,11 +73,19 @@ public class JjwtServiceImpl implements JjwtService {
      */
     @Override
     public HashMap<String, Object> getJwtContent(String jwt) {
-        return (HashMap<String, Object>) Jwts.parser()
-                                             .setSigningKey(this.generateKey())
-                                             .parseClaimsJws(jwt)
-                                             .getBody()
-                                             .get("member");
+        HashMap<String, Object> rtn = new HashMap<>();
+
+        try {
+            rtn = (HashMap<String, Object>) Jwts.parser()
+                                                .setSigningKey(this.generateKey())
+                                                .parseClaimsJws(jwt)
+                                                .getBody()
+                                                .get("member");
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return rtn;
     }
 
     /**
@@ -80,7 +98,15 @@ public class JjwtServiceImpl implements JjwtService {
      */
     @Override
     public String getUserId(String jwt) {
-        return (String) getJwtContent(jwt).get("userId");
+        String userId = "";
+
+        try {
+            userId = (String) getJwtContent(jwt).get("userId");
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return userId;
     }
 
     /**
@@ -94,11 +120,7 @@ public class JjwtServiceImpl implements JjwtService {
     @Override
     public boolean isUsable(String jwt) {
         try {
-            Claims claims = Jwts.parser()
-                                .setSigningKey(this.generateKey())
-                                .parseClaimsJws(jwt)
-                                .getBody();
-
+            Claims claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(jwt).getBody();
             return true;
         } catch (ExpiredJwtException e) {   // Token이 만료된 경우 Exception이 발생한다.
             log.error("Token Expired");
