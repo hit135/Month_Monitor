@@ -150,6 +150,7 @@ const SimulMgr = () => {
 
   const changeSimulType = () => {
     let labels = document.getElementsByTagName('label');
+
     for (let i = 0; i < labels.length; i++)
       if (labels[i].htmlFor === simulType)
         document.getElementById('simulTitle').innerText = labels[i].innerText;

@@ -17,6 +17,7 @@
   .top-title-span { letter-spacing: 0.3rem; font-size: 2.5rem; font-weight: 400; }
 
   .main-title { /*padding-bottom: 0.5vh;*/ border-bottom: 1px solid #ccc; }
+
   .main-title-badge {
     padding: 0.65rem 1.25rem 0.45rem 1.25rem;
     border-bottom-left-radius: 0px;
@@ -46,17 +47,12 @@
 <body class="mod-bg-1 nav-function-minify">
 <div class="page-wrapper">
   <div class="page-inner">
-    <!-- BEGIN Left Aside -->
-    <!--    <th:block th:replace="web/district/layout/am_left"></th:block>-->
-    <!-- END Left Aside -->
     <div class="page-content-wrapper" style="background-color: #222222;">
       <div class="d-flex justify-content-start">
         <div class="p-2 top-title">
           <h2 class="m-0 top-title-span">대전시 자치구별 전기위험현황</h2>
         </div>
       </div>
-      <!--      <th:block th:replace="web/district/layout/am_top"></th:block>-->
-
       <main id="js-page-content" role="main" class="page-content first-main-page">
         <div class="row">
           <div class="col-3" style="padding-left: 5vh; padding-right: 4vh;">
@@ -160,9 +156,9 @@
                   <div class="js-data-attributes" style="left: 30%; top: 61%;">
                     <span id="seogu" data-peity='{ "fill": ["#627300", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
                   </div>
-                  <!--                  <div class="js-data-attributes" style="left: 26%; top: 29%;">-->
-                  <!--                    <span id="yuseonggu" data-peity='{ "fill": ["#c08adc", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>-->
-                  <!--                  </div>-->
+                  <div class="js-data-attributes" style="left: 26%; top: 29%;">
+                    <span id="yuseonggu" data-peity='{ "fill": ["#c08adc", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
+                  </div>
                   <div class="js-data-attributes" style="left: 54%; top: 18%;">
                     <span id="daedeokgu" data-peity='{ "fill": ["#f26f00", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
                   </div>
@@ -384,7 +380,8 @@
       });
 
       let orderList = [
-        { GUNAME: "동구", SUMCNT: dongguCnt }, { GUNAME: "중구", SUMCNT: jungguCnt }, { GUNAME: "서구", SUMCNT: seoguCnt }, { GUNAME: "유성구", SUMCNT: yuseongCnt }, { GUNAME: "대덕구", SUMCNT: daedeokguCnt }
+          { GUNAME: "동구", SUMCNT: dongguCnt }, { GUNAME: "중구", SUMCNT: jungguCnt }, { GUNAME: "서구", SUMCNT: seoguCnt }
+        , { GUNAME: "유성구", SUMCNT: yuseongCnt }, { GUNAME: "대덕구", SUMCNT: daedeokguCnt }
       ];
 
       orderList.sort(function(a, b) { return b["SUMCNT"] - a["SUMCNT"]; });
@@ -478,8 +475,6 @@
     $.get(contextPath + '/district/todayGuEventAjax', function(d) {
       let guId = '';
 
-      console.log(d);
-
       $.each(d, function(idx, item) {
         if      (item.GUNAME === "동구")   guId = "donggu";
         else if (item.GUNAME === "중구")   guId = "junggu";
@@ -525,7 +520,6 @@
         barEvnetList.push(Math.round(item["THISEVENTCNT"] * 100 / item["THATEVENTCNT"]));
       });
 
-      //
       guNameLabel.push("유성구");
 
       var bar_ctx = document.getElementById('localEventChart').getContext('2d');
@@ -542,16 +536,17 @@
           type: 'bar'
         , data: localLabel
         , options: {
-            responsive: false
+              responsive: false
             , legend: { position: 'bottom',  display: false }
             , hover: { animationDuration: 0 }
             , scales: {
-                yAxes : [{ ticks: { fontColor: "white", fontSize: 15 } }], xAxes : [{ ticks: { fontColor: "white", fontSize: 15 } }]
+                  yAxes : [{ ticks : { fontSize: 15 }, afterDataLimits(scale) { scale.max += 30; } }]
+                , xAxes : [{ ticks: { fontColor: "white", fontSize: 15 } }]
               }
             , animation: {
                   duration: 1
                 , onComplete: function() {
-                    let chartInstance = this.chart, ctx = chartInstance.ctx;
+                    var chartInstance = this.chart, ctx = chartInstance.ctx;
                     ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'bottom';
@@ -569,7 +564,7 @@
                   }
               }
             , title: { display: false, text: '' }
-          }
+        }
       });
     });
   }
