@@ -15,7 +15,7 @@ import 'react-datepicker/dist/react-datepicker.min.css';
 import {ko} from "date-fns/esm/locale";
 import {
   areaKwhStatComp, areaKwhStatYearComp,
-  areaStatusComponent, areaTotalChartStatComp, areaTotalKwhComp,
+  areaStatusComponent, areaTotalChartStatComp, areaTotalChartStatComp2, areaTotalKwhComp,
   areaTotalWarningComp,
   getSelectGroup,
   getStatInfo, getStatInfoList, levelAreaStatComp, levelStoreStatComp, strKwhStatComp
@@ -27,8 +27,10 @@ import {formatDate} from "../../agent/commonIndex";
 
 const StatMgr = () => {
   let Spinner = require('react-spinkit');
+  let areaNameTitle = "";
   let strName = "";
   const [loading, setLoading] = useState(true);
+  const [totalLoading, setTotalLoading] = useState(true);
   const [printLoading, setPrintLoading] = useState(false);
   const [typeValue, setTypeValue] = useState("areaCode");
   const [strCode, setStrCode] = useState("");
@@ -41,6 +43,7 @@ const StatMgr = () => {
   const [areaState, setAreaState] = useState();
   const [areaTotalWarning, setAreaTotalWarning] = useState();
   const [areaHourlyStat, setAreaHourlyStat] = useState();
+  const [areaHourlyStat2, setAreaHourlyStat2] = useState();
   const [levelAreaStat, setLevelAreaStat] = useState();
   const [levelStrStat, setLevelStrStat] = useState();
   const [areaKwhStat, setAreaKwhStat] = useState();
@@ -58,6 +61,7 @@ const StatMgr = () => {
    setAreaState("");
    setAreaTotalWarning("");
    setAreaHourlyStat("");
+   setAreaHourlyStat2("");
    setLevelAreaStat("");
    setLevelStrStat("");
    setAreaKwhStat("");
@@ -117,6 +121,7 @@ const StatMgr = () => {
   const handleClickSearchStat = async () => {
     setHookReset();
     setLoading(true);
+    setTotalLoading(true);
     if(typeValue === "store" && strCode === "") {
       alert("상점을 선택해주세요.");
       return false;
@@ -139,6 +144,7 @@ const StatMgr = () => {
         } else {
           const temp = resp.data["infoStat"];
           setAreaName(temp.areaName);
+          areaNameTitle = temp.areaName;
           setAreaState(areaStatusComponent(temp.areaName, startDate, endDate, temp.areaAddr, strName));
         }
 
@@ -148,13 +154,14 @@ const StatMgr = () => {
           else
             setAreaKwhYearStat("");
 
-        setAreaTotalWarning(areaTotalWarningComp(areaName, resp.data["weekMonthStat"], strName));
+        setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"], strName));
         setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
         setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+        setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
 
         if(typeValue === "store") {
           if(resp.data["areaKwhStat"] !== null)
-            setAreaKwhStat(areaKwhStatComp(areaName, resp.data["areaKwhStat"]));
+            setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
           else
             setAreaKwhStat("");
         }
@@ -169,31 +176,35 @@ const StatMgr = () => {
         if (resp.data['result'] === "success") {
           if(resp.data["levelAreaStat"] !== null)
             if(resp.data["levelAreaStat"].length > 0)
-              setLevelAreaStat(levelAreaStatComp(areaName, resp.data["levelAreaStat"]));
+              setLevelAreaStat(levelAreaStatComp(areaNameTitle, resp.data["levelAreaStat"]));
             else
               setLevelAreaStat("");
 
           if(resp.data["levelStrStat"] !== null)
             if(resp.data["levelStrStat"].length > 0)
-              setLevelStrStat(levelStoreStatComp(areaName, resp.data["levelStrStat"]));
+              setLevelStrStat(levelStoreStatComp(areaNameTitle, resp.data["levelStrStat"]));
             else
               setLevelStrStat("");
 
           if(resp.data["areaKwhStat"] !== null)
-            setAreaKwhStat(areaKwhStatComp(areaName, resp.data["areaKwhStat"]));
+            setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
           else
             setAreaKwhStat("");
 
           if(resp.data["areaStrKwhStat"] !== null)
             if(resp.data["areaStrKwhStat"].length > 0)
-              setStrKwhStat(strKwhStatComp(areaName, resp.data["areaStrKwhStat"]))
+              setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"]))
             else
               setStrKwhStat("");
         } else {
           alert("서버 통신에 오류가 발생했습니다.");
         }
       });
+      setTotalLoading(false);
+    } else {
+      setTotalLoading(false);
     }
+
   }
   const componentRef = React.useRef(null);
   const onBeforeGetContentResolve = React.useRef();
@@ -266,13 +277,13 @@ const StatMgr = () => {
                   검색
                 </CButton>
                 {/*<CButton color="secondary" className={"ml-1"} onClick={() => handlePrint}><CIcon name="cil-print"/></CButton>*/}
-                <button className={"btn btn-secondary ml-2"} onClick={handlePrint} disabled={loading}>
+                <button className={"btn btn-secondary ml-2"} onClick={handlePrint} disabled={totalLoading}>
                   <CIcon name="cil-print"/>
                 </button>
               </div>
             </div>
           </CCardHeader>
-          <CCardBody>
+          <CCardBody className={"p-3"}>
             {
               loading && <CRow id={"loading"}>
                 <CCol md={"12"}>
@@ -288,6 +299,7 @@ const StatMgr = () => {
             {areaState}
             {areaTotalWarning}
             {areaHourlyStat}
+            {areaHourlyStat2}
             {levelAreaStat}
             {levelStrStat}
 
@@ -300,7 +312,7 @@ const StatMgr = () => {
       </CCol>
       <PageStrTableModalWidget onStrModal={onStrModal} setOnStrModal={setOnStrModal} clickStrRow={clickStrRow} initStrCode={initStrCode} areaId={"areaSelect"} />
 
-      {printLoading && <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
+      {printLoading && <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat} areaHourlyStat2={areaHourlyStat2}
                                          levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat}
                                          areaKwhHourlyStat={areaKwhHourlyStat} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}
                                          endDate={formatDate(endDate)} />

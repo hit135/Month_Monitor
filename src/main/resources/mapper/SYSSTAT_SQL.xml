@@ -283,6 +283,7 @@
         WHERE E.AREACODE = #{areaCode} AND (E.SDATE BETWEEN #{startDate} AND #{endDate})
         GROUP BY E.LEVELAREACODE
         ORDER BY E.LEVELAREACODE
+        LIMIT 15
     </select>
 
     <select id="LIST_SYS_STAT_STR_EVENT_STAT" parameterType="map" resultType="map">
@@ -309,7 +310,7 @@
                GROUP BY AREACODE, STRCODE ) S
         WHERE (S.OC1ST + S.OC2ND + S.IGO1ST + S.IGO2ND + S.IGR1ST + S.IGR2ND + S.DISCONN) > 0
         ORDER BY (S.OC1ST + S.OC2ND + S.IGO1ST + S.IGO2ND + S.IGR1ST + S.IGR2ND + S.DISCONN) DESC
-            LIMIT 15
+            LIMIT 25
     </select>
 
     <select id="LIST_SYS_STAT_STR_KWH_STAT" parameterType="map" resultType="map">
@@ -325,7 +326,7 @@
                  AND SDATE BETWEEN #{startDate} AND #{endDate}
                GROUP BY AREACODE, STRCODE ) S
         ORDER BY (S.SNSRKWH) DESC
-            LIMIT 15
+            LIMIT 25
     </select>
 
 </mapper>

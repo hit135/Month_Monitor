@@ -12,9 +12,10 @@ import {
 import 'react-datepicker/dist/react-datepicker.min.css';
 export const ComponentToPrint = React.forwardRef((props, ref) => (
   <div ref={ref}>
+    {/* 표지 */}
     <div className={"printRow"}>
       <div className={"d-flex justify-content-between"}>
-        <img src={'/fs/img/img.png'} style={{ width: "250px" }} />
+        <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
         <div className={"p-5"}>
           <h3 style={{fontSize: "2rem"}}>
             {props.type}
@@ -37,17 +38,182 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
       </div>
     </div>
     <CCard>
-      <CCardBody>
-        {props.areaState}
-        {props.areaTotalWarning}
-        {props.areaHourlyStat}
-        {props.levelAreaStat}
-        {props.levelStrStat}
+      <CCardBody className={"p-0"}>
+        {/* 전기안전 현황 */}
+        <div className={"printRow"}>
+          <div className={"d-flex justify-content-between"}>
+            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
+            <div className={"p-5"}>
+              <h3 style={{fontSize: "2rem"}}>
+                {props.type}
+              </h3>
+            </div>
+          </div>
+          <div className={"pl-4 pr-4 pt-4"}>
+            {props.areaState}
+            {props.areaTotalWarning}
+          </div>
 
-        {props.areaKwhStat}
-        {props.areaKwhYearStat}
-        {props.areaKwhHourlyStat}
-        {props.strKwhStat}
+          <div className="d-flex justify-content-between" style={{marginTop: "100px"}}>
+            <div>
+
+            </div>
+            <div className="d-flex align-items-end">
+              <h3 className="m-0">- 1 -</h3>
+            </div>
+            <div className="d-flex align-items-end pr-5">
+              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            </div>
+          </div>
+        </div>
+
+        {/* 과전류, IGO */}
+        <div className={"printRow"}>
+          <div className={"d-flex justify-content-between"}>
+            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
+            <div className={"p-5"}>
+              <h3 style={{fontSize: "2rem"}}>
+                {props.type}
+              </h3>
+            </div>
+          </div>
+          <div className={"pl-4 pr-4 pt-4"}>
+            {props.areaHourlyStat}
+          </div>
+          <div className="d-flex justify-content-between" style={{marginTop: "100px"}}>
+            <div>
+
+            </div>
+            <div className="d-flex align-items-end">
+              <h3 className="m-0">- 2 -</h3>
+            </div>
+            <div className="d-flex align-items-end pr-5">
+              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            </div>
+          </div>
+        </div>
+
+        {/* IGR, 내 시장별 현황 */}
+        <div className={"printRow"}>
+          <div className={"d-flex justify-content-between"}>
+            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
+            <div className={"p-5"}>
+              <h3 style={{fontSize: "2rem"}}>
+                {props.type}
+              </h3>
+            </div>
+          </div>
+
+          <CRow>
+            <CCol sm={12}>
+              <div className={"pl-4 pr-4 pt-4"}>
+                {props.areaHourlyStat2}
+                {props.levelAreaStat}
+              </div>
+
+              <div className={"row"}>
+                <div className={"bottom-title"} style={{position: "absolute", bottom: "100"}}>
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      {/**/}
+                    </div>
+                    <div className="d-flex align-items-end">
+                      <h3 className="m-0">- 3 -</h3>
+                    </div>
+                    <div className="d-flex align-items-end pr-5">
+                      <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CCol>
+          </CRow>
+
+        </div>
+
+        {/* 내 상점별 현황 */}
+        <div className={"printRow"}>
+          <div className={"d-flex justify-content-between"}>
+            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
+            <div className={"p-5"}>
+              <h3 style={{fontSize: "2rem"}}>
+                {props.type}
+              </h3>
+            </div>
+          </div>
+          <div className={"pl-4 pr-4 pt-4"}>
+            {props.levelStrStat}
+          </div>
+
+
+          <div className="d-flex justify-content-between" style={{bottom: 0}}>
+            <div>
+
+            </div>
+            <div className="d-flex align-items-end">
+              <h3 className="m-0">- 4 -</h3>
+            </div>
+            <div className="d-flex align-items-end pr-5">
+              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            </div>
+          </div>
+        </div>
+
+        <div className={"printRow"}>
+          <div className={"d-flex justify-content-between"}>
+            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
+            <div className={"p-5"}>
+              <h3 style={{fontSize: "2rem"}}>
+                {props.type}
+              </h3>
+            </div>
+          </div>
+
+          <div className={"pl-4 pr-4 pt-4"}>
+            {props.areaKwhStat}
+            {props.areaKwhYearStat}
+            {props.areaKwhHourlyStat}
+          </div>
+
+          <div className="d-flex justify-content-between" style={{bottom: 0}}>
+            <div>
+
+            </div>
+            <div className="d-flex align-items-end">
+              <h3 className="m-0">- 5 -</h3>
+            </div>
+            <div className="d-flex align-items-end pr-5">
+              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            </div>
+          </div>
+        </div>
+
+        <div className={"printRow"}>
+          <div className={"d-flex justify-content-between"}>
+            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
+            <div className={"p-5"}>
+              <h3 style={{fontSize: "2rem"}}>
+                {props.type}
+              </h3>
+            </div>
+          </div>
+
+          <div className={"pl-4 pr-4 pt-4"} style={{marginBottom: "50%"}}>
+            {props.strKwhStat}
+          </div>
+
+          <div className="d-flex justify-content-between bottom-title" style={{bottom: 0}}>
+            <div>
+
+            </div>
+            <div className="d-flex align-items-end">
+              <h3 className="m-0">- 6 -</h3>
+            </div>
+            <div className="d-flex align-items-end pr-5">
+              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            </div>
+          </div>
+        </div>
       </CCardBody>
     </CCard>
   </div>
