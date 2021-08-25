@@ -274,7 +274,7 @@ public class SYSSimulController {
             msg_text.append("■ 상점명: k2\\n\\n");
             msg_text.append("■ 발생일시: 2021년 08월 23일 15시 30분\\n\\n");
             msg_text.append("■ 발생정보:\\n");
-            msg_text.append("누전(IGO) 수치가 40mA 이상 발생(전기안전법상 1mA이하가 정상입니다)\\n\\n");
+            msg_text.append("누전(IGO) 수치가 40mA 이상 발생(전기설비기술기준상 1mA이하가 적합합니다.)\\n\\n");
             msg_text.append("■ 조치방법:\\n");
             msg_text.append("상점내 전기설비에 대해 전기전문가에게 점검받을 것을 권장합니다.\\n\\n");
             msg_text.append("■ 링크:\\n");
