@@ -37,7 +37,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
         <h3 className={"d-flex align-items-end align-content-end mr-5"} style={{fontSize: "2.5rem"}}>{new Date().toLocaleDateString()}</h3>
       </div>
     </div>
-    <CCard>
+    <CCard className={"mb-0"}>
       <CCardBody className={"p-0"}>
         {/* 전기안전 현황 */}
         <div className={"printRow"}>
@@ -53,17 +53,12 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             {props.areaState}
             {props.areaTotalWarning}
           </div>
+          <div className="position-absolute-ct">
+            <h3 className="m-0" style={{fontSize: "2rem"}}>- 1 -</h3>
+          </div>
 
-          <div className="d-flex justify-content-between" style={{marginTop: "100px"}}>
-            <div>
-
-            </div>
-            <div className="d-flex align-items-end">
-              <h3 className="m-0">- 1 -</h3>
-            </div>
-            <div className="d-flex align-items-end pr-5">
-              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-            </div>
+          <div className="position-absolute-rb">
+            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
           </div>
         </div>
 
@@ -80,16 +75,13 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <div className={"pl-4 pr-4 pt-4"}>
             {props.areaHourlyStat}
           </div>
-          <div className="d-flex justify-content-between" style={{marginTop: "100px"}}>
-            <div>
 
-            </div>
-            <div className="d-flex align-items-end">
-              <h3 className="m-0">- 2 -</h3>
-            </div>
-            <div className="d-flex align-items-end pr-5">
-              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-            </div>
+          <div className="position-absolute-ct">
+            <h3 className="m-0" style={{fontSize: "2rem"}}>- 2 -</h3>
+          </div>
+
+          <div className="position-absolute-rb">
+            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
           </div>
         </div>
 
@@ -103,33 +95,52 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
               </h3>
             </div>
           </div>
-
-          <CRow>
-            <CCol sm={12}>
-              <div className={"pl-4 pr-4 pt-4"}>
-                {props.areaHourlyStat2}
+          <div className={"pl-4 pr-4 pt-4"}>
+            {props.areaHourlyStat2}
+            {
+              (props.areaTitle !== "대전중앙시장") &&
+              <div>
                 {props.levelAreaStat}
               </div>
+            }
+          </div>
 
-              <div className={"row"}>
-                <div className={"bottom-title"} style={{position: "absolute", bottom: "100"}}>
-                  <div className="d-flex justify-content-between">
-                    <div>
-                      {/**/}
-                    </div>
-                    <div className="d-flex align-items-end">
-                      <h3 className="m-0">- 3 -</h3>
-                    </div>
-                    <div className="d-flex align-items-end pr-5">
-                      <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CCol>
-          </CRow>
+          <div className="position-absolute-ct">
+            <h3 className="m-0" style={{fontSize: "2rem"}}>- 3 -</h3>
+          </div>
+
+          <div className="position-absolute-rb">
+            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+          </div>
 
         </div>
+
+        {
+          props.areaTitle === "대전중앙시장" &&
+          <div className={"printRow"}>
+            <div className={"d-flex justify-content-between"}>
+              <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
+              <div className={"p-5"}>
+                <h3 style={{fontSize: "2rem"}}>
+                  {props.type}
+                </h3>
+              </div>
+            </div>
+
+            <CRow>
+              <div className={"pl-4 pr-4 pt-4"}>
+                {props.levelAreaStat}
+              </div>
+              <div className="position-absolute-ct">
+                <h3 className="m-0" style={{fontSize: "2rem"}}>- 4 -</h3>
+              </div>
+
+              <div className="position-absolute-rb">
+                <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+              </div>
+            </CRow>
+          </div>
+        }
 
         {/* 내 상점별 현황 */}
         <div className={"printRow"}>
@@ -145,18 +156,20 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             {props.levelStrStat}
           </div>
 
-
-          <div className="d-flex justify-content-between" style={{bottom: 0}}>
-            <div>
-
-            </div>
-            <div className="d-flex align-items-end">
-              <h3 className="m-0">- 4 -</h3>
-            </div>
-            <div className="d-flex align-items-end pr-5">
-              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-            </div>
+          <CRow>
+          <div className="position-absolute-ct">
+            {
+              props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 5 -</h3>
+            }
+            {
+              props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 4 -</h3>
+            }
           </div>
+
+          <div className="position-absolute-rb">
+            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+          </div>
+          </CRow>
         </div>
 
         <div className={"printRow"}>
@@ -175,17 +188,20 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             {props.areaKwhHourlyStat}
           </div>
 
-          <div className="d-flex justify-content-between" style={{bottom: 0}}>
-            <div>
+          <CRow>
+            <div className="position-absolute-ct">
+              {
+                props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 6 -</h3>
+              }
+              {
+                props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 5 -</h3>
+              }
+            </div>
 
-            </div>
-            <div className="d-flex align-items-end">
-              <h3 className="m-0">- 5 -</h3>
-            </div>
-            <div className="d-flex align-items-end pr-5">
+            <div className="position-absolute-rb">
               <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
             </div>
-          </div>
+          </CRow>
         </div>
 
         <div className={"printRow"}>
@@ -202,17 +218,20 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             {props.strKwhStat}
           </div>
 
-          <div className="d-flex justify-content-between bottom-title" style={{bottom: 0}}>
-            <div>
+          <CRow>
+            <div className="position-absolute-ct">
+              {
+                props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 7 -</h3>
+              }
+              {
+                props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 6 -</h3>
+              }
+            </div>
 
-            </div>
-            <div className="d-flex align-items-end">
-              <h3 className="m-0">- 6 -</h3>
-            </div>
-            <div className="d-flex align-items-end pr-5">
+            <div className="position-absolute-rb">
               <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
             </div>
-          </div>
+          </CRow>
         </div>
       </CCardBody>
     </CCard>

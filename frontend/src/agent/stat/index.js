@@ -87,8 +87,8 @@ export const areaTotalWarningComp = (areaName, item, strName) => {
         </colgroup>
         <thead>
         <tr>
-          <th className="text-center">경보 종류</th>
-          <th className="text-center" colSpan="3">경보 구분</th>
+          <th className="text-center wme_table_td_title">경보 종류</th>
+          <th className="text-center wme_table_td_title" colSpan="3">경보 구분</th>
         </tr>
         </thead>
         <tbody>
@@ -286,24 +286,33 @@ export const areaTotalWarningComp = (areaName, item, strName) => {
           keys={[ '과전류 1차 경보', '과전류 2차 경보', '전체누설전류 1차 경보', '전체누설전류 2차 경보', '저항누설전류 1차 경보', '저항누설전류 2차 경보' ]}
           indexBy="label"
           margin={{ top: 50, right: 30, bottom: 100, left: 60 }}
-          padding={0.2}
+          padding={0.1}
           innerPadding={1}
           groupMode="grouped"
           valueScale={{ type: 'linear' }}
           indexScale={{ type: 'band', round: true }}
           valueFormat={{ format: '', enabled: false }}
           colors={{ scheme: 'paired' }}
+          enableLabel={false}
+          theme={{
+            axis: {
+              ticks: {
+                text: {
+                  fontSize: 18,
+                  fill: "#333"
+                }
+              }
+            },
+            legends: {
+              text: {
+                fontSize: 16,
+                fill: "#333"
+              }
+            }
+          }}
           borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
           axisTop={null}
           axisRight={null}
-          axisBottom={{
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: '월별 Event발생 건수',
-            legendPosition: 'middle',
-            legendOffset: 32
-          }}
           axisLeft={{
             tickSize: 5,
             tickPadding: 5,
@@ -311,7 +320,7 @@ export const areaTotalWarningComp = (areaName, item, strName) => {
             legendPosition: 'middle',
             legendOffset: -40
           }}
-          borderRadius={4}
+          borderRadius={3}
           borderWidth={1}
           labelSkipWidth={12}
           labelSkipHeight={12}
@@ -322,10 +331,10 @@ export const areaTotalWarningComp = (areaName, item, strName) => {
               anchor: 'bottom',
               direction: 'row',
               justify: false,
-              translateX: 10,
-              translateY: 85,
+              translateX: 0,
+              translateY: 100,
               itemsSpacing: 21,
-              itemWidth: 130,
+              itemWidth: 180,
               itemHeight: 61,
               itemDirection: 'left-to-right',
               itemOpacity: 0.85,
@@ -376,11 +385,32 @@ const areaHourlDayStatChart = (key, data, color) => (
       legendPosition: 'middle',
       legendOffset: -40
     }}
+    theme={{
+      axis: {
+        ticks: {
+          text: {
+            fontSize: 18,
+            fill: "#333"
+          }
+        }
+      },
+      legends: {
+        text: {
+          fontSize: 16,
+          fill: "#333"
+        }
+      },
+      labels: {
+        text: {
+          fontSize: 20,
+        }
+      }
+    }}
     borderRadius={4}
     borderWidth={1}
     labelSkipWidth={12}
     labelSkipHeight={12}
-    labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+    labelTextColor="#333"
     legends={[
       {
         dataFrom: 'keys',
@@ -823,6 +853,25 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
 
 // 시장별 현황
 export const levelAreaStatComp = (areaName, item) => {
+  let areaType = false;
+  let chartData = [];
+  let chartData2 = [];
+  if(areaName === "대전중앙시장") areaType = true;
+  if(areaType) {
+    item.map((item, idx) => {
+      // chartKey.push(item["areaName"]);
+      chartData.push({
+       "label" : item["areaName"],
+        "이벤트건수" : item["totalCnt"]
+      })
+
+      chartData2.push({
+        "label" : item["areaName"],
+        "전력사용량(kWh)" : Math.round(item["snsrKwh"])
+      })
+    })
+  }
+  console.log(item);
   return (
     <div className={"mt-4"}>
       <h5 className={"title"}>{areaName} 내 시장별 현황</h5>
@@ -833,7 +882,6 @@ export const levelAreaStatComp = (areaName, item) => {
           <td colSpan="2" className="wme_table_td_title text-center">과전류경보</td>
           <td colSpan="2" className="wme_table_td_title text-center">전체누설전류(IGO)</td>
           <td colSpan="2" className="wme_table_td_title text-center">저항성누설전류(IGR)</td>
-          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>끊김</td>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소비전력</td>
         </tr>
         <tr>
@@ -854,13 +902,187 @@ export const levelAreaStatComp = (areaName, item) => {
               <td className="text-right">{item2['igo2nd']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['igr1st']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['igr2nd']?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2['disconn']?.toLocaleString() || 0}</td>
               <td className="text-right">{Math.round(item2['snsrKwh'])?.toLocaleString() || 0}</td>
             </tr>
           ))
         }
         </tbody>
       </table>
+
+      {
+        areaType &&
+          <div>
+            <CRow style={{ height: "530px"}}>
+              <CCol sm={12} style={{marginTop: "20px", marginBottom: "-30px"}}>
+                <div className={"d-flex justify-content-between"}>
+                  <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 단위시장별 전기위험 알림 발생현황</span>
+                  <div className={"d-flex align-items-center"}>
+                    <span className={"subTitleType"} style={{fontSize: "0.8rem", display: "block"}}>(단위 : 건)</span>
+                  </div>
+                </div>
+
+              </CCol>
+              <ResponsiveBar
+                data={chartData}
+                keys={["이벤트건수"]}
+                indexBy="label"
+                margin={{ top: 50, right: 30, bottom: 100, left: 60 }}
+                padding={0.2}
+                innerPadding={1}
+                groupMode="grouped"
+                valueScale={{ type: 'linear' }}
+                indexScale={{ type: 'band', round: true }}
+                valueFormat={{ format: '', enabled: false }}
+                colors={{ scheme: 'paired' }}
+                borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+                axisTop={null}
+                axisRight={null}
+                theme={{
+                  axis: {
+                    ticks: {
+                      text: {
+                        fontSize: 18,
+                        fill: "#333"
+                      }
+                    }
+                  },
+                  legends: {
+                    text: {
+                      fontSize: 16,
+                      fill: "#333"
+                    }
+                  },
+                  labels: {
+                    text: {
+                      fontSize: 18,
+                    }
+                  }
+                }}
+                axisLeft={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  legendPosition: 'middle',
+                  legendOffset: -40
+                }}
+                borderRadius={4}
+                borderWidth={1}
+                labelSkipWidth={12}
+                labelSkipHeight={12}
+                labelTextColor="#333"
+                legends={[
+                  {
+                    dataFrom: 'keys',
+                    anchor: 'bottom',
+                    direction: 'row',
+                    justify: false,
+                    translateX: 10,
+                    translateY: 85,
+                    itemsSpacing: 21,
+                    itemWidth: 130,
+                    itemHeight: 61,
+                    itemDirection: 'left-to-right',
+                    itemOpacity: 0.85,
+                    symbolSize: 20,
+                    effects: [
+                      {
+                        on: 'hover',
+                        style: {
+                          itemOpacity: 1
+                        }
+                      }
+                    ]
+                  }
+                ]}
+              />
+            </CRow>
+
+            <CRow style={{ height: "530px"}}>
+              <CCol sm={12} style={{marginTop: "20px", marginBottom: "-30px"}}>
+                <div className={"d-flex justify-content-between"}>
+                  <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 단위시장별 전력사용량</span>
+                  <div className={"d-flex align-items-center"}>
+                    <span className={"subTitleType"} style={{fontSize: "0.8rem", display: "block"}}>(단위 : 건)</span>
+                  </div>
+                </div>
+
+              </CCol>
+              <ResponsiveBar
+                data={chartData2}
+                keys={["전력사용량(kWh)"]}
+                indexBy="label"
+                margin={{ top: 50, right: 30, bottom: 100, left: 60 }}
+                padding={0.2}
+                innerPadding={1}
+                groupMode="grouped"
+                valueScale={{ type: 'linear' }}
+                indexScale={{ type: 'band', round: true }}
+                valueFormat={{ format: '', enabled: false }}
+                colors={{ scheme: 'paired' }}
+                borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+                axisTop={null}
+                axisRight={null}
+                theme={{
+                  axis: {
+                    ticks: {
+                      text: {
+                        fontSize: 18,
+                        fill: "#333"
+                      }
+                    }
+                  },
+                  legends: {
+                    text: {
+                      fontSize: 16,
+                      fill: "#333"
+                    }
+                  },
+                  labels: {
+                    text: {
+                      fontSize: 18,
+                    }
+                  }
+                }}
+                axisLeft={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  legendPosition: 'middle',
+                  legendOffset: -40
+                }}
+                borderRadius={4}
+                borderWidth={1}
+                labelSkipWidth={12}
+                labelSkipHeight={12}
+                labelTextColor="#333"
+                legends={[
+                  {
+                    dataFrom: 'keys',
+                    anchor: 'bottom',
+                    direction: 'row',
+                    justify: false,
+                    translateX: 10,
+                    translateY: 85,
+                    itemsSpacing: 21,
+                    itemWidth: 130,
+                    itemHeight: 61,
+                    itemDirection: 'left-to-right',
+                    itemOpacity: 0.85,
+                    symbolSize: 20,
+                    effects: [
+                      {
+                        on: 'hover',
+                        style: {
+                          itemOpacity: 1
+                        }
+                      }
+                    ]
+                  }
+                ]}
+              />
+            </CRow>
+          </div>
+      }
     </div>
   )
 }
@@ -877,7 +1099,7 @@ export const levelStoreStatComp = (areaName, item) => {
           <td colSpan="2" className="wme_table_td_title text-center">과전류경보</td>
           <td colSpan="2" className="wme_table_td_title text-center">전체누설전류(IGO)</td>
           <td colSpan="2" className="wme_table_td_title text-center">저항성누설전류(IGR)</td>
-          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>끊김</td>
+          {/*<td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>끊김</td>*/}
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>비고</td>
         </tr>
         <tr>
@@ -898,8 +1120,8 @@ export const levelStoreStatComp = (areaName, item) => {
               <td className="text-right">{item2['igo2nd']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['igr1st']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['igr2nd']?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2['disconn']?.toLocaleString() || 0}</td>
-              <td></td>
+              {/*<td className="text-right">{item2['disconn']?.toLocaleString() || 0}</td>*/}
+              <td> </td>
             </tr>
           ))
         }
@@ -913,8 +1135,8 @@ export const levelStoreStatComp = (areaName, item) => {
 export const areaKwhStatComp = (areaName, item) => {
   let pieChartData = [];
   pieChartData.push({
-    "id" : "전기사용량",
-    "label": "전기사용량",
+    "id" : "전력사용량",
+    "label": "전력사용량",
     "value": Math.round(item["snsrKwh"]),
     "color": "hsl(171, 70%, 50%)"
   }, {
@@ -925,10 +1147,10 @@ export const areaKwhStatComp = (areaName, item) => {
   });
   return (
     <div className={"mt-4"}>
-      <h5 className={"title"}>{areaName} 전기사용량 현황(종합)</h5>
       <CRow>
-        <CCol sm={"6"}>
-          <span className={"mb-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기사용량 현황(종합)</span>
+        <CCol sm={"6 printCol"} style={{paddingTop: "7%"}}>
+          <h5 className={"title"}>{areaName} 전력사용량 현황(종합)</h5>
+          <span className={"mb-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전력사용량 현황(종합)</span>
           <table className="table table-sm table-bordered mb-0 printTable">
             <tbody>
             <tr>
@@ -937,7 +1159,7 @@ export const areaKwhStatComp = (areaName, item) => {
               <td className="wme_table_td_title text-center">비율(%)</td>
             </tr>
             <tr>
-              <td className="wme_table_td_title text-center">전기사용량</td>
+              <td className="wme_table_td_title text-center">전력사용량</td>
               <td className="text-right">{Math.round(item['snsrKwh'])?.toLocaleString() || 0}</td>
               <td className="text-right">{Math.round(item['snsrKwhPer'])?.toLocaleString() || 0}</td>
             </tr>
@@ -949,7 +1171,7 @@ export const areaKwhStatComp = (areaName, item) => {
             </tbody>
           </table>
         </CCol>
-        <CCol sm={"6"} style={{ height: "300px"}}>
+        <CCol sm={"6"} style={{ height: "450px"}}>
           <ResponsivePie
             data={pieChartData}
             margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
@@ -963,9 +1185,30 @@ export const areaKwhStatComp = (areaName, item) => {
             arcLinkLabelsSkipAngle={10}
             arcLinkLabelsTextColor="#333333"
             arcLinkLabelsThickness={2}
-            arcLinkLabelsColor={{ from: 'color' }}
+            arcLinkLabelsColor="#333"
             arcLabelsSkipAngle={10}
-            arcLabelsTextColor={{ from: 'color', modifiers: [ [ 'darker', 2 ] ] }}
+            arcLabelsTextColor="#333"
+            theme={{
+              axis: {
+                ticks: {
+                  text: {
+                    fontSize: 18,
+                    fill: "#333"
+                  }
+                }
+              },
+              legends: {
+                text: {
+                  fontSize: 16,
+                  fill: "#333"
+                }
+              },
+              labels: {
+                text: {
+                  fontSize: 18,
+                }
+              }
+            }}
             defs={[
               {
                 id: 'dots',
@@ -995,7 +1238,7 @@ export const areaKwhStatComp = (areaName, item) => {
               },
               {
                 match: {
-                  id: '전기사용량'
+                  id: '전력사용량'
                 },
                 id: 'lines'
               }
@@ -1008,9 +1251,9 @@ export const areaKwhStatComp = (areaName, item) => {
                 translateX: 0,
                 translateY: 56,
                 itemsSpacing: 0,
-                itemWidth: 100,
+                itemWidth: 120,
                 itemHeight: 18,
-                itemTextColor: '#999',
+                itemTextColor: '#333',
                 itemDirection: 'left-to-right',
                 itemOpacity: 1,
                 symbolSize: 18,
@@ -1047,7 +1290,7 @@ export const areaKwhStatYearComp = item => {
 
   return (
     <div>
-      <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기사용량 현황(상세)</span>
+      <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전력사용량 현황(상세)</span>
       <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_kwh_monthly_table">
         <tbody>
         <tr>
@@ -1105,7 +1348,7 @@ export const areaKwhStatYearComp = item => {
         </tbody>
       </table>
       <CRow>
-        <CCol md={"12"} style={{ height: "400px"}}>
+        <CCol md={"12"} style={{ height: "550px"}}>
           <ResponsiveBar
             data={chartData}
             keys={[ "전력사용량", "누설전력량" ]}
@@ -1119,6 +1362,27 @@ export const areaKwhStatYearComp = item => {
             valueFormat={{ format: '', enabled: false }}
             colors={{ scheme: 'set3' }}
             borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+            theme={{
+              axis: {
+                ticks: {
+                  text: {
+                    fontSize: 18,
+                    fill: "#333"
+                  }
+                }
+              },
+              legends: {
+                text: {
+                  fontSize: 16,
+                  fill: "#333"
+                }
+              },
+              labels: {
+                text: {
+                  fontSize: 18,
+                }
+              }
+            }}
             axisTop={null}
             axisRight={null}
             axisLeft={{
@@ -1132,7 +1396,7 @@ export const areaKwhStatYearComp = item => {
             borderWidth={1}
             labelSkipWidth={12}
             labelSkipHeight={12}
-            labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+            labelTextColor="#333"
             legends={[
               {
                 dataFrom: 'keys',
@@ -1166,22 +1430,13 @@ export const areaKwhStatYearComp = item => {
 
 // 시간대별 전력사용량, 요일별 전력사용량
 export const areaTotalKwhComp = (item, item2) => {
-  console.log(item, item2);
   let hourKwhData = [];
-  let dayKwhData = [];
   let keys = ["사용량(kWh)"];
 
   item.map((item, idx) => {
     hourKwhData.push({
       "label" : item["hour"],
       "사용량(kWh)" : Math.round(item["snsrKwh"])
-    });
-  });
-
-  item2.map((items, idx)=> {
-    dayKwhData.push({
-      "label" : items["dayName"],
-      "사용량(kWh)" : Math.round(items["snsrKwh"])
     });
   });
 
@@ -1199,33 +1454,33 @@ export const areaTotalKwhComp = (item, item2) => {
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">0 ~ 3</td>
-              <td className="text-right">{item[0]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item[0]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[0]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[0]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">4 ~ 7</td>
-              <td className="text-right">{item[1]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item[1]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[1]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[1]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">8 ~ 11</td>
-              <td className="text-right">{item[2]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item[2]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[2]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[2]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">12 ~ 15</td>
-              <td className="text-right">{item[3]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item[3]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[3]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[3]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">16 ~ 19</td>
-              <td className="text-right">{item[4]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item[4]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[4]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[4]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">20 ~ 23</td>
-              <td className="text-right">{item[5]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item[5]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[5]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item[5]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             </tbody>
           </table>
@@ -1234,7 +1489,21 @@ export const areaTotalKwhComp = (item, item2) => {
           {areaHourlDayStatChart(keys, hourKwhData, "set3")}
         </CCol>
       </CRow>
+    </div>
+  );
+}
 
+export const strKwhStatComp = (areaName, item, item2) => {
+  let dayKwhData = [];
+  let keys = ["사용량(kWh)"];
+  item2.map((items, idx)=> {
+    dayKwhData.push({
+      "label" : items["dayName"],
+      "사용량(kWh)" : Math.round(items["snsrKwh"])
+    });
+  });
+  return (
+    <div>
       <CRow>
         <CCol sm={"5"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 요일별 전력사용량</span>
@@ -1247,38 +1516,38 @@ export const areaTotalKwhComp = (item, item2) => {
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">일요일</td>
-              <td className="text-right">{item2[0]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2[0]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[0]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[0]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">월요일</td>
-              <td className="text-right">{item2[1]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2[1]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[1]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[1]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">화요일</td>
-              <td className="text-right">{item2[2]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2[2]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[2]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[2]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">수요일</td>
-              <td className="text-right">{item2[3]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2[3]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[3]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[3]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">목요일</td>
-              <td className="text-right">{item2[4]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2[4]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[4]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[4]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">금요일</td>
-              <td className="text-right">{item2[5]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2[5]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[5]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[5]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title text-center">토요일</td>
-              <td className="text-right">{item2[6]["snsrKwh"]?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2[6]["snsrKwhPer"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[6]["snsrKwh"])?.toLocaleString() || 0}</td>
+              <td className="text-right">{Math.round(item2[6]["snsrKwhPer"])?.toLocaleString() || 0}</td>
             </tr>
             </tbody>
           </table>
@@ -1287,13 +1556,7 @@ export const areaTotalKwhComp = (item, item2) => {
           {areaHourlDayStatChart(keys, dayKwhData, "set3")}
         </CCol>
       </CRow>
-    </div>
-  );
-}
 
-export const strKwhStatComp = (areaName, item) => {
-  return (
-    <div>
       <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>상점별 전력사용량</span>
       <table className="table table-sm table-bordered mb-0 printTable" id="wme_str_kwh_table">
         <tbody>
@@ -1307,8 +1570,8 @@ export const strKwhStatComp = (areaName, item) => {
           item.map((item2, idx) => (
             <tr className="wme_str_kwh_tr" key={idx}>
             <td className="text-center">{item2["strName"]}</td>
-            <td className="text-right">{item2["snsrKwh"]?.toLocaleString() || 0}</td>
-            <td className="text-right">{item2["snsrIgo"]?.toLocaleString() || 0}</td>
+            <td className="text-right">{Math.round(item2["snsrKwh"])?.toLocaleString() || 0}</td>
+            <td className="text-right">{Math.round(item2["snsrIgo"])?.toLocaleString() || 0}</td>
             <td> </td>
             </tr>
           ))

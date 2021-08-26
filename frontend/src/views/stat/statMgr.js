@@ -119,6 +119,7 @@ const StatMgr = () => {
   }
 
   const handleClickSearchStat = async () => {
+    let dayWeekData = [];
     setHookReset();
     setLoading(true);
     setTotalLoading(true);
@@ -158,6 +159,7 @@ const StatMgr = () => {
         setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
         setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
         setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+        dayWeekData = resp.data["dayOfWeekStat"];
 
         if(typeValue === "store") {
           if(resp.data["areaKwhStat"] !== null)
@@ -193,7 +195,7 @@ const StatMgr = () => {
 
           if(resp.data["areaStrKwhStat"] !== null)
             if(resp.data["areaStrKwhStat"].length > 0)
-              setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"]))
+              setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData))
             else
               setStrKwhStat("");
         } else {
@@ -214,9 +216,7 @@ const StatMgr = () => {
   }, [componentRef.current]);
 
   const handleAfterPrint = React.useCallback(() => {
-    // console.log(1234);
-    // console.log("`onAfterPrint` called"); // tslint:disable-line no-console
-    // setPrintLoading(false);
+    setPrintLoading(false);
   }, []);
 
   const handleOnBeforeGetContent = React.useCallback(() => {
