@@ -6,7 +6,7 @@ import { getInsprAreaList, updateInspector } from "../../agent/inspection";
 import { getInputValue, getValidInput, handleChangePhoneNumber } from "../../agent/commonIndex";
 
 const InsprUpdateModal = props => {
-  const { modal, setModal, userContent, handleInitTable } = props;
+  const { modal, setModal, insprContent, handleInitTable } = props;
   const [appSwitch, setAppSwitch] = useState({ alarmUse: true, pushUse: true, smsUse: true, useYn: true });
 
   const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ mode: "all" });
@@ -28,13 +28,13 @@ const InsprUpdateModal = props => {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    appSwitch.alarmUse = (userContent.alarmUse === "Y");
-    appSwitch.pushUse = (userContent.pushUse === "Y");
-    appSwitch.smsUse = (userContent.smsUse === "Y");
-    appSwitch.useYn = (userContent.useYn === "Y");
+    appSwitch.alarmUse = (insprContent.alarmUse === "Y");
+    appSwitch.pushUse = (insprContent.pushUse === "Y");
+    appSwitch.smsUse = (insprContent.smsUse === "Y");
+    appSwitch.useYn = (insprContent.useYn === "Y");
 
-    reset(userContent);
-  }, [userContent]);
+    reset(insprContent);
+  }, [insprContent]);
 
   useEffect(() => {
     handleInitListInsprArea();

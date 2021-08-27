@@ -26,7 +26,7 @@ const InsprMgr = () => {
   const [searchItem, setSearchItem] = useState({ searchWrd: "", useYn: "Y", alarmUse: "Y", loginLock: "N", inspAreaCode: "" });
   const [insertModal, setInsertModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
-  const [userContent, setUserContent] = useState({});
+  const [insprContent, setInsprContent] = useState({});
 
   useEffect(() => {
     handleInitListInsprArea();
@@ -70,7 +70,7 @@ const InsprMgr = () => {
   const rowEvents = {
     onClick: (e, row, rowIndex) => getInspector(row.inspId).then(resp => {
       if (resp.data["result"]) {
-        setUserContent(resp.data["resultData"]);
+        setInsprContent(resp.data["resultData"]);
         setUpdateModal(true);
       } else {
         alert("통신에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
@@ -123,7 +123,7 @@ const InsprMgr = () => {
       </CCard>
 
       <InsprInsertModal modal={insertModal} setModal={setInsertModal} handleInitTable={handleInitTable} />
-      <InsprUpdateModal modal={updateModal} setModal={setUpdateModal} userContent={userContent} handleInitTable={handleInitTable} />
+      <InsprUpdateModal modal={updateModal} setModal={setUpdateModal} insprContent={insprContent} handleInitTable={handleInitTable} />
     </>
   );
 };

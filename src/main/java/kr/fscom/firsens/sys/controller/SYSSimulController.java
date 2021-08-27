@@ -327,7 +327,7 @@ public class SYSSimulController {
             ret.put("result", response.toString());
 
             prm.put("snsrseq", req.getParameter("snsrseq"));
-            prm.put("pushmsg", parameters);
+            prm.put("pushmsg", parameters.toString());
             prm.put("userid", userid);
             prm.put("sendresult", responseCode + " " + response.toString());
             prm.put("toinfo", toinfo);
