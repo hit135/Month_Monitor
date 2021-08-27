@@ -24,21 +24,21 @@
         SELECT Z.*
           FROM ( SELECT @ROWNUM := @ROWNUM + 1      AS rownum
                       , A.*
-                   FROM ( SELECT FS.STRCODE                             AS strCode
-                               , FS.STRNAME                             AS strName
-                               , FS.STRADDR                             AS strAddr
-                               , FS.STRORDER                            AS strOrder
-                               , FM.MEMNAME                             AS strOwnName
-                               , FS.STRTEL                              AS strTel
-                               , FS.STROWNTEL                           AS strOwnTel
-                               , FG.GRPCODE                             AS grpCode
-                               , FG.GRPNAME                             AS grpName
-                               , FS.AREACODE                            AS areaCode
-                               , FA.AREANAME                            AS areaName
-                               , FS.LEVELAREACODE                       AS levelAreaCode
-                               , FS.USEYN                               AS useYn
-                               , DATE_FORMAT(FS.REGDATE, '%Y-%m-%d')    AS regDate
-                               , FS.STRCODE                             AS strCodeKey
+                   FROM ( SELECT FS.STRCODE         AS strCode
+                               , FS.STRNAME         AS strName
+                               , FS.STRADDR         AS strAddr
+                               , FS.STRORDER        AS strOrder
+                               , FM.MEMNAME         AS strOwnName
+                               , FS.STRTEL          AS strTel
+                               , FS.STROWNTEL       AS strOwnTel
+                               , FG.GRPCODE         AS grpCode
+                               , FG.GRPNAME         AS grpName
+                               , FS.AREACODE        AS areaCode
+                               , FA.AREANAME        AS areaName
+                               , FS.LEVELAREACODE   AS levelAreaCode
+                               , FS.USEYN           AS useYn
+                               , DATE(FS.REGDATE)   AS regDate
+                               , FS.STRCODE         AS strCodeKey
                             FROM F_STORE FS
                                     LEFT OUTER JOIN F_AREA FA
                                           ON FS.AREACODE = FA.AREACODE

@@ -56,10 +56,8 @@
          WHERE 1 = 1
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND AREACODE = #{areaCode}</if>
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
-           AND (
-                  STRCODE  LIKE CONCAT('%', #{searchWrd}, '%')
-               OR STRNAME  LIKE CONCAT('%', #{searchWrd}, '%')
-           )
+           AND (    STRCODE  LIKE CONCAT('%', #{searchWrd}, '%')
+                 OR STRNAME  LIKE CONCAT('%', #{searchWrd}, '%') )
            </if>
          ORDER BY STRCODE DESC
     </select>
@@ -74,16 +72,14 @@
                                , ( SELECT AREANAME
                                      FROM F_LEVEL_AREA
                                     WHERE AREACODE = S.AREACODE AND AREALEVEL = 1 AND DELYN = 'N' ) AS areaName
-                               , DATE_FORMAT(S.REGDATE, '%Y-%m-%d') AS regDate
+                               , DATE(S.REGDATE) AS regDate
                             FROM F_STORE S
                            WHERE S.USEYN = 'Y'
                              AND S.DELYN = 'N'
                              <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND S.AREACODE = #{areaCode}</if>
                              <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
-                             AND (
-                                    S.STRCODE  LIKE CONCAT('%', #{searchWrd}, '%')
-                                 OR S.STRNAME  LIKE CONCAT('%', #{searchWrd}, '%')
-                             )
+                             AND (    S.STRCODE  LIKE CONCAT('%', #{searchWrd}, '%')
+                                   OR S.STRNAME  LIKE CONCAT('%', #{searchWrd}, '%') )
                              </if>
                            ORDER BY S.STRCODE DESC
                         ) A
@@ -127,17 +123,19 @@
                                , AVG(SNSRIGRGRADE) AS snsrIgoGrade
                                , SUM(OC1ST + OC2ND) AS oc
                                , SUM(IGO1ST + IGO2ND + IGR1ST + IGR2ND) AS ig
-                               , DATE_FORMAT(DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 13 DAY), '%Y-%m-%d') AS startDate
-                               , DATE_FORMAT(DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 0 DAY), '%Y-%m-%d') AS endDate
+                               , DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 13 DAY) AS startDate
+                               , DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 0 DAY) AS endDate
                             FROM F_ELEC_SENSOR_STAT
-                           WHERE ( SDATE BETWEEN DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 13 DAY) AND DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 0 DAY) )
+                           WHERE ( SDATE BETWEEN DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 13 DAY)
+                                            AND DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 0 DAY) )
                              AND AREACODE != '0'
                              AND STRCODE != '0'
                            GROUP BY AREACODE, STRCODE ) A
                       , ( SELECT COUNT(CONCAT(S.AREACODE, ' ', S.STRCODE)) AS strCnt
                             FROM ( SELECT DISTINCT AREACODE, STRCODE
                                      FROM F_ELEC_SENSOR_STAT
-                                    WHERE ( SDATE BETWEEN DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 13 DAY) AND DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 0 DAY) )
+                                    WHERE ( SDATE BETWEEN DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 13 DAY)
+                                                      AND DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 0 DAY) )
                                       AND AREACODE != '0'
                                       AND STRCODE != '0' ) S
                         ) B
@@ -155,7 +153,8 @@
                                , AVG(SNSRKWHDAILY) AS snsrKwhDailyAvg
                                , SUM(SNSRKWHDAILY) / 2 AS snsrKwhWeeklyAvg
                             FROM F_ELEC_SENSOR_STAT
-                           WHERE ( SDATE BETWEEN DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 13 DAY) AND DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 0 DAY) )
+                           WHERE ( SDATE BETWEEN DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 13 DAY)
+                                             AND DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 0 DAY) )
                              AND AREACODE != '0'
                              AND STRCODE != '0'
                            GROUP BY AREACODE, STRCODE ) A
@@ -171,7 +170,8 @@
                                , AVG(SNSRKWHDAILY) AS snsrKwhDailyAvg
                                , SUM(SNSRKWHDAILY) / 2 AS snsrKwhWeeklyAvg
                             FROM F_ELEC_SENSOR_STAT
-                           WHERE ( SDATE BETWEEN DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 27 DAY) AND DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 14 DAY) )
+                           WHERE ( SDATE BETWEEN DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 27 DAY)
+                                             AND DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) + 14 DAY) )
                              AND AREACODE != '0'
                              AND STRCODE != '0'
                            GROUP BY AREACODE, STRCODE ) A
