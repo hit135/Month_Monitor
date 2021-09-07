@@ -128,7 +128,7 @@
 
     function fn_getStoreSensor() {
       $.post(
-          $('#contextRoot').val()+'/mng/areaSensorListAjax'
+          $('#contextRoot').val() + '/mng/areaSensorListAjax'
         , { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() }
         , function(d) {
             $('.store-chart-sensor-list').html('');
@@ -151,11 +151,10 @@
             }
 
             let snsrid = $('#prm_snsrid').val();
-            if (snsrid) {
+            if (snsrid)
               $('.store-chart-sensor-list input[value="' + snsrid + '"]').prop('checked', true);
-            } else {
+            else
               $($('.store-chart-sensor-list input')[0]).prop('checked', true);
-            }
 
             let now = new Date();
             if ($('#prm_regdate').val()) {
@@ -214,57 +213,44 @@
             if (window.datadt.min > curdt) {
               // 이전 데이터가 들어온경우
               // 이전 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
-              if ((window.datadt.min.getTime() - curdt.getTime()) > nulldata) {
+              if ((window.datadt.min.getTime() - curdt.getTime()) > nulldata) 
                 window.dataset[dns[j].value].unshift([d[i].REGDT + 1, null]);
-              }
 
               window.dataset[dns[j].value].unshift([d[i].REGDT, d[i][dns[j].value]]);
               ret = true;
             } else if (window.datadt.max < curdt) {
               // 이후 데이터가 들어온경우
               // 이후 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
-              if ((curdt.getTime() - window.datadt.max.getTime()) > nulldata) {
+              if ((curdt.getTime() - window.datadt.max.getTime()) > nulldata) 
                 window.dataset[dns[j].value].push([d[i].REGDT - 1, null]);
-              }
 
               window.dataset[dns[j].value].push([d[i].REGDT, d[i][dns[j].value]]);
               ret = true;
             }
 
             // 최소, 최대값 수정 (차트에서 최소, 최대값 필요)
-            if (window.val[dns[j].value].min > d[i][dns[j].value]) {
+            if (window.val[dns[j].value].min > d[i][dns[j].value]) 
               window.val[dns[j].value].min = d[i][dns[j].value];
-            }
 
-            if (window.val[dns[j].value].max < d[i][dns[j].value]) {
+            if (window.val[dns[j].value].max < d[i][dns[j].value]) 
               window.val[dns[j].value].max = d[i][dns[j].value];
-            }
           }
         }
 
         // 데이터 날짜 최소, 최대값 수정
-        if (window.datadt.min > curdt) {
-          window.datadt.min = curdt;
-        }
-
-        if (window.datadt.max < curdt) {
-          window.datadt.max = curdt;
-        }
+        if (window.datadt.min > curdt) window.datadt.min = curdt;
+        if (window.datadt.max < curdt) window.datadt.max = curdt;
       }
 
       // 차트 24시간 보이기
       if ($('#termtype option:selected').val()=='d') {
-        if (new Date(window.datadt.min).getHours() > 0) {
-          for (let i = 0; i < dns.length; i++) {
+        if (new Date(window.datadt.min).getHours() > 0) 
+          for (let i = 0; i < dns.length; i++) 
             window.dataset[dns[i].value].unshift([new Date($('#regdt').val() + 'T00:00:00').getTime(), null]);
-          }
-        }
 
-        if (new Date(window.datadt.max).getHours() < 23) {
-          for (let i = 0; i < dns.length; i++) {
+        if (new Date(window.datadt.max).getHours() < 23) 
+          for (let i = 0; i < dns.length; i++) 
             window.dataset[dns[i].value].push([new Date($('#regdt').val() + 'T23:59:59').getTime(), null]);
-          }
-        }
       }
 
       return ret;
@@ -284,14 +270,10 @@
         , regdt: $('#regdt').val()
       };
 
-      if (termtype)
-        prm.termtype = termtype;
-      if (regdt)
-        prm.regdt = regdt;
-      if (dtsize)
-        prm.dtsize = dtsize;
-      if (order)
-        prm.order = order;
+      if (termtype) prm.termtype = termtype;
+      if (regdt)    prm.regdt = regdt;
+      if (dtsize)   prm.dtsize = dtsize;
+      if (order)    prm.order = order;
 
       $.post(contextPath + '/mng/listStoreSensorData', prm, function(d) {
         if (d && d.length > 0) {
@@ -315,24 +297,14 @@
       let a1 = null, a2 = null;
       let ret = { yaxis: [] };
 
-      if ($('[name=dataname]:checked').length > 1) {
+      if ($('[name=dataname]:checked').length > 1) 
         return ret;
-      }
 
       let dataname = $('[name=dataname]:checked').val();
 
-      if (dataname == 'AMPERE') {
-        a1 = 20;
-        a2 = 26;
-      }
-      if (dataname == 'IGO') {
-        a1 = 15;
-        a2 = 18;
-      }
-      if (dataname == 'IGR') {
-        a1 = 3;
-        a2 = 5;
-      }
+      if (dataname == 'AMPERE') { a1 = 20, a2 = 26; }
+      if (dataname == 'IGO') { a1 = 15, a2 = 18; }
+      if (dataname == 'IGR') { a1 = 3, a2 = 5; }
 
       if (a1) {
         ret.yaxis.push({
@@ -382,14 +354,14 @@
         if (termtype == 'd')
           dt.setDate(dt.getDate() - 1);
         else
-          dt.setMonth(dt.getMonth() - 1)
+          dt.setMonth(dt.getMonth() - 1);
       } else {
         dt = new Date(window.datadt.max.getTime());
 
         if (termtype == 'd')
           dt.setDate(dt.getDate() + 1);
         else
-          dt.setMonth(dt.getMonth() + 1)
+          dt.setMonth(dt.getMonth() + 1);
       }
 
       let regdt = fn_dateToString(dt).slice(0, 10);
@@ -410,10 +382,8 @@
             , animations: { enabled: false }
             , events: {
                 zoomed: function(a, b) {
-                  if (window.datadt.min > new Date(b.xaxis.min))
-                    fn_getMore("desc");
-                  if (window.datadt.max < new Date(b.xaxis.max))
-                    fn_getMore("asc");
+                  if (window.datadt.min > new Date(b.xaxis.min)) fn_getMore("desc");
+                  if (window.datadt.max < new Date(b.xaxis.max)) fn_getMore("asc");
                 }
               }
           }
@@ -454,14 +424,12 @@
         let min = window.val[dns].min * 0.95;
         let max = window.val[dns].max * 1.4;
 
-        if (opt.yaxis.min == null || opt.yaxis.min > min)
-          opt.yaxis.min = min;
-        if (opt.yaxis.max == null || opt.yaxis.max < max)
-          opt.yaxis.max = max;
+        if (opt.yaxis.min == null || opt.yaxis.min > min) opt.yaxis.min = min;
+        if (opt.yaxis.max == null || opt.yaxis.max < max) opt.yaxis.max = max;
       }
 
       if (window.dataset['IGO'].length < 100)
-        opt.markers = { size: 1, strokeWidth: 0, hover: {size: 5 } };
+        opt.markers = { size: 1, strokeWidth: 0, hover: { size: 5 } };
       else
         opt.markers = { size: 0, hover: { size: 0 } };
 

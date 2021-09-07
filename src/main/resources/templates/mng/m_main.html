@@ -199,6 +199,7 @@
 
     $('.center-main-cont').on('click', '.js-panel-fullscreen', function() {
       let id = '#' + $(this).attr('data-id');
+
       if ($(this).hasClass('on')) {
         $(this).removeClass('on');
         $(id).removeClass('panel-fullscreen');
@@ -223,9 +224,8 @@
     let date = new Date();
     let mins = date.getMinutes();
 
-    if (mins === 2 || mins === 12 || mins === 22 || mins === 32 || mins === 42 || mins === 52) {
+    if (mins === 2 || mins === 12 || mins === 22 || mins === 32 || mins === 42 || mins === 52)
       fn_refresh();
-    }
   }, 60 * 1000);
 
   function fn_refresh() {
@@ -279,9 +279,8 @@
 
   function fn_getAreaStoreList(code, strcode, snsrid) {
     let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
-    if (strcode) {
+    if (strcode) 
       on_strcode = strcode;
-    }
 
     $.post($('#contextRoot').val() + '/mng/areaStoreListAjax', { areacode: code }, function(d) {
       $('.center-left-sensor-list').html('');
@@ -304,21 +303,18 @@
       }
 
       let on_obj = $('.center-left-sensor-list p[data-strcode="' + on_strcode + '"]')[0];
-      if (!on_obj) {
+      if (!on_obj) 
         on_obj = $('.center-left-sensor-list p')[0];
-      }
 
       $(on_obj).addClass('on');
 
       $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
 
-      if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode')) {
-        if (snsrid) {
+      if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode')) 
+        if (snsrid) 
           fn_clickContPage({ snsrid: snsrid });
-        } else {
+        else 
           fn_clickContPage();
-        }
-      }
     });
   }
 
@@ -343,11 +339,9 @@
   function fn_initMainAreaList() {
     window.min_category = [];
 
-    for (let i = 0; i < 24; i++) {
-      for (let j = 0; j < 6; j++) {
+    for (let i = 0; i < 24; i++) 
+      for (let j = 0; j < 6; j++) 
         window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
-      }
-    }
 
     $.post($('#contextRoot').val() + '/mng/areaListAjax', {}, function(d) {
       $('.center-main-cont .sortable-grid').html('');
@@ -412,17 +406,14 @@
         window.area = d;
         window.areaIndex = {};
 
-        for (let i = d.length - 1; i >= 0; i--) {
-          if (d[i].LEVEL != 1) {
+        for (let i = d.length - 1; i >= 0; i--) 
+          if (d[i].LEVEL != 1) 
             window.areaIndex[d[i].CODE] = i;
-          }
-        }
 
         let show_panel = $('.center-main-cont .panel-container');
 
-        for (let i = 0; i < show_panel.length; i++) {
+        for (let i = 0; i < show_panel.length; i++) 
           fn_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
-        }
       }
     });
   }
@@ -449,7 +440,7 @@
       }
     } else {
       if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
-        || $('#' + panel_id + ' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
+          || $('#' + panel_id + ' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
         $.post($('#contextRoot').val() + '/mng/mainAreaDataChartAjax', { areacode: i }, function(data) {
           fn_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
         });
@@ -488,21 +479,17 @@
     let j = 0;
     let now_time = fn_dateToString(new Date()).slice(11, 15) + '0';
 
-    for (let i = 0; i < window.min_category.length; i++) {
-      if (j < data.length && data[j].TYPE == '1' && data[j].RCVTIME == window.min_category[i]) {
+    for (let i = 0; i < window.min_category.length; i++) 
+      if (j < data.length && data[j].TYPE == '1' && data[j].RCVTIME == window.min_category[i]) 
         series[0].data.push(data[j++].CNT);
-      } else if (window.min_category[i]) {
+      else if (window.min_category[i]) 
         series[0].data.push(0);
-      }
-    }
 
-    for (let i = 0; i < window.min_category.length; i++) {
-      if (j < data.length - 1 && data[j].RCVTIME == window.min_category[i]) {
+    for (let i = 0; i < window.min_category.length; i++) 
+      if (j < data.length - 1 && data[j].RCVTIME == window.min_category[i]) 
         series[1].data.push(data[j++].CNT);
-      } else if (window.min_category[i] < now_time) {
+      else if (window.min_category[i] < now_time) 
         series[1].data.push(0);
-      }
-    }
 
     opt.markers = { size: 0, hover: { size: 0 } };
 
@@ -577,21 +564,17 @@
     let series = [{ name: '저번주', data: [] }, { name: '이번주', data: [] }];
     let j = 0;
 
-    for (let i = 0; i < window.week_category.length; i++) {
-      if (j < data.length && (i + 1) == data[j].WEEK) {
+    for (let i = 0; i < window.week_category.length; i++) 
+      if (j < data.length && (i + 1) == data[j].WEEK) 
         series[0].data.push(data[j++].CNT);
-      } else {
+      else 
         series[0].data.push(0);
-      }
-    }
 
-    for (let i = 0; i < window.week_category.length; i++) {
-      if (j < data.length && (i + 1) == data[j].WEEK) {
+    for (let i = 0; i < window.week_category.length; i++) 
+      if (j < data.length && (i + 1) == data[j].WEEK) 
         series[1].data.push(data[j++].CNT);
-      } else {
+      else 
         series[1].data.push(0);
-      }
-    }
 
     opt.markers = { size: 0, hover: { size: 0 } };
 
@@ -652,17 +635,15 @@
       window['map-' + target_id].marker = [];
     }
 
-    for (let i = 0; i < window['map-' + target_id].marker.length; i++) {
+    for (let i = 0; i < window['map-' + target_id].marker.length; i++) 
       window['map-' + target_id].marker[i].setMap(null);
-    }
 
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         let pos = new naver.maps.LatLng(data[i].STRPOSLAT, data[i].STRPOSLON);
 
-        if (i == 0) {
+        if (i == 0) 
           window['map-' + target_id].setCenter(pos);
-        }
 
         window['map-' + target_id].marker.push(new naver.maps.Marker({
             map: window['map-' + target_id]
@@ -683,8 +664,11 @@
 
   function movePageAdm(type) {
     let path = "";
-    if (location.hostname === "localhost") path = "http://localhost:3000/#/";
-    else                                   path = "http://1.223.40.19:30081/adm#/";
+
+    if (location.hostname === "localhost") 
+      path = "http://localhost:3000/#/";
+    else                                   
+      path = "http://1.223.40.19:30081/adm#/";
 
     location.href = path + type;
     // http://1.223.40.19:30081/adm#/area

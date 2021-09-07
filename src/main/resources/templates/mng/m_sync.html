@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <th:block th:replace="mng/layout/m_head"></th:block>
+
 <style type="text/css">
   .sync-data-cnt p { margin: 5px; border-bottom: 1px solid #ddd; }
   .sync-data-cnt span { display: inline-block; width: 100px; text-align: right; }
@@ -89,11 +90,11 @@
   }
 
   function fn_getSensorDataCntList(regdt) {
-    $.post($('#contextRoot').val()+'/mng/sensorDataCntListAjax', { regdt:regdt }, function(d) {
+    $.post($('#contextRoot').val() + '/mng/sensorDataCntListAjax', { regdt:regdt }, function(d) {
       $('.sync-sensor-data-regdt').text('');
       $('.sync-sensor-data-cnt-list').html('');
 
-      for(let i = 0; i < d.length; i++) {
+      for (let i = 0; i < d.length; i++) {
         if (d[i].DAY < d[i].DAY1 / 2)
           d[i].DATASTAT = 'warn';
 
@@ -105,14 +106,18 @@
   }
 
   function fn_requestSync(snsrid, reqcont) {
-    $.post($('#contextRoot').val() + '/mng/requestSyncAjax', { snsrid: snsrid, reqcont: reqcont }, function(d) {
-      if (d == 'success') {
-        alert('동기화를 요청했습니다.');
-        fn_getSensorDataCntList(reqcont.replace('|', '-').replace('|', '-'));
-      } else {
-        alert('동기화요청을 실패하였습니다.');
-      }
-    });
+    $.post(
+        $('#contextRoot').val() + '/mng/requestSyncAjax'
+      , { snsrid: snsrid, reqcont: reqcont }
+      , function(d) {
+          if (d == 'success') {
+            alert('동기화를 요청했습니다.');
+            fn_getSensorDataCntList(reqcont.replace('|', '-').replace('|', '-'));
+          } else {
+            alert('동기화요청을 실패하였습니다.');
+          }
+        }
+    );
   }
 
   function fn_dateToString(d) {
