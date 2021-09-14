@@ -73,7 +73,6 @@ public class RSA {
             LOG.debug(e.getMessage());
         }
 
-
         return result;
     }
 
@@ -83,12 +82,9 @@ public class RSA {
 
         try {
             Cipher cipher = Cipher.getInstance("RSA");
-
-            byte[] encryptedBytes = hexToByteArray(securedValue);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
-            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-            decryptedValue = new String(decryptedBytes, "utf-8");       // 문자 인코딩 주의.
+            decryptedValue = new String(cipher.doFinal(hexToByteArray(securedValue)), "utf-8");       // 문자 인코딩 주의.
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             LOG.debug(e.getMessage());
         } catch (Exception e) {
@@ -122,12 +118,11 @@ public class RSA {
     }
 
     public String getPublicKeyModulus() { return publicKeyModulus; }
-    public void setPublicKeyModulus(String publicKeyModulus) { this.publicKeyModulus = publicKeyModulus; }
-
     public String getPublicKeyExponent() { return publicKeyExponent; }
-    public void setPublicKeyExponent(String publicKeyExponent) { this.publicKeyExponent = publicKeyExponent; }
-
     public PrivateKey getPrivateKey() { return privateKey; }
+
+    public void setPublicKeyModulus(String publicKeyModulus) { this.publicKeyModulus = publicKeyModulus; }
+    public void setPublicKeyExponent(String publicKeyExponent) { this.publicKeyExponent = publicKeyExponent; }
     public void setPrivateKey(PrivateKey privateKey) { this.privateKey = privateKey; }
 
 }
