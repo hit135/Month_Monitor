@@ -17,24 +17,24 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
       <div className={"d-flex justify-content-between"}>
         <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
         <div className={"p-5"}>
-          <h3 style={{fontSize: "2rem"}}>
+          <h3 style={{fontSize: "30px"}}>
             {props.type}
           </h3>
         </div>
       </div>
       <div className={"d-flex justify-content-center"} style={{marginTop: "10rem"}}>
-        <h1 style={{fontSize: "5rem", textDecoration: "underline", textUnderlinePosition: "under"}}>전기화재 예방 시스템 분석 현황</h1>
+        <h1 style={{fontSize: "80px", textDecoration: "underline", textUnderlinePosition: "under"}}>전기화재 예방 시스템 분석 현황</h1>
       </div>
 
       <div className={"d-flex justify-content-center"} style={{marginTop: "10rem"}}>
-        <h3 style={{fontSize: "3rem"}}>{props.startDate} ~ {props.endDate}</h3>
+        <h3 style={{fontSize: "60px"}}>{props.startDate} ~ {props.endDate}</h3>
       </div>
 
       <div className={"d-flex justify-content-center"} style={{marginTop: "40rem"}}>
-        <h2 style={{fontSize: "4rem", fontWeight: "900"}}>{props.areaTitle}</h2>
+        <h2 style={{fontSize: "70px", fontWeight: "900"}}>{props.areaTitle}</h2>
       </div>
       <div className={"d-flex justify-content-end"} style={{height: "800px"}}>
-        <h3 className={"d-flex align-items-end align-content-end mr-5"} style={{fontSize: "2.5rem"}}>{new Date().toLocaleDateString()}</h3>
+        <h3 className={"d-flex align-items-end align-content-end mr-5"} style={{fontSize: "40px"}}>{new Date().toLocaleDateString()}</h3>
       </div>
     </div>
     <CCard className={"mb-0"}>
@@ -44,7 +44,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <div className={"d-flex justify-content-between"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
-              <h3 style={{fontSize: "2rem"}}>
+              <h3 style={{fontSize: "30px"}}>
                 {props.type}
               </h3>
             </div>
@@ -54,7 +54,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             {props.areaTotalWarning}
           </div>
           <div className="position-absolute-ct">
-            <h3 className="m-0" style={{fontSize: "2rem"}}>- 1 -</h3>
+            <h3 className="m-0" style={{fontSize: "30px"}}>- 1 -</h3>
           </div>
 
           <div className="position-absolute-rb">
@@ -67,7 +67,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <div className={"d-flex justify-content-between"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
-              <h3 style={{fontSize: "2rem"}}>
+              <h3 style={{fontSize: "30px"}}>
                 {props.type}
               </h3>
             </div>
@@ -77,7 +77,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           </div>
 
           <div className="position-absolute-ct">
-            <h3 className="m-0" style={{fontSize: "2rem"}}>- 2 -</h3>
+            <h3 className="m-0" style={{fontSize: "30px"}}>- 2 -</h3>
           </div>
 
           <div className="position-absolute-rb">
@@ -90,7 +90,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <div className={"d-flex justify-content-between"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
-              <h3 style={{fontSize: "2rem"}}>
+              <h3 style={{fontSize: "30px"}}>
                 {props.type}
               </h3>
             </div>
@@ -106,7 +106,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           </div>
 
           <div className="position-absolute-ct">
-            <h3 className="m-0" style={{fontSize: "2rem"}}>- 3 -</h3>
+            <h3 className="m-0" style={{fontSize: "30px"}}>- 3 -</h3>
           </div>
 
           <div className="position-absolute-rb">
@@ -121,7 +121,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             <div className={"d-flex justify-content-between"}>
               <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
               <div className={"p-5"}>
-                <h3 style={{fontSize: "2rem"}}>
+                <h3 style={{fontSize: "30px"}}>
                   {props.type}
                 </h3>
               </div>
@@ -132,7 +132,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
                 {props.levelAreaStat}
               </div>
               <div className="position-absolute-ct">
-                <h3 className="m-0" style={{fontSize: "2rem"}}>- 4 -</h3>
+                <h3 className="m-0" style={{fontSize: "30px"}}>- 4 -</h3>
               </div>
 
               <div className="position-absolute-rb">
@@ -147,7 +147,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <div className={"d-flex justify-content-between"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
-              <h3 style={{fontSize: "2rem"}}>
+              <h3 style={{fontSize: "30px"}}>
                 {props.type}
               </h3>
             </div>
@@ -159,10 +159,10 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <CRow>
           <div className="position-absolute-ct">
             {
-              props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 5 -</h3>
+              props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 5 -</h3>
             }
             {
-              props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 4 -</h3>
+              props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 4 -</h3>
             }
           </div>
 
@@ -176,7 +176,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <div className={"d-flex justify-content-between"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
-              <h3 style={{fontSize: "2rem"}}>
+              <h3 style={{fontSize: "30px"}}>
                 {props.type}
               </h3>
             </div>
@@ -191,10 +191,10 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <CRow>
             <div className="position-absolute-ct">
               {
-                props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 6 -</h3>
+                props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 6 -</h3>
               }
               {
-                props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 5 -</h3>
+                props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 5 -</h3>
               }
             </div>
 
@@ -208,7 +208,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <div className={"d-flex justify-content-between"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
-              <h3 style={{fontSize: "2rem"}}>
+              <h3 style={{fontSize: "30px"}}>
                 {props.type}
               </h3>
             </div>
@@ -221,10 +221,10 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           <CRow>
             <div className="position-absolute-ct">
               {
-                props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 7 -</h3>
+                props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 7 -</h3>
               }
               {
-                props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "2rem"}}>- 6 -</h3>
+                props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 6 -</h3>
               }
             </div>
 

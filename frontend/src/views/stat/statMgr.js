@@ -129,6 +129,7 @@ const StatMgr = () => {
     }
 
     await getStatInfo(typeValue, guCode, areaCode, startDate, endDate, strCode).then(resp => {
+      console.log(resp);
       if (resp.data['result'] === "success") {
         if(typeValue === "store") {
           if(resp.data["strInfo"] !== null) {
@@ -139,14 +140,16 @@ const StatMgr = () => {
         if(resp.data["infoStat"].length > 1) {
           let compList = [];
           resp.data["infoStat"].map((item, idx) => {
+            console.log(item);
             compList.push(areaStatusComponent(item.areaName, startDate, endDate, item.areaAddr));
           })
           setAreaState(compList);
         } else {
           const temp = resp.data["infoStat"];
+          console.log(temp);
           setAreaName(temp.areaName);
           areaNameTitle = temp.areaName;
-          setAreaState(areaStatusComponent(temp.areaName, startDate, endDate, temp.areaAddr, strName));
+          setAreaState(areaStatusComponent(temp.areaName, startDate, endDate, temp.areaAddr, strName, temp.aRegDate, temp.sRegDate, typeValue));
         }
 
         if(resp.data["weekMonthStat"] !== null)

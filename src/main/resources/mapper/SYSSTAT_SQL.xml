@@ -38,10 +38,13 @@
     <select id="SELECT_SYS_STAT_AREA_INFO_STAT" parameterType="String" resultType="map">
         SELECT L.AREANAME AS areaName
              , L.AREAADDR AS areaAddr
+             ,  DATE_FORMAT(S.REGDATE, '%Y-%m-%d') AS sRegDate
+             ,  DATE_FORMAT(L.REGDATE, '%Y-%m-%d') AS aRegDate
+--              , L.REGDATE AS aRegDate
              , COUNT(DISTINCT S.STRCODE) AS stCnt
              , COUNT(DISTINCT I.SNSRSEQ) AS snsrCnt
           FROM ( SELECT * FROM F_STORE WHERE AREACODE = #{areaCode} AND USEYN = 'Y' AND DELYN = 'N' ) S
-                    LEFT JOIN ( SELECT DISTINCT AREACODE, AREANAME, AREAADDR FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N' ) L
+                    LEFT JOIN ( SELECT DISTINCT AREACODE, AREANAME, AREAADDR, REGDATE FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N' ) L
                         ON S.AREACODE = L.AREACODE
                     LEFT JOIN ( SELECT AREACODE, STRCODE, SNSRSEQ FROM F_SENSOR_INFO WHERE DELYN = 'N' ) I
                         ON S.AREACODE = I.AREACODE

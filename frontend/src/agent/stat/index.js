@@ -28,7 +28,7 @@ export const getStatInfoList = (type, guCode, areaCode, startDate, endDate) =>
   ].join('&'));
 
 // 전기안전현황 컴포넌트
-export const areaStatusComponent = (areaName, startDate, endDate, areaAddr, strName) => {
+export const areaStatusComponent = (areaName, startDate, endDate, areaAddr, strName, aRegDate, sRegDate, type) => {
   return (
     <div>
       <h5 className={"title"}>{areaName} {strName} 전기안전 현황</h5>
@@ -38,11 +38,21 @@ export const areaStatusComponent = (areaName, startDate, endDate, areaAddr, strN
           <td className="wme_table_td_title">대상</td>
           <td>{areaName} {strName}</td>
           <td className="wme_table_td_title">설치일자</td>
-          <td>2020년 10월 12일</td>
+          <td>
+            {type !== "store" ?
+              aRegDate.split("-")[0] + "년 " + aRegDate.split("-")[1] + "월 " + aRegDate.split("-")[2] + "일" :
+              sRegDate.split("-")[0] + "년 " + sRegDate.split("-")[1] + "월 " + sRegDate.split("-")[2] + "일"
+            }
+          </td>
         </tr>
         <tr>
           <td className="wme_table_td_title">운영기간</td>
-          <td>2020년 10월 13일 ~ 현재</td>
+          <td>
+            {type !== "store" ?
+              aRegDate.split("-")[0] + "년 " + aRegDate.split("-")[1] + "월 " + aRegDate.split("-")[2] + "일 ~ 현재" :
+              sRegDate.split("-")[0] + "년 " + sRegDate.split("-")[1] + "월 " + sRegDate.split("-")[2] + "일 ~ 현재"
+            }
+          </td>
           <td className="wme_table_td_title">조회기간</td>
           <td>{formatDate(startDate)} ~ {formatDate(endDate)}</td>
         </tr>
