@@ -24,6 +24,7 @@ import ReactToPrint, {useReactToPrint} from "react-to-print";
 import {ComponentToPrint} from "./printStatMgr";
 import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
 import {formatDate} from "../../agent/commonIndex";
+import '../../scss/react-datepicker.css';
 
 const StatMgr = () => {
   let Spinner = require('react-spinkit');
@@ -266,8 +267,8 @@ const StatMgr = () => {
                   }
                 </CButtonGroup>
 
-                <div className={"d-flex justify-content-center  mb-0 align-items-center mt-1 mr-2"}>
-                  <CSelect style={{ width: "185px"}} id={"selectGroup"} onChange={handleChangeGroup}>
+                <div className={"d-flex justify-content-center mb-0 align-items-center mt-1 mr-2"}>
+                  <CSelect style={{ width: "185px" }} id={"selectGroup"} onChange={handleChangeGroup}>
                     <option>전체(시장)</option>
                   </CSelect>
                   <input className="form-control" id={"strSelect"} type={"text"} onClick={e => setOnStrModal(true)} readOnly={true}/>
