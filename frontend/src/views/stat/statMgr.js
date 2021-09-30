@@ -153,63 +153,63 @@ const StatMgr = () => {
           setAreaState(areaStatusComponent(temp.areaName, startDate, endDate, temp.areaAddr, strName, temp.aRegDate, temp.sRegDate, typeValue));
         }
 
-        if(resp.data["weekMonthStat"] !== null)
-          if(resp.data["weekMonthStat"].length > 0)
-            setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"]));
-          else
-            setAreaKwhYearStat("");
-
-        setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"], strName));
-        setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
-        setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
-        setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
-        dayWeekData = resp.data["dayOfWeekStat"];
-
-        if(typeValue === "store") {
-          if(resp.data["areaKwhStat"] !== null)
-            setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
-          else
-            setAreaKwhStat("");
-        }
+        // if(resp.data["weekMonthStat"] !== null)
+        //   if(resp.data["weekMonthStat"].length > 0)
+        //     setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"]));
+        //   else
+        //     setAreaKwhYearStat("");
+        //
+        // setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"], strName));
+        // setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+        // setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+        // setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+        // dayWeekData = resp.data["dayOfWeekStat"];
+        //
+        // if(typeValue === "store") {
+        //   if(resp.data["areaKwhStat"] !== null)
+        //     setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
+        //   else
+        //     setAreaKwhStat("");
+        // }
         setLoading(false);
       } else {
         alert("서버 통신에 오류가 발생했습니다.");
       }
     });
 
-    if(typeValue !== "store") {
-      await getStatInfoList(typeValue, guCode, areaCode, startDate, endDate).then(resp => {
-        if (resp.data['result'] === "success") {
-          if(resp.data["levelAreaStat"] !== null)
-            if(resp.data["levelAreaStat"].length > 0)
-              setLevelAreaStat(levelAreaStatComp(areaNameTitle, resp.data["levelAreaStat"]));
-            else
-              setLevelAreaStat("");
-
-          if(resp.data["levelStrStat"] !== null)
-            if(resp.data["levelStrStat"].length > 0)
-              setLevelStrStat(levelStoreStatComp(areaNameTitle, resp.data["levelStrStat"]));
-            else
-              setLevelStrStat("");
-
-          if(resp.data["areaKwhStat"] !== null)
-            setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
-          else
-            setAreaKwhStat("");
-
-          if(resp.data["areaStrKwhStat"] !== null)
-            if(resp.data["areaStrKwhStat"].length > 0)
-              setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData))
-            else
-              setStrKwhStat("");
-        } else {
-          alert("서버 통신에 오류가 발생했습니다.");
-        }
-      });
-      setTotalLoading(false);
-    } else {
-      setTotalLoading(false);
-    }
+    // if(typeValue !== "store") {
+    //   await getStatInfoList(typeValue, guCode, areaCode, startDate, endDate).then(resp => {
+    //     if (resp.data['result'] === "success") {
+    //       if(resp.data["levelAreaStat"] !== null)
+    //         if(resp.data["levelAreaStat"].length > 0)
+    //           setLevelAreaStat(levelAreaStatComp(areaNameTitle, resp.data["levelAreaStat"]));
+    //         else
+    //           setLevelAreaStat("");
+    //
+    //       if(resp.data["levelStrStat"] !== null)
+    //         if(resp.data["levelStrStat"].length > 0)
+    //           setLevelStrStat(levelStoreStatComp(areaNameTitle, resp.data["levelStrStat"]));
+    //         else
+    //           setLevelStrStat("");
+    //
+    //       if(resp.data["areaKwhStat"] !== null)
+    //         setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
+    //       else
+    //         setAreaKwhStat("");
+    //
+    //       if(resp.data["areaStrKwhStat"] !== null)
+    //         if(resp.data["areaStrKwhStat"].length > 0)
+    //           setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData))
+    //         else
+    //           setStrKwhStat("");
+    //     } else {
+    //       alert("서버 통신에 오류가 발생했습니다.");
+    //     }
+    //   });
+    //   setTotalLoading(false);
+    // } else {
+    //   setTotalLoading(false);
+    // }
 
   }
   const componentRef = React.useRef(null);
@@ -301,23 +301,25 @@ const StatMgr = () => {
             }
 
             {areaState}
-            {areaTotalWarning}
-            {areaHourlyStat}
-            {areaHourlyStat2}
-            {levelAreaStat}
-            {levelStrStat}
+            {/*{areaTotalWarning}*/}
+            {/*{areaHourlyStat}*/}
+            {/*{areaHourlyStat2}*/}
+            {/*{levelAreaStat}*/}
+            {/*{levelStrStat}*/}
 
-            {areaKwhStat}
-            {areaKwhYearStat}
-            {areaKwhHourlyStat}
-            {strKwhStat}
+            {/*{areaKwhStat}*/}
+            {/*{areaKwhYearStat}*/}
+            {/*{areaKwhHourlyStat}*/}
+            {/*{strKwhStat}*/}
           </CCardBody>
         </CCard>
       </CCol>
       <PageStrTableModalWidget onStrModal={onStrModal} setOnStrModal={setOnStrModal} clickStrRow={clickStrRow} initStrCode={initStrCode} areaId={"areaSelect"} />
 
-      {printLoading && <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat} areaHourlyStat2={areaHourlyStat2}
-                                         levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat}
+      {printLoading &&
+
+                       <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat} areaHourlyStat2={areaHourlyStat2}
+                                         levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}
                                          areaKwhHourlyStat={areaKwhHourlyStat} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}
                                          endDate={formatDate(endDate)} />
       }

@@ -13,30 +13,34 @@ import 'react-datepicker/dist/react-datepicker.min.css';
 export const ComponentToPrint = React.forwardRef((props, ref) => (
   <div ref={ref}>
     {/* 표지 */}
-    <div className={"printRow"}>
-      <div className={"d-flex justify-content-between"}>
-        <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
-        <div className={"p-5"}>
-          <h3 style={{fontSize: "30px"}}>
-            {props.type}
-          </h3>
+    {
+      props.typeName !== "store" &&
+      <div className={"printRow"}>
+        <div className={"d-flex justify-content-between"}>
+          <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
+          <div className={"p-5"}>
+            <h3 style={{fontSize: "30px"}}>
+              {props.type}
+            </h3>
+          </div>
+        </div>
+        <div className={"d-flex justify-content-center"} style={{marginTop: "10rem"}}>
+          <h1 style={{fontSize: "80px", textDecoration: "underline", textUnderlinePosition: "under"}}>전기화재 예방 시스템 분석 현황</h1>
+        </div>
+
+        <div className={"d-flex justify-content-center"} style={{marginTop: "10rem"}}>
+          <h3 style={{fontSize: "60px"}}>{props.startDate} ~ {props.endDate}</h3>
+        </div>
+
+        <div className={"d-flex justify-content-center"} style={{marginTop: "40rem"}}>
+          <h2 style={{fontSize: "70px", fontWeight: "900"}}>{props.areaTitle}</h2>
+        </div>
+        <div className={"d-flex justify-content-end"} style={{height: "800px"}}>
+          <h3 className={"d-flex align-items-end align-content-end mr-5"} style={{fontSize: "40px"}}>{new Date().toLocaleDateString()}</h3>
         </div>
       </div>
-      <div className={"d-flex justify-content-center"} style={{marginTop: "10rem"}}>
-        <h1 style={{fontSize: "80px", textDecoration: "underline", textUnderlinePosition: "under"}}>전기화재 예방 시스템 분석 현황</h1>
-      </div>
+    }
 
-      <div className={"d-flex justify-content-center"} style={{marginTop: "10rem"}}>
-        <h3 style={{fontSize: "60px"}}>{props.startDate} ~ {props.endDate}</h3>
-      </div>
-
-      <div className={"d-flex justify-content-center"} style={{marginTop: "40rem"}}>
-        <h2 style={{fontSize: "70px", fontWeight: "900"}}>{props.areaTitle}</h2>
-      </div>
-      <div className={"d-flex justify-content-end"} style={{height: "800px"}}>
-        <h3 className={"d-flex align-items-end align-content-end mr-5"} style={{fontSize: "40px"}}>{new Date().toLocaleDateString()}</h3>
-      </div>
-    </div>
     <CCard className={"mb-0"}>
       <CCardBody className={"p-0"}>
         {/* 전기안전 현황 */}
