@@ -132,22 +132,22 @@ const StatMgr = () => {
     await getStatInfo(typeValue, guCode, areaCode, startDate, endDate, strCode).then(resp => {
       console.log(resp);
       if (resp.data['result'] === "success") {
+        // 상점일 경우
         if(typeValue === "store") {
           if(resp.data["strInfo"] !== null) {
             strName = resp.data["strInfo"]["strName"];
+            console.log(strName);
           }
         }
 
         if(resp.data["infoStat"].length > 1) {
           let compList = [];
           resp.data["infoStat"].map((item, idx) => {
-            console.log(item);
             compList.push(areaStatusComponent(item.areaName, startDate, endDate, item.areaAddr));
           })
           setAreaState(compList);
         } else {
           const temp = resp.data["infoStat"];
-          console.log(temp);
           setAreaName(temp.areaName);
           areaNameTitle = temp.areaName;
           setAreaState(areaStatusComponent(temp.areaName, startDate, endDate, temp.areaAddr, strName, temp.aRegDate, temp.sRegDate, typeValue));
@@ -244,7 +244,7 @@ const StatMgr = () => {
 
   return (
     <>
-      <CCol md={"12"}>
+      <CCol md={"12"} style={{ paddingLeft: "150px", paddingRight: "150px"}}>
         <CCard>
           <CCardHeader>
             <div className={'d-flex justify-content-between'}>
@@ -287,7 +287,7 @@ const StatMgr = () => {
               </div>
             </div>
           </CCardHeader>
-          <CCardBody className={"p-3"}>
+          <CCardBody style={{padding : "2rem"}}>
             {
               loading && <CRow id={"loading"}>
                 <CCol md={"12"}>

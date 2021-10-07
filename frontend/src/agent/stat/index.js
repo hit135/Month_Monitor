@@ -29,37 +29,50 @@ export const getStatInfoList = (type, guCode, areaCode, startDate, endDate) =>
 
 // 전기안전현황 컴포넌트
 export const areaStatusComponent = (areaName, startDate, endDate, areaAddr, strName, aRegDate, sRegDate, type) => {
+  console.log(strName);
   return (
     <div>
-      <h5 className={"title"}>{areaName} {strName} 전기안전 현황</h5>
+      {/*<h5 className={"title"}>{areaName} {strName} 전기안전 현황</h5>*/}
       <table className="table table-sm table-bordered mb-0 printTable">
         <tbody>
         <tr>
-          <td className="wme_table_td_title">대상</td>
-          <td>{areaName} {strName}</td>
-          <td className="wme_table_td_title">설치일자</td>
-          <td>
-            {type !== "store" ?
-              aRegDate.split("-")[0] + "년 " + aRegDate.split("-")[1] + "월 " + aRegDate.split("-")[2] + "일" :
-              sRegDate.split("-")[0] + "년 " + sRegDate.split("-")[1] + "월 " + sRegDate.split("-")[2] + "일"
-            }
-          </td>
+          <td className="wme_table_td_title table-title text-center" colSpan={2}>{areaName} {strName} 전기안전 현황</td>
         </tr>
         <tr>
-          <td className="wme_table_td_title">운영기간</td>
+          <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>대상</td>
           <td>
             {type !== "store" ?
               aRegDate.split("-")[0] + "년 " + aRegDate.split("-")[1] + "월 " + aRegDate.split("-")[2] + "일 ~ 현재" :
               sRegDate.split("-")[0] + "년 " + sRegDate.split("-")[1] + "월 " + sRegDate.split("-")[2] + "일 ~ 현재"
             }
           </td>
-          <td className="wme_table_td_title">조회기간</td>
-          <td>{formatDate(startDate)} ~ {formatDate(endDate)}</td>
         </tr>
-        <tr>
-          <td className="wme_table_td_title">주소</td>
-          <td colSpan="3">{areaAddr}</td>
-        </tr>
+        {/*<tr>*/}
+        {/*  <td className="wme_table_td_title">대상</td>*/}
+        {/*  <td>{areaName} {strName}</td>*/}
+        {/*  <td className="wme_table_td_title">설치일자</td>*/}
+        {/*  <td>*/}
+        {/*    {type !== "store" ?*/}
+        {/*      aRegDate.split("-")[0] + "년 " + aRegDate.split("-")[1] + "월 " + aRegDate.split("-")[2] + "일" :*/}
+        {/*      sRegDate.split("-")[0] + "년 " + sRegDate.split("-")[1] + "월 " + sRegDate.split("-")[2] + "일"*/}
+        {/*    }*/}
+        {/*  </td>*/}
+        {/*</tr>*/}
+        {/*<tr>*/}
+        {/*  <td className="wme_table_td_title">운영기간</td>*/}
+        {/*  <td>*/}
+        {/*    {type !== "store" ?*/}
+        {/*      aRegDate.split("-")[0] + "년 " + aRegDate.split("-")[1] + "월 " + aRegDate.split("-")[2] + "일 ~ 현재" :*/}
+        {/*      sRegDate.split("-")[0] + "년 " + sRegDate.split("-")[1] + "월 " + sRegDate.split("-")[2] + "일 ~ 현재"*/}
+        {/*    }*/}
+        {/*  </td>*/}
+        {/*  <td className="wme_table_td_title">조회기간</td>*/}
+        {/*  <td>{formatDate(startDate)} ~ {formatDate(endDate)}</td>*/}
+        {/*</tr>*/}
+        {/*<tr>*/}
+        {/*  <td className="wme_table_td_title">주소</td>*/}
+        {/*  <td colSpan="3">{areaAddr}</td>*/}
+        {/*</tr>*/}
         </tbody>
       </table>
     </div>
