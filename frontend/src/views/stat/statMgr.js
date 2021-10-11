@@ -14,9 +14,16 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import {ko} from "date-fns/esm/locale";
 import {
-  areaStatusComponent, storeYearWarningComp,
+  areaStatusComponent,
+  storeYearWarningComp,
   getSelectGroup,
-  getStatInfo, storeChartComp,
+  getStatInfo,
+  storeChartComp,
+  areaTotalWarningComp,
+  areaTotalKwhComp,
+  areaTotalChartStatComp,
+  levelAreaStatComp,
+  levelStoreStatComp, areaKwhStatComp, areaKwhStatYearComp, strKwhStatComp, getStatInfoList,
 } from "../../agent/stat";
 import ReactToPrint, {useReactToPrint} from "react-to-print";
 import {ComponentToPrint} from "./printStatMgr";
@@ -42,18 +49,17 @@ const StatMgr = () => {
   const [areaName, setAreaName] = useState("");
   const [areaCode, setAreaCode] = useState("AREA_000003");
   const [areaState, setAreaState] = useState();
-  const [storeYearWarning, setStoreYearWarning] = useState();
-  const [storeChart, setStoreChart] = useState();
+  const [areaTotalWarning, setAreaTotalWarning] = useState();     // 시장
+  const [areaKwhHourlyStat, setAreaKwhHourlyStat] = useState();
+  const [areaHourlyStat, setAreaHourlyStat] = useState();
+  const [levelAreaStat, setLevelAreaStat] = useState();
+  const [levelStrStat, setLevelStrStat] = useState();
+  const [areaKwhStat, setAreaKwhStat] = useState();
+  const [areaKwhYearStat, setAreaKwhYearStat] = useState();
+  const [strKwhStat, setStrKwhStat] = useState();
 
-  // const [areaTotalWarning, setAreaTotalWarning] = useState();
-  // const [areaHourlyStat, setAreaHourlyStat] = useState();
-  // const [areaHourlyStat2, setAreaHourlyStat2] = useState();
-  // const [levelAreaStat, setLevelAreaStat] = useState();
-  // const [levelStrStat, setLevelStrStat] = useState();
-  // const [areaKwhStat, setAreaKwhStat] = useState();
-  // const [areaKwhYearStat, setAreaKwhYearStat] = useState();
-  // const [areaKwhHourlyStat, setAreaKwhHourlyStat] = useState();
-  // const [strKwhStat, setStrKwhStat] = useState();
+  const [storeYearWarning, setStoreYearWarning] = useState();     // 상점
+  const [storeChart, setStoreChart] = useState();                 // 상점
 
 
   useEffect(async () => {
@@ -65,15 +71,15 @@ const StatMgr = () => {
    setAreaState("");
    setStoreYearWarning("");
    setStoreChart("");
-   // setAreaTotalWarning("");
-   // setAreaHourlyStat("");
-   // setAreaHourlyStat2("");
-   // setLevelAreaStat("");
-   // setLevelStrStat("");
-   // setAreaKwhStat("");
-   // setAreaKwhYearStat("");
-   // setAreaKwhHourlyStat("");
-   // setStrKwhStat("");
+   setAreaTotalWarning("");
+   setAreaHourlyStat("");
+   setLevelAreaStat("");
+
+   setLevelStrStat("");
+   setAreaKwhStat("");
+   setAreaKwhYearStat("");
+   setAreaKwhHourlyStat("");
+   setStrKwhStat("");
   }
 
   const initStrCode = () => {
@@ -125,6 +131,7 @@ const StatMgr = () => {
   }
 
   const handleClickSearchStat = async () => {
+    let dayHourData = [];
     let dayWeekData = [];
     setHookReset();
     setLoading(true);
@@ -135,7 +142,6 @@ const StatMgr = () => {
     }
 
     await getStatInfo(typeValue, guCode, areaCode, startDate, endDate, strCode).then(resp => {
-      console.log(resp);
       if (resp.data['result'] === "success") {
         // 상점일 경우
         if(typeValue === "store") {
@@ -146,7 +152,7 @@ const StatMgr = () => {
 
           if(resp.data["weekMonthStat"] !== null) {
             setStoreYearWarning(storeYearWarningComp(resp.data["weekMonthStat"]));
-            setStoreChart(storeChartComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+            setStoreChart(storeChartComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
           }
         }
 
@@ -163,63 +169,58 @@ const StatMgr = () => {
           setAreaState(areaStatusComponent(temp, startDate, endDate, typeValue, strName, snsrCnt));
         }
 
-        // if(resp.data["weekMonthStat"] !== null)
-        //   if(resp.data["weekMonthStat"].length > 0)
-        //     setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"]));
-        //   else
-        //     setAreaKwhYearStat("");
-        //
-        // setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"], strName));
-        // setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
-        // setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
-        // setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
-        // dayWeekData = resp.data["dayOfWeekStat"];
-        //
-        // if(typeValue === "store") {
-        //   if(resp.data["areaKwhStat"] !== null)
-        //     setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
-        //   else
-        //     setAreaKwhStat("");
-        // }
+        if(typeValue === "areaCode") {
+          setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"]));
+          setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+
+          // setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+          if(resp.data["levelAreaStat"].length > 0)
+            setLevelAreaStat(levelAreaStatComp(areaNameTitle, resp.data["levelAreaStat"]));
+          else
+            setLevelAreaStat("");
+          if(resp.data["levelStrStat"] !== null)
+            if(resp.data["levelStrStat"].length > 0)
+              setLevelStrStat(levelStoreStatComp(areaNameTitle, resp.data["levelStrStat"]));
+            else
+              setLevelStrStat("");
+
+          if(resp.data["weekMonthStat"] !== null)
+            if(resp.data["weekMonthStat"].length > 0)
+              setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"]));
+            else
+              setAreaKwhYearStat("");
+
+          dayHourData = resp.data["hourlyStat"]
+          dayWeekData = resp.data["dayOfWeekStat"];
+        }
         setLoading(false);
       } else {
         alert("서버 통신에 오류가 발생했습니다.");
       }
     });
 
-    // if(typeValue !== "store") {
-    //   await getStatInfoList(typeValue, guCode, areaCode, startDate, endDate).then(resp => {
-    //     if (resp.data['result'] === "success") {
-    //       if(resp.data["levelAreaStat"] !== null)
-    //         if(resp.data["levelAreaStat"].length > 0)
-    //           setLevelAreaStat(levelAreaStatComp(areaNameTitle, resp.data["levelAreaStat"]));
-    //         else
-    //           setLevelAreaStat("");
-    //
-    //       if(resp.data["levelStrStat"] !== null)
-    //         if(resp.data["levelStrStat"].length > 0)
-    //           setLevelStrStat(levelStoreStatComp(areaNameTitle, resp.data["levelStrStat"]));
-    //         else
-    //           setLevelStrStat("");
-    //
-    //       if(resp.data["areaKwhStat"] !== null)
-    //         setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
-    //       else
-    //         setAreaKwhStat("");
-    //
-    //       if(resp.data["areaStrKwhStat"] !== null)
-    //         if(resp.data["areaStrKwhStat"].length > 0)
-    //           setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData))
-    //         else
-    //           setStrKwhStat("");
-    //     } else {
-    //       alert("서버 통신에 오류가 발생했습니다.");
-    //     }
-    //   });
-    //   setTotalLoading(false);
-    // } else {
-    //   setTotalLoading(false);
-    // }
+    if(typeValue !== "store") {
+      await getStatInfoList(typeValue, guCode, areaCode, startDate, endDate).then(resp => {
+        if (resp.data['result'] === "success") {
+          if(resp.data["areaKwhStat"] !== null)
+            setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
+          else
+            setAreaKwhStat("");
+
+          if(resp.data["areaStrKwhStat"] !== null)
+            if(resp.data["areaStrKwhStat"].length > 0)
+              setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayHourData, dayWeekData))
+            else
+              setStrKwhStat("");
+
+        } else {
+          alert("서버 통신에 오류가 발생했습니다.");
+        }
+      });
+      setTotalLoading(false);
+    } else {
+      setTotalLoading(false);
+    }
 
   }
   const componentRef = React.useRef(null);
@@ -313,24 +314,39 @@ const StatMgr = () => {
             {areaState}
             {
               typeValue !== "store" ?
-                "" :
+                areaTotalWarning :
                 storeYearWarning
             }
             {
               typeValue !== "store" ?
-                "" :
+                areaHourlyStat:
                 storeChart
             }
-            {/*{areaTotalWarning}*/}
-            {/*{areaHourlyStat}*/}
-            {/*{areaHourlyStat2}*/}
-            {/*{levelAreaStat}*/}
-            {/*{levelStrStat}*/}
-
-            {/*{areaKwhStat}*/}
-            {/*{areaKwhYearStat}*/}
-            {/*{areaKwhHourlyStat}*/}
-            {/*{strKwhStat}*/}
+            {
+              typeValue !== "store" ?
+                levelAreaStat :
+                ""
+            }
+            {
+              typeValue !== "store" ?
+                levelStrStat :
+                ""
+            }
+            {
+              typeValue !== "store" ?
+                areaKwhStat :
+                ""
+            }
+            {
+              typeValue !== "store" ?
+                areaKwhYearStat :
+                ""
+            }
+            {
+              typeValue !== "store" ?
+                strKwhStat :
+                ""
+            }
           </CCardBody>
         </CCard>
       </CCol>
