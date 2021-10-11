@@ -14,11 +14,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import {ko} from "date-fns/esm/locale";
 import {
-  areaKwhStatComp, areaKwhStatYearComp,
-  areaStatusComponent, areaTotalChartStatComp, areaTotalChartStatComp2, areaTotalKwhComp,
-  areaTotalWarningComp,
+  areaStatusComponent, storeYearWarningComp,
   getSelectGroup,
-  getStatInfo, getStatInfoList, levelAreaStatComp, levelStoreStatComp, strKwhStatComp
+  getStatInfo, storeChartComp,
 } from "../../agent/stat";
 import ReactToPrint, {useReactToPrint} from "react-to-print";
 import {ComponentToPrint} from "./printStatMgr";
@@ -30,6 +28,8 @@ const StatMgr = () => {
   let Spinner = require('react-spinkit');
   let areaNameTitle = "";
   let strName = "";
+  let snsrCnt = 0;
+  const [onStrModal, setOnStrModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [totalLoading, setTotalLoading] = useState(true);
   const [printLoading, setPrintLoading] = useState(false);
@@ -42,16 +42,19 @@ const StatMgr = () => {
   const [areaName, setAreaName] = useState("");
   const [areaCode, setAreaCode] = useState("AREA_000003");
   const [areaState, setAreaState] = useState();
-  const [areaTotalWarning, setAreaTotalWarning] = useState();
-  const [areaHourlyStat, setAreaHourlyStat] = useState();
-  const [areaHourlyStat2, setAreaHourlyStat2] = useState();
-  const [levelAreaStat, setLevelAreaStat] = useState();
-  const [levelStrStat, setLevelStrStat] = useState();
-  const [areaKwhStat, setAreaKwhStat] = useState();
-  const [areaKwhYearStat, setAreaKwhYearStat] = useState();
-  const [areaKwhHourlyStat, setAreaKwhHourlyStat] = useState();
-  const [strKwhStat, setStrKwhStat] = useState();
-  const [onStrModal, setOnStrModal] = useState(false);
+  const [storeYearWarning, setStoreYearWarning] = useState();
+  const [storeChart, setStoreChart] = useState();
+
+  // const [areaTotalWarning, setAreaTotalWarning] = useState();
+  // const [areaHourlyStat, setAreaHourlyStat] = useState();
+  // const [areaHourlyStat2, setAreaHourlyStat2] = useState();
+  // const [levelAreaStat, setLevelAreaStat] = useState();
+  // const [levelStrStat, setLevelStrStat] = useState();
+  // const [areaKwhStat, setAreaKwhStat] = useState();
+  // const [areaKwhYearStat, setAreaKwhYearStat] = useState();
+  // const [areaKwhHourlyStat, setAreaKwhHourlyStat] = useState();
+  // const [strKwhStat, setStrKwhStat] = useState();
+
 
   useEffect(async () => {
     await handleClickBtnGroup("areaCode");
@@ -60,15 +63,17 @@ const StatMgr = () => {
 
   const setHookReset = () => {
    setAreaState("");
-   setAreaTotalWarning("");
-   setAreaHourlyStat("");
-   setAreaHourlyStat2("");
-   setLevelAreaStat("");
-   setLevelStrStat("");
-   setAreaKwhStat("");
-   setAreaKwhYearStat("");
-   setAreaKwhHourlyStat("");
-   setStrKwhStat("");
+   setStoreYearWarning("");
+   setStoreChart("");
+   // setAreaTotalWarning("");
+   // setAreaHourlyStat("");
+   // setAreaHourlyStat2("");
+   // setLevelAreaStat("");
+   // setLevelStrStat("");
+   // setAreaKwhStat("");
+   // setAreaKwhYearStat("");
+   // setAreaKwhHourlyStat("");
+   // setStrKwhStat("");
   }
 
   const initStrCode = () => {
@@ -136,7 +141,12 @@ const StatMgr = () => {
         if(typeValue === "store") {
           if(resp.data["strInfo"] !== null) {
             strName = resp.data["strInfo"]["strName"];
-            console.log(strName);
+            snsrCnt = resp.data["strInfo"]["snsrCnt"];
+          }
+
+          if(resp.data["weekMonthStat"] !== null) {
+            setStoreYearWarning(storeYearWarningComp(resp.data["weekMonthStat"]));
+            setStoreChart(storeChartComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
           }
         }
 
@@ -150,7 +160,7 @@ const StatMgr = () => {
           const temp = resp.data["infoStat"];
           setAreaName(temp.areaName);
           areaNameTitle = temp.areaName;
-          setAreaState(areaStatusComponent(temp.areaName, startDate, endDate, temp.areaAddr, strName, temp.aRegDate, temp.sRegDate, typeValue));
+          setAreaState(areaStatusComponent(temp, startDate, endDate, typeValue, strName, snsrCnt));
         }
 
         // if(resp.data["weekMonthStat"] !== null)
@@ -301,6 +311,16 @@ const StatMgr = () => {
             }
 
             {areaState}
+            {
+              typeValue !== "store" ?
+                "" :
+                storeYearWarning
+            }
+            {
+              typeValue !== "store" ?
+                "" :
+                storeChart
+            }
             {/*{areaTotalWarning}*/}
             {/*{areaHourlyStat}*/}
             {/*{areaHourlyStat2}*/}
@@ -316,13 +336,13 @@ const StatMgr = () => {
       </CCol>
       <PageStrTableModalWidget onStrModal={onStrModal} setOnStrModal={setOnStrModal} clickStrRow={clickStrRow} initStrCode={initStrCode} areaId={"areaSelect"} />
 
-      {printLoading &&
+      {/*{printLoading &&*/}
 
-                       <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat} areaHourlyStat2={areaHourlyStat2}
-                                         levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}
-                                         areaKwhHourlyStat={areaKwhHourlyStat} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}
-                                         endDate={formatDate(endDate)} />
-      }
+      {/*         <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat} areaHourlyStat2={areaHourlyStat2}*/}
+      {/*                           levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}*/}
+      {/*                           areaKwhHourlyStat={areaKwhHourlyStat} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}*/}
+      {/*                           endDate={formatDate(endDate)} />*/}
+      {/*}*/}
     </>
   )
 };

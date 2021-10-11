@@ -40,8 +40,7 @@
              , L.AREAADDR AS areaAddr
              ,  DATE_FORMAT(S.REGDATE, '%Y-%m-%d') AS sRegDate
              ,  DATE_FORMAT(L.REGDATE, '%Y-%m-%d') AS aRegDate
---              , L.REGDATE AS aRegDate
-             , COUNT(DISTINCT S.STRCODE) AS stCnt
+             , COUNT(DISTINCT S.STRCODE) AS strCnt
              , COUNT(DISTINCT I.SNSRSEQ) AS snsrCnt
           FROM ( SELECT * FROM F_STORE WHERE AREACODE = #{areaCode} AND USEYN = 'Y' AND DELYN = 'N' ) S
                     LEFT JOIN ( SELECT DISTINCT AREACODE, AREANAME, AREAADDR, REGDATE FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N' ) L
@@ -51,13 +50,16 @@
     </select>
 
     <select id="SELECT_SYS_STAT_STR_INFO" parameterType="map" resultType="map">
-        SELECT DISTINCT STRCODE AS strCode
-             , STRNAME AS strName
-          FROM F_STORE
-         WHERE AREACODE = #{areaCode}
-           AND USEYN = 'Y'
-           AND DELYN = 'N'
-           AND STRCODE LIKE CONCAT('%', #{strCode})
+        SELECT DISTINCT A.STRCODE AS strCode
+             , A.STRNAME AS strName
+             , COUNT(B.SNSRID) AS snsrCnt
+          FROM F_STORE A
+        LEFT JOIN F_SENSOR_INFO B
+               ON A.STRCODE = B.STRCODE
+         WHERE A.AREACODE = #{areaCode}
+           AND A.USEYN = 'Y'
+           AND A.DELYN = 'N'
+           AND A.STRCODE LIKE CONCAT('%', #{strCode})
     </select>
 
     <select id="SELECT_SYS_STAT_SNSR_INFO" parameterType="map" resultType="map">
