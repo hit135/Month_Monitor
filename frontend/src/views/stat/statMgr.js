@@ -23,7 +23,7 @@ import {
   areaTotalKwhComp,
   areaTotalChartStatComp,
   levelAreaStatComp,
-  levelStoreStatComp, areaKwhStatComp, areaKwhStatYearComp, strKwhStatComp, getStatInfoList,
+  levelStoreStatComp, areaKwhStatComp, areaKwhStatYearComp, strKwhStatComp, getStatInfoList, areaTotalChartStatComp2,
 } from "../../agent/stat";
 import ReactToPrint, {useReactToPrint} from "react-to-print";
 import {ComponentToPrint} from "./printStatMgr";
@@ -52,6 +52,7 @@ const StatMgr = () => {
   const [areaTotalWarning, setAreaTotalWarning] = useState();     // 시장
   const [areaKwhHourlyStat, setAreaKwhHourlyStat] = useState();
   const [areaHourlyStat, setAreaHourlyStat] = useState();
+  const [areaHourlyStat2, setAreaHourlyStat2] = useState();
   const [levelAreaStat, setLevelAreaStat] = useState();
   const [levelStrStat, setLevelStrStat] = useState();
   const [areaKwhStat, setAreaKwhStat] = useState();
@@ -68,18 +69,18 @@ const StatMgr = () => {
   }, []);
 
   const setHookReset = () => {
-   setAreaState("");
-   setStoreYearWarning("");
-   setStoreChart("");
-   setAreaTotalWarning("");
-   setAreaHourlyStat("");
-   setLevelAreaStat("");
-
-   setLevelStrStat("");
-   setAreaKwhStat("");
-   setAreaKwhYearStat("");
-   setAreaKwhHourlyStat("");
-   setStrKwhStat("");
+    setAreaState("");
+    setStoreYearWarning("");
+    setStoreChart("");
+    setAreaTotalWarning("");
+    setAreaHourlyStat("");
+    setLevelAreaStat("");
+    setAreaHourlyStat2("")
+    setLevelStrStat("");
+    setAreaKwhStat("");
+    setAreaKwhYearStat("");
+    setAreaKwhHourlyStat("");
+    setStrKwhStat("");
   }
 
   const initStrCode = () => {
@@ -132,7 +133,6 @@ const StatMgr = () => {
   }
 
   const handleClickSearchStat = async () => {
-    let dayHourData = [];
     let dayWeekData = [];
     setHookReset();
     setLoading(true);
@@ -173,7 +173,7 @@ const StatMgr = () => {
         if(typeValue === "areaCode") {
           setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"]));
           setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
-
+          setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
           // setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
           if(resp.data["levelAreaStat"].length > 0)
             setLevelAreaStat(levelAreaStatComp(areaNameTitle, resp.data["levelAreaStat"]));
@@ -187,11 +187,10 @@ const StatMgr = () => {
 
           if(resp.data["weekMonthStat"] !== null)
             if(resp.data["weekMonthStat"].length > 0)
-              setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"]));
+              setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"], resp.data["hourlyStat"]));
             else
               setAreaKwhYearStat("");
 
-          dayHourData = resp.data["hourlyStat"]
           dayWeekData = resp.data["dayOfWeekStat"];
         }
         setLoading(false);
@@ -210,7 +209,7 @@ const StatMgr = () => {
 
           if(resp.data["areaStrKwhStat"] !== null)
             if(resp.data["areaStrKwhStat"].length > 0)
-              setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayHourData, dayWeekData))
+              setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData))
             else
               setStrKwhStat("");
 
@@ -329,6 +328,11 @@ const StatMgr = () => {
             }
             {
               typeValue !== "store" ?
+                areaHourlyStat2:
+                ""
+            }
+            {
+              typeValue !== "store" ?
                 levelAreaStat :
                 ""
             }
@@ -361,7 +365,7 @@ const StatMgr = () => {
 
                <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
                                  levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}
-                                 areaKwhHourlyStat={areaKwhHourlyStat} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}
+                                 areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}
                                  endDate={formatDate(endDate)} />
       }
     </>
