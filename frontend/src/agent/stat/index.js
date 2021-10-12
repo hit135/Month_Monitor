@@ -85,7 +85,6 @@ export const areaStatusComponent = (param, startDate, endDate, type, strName, sn
 // 전기안전 경보 발생현황(종합) 컴포넌트
 export const areaTotalWarningComp = (areaName, item) => {
   let chartData = [];
-  let chartData2 = [];
   let totalWarning1stNum = item[12]["oc1st"] + item[12]["igo1st"] + item[12]["igr1st"];
   let totalWarning2ndNum = item[12]["oc2nd"] + item[12]["igo2nd"] + item[12]["igr2nd"];
   item.map((item, idx) => {
@@ -95,233 +94,223 @@ export const areaTotalWarningComp = (areaName, item) => {
         "과전류 1차 경보" : item["oc1st"],
         "과전류 2차 경보" : item["oc2nd"],
       });
-
-      chartData2.push({
-        "label" : (idx + 1) + "월",
-        "전체누설전류 1차 경보" : item["igo1st"],
-        "전체누설전류 2차 경보" : item["igo2nd"],
-        "저항누설전류 1차 경보" : item["igr1st"],
-        "저항누설전류 2차 경보" : item["igr2nd"],
-      })
     }
   });
   return (
-    <div className={"mt-5"}>
-      <h5 className={"title"}>{areaName} 전기위험 경보 발생 현황</h5>
-      <span className={"mb-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(종합)</span>
-      <table className="table table-sm table-bordered mb-0 printTable">
-        <colgroup>
-          <col width="25%"/>
-          <col width="25%"/>
-          <col width="25%"/>
-          <col width="25%"/>
-        </colgroup>
-        <thead>
-        <tr>
-          <th className="text-center wme_table_td_title">경보 종류</th>
-          <th className="text-center wme_table_td_title" colSpan="3">경보 구분</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>과전류 경보
-          </td>
-          <td className="wme_table_td_title text-center">주의(1차경보)</td>
-          <td className="wme_table_td_title text-center">경고(2차경보)</td>
-          <td className="wme_table_td_title text-center">계</td>
-        </tr>
-        <tr>
-          <td id="wme_area_oc_warning_cnt_td" className="text-right">{item[12]["oc1st"]?.toLocaleString() || 0}</td>
-          <td id="wme_area_oc_danger_cnt_td" className="text-right">{item[12]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td id="wme_area_oc_cnt_td" className="text-right">{item[12]["ocEvt"]?.toLocaleString() || 0}</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>전체누설전류(IGO)
-          </td>
-          <td className="wme_table_td_title text-center">주의(1차경보)</td>
-          <td className="wme_table_td_title text-center">경고(2차경보)</td>
-          <td className="wme_table_td_title text-center">계</td>
-        </tr>
-        <tr>
-          <td id="wme_area_igo_warning_cnt_td" className="text-right">{item[12]["igo1st"]?.toLocaleString() || 0}</td>
-          <td id="wme_area_igo_danger_cnt_td" className="text-right">{item[12]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td id="wme_area_igo_cnt_td" className="text-right">{item[12]["igoEvt"]?.toLocaleString() || 0}</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>저항성누설전류(IGR)
-          </td>
-          <td className="wme_table_td_title text-center">주의(1차경보)</td>
-          <td className="wme_table_td_title text-center">경고(2차경보)</td>
-          <td className="wme_table_td_title text-center">계</td>
-        </tr>
-        <tr>
-          <td id="wme_area_igr_warning_cnt_td" className="text-right">{item[12]["igr1st"]?.toLocaleString() || 0}</td>
-          <td id="wme_area_igr_danger_cnt_td" className="text-right">{item[12]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td id="wme_area_igr_cnt_td" className="text-right">{item[12]["igrEvt"]?.toLocaleString() || 0}</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center">계</td>
-          <td id="wme_area_warning_cnt_td" className="text-right">{isNaN(totalWarning1stNum) ? 0 : totalWarning1stNum?.toLocaleString() || 0}</td>
-          <td id="wme_area_danger_cnt_td" className="text-right">{isNaN(totalWarning2ndNum) ? 0 : totalWarning2ndNum?.toLocaleString() || 0}</td>
-          <td id="wme_area_event_cnt_td" className="text-right">{item[12]["monthlyEvt"]?.toLocaleString() || 0}</td>
-        </tr>
-        </tbody>
-      </table>
+      <div>
+        <div className={"printRow"}>
+          <h5 className={"title"}>{areaName} 전기위험 경보 발생 현황</h5>
+          <span className={"mb-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(종합)</span>
+          <table className="table table-sm table-bordered mb-0 printTable">
+            <colgroup>
+              <col width="25%"/>
+              <col width="25%"/>
+              <col width="25%"/>
+              <col width="25%"/>
+            </colgroup>
+            <thead>
+            <tr>
+              <th className="text-center wme_table_td_title">경보 종류</th>
+              <th className="text-center wme_table_td_title" colSpan="3">경보 구분</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>과전류 경보
+              </td>
+              <td className="wme_table_td_title text-center">주의(1차경보)</td>
+              <td className="wme_table_td_title text-center">경고(2차경보)</td>
+              <td className="wme_table_td_title text-center">계</td>
+            </tr>
+            <tr>
+              <td id="wme_area_oc_warning_cnt_td" className="text-right">{item[12]["oc1st"]?.toLocaleString() || 0}</td>
+              <td id="wme_area_oc_danger_cnt_td" className="text-right">{item[12]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td id="wme_area_oc_cnt_td" className="text-right">{item[12]["ocEvt"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>저항성누설전류(IGR)
+              </td>
+              <td className="wme_table_td_title text-center">주의(1차경보)</td>
+              <td className="wme_table_td_title text-center">경고(2차경보)</td>
+              <td className="wme_table_td_title text-center">계</td>
+            </tr>
+            <tr>
+              <td id="wme_area_igr_warning_cnt_td" className="text-right">{item[12]["igr1st"]?.toLocaleString() || 0}</td>
+              <td id="wme_area_igr_danger_cnt_td" className="text-right">{item[12]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td id="wme_area_igr_cnt_td" className="text-right">{item[12]["igrEvt"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>전체누설전류(IGO)
+              </td>
+              <td className="wme_table_td_title text-center">주의(1차경보)</td>
+              <td className="wme_table_td_title text-center">경고(2차경보)</td>
+              <td className="wme_table_td_title text-center">계</td>
+            </tr>
+            <tr>
+              <td id="wme_area_igo_warning_cnt_td" className="text-right">{item[12]["igo1st"]?.toLocaleString() || 0}</td>
+              <td id="wme_area_igo_danger_cnt_td" className="text-right">{item[12]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td id="wme_area_igo_cnt_td" className="text-right">{item[12]["igoEvt"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">계</td>
+              <td id="wme_area_warning_cnt_td" className="text-right">{isNaN(totalWarning1stNum) ? 0 : totalWarning1stNum?.toLocaleString() || 0}</td>
+              <td id="wme_area_danger_cnt_td" className="text-right">{isNaN(totalWarning2ndNum) ? 0 : totalWarning2ndNum?.toLocaleString() || 0}</td>
+              <td id="wme_area_event_cnt_td" className="text-right">{item[12]["monthlyEvt"]?.toLocaleString() || 0}</td>
+            </tr>
+            </tbody>
+          </table>
 
-      <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
-      <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_event_monthly_table">
-        <tbody>
-        <tr>
-          <td className="wme_table_td_title text-center" rowSpan="2" colSpan="2" style={{verticalAlign: "middle"}}>경보 종류</td>
-          <td className="wme_table_td_title text-center" colSpan="13">월별 경보 발생 건수</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center">1월</td>
-          <td className="wme_table_td_title text-center">2월</td>
-          <td className="wme_table_td_title text-center">3월</td>
-          <td className="wme_table_td_title text-center">4월</td>
-          <td className="wme_table_td_title text-center">5월</td>
-          <td className="wme_table_td_title text-center">6월</td>
-          <td className="wme_table_td_title text-center">7월</td>
-          <td className="wme_table_td_title text-center">8월</td>
-          <td className="wme_table_td_title text-center">9월</td>
-          <td className="wme_table_td_title text-center">10월</td>
-          <td className="wme_table_td_title text-center">11월</td>
-          <td className="wme_table_td_title text-center">12월</td>
-          <td className="wme_table_td_title text-center">계</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>과전류 경보</td>
-          <td className="wme_table_td_title text-center">주의(1차경보)</td>
-          <td className="text-right">{item[0]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[1]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[2]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[3]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[4]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[5]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[6]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[7]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[8]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[9]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[10]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[11]["oc1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[12]["oc1st"]?.toLocaleString() || 0}</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center">경고(2차경보)</td>
-          <td className="text-right">{item[0]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[1]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[2]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[3]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[4]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[5]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[6]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[7]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[8]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[9]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[10]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[11]["oc2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[12]["oc2nd"]?.toLocaleString() || 0}</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>전체누설전류(IGO)
-            경보
-          </td>
-          <td className="wme_table_td_title text-center">주의(1차경보)</td>
-          <td className="text-right">{item[0]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[1]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[2]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[3]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[4]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[5]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[6]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[7]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[8]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[9]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[10]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[11]["igo1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[12]["igo1st"]?.toLocaleString() || 0}</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center">경고(2차경보)</td>
-          <td className="text-right">{item[0]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[1]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[2]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[3]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[4]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[5]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[6]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[7]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[8]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[9]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[10]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[11]["igo2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[12]["igo2nd"]?.toLocaleString() || 0}</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>저항성누설전류(IGR) 경보
-          </td>
-          <td className="wme_table_td_title text-center">주의(1차경보)</td>
-          <td className="text-right">{item[0]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[1]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[2]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[3]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[4]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[5]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[6]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[7]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[8]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[9]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[10]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[11]["igr1st"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[12]["igr1st"]?.toLocaleString() || 0}</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center">경고(2차경보)</td>
-          <td className="text-right">{item[0]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[1]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[2]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[3]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[4]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[5]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[6]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[7]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[8]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[9]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[10]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[11]["igr2nd"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[12]["igr2nd"]?.toLocaleString() || 0}</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title text-center" colSpan="2">계</td>
-          <td className="text-right">{item[0]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[1]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[2]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[3]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[4]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[5]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[6]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[7]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[8]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[9]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[10]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[11]["monthlyEvt"]?.toLocaleString() || 0}</td>
-          <td className="text-right">{item[12]["monthlyEvt"]?.toLocaleString() || 0}</td>
-        </tr>
-        </tbody>
-      </table>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
+          <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_event_monthly_table">
+            <tbody>
+            <tr>
+              <td className="wme_table_td_title text-center" rowSpan="2" colSpan="2" style={{verticalAlign: "middle"}}>경보 종류</td>
+              <td className="wme_table_td_title text-center" colSpan="13">월별 경보 발생 건수</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">1월</td>
+              <td className="wme_table_td_title text-center">2월</td>
+              <td className="wme_table_td_title text-center">3월</td>
+              <td className="wme_table_td_title text-center">4월</td>
+              <td className="wme_table_td_title text-center">5월</td>
+              <td className="wme_table_td_title text-center">6월</td>
+              <td className="wme_table_td_title text-center">7월</td>
+              <td className="wme_table_td_title text-center">8월</td>
+              <td className="wme_table_td_title text-center">9월</td>
+              <td className="wme_table_td_title text-center">10월</td>
+              <td className="wme_table_td_title text-center">11월</td>
+              <td className="wme_table_td_title text-center">12월</td>
+              <td className="wme_table_td_title text-center">계</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>과전류 경보</td>
+              <td className="wme_table_td_title text-center">주의(1차경보)</td>
+              <td className="text-right">{item[0]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[1]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[2]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[3]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[4]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[5]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[6]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[7]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[8]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[9]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[10]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[11]["oc1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[12]["oc1st"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">경고(2차경보)</td>
+              <td className="text-right">{item[0]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[1]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[2]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[3]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[4]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[5]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[6]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[7]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[8]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[9]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[10]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[11]["oc2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[12]["oc2nd"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>저항성누설전류(IGR) 경보
+              </td>
+              <td className="wme_table_td_title text-center">주의(1차경보)</td>
+              <td className="text-right">{item[0]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[1]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[2]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[3]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[4]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[5]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[6]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[7]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[8]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[9]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[10]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[11]["igr1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[12]["igr1st"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">경고(2차경보)</td>
+              <td className="text-right">{item[0]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[1]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[2]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[3]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[4]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[5]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[6]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[7]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[8]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[9]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[10]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[11]["igr2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[12]["igr2nd"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>전체누설전류(IGO)
+                경보
+              </td>
+              <td className="wme_table_td_title text-center">주의(1차경보)</td>
+              <td className="text-right">{item[0]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[1]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[2]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[3]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[4]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[5]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[6]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[7]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[8]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[9]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[10]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[11]["igo1st"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[12]["igo1st"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center">경고(2차경보)</td>
+              <td className="text-right">{item[0]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[1]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[2]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[3]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[4]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[5]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[6]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[7]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[8]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[9]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[10]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[11]["igo2nd"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[12]["igo2nd"]?.toLocaleString() || 0}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title text-center" colSpan="2">계</td>
+              <td className="text-right">{item[0]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[1]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[2]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[3]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[4]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[5]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[6]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[7]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[8]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[9]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[10]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[11]["monthlyEvt"]?.toLocaleString() || 0}</td>
+              <td className="text-right">{item[12]["monthlyEvt"]?.toLocaleString() || 0}</td>
+            </tr>
+            </tbody>
+          </table>
 
-      <CRow style={{ height: "500px"}}>
-        {areaBarChart([ '과전류 1차 경보', '과전류 2차 경보' ], chartData, "paired")}
-      </CRow>
-
-      <CRow style={{ height: "500px"}}>
-        {areaBarChart(["전체누설전류 1차 경보", "전체누설전류 2차 경보", "저항누설전류 1차 경보", "저항누설전류 2차 경보" ], chartData2, "set3")}
-      </CRow>
+          <CRow style={{ height: "500px"}}>
+            {areaBarChart([ '과전류 1차 경보', '과전류 2차 경보' ], chartData, "paired")}
+          </CRow>
+        </div>
     </div>
   );
 }
-export const areaTotalChartStatComp = (item1, item2) => {
+export const areaTotalChartStatComp = (item1, item2, item3) => {
   let hourOcChartData = [];
   let hourIgoChartData = [];
   let hourIgrChartData = [];
@@ -368,9 +357,27 @@ export const areaTotalChartStatComp = (item1, item2) => {
     });
   });
 
+  let chartData = [];
+  item3.map((item, idx) => {
+    if( idx !== 12) {
+      chartData.push({
+        "label" : (idx + 1) + "월",
+        "전체누설전류 1차 경보" : item["igo1st"],
+        "전체누설전류 2차 경보" : item["igo2nd"],
+        "저항누설전류 1차 경보" : item["igr1st"],
+        "저항누설전류 2차 경보" : item["igr2nd"],
+      })
+    }
+  });
+
   return (
     <div>
       <div>
+        <div>
+          <CRow style={{ height: "500px"}}>
+            {areaBarChart(["전체누설전류 1차 경보", "전체누설전류 2차 경보", "저항누설전류 1차 경보", "저항누설전류 2차 경보" ], chartData, "set3")}
+          </CRow>
+        </div>
         <CRow>
           <CCol sm={"5"}>
             <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 과전류 발생현황</span>
@@ -421,8 +428,8 @@ export const areaTotalChartStatComp = (item1, item2) => {
               </tbody>
             </table>
           </CCol>
-          <CCol sm={"7"} style={{ height: "450px"}}>
-            {areaHourlDayStatChart(keys, hourOcChartData, "nivo")}
+          <CCol sm={"7"} style={{ height: "380px"}}>
+            {areaHourlDayStatChart(keys, hourOcChartData, "paired")}
           </CCol>
         </CRow>
 
@@ -482,8 +489,8 @@ export const areaTotalChartStatComp = (item1, item2) => {
               </tbody>
             </table>
           </CCol>
-          <CCol sm={"7"} style={{ height: "480px"}}>
-            {areaHourlDayStatChart(keys, dayOcChartData, "nivo")}
+          <CCol sm={"7"} style={{ height: "380px"}}>
+            {areaHourlDayStatChart(keys, dayOcChartData, "paired")}
           </CCol>
         </CRow>
 
@@ -537,7 +544,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
               </tbody>
             </table>
           </CCol>
-          <CCol sm={"7"} style={{ height: "450px"}}>
+          <CCol sm={"7"} style={{ height: "380px"}}>
             {areaHourlDayStatChart(keys, hourIgrChartData, 'nivo')}
           </CCol>
         </CRow>
@@ -598,7 +605,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
               </tbody>
             </table>
           </CCol>
-          <CCol sm={"7"} style={{ height: "480px"}}>
+          <CCol sm={"7"} style={{ height: "380px"}}>
             {areaHourlDayStatChart(keys, dayIgrChartData, "nivo")}
           </CCol>
         </CRow>
@@ -653,7 +660,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
               </tbody>
             </table>
           </CCol>
-          <CCol sm={"7"} style={{ height: "450px"}}>
+          <CCol sm={"7"} style={{ height: "380px"}}>
             {areaHourlDayStatChart(keys, hourIgoChartData, 'nivo')}
           </CCol>
         </CRow>
@@ -714,7 +721,7 @@ export const areaTotalChartStatComp = (item1, item2) => {
               </tbody>
             </table>
           </CCol>
-          <CCol sm={"7"} style={{ height: "480px"}}>
+          <CCol sm={"7"} style={{ height: "380px"}}>
             {areaHourlDayStatChart(keys, dayIgoChartData, "nivo")}
           </CCol>
         </CRow>
@@ -751,8 +758,8 @@ export const levelAreaStatComp = (areaName, item) => {
         <tr>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소시장명</td>
           <td colSpan="2" className="wme_table_td_title text-center">과전류경보</td>
-          <td colSpan="2" className="wme_table_td_title text-center">전체누설전류(IGO)</td>
           <td colSpan="2" className="wme_table_td_title text-center">저항성누설전류(IGR)</td>
+          <td colSpan="2" className="wme_table_td_title text-center">전체누설전류(IGO)</td>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소비전력</td>
         </tr>
         <tr>
@@ -769,10 +776,10 @@ export const levelAreaStatComp = (areaName, item) => {
               <td className="text-center">{item2['areaName']}</td>
               <td className="text-right">{item2['oc1st']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['oc2nd']?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2['igo1st']?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2['igo2nd']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['igr1st']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['igr2nd']?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2['igo1st']?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2['igo2nd']?.toLocaleString() || 0}</td>
               <td className="text-right">{Math.round(item2['snsrKwh'])?.toLocaleString() || 0}</td>
             </tr>
           ))
@@ -826,8 +833,8 @@ export const levelStoreStatComp = (areaName, item) => {
         <tr>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>상점명</td>
           <td colSpan="2" className="wme_table_td_title text-center">과전류경보</td>
-          <td colSpan="2" className="wme_table_td_title text-center">전체누설전류(IGO)</td>
           <td colSpan="2" className="wme_table_td_title text-center">저항성누설전류(IGR)</td>
+          <td colSpan="2" className="wme_table_td_title text-center">전체누설전류(IGO)</td>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>비고</td>
         </tr>
         <tr>
@@ -844,10 +851,10 @@ export const levelStoreStatComp = (areaName, item) => {
               <td className="text-center">{item2['strName']}</td>
               <td className="text-right">{item2['oc1st']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['oc2nd']?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2['igo1st']?.toLocaleString() || 0}</td>
-              <td className="text-right">{item2['igo2nd']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['igr1st']?.toLocaleString() || 0}</td>
               <td className="text-right">{item2['igr2nd']?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2['igo1st']?.toLocaleString() || 0}</td>
+              <td className="text-right">{item2['igo2nd']?.toLocaleString() || 0}</td>
               {/*<td className="text-right">{item2['disconn']?.toLocaleString() || 0}</td>*/}
               <td> </td>
             </tr>
@@ -864,7 +871,7 @@ export const areaKwhStatComp = (areaName, item) => {
   return (
     <div className={"mt-4"}>
       <CRow>
-        <CCol sm={"6 printCol"} style={{paddingTop: "7%"}}>
+        <CCol sm={"12"} style={{paddingTop: "7%"}}>
           <h5 className={"title"}>{areaName} 전력사용량 현황(종합)</h5>
           <span className={"mb-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전력사용량 현황(종합)</span>
           <table className="table table-sm table-bordered mb-0 printTable">
@@ -943,79 +950,7 @@ export const areaKwhStatYearComp = item => {
       </table>
       <CRow>
         <CCol md={"12"} style={{ height: "500px"}}>
-          <ResponsiveBar
-            data={chartData}
-            keys={[ "전력사용량" ]}
-            indexBy="label"
-            margin={{ top: 50, right: 30, bottom: 100, left: 60 }}
-            padding={0.2}
-            innerPadding={1}
-            groupMode="grouped"
-            valueScale={{ type: 'linear' }}
-            indexScale={{ type: 'band', round: true }}
-            valueFormat={{ format: '', enabled: false }}
-            colors={{ scheme: 'set3' }}
-            borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-            theme={{
-              axis: {
-                ticks: {
-                  text: {
-                    fontSize: 18,
-                    fill: "#333"
-                  }
-                }
-              },
-              legends: {
-                text: {
-                  fontSize: 16,
-                  fill: "#333"
-                }
-              },
-              labels: {
-                text: {
-                  fontSize: 18,
-                }
-              }
-            }}
-            axisTop={null}
-            axisRight={null}
-            axisLeft={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              legendPosition: 'middle',
-              legendOffset: -40
-            }}
-            borderRadius={4}
-            borderWidth={1}
-            labelSkipWidth={12}
-            labelSkipHeight={12}
-            labelTextColor="#333"
-            legends={[
-              {
-                dataFrom: 'keys',
-                anchor: 'bottom',
-                direction: 'row',
-                justify: false,
-                translateX: 10,
-                translateY: 85,
-                itemsSpacing: 21,
-                itemWidth: 130,
-                itemHeight: 61,
-                itemDirection: 'left-to-right',
-                itemOpacity: 0.85,
-                symbolSize: 20,
-                effects: [
-                  {
-                    on: 'hover',
-                    style: {
-                      itemOpacity: 1
-                    }
-                  }
-                ]
-              }
-            ]}
-          />
+          {areaBarChart(["전력사용량"], chartData, "set3")}
         </CCol>
       </CRow>
     </div>
@@ -1087,7 +1022,7 @@ export const strKwhStatComp = (areaName, item, item2, item3) => {
             </tbody>
           </table>
         </CCol>
-        <CCol sm={"7"} style={{ height: "430px"}}>
+        <CCol sm={"7"} style={{ height: "380px"}}>
           {areaHourlDayStatChart(["사용량(kWh)"], hourKwhData, "set3")}
         </CCol>
       </CRow>
@@ -1140,7 +1075,7 @@ export const strKwhStatComp = (areaName, item, item2, item3) => {
             </tbody>
           </table>
         </CCol>
-        <CCol sm={"7"} style={{ height: "480px"}}>
+        <CCol sm={"7"} style={{ height: "380px"}}>
           {areaHourlDayStatChart(["사용량(kWh)"], dayKwhData, "set3")}
         </CCol>
       </CRow>
@@ -1273,7 +1208,14 @@ export const storeYearWarningComp = (item) => {
   });
   return (
     <div className={"mt-5"}>
-      <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
+      <div className={"d-flex justify-content-between"}>
+        <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
+        <div className={"d-flex align-items-center"}>
+          <span className={"subTitleType"} style={{fontSize: "0.8rem", display: "block"}}></span>
+        </div>
+      </div>
+
+      {/*<span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(상세)</span>*/}
       <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_event_monthly_table">
         <tbody>
         <tr>
@@ -1651,7 +1593,7 @@ const areaBarChart = (key, data, color) => (
     groupMode="grouped"
     valueScale={{ type: 'linear' }}
     indexScale={{ type: 'band', round: true }}
-    valueFormat={{ format: '', enabled: false }}
+    valueFormat=" >-,"
     colors={{ scheme: color }}
     enableLabel={false}
     theme={{
@@ -1716,13 +1658,13 @@ const areaHourlDayStatChart = (key, data, color) => (
     data={data}
     keys={key}
     indexBy="label"
-    margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+    margin={{ top: 50, right: 140, bottom: 50, left: 60 }}
     padding={0.2}
     innerPadding={1}
     groupMode="grouped"
     valueScale={{ type: 'linear' }}
     indexScale={{ type: 'band', round: true }}
-    valueFormat={{ format: '', enabled: false }}
+    valueFormat=" >-,"
     colors={{ scheme: color }}
     borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
     axisTop={null}
@@ -1731,8 +1673,8 @@ const areaHourlDayStatChart = (key, data, color) => (
       tickSize: 5,
       tickPadding: 5,
       tickRotation: 0,
-      legendPosition: 'middle',
-      legendOffset: 32
+      // legendPosition: 'middle',
+      // legendOffset: 32
     }}
     axisLeft={{
       tickSize: 5,
@@ -1756,14 +1698,15 @@ const areaHourlDayStatChart = (key, data, color) => (
           fill: "#333"
         }
       },
-      labels: {
-        text: {
-          fontSize: 20,
-        }
-      }
+      // labels: {
+      //   text: {
+      //     fontSize: 20,
+      //   }
+      // }
     }}
     borderRadius={4}
     borderWidth={1}
+    enableLabel={false}
     labelSkipWidth={12}
     labelSkipHeight={12}
     labelTextColor="#333"

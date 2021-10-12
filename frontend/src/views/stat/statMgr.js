@@ -64,7 +64,7 @@ const StatMgr = () => {
 
   useEffect(async () => {
     await handleClickBtnGroup("areaCode");
-    handleClickSearchStat();
+  //   handleClickSearchStat();
   }, []);
 
   const setHookReset = () => {
@@ -95,6 +95,7 @@ const StatMgr = () => {
   };
 
   const handleClickBtnGroup = type => {
+    setHookReset();
     if(type !== "store") {
       document.getElementById("strSelect").style.display = "none";
       document.getElementById("strSelect").value = "";
@@ -171,7 +172,7 @@ const StatMgr = () => {
 
         if(typeValue === "areaCode") {
           setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"]));
-          setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
+          setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
 
           // setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
           if(resp.data["levelAreaStat"].length > 0)
@@ -311,7 +312,11 @@ const StatMgr = () => {
               </CRow>
             }
 
-            {areaState}
+            {
+              typeValue !== "store" ?
+                areaState :
+                areaState
+            }
             {
               typeValue !== "store" ?
                 areaTotalWarning :
@@ -352,13 +357,13 @@ const StatMgr = () => {
       </CCol>
       <PageStrTableModalWidget onStrModal={onStrModal} setOnStrModal={setOnStrModal} clickStrRow={clickStrRow} initStrCode={initStrCode} areaId={"areaSelect"} />
 
-      {/*{printLoading &&*/}
+      {printLoading && typeValue !== "store" &&
 
-      {/*         <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat} areaHourlyStat2={areaHourlyStat2}*/}
-      {/*                           levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}*/}
-      {/*                           areaKwhHourlyStat={areaKwhHourlyStat} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}*/}
-      {/*                           endDate={formatDate(endDate)} />*/}
-      {/*}*/}
+               <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
+                                 levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}
+                                 areaKwhHourlyStat={areaKwhHourlyStat} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}
+                                 endDate={formatDate(endDate)} />
+      }
     </>
   )
 };

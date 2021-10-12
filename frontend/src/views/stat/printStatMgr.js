@@ -19,24 +19,27 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
         <div className={"d-flex justify-content-between"}>
           <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
           <div className={"p-5"}>
-            <h3 style={{fontSize: "30px"}}>
+            <h3 style={{fontSize: "40px"}}>
               {props.type}
             </h3>
           </div>
         </div>
         <div className={"d-flex justify-content-center"} style={{marginTop: "10rem"}}>
-          <h1 style={{fontSize: "80px", textDecoration: "underline", textUnderlinePosition: "under"}}>전기화재 예방 시스템 분석 현황</h1>
+          <h1 style={{fontSize: "50px"}}>대전 스마트시티 챌리지 사업(20~22)</h1>
+        </div>
+        <div className={"d-flex justify-content-center"} style={{marginTop: "5rem"}}>
+          <h1 style={{fontSize: "50px"}}>&lt;전기화재 예방 서비스&gt;</h1>
         </div>
 
         <div className={"d-flex justify-content-center"} style={{marginTop: "10rem"}}>
-          <h3 style={{fontSize: "60px"}}>{props.startDate} ~ {props.endDate}</h3>
+          <h1 className={"text-center"}style={{fontSize: "80px", textDecoration: "underline", textUnderlinePosition: "under"}}>
+            {props.areaTitle} [<span style={{color : "#d24242"}}>{props.startDate}</span>]<br/><br/>
+            관제서비스 운영보고서
+          </h1>
         </div>
 
-        <div className={"d-flex justify-content-center"} style={{marginTop: "40rem"}}>
-          <h2 style={{fontSize: "70px", fontWeight: "900"}}>{props.areaTitle}</h2>
-        </div>
-        <div className={"d-flex justify-content-end"} style={{height: "800px"}}>
-          <h3 className={"d-flex align-items-end align-content-end mr-5"} style={{fontSize: "40px"}}>{new Date().toLocaleDateString()}</h3>
+        <div className={"d-flex justify-content-center"} style={{marginTop: "500px"}}>
+          <h2 style={{fontSize: "50px", fontWeight: "900"}}>㈜에프에스</h2>
         </div>
       </div>
     }
@@ -89,154 +92,154 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           </div>
         </div>
 
-        {/* IGR, 내 시장별 현황 */}
-        <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
-            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
-            <div className={"p-5"}>
-              <h3 style={{fontSize: "30px"}}>
-                {props.type}
-              </h3>
-            </div>
-          </div>
-          <div className={"pl-4 pr-4 pt-4"}>
-            {props.areaHourlyStat2}
-            {
-              (props.areaTitle !== "대전중앙시장") &&
-              <div>
-                {props.levelAreaStat}
-              </div>
-            }
-          </div>
+        {/*/!* IGR, 내 시장별 현황 *!/*/}
+        {/*<div className={"printRow"}>*/}
+        {/*  <div className={"d-flex justify-content-between"}>*/}
+        {/*    <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />*/}
+        {/*    <div className={"p-5"}>*/}
+        {/*      <h3 style={{fontSize: "30px"}}>*/}
+        {/*        {props.type}*/}
+        {/*      </h3>*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*  <div className={"pl-4 pr-4 pt-4"}>*/}
+        {/*    {props.areaHourlyStat2}*/}
+        {/*    {*/}
+        {/*      (props.areaTitle !== "대전중앙시장") &&*/}
+        {/*      <div>*/}
+        {/*        {props.levelAreaStat}*/}
+        {/*      </div>*/}
+        {/*    }*/}
+        {/*  </div>*/}
 
-          <div className="position-absolute-ct">
-            <h3 className="m-0" style={{fontSize: "30px"}}>- 3 -</h3>
-          </div>
+        {/*  <div className="position-absolute-ct">*/}
+        {/*    <h3 className="m-0" style={{fontSize: "30px"}}>- 3 -</h3>*/}
+        {/*  </div>*/}
 
-          <div className="position-absolute-rb">
-            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-          </div>
+        {/*  <div className="position-absolute-rb">*/}
+        {/*    <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />*/}
+        {/*  </div>*/}
 
-        </div>
+        {/*</div>*/}
 
-        {
-          props.areaTitle === "대전중앙시장" &&
-          <div className={"printRow"}>
-            <div className={"d-flex justify-content-between"}>
-              <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
-              <div className={"p-5"}>
-                <h3 style={{fontSize: "30px"}}>
-                  {props.type}
-                </h3>
-              </div>
-            </div>
+        {/*{*/}
+        {/*  props.areaTitle === "대전중앙시장" &&*/}
+        {/*  <div className={"printRow"}>*/}
+        {/*    <div className={"d-flex justify-content-between"}>*/}
+        {/*      <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />*/}
+        {/*      <div className={"p-5"}>*/}
+        {/*        <h3 style={{fontSize: "30px"}}>*/}
+        {/*          {props.type}*/}
+        {/*        </h3>*/}
+        {/*      </div>*/}
+        {/*    </div>*/}
 
-            <CRow>
-              <div className={"pl-4 pr-4 pt-4"}>
-                {props.levelAreaStat}
-              </div>
-              <div className="position-absolute-ct">
-                <h3 className="m-0" style={{fontSize: "30px"}}>- 4 -</h3>
-              </div>
+        {/*    <CRow>*/}
+        {/*      <div className={"pl-4 pr-4 pt-4"}>*/}
+        {/*        {props.levelAreaStat}*/}
+        {/*      </div>*/}
+        {/*      <div className="position-absolute-ct">*/}
+        {/*        <h3 className="m-0" style={{fontSize: "30px"}}>- 4 -</h3>*/}
+        {/*      </div>*/}
 
-              <div className="position-absolute-rb">
-                <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-              </div>
-            </CRow>
-          </div>
-        }
+        {/*      <div className="position-absolute-rb">*/}
+        {/*        <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />*/}
+        {/*      </div>*/}
+        {/*    </CRow>*/}
+        {/*  </div>*/}
+        {/*}*/}
 
-        {/* 내 상점별 현황 */}
-        <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
-            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
-            <div className={"p-5"}>
-              <h3 style={{fontSize: "30px"}}>
-                {props.type}
-              </h3>
-            </div>
-          </div>
-          <div className={"pl-4 pr-4 pt-4"}>
-            {props.levelStrStat}
-          </div>
+        {/*/!* 내 상점별 현황 *!/*/}
+        {/*<div className={"printRow"}>*/}
+        {/*  <div className={"d-flex justify-content-between"}>*/}
+        {/*    <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />*/}
+        {/*    <div className={"p-5"}>*/}
+        {/*      <h3 style={{fontSize: "30px"}}>*/}
+        {/*        {props.type}*/}
+        {/*      </h3>*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*  <div className={"pl-4 pr-4 pt-4"}>*/}
+        {/*    {props.levelStrStat}*/}
+        {/*  </div>*/}
 
-          <CRow>
-          <div className="position-absolute-ct">
-            {
-              props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 5 -</h3>
-            }
-            {
-              props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 4 -</h3>
-            }
-          </div>
+        {/*  <CRow>*/}
+        {/*  <div className="position-absolute-ct">*/}
+        {/*    {*/}
+        {/*      props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 5 -</h3>*/}
+        {/*    }*/}
+        {/*    {*/}
+        {/*      props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 4 -</h3>*/}
+        {/*    }*/}
+        {/*  </div>*/}
 
-          <div className="position-absolute-rb">
-            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-          </div>
-          </CRow>
-        </div>
+        {/*  <div className="position-absolute-rb">*/}
+        {/*    <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />*/}
+        {/*  </div>*/}
+        {/*  </CRow>*/}
+        {/*</div>*/}
 
-        <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
-            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
-            <div className={"p-5"}>
-              <h3 style={{fontSize: "30px"}}>
-                {props.type}
-              </h3>
-            </div>
-          </div>
+        {/*<div className={"printRow"}>*/}
+        {/*  <div className={"d-flex justify-content-between"}>*/}
+        {/*    <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />*/}
+        {/*    <div className={"p-5"}>*/}
+        {/*      <h3 style={{fontSize: "30px"}}>*/}
+        {/*        {props.type}*/}
+        {/*      </h3>*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
 
-          <div className={"pl-4 pr-4 pt-4"}>
-            {props.areaKwhStat}
-            {props.areaKwhYearStat}
-            {props.areaKwhHourlyStat}
-          </div>
+        {/*  <div className={"pl-4 pr-4 pt-4"}>*/}
+        {/*    {props.areaKwhStat}*/}
+        {/*    {props.areaKwhYearStat}*/}
+        {/*    {props.areaKwhHourlyStat}*/}
+        {/*  </div>*/}
 
-          <CRow>
-            <div className="position-absolute-ct">
-              {
-                props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 6 -</h3>
-              }
-              {
-                props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 5 -</h3>
-              }
-            </div>
+        {/*  <CRow>*/}
+        {/*    <div className="position-absolute-ct">*/}
+        {/*      {*/}
+        {/*        props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 6 -</h3>*/}
+        {/*      }*/}
+        {/*      {*/}
+        {/*        props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 5 -</h3>*/}
+        {/*      }*/}
+        {/*    </div>*/}
 
-            <div className="position-absolute-rb">
-              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-            </div>
-          </CRow>
-        </div>
+        {/*    <div className="position-absolute-rb">*/}
+        {/*      <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />*/}
+        {/*    </div>*/}
+        {/*  </CRow>*/}
+        {/*</div>*/}
 
-        <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
-            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
-            <div className={"p-5"}>
-              <h3 style={{fontSize: "30px"}}>
-                {props.type}
-              </h3>
-            </div>
-          </div>
+        {/*<div className={"printRow"}>*/}
+        {/*  <div className={"d-flex justify-content-between"}>*/}
+        {/*    <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />*/}
+        {/*    <div className={"p-5"}>*/}
+        {/*      <h3 style={{fontSize: "30px"}}>*/}
+        {/*        {props.type}*/}
+        {/*      </h3>*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
 
-          <div className={"pl-4 pr-4 pt-4"} style={{marginBottom: "50%"}}>
-            {props.strKwhStat}
-          </div>
+        {/*  <div className={"pl-4 pr-4 pt-4"} style={{marginBottom: "50%"}}>*/}
+        {/*    {props.strKwhStat}*/}
+        {/*  </div>*/}
 
-          <CRow>
-            <div className="position-absolute-ct">
-              {
-                props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 7 -</h3>
-              }
-              {
-                props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 6 -</h3>
-              }
-            </div>
+        {/*  <CRow>*/}
+        {/*    <div className="position-absolute-ct">*/}
+        {/*      {*/}
+        {/*        props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 7 -</h3>*/}
+        {/*      }*/}
+        {/*      {*/}
+        {/*        props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 6 -</h3>*/}
+        {/*      }*/}
+        {/*    </div>*/}
 
-            <div className="position-absolute-rb">
-              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-            </div>
-          </CRow>
-        </div>
+        {/*    <div className="position-absolute-rb">*/}
+        {/*      <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />*/}
+        {/*    </div>*/}
+        {/*  </CRow>*/}
+        {/*</div>*/}
       </CCardBody>
     </CCard>
   </div>
