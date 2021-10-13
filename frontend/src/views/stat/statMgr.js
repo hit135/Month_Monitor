@@ -37,13 +37,19 @@ const StatMgr = () => {
   let strName = "";
   let snsrCnt = 0;
   const [onStrModal, setOnStrModal] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [totalLoading, setTotalLoading] = useState(true);
   const [printLoading, setPrintLoading] = useState(false);
   const [typeValue, setTypeValue] = useState("areaCode");
   const [strCode, setStrCode] = useState("");
   const [startDate, setStartDate] = useState(new Date('2021-01-01'));
   const [endDate, setEndDate] = useState(new Date());
+  const [dateType, setDateType] = useState("년");
+  const [yearDate, setYearDate] = useState(new Date());
+  const [monthDate, setMonthDate] = useState(new Date());
+  const [halfDate, setHalfDate] = useState(new Date());
+  const [halfSelect, setHalfSelect] = useState("상반기");
+  const [quarterDate, setQuarterDate] = useState(new Date());
   const [topBtnValue, setTopBtnValue] = useState("시장보고");
   const [guCode, setGuCode] = useState("30110");
   const [areaName, setAreaName] = useState("");
@@ -90,7 +96,8 @@ const StatMgr = () => {
   }
 
   const clickStrRow = e => {
-    document.getElementById("strSelect").value = e.strCode;
+    console.log(e);
+    document.getElementById("strSelect").value = e.strName;
     setStrCode(e.strCode);
     setAreaCode(e.areaCode);
   };
@@ -132,6 +139,44 @@ const StatMgr = () => {
     else setAreaCode(e.target.value);
   }
 
+  const handleChangeDateGroup = e => {
+    let type = e.target.value;
+    setDateType(type);
+    let yearElement = document.getElementById("year");
+    let monthElement = document.getElementById("month");
+    let halfElement = document.getElementById("halfItem");
+    let quarterElement = document.getElementById("quarter");
+    if(type === "년") {
+      yearElement.classList.add("display-inline");
+      yearElement.classList.remove("display-none");
+    } else {
+      yearElement.classList.add("display-none");
+      yearElement.classList.remove("display-inline");
+    }
+    if(type === "월") {
+      monthElement.classList.add("display-inline");
+      monthElement.classList.remove("display-none");
+    } else {
+      monthElement.classList.add("display-none");
+      monthElement.classList.remove("display-inline");
+    }
+    if(type === "반기") {
+      halfElement.classList.add("display-justify");
+      halfElement.classList.remove("display-none");
+    } else {
+      halfElement.classList.add("display-none");
+      halfElement.classList.remove("display-justify");
+    }
+    if(type === "분기") {
+      quarterElement.classList.add("display-justify");
+      quarterElement.classList.remove("display-none");
+    } else {
+      quarterElement.classList.add("display-none");
+      quarterElement.classList.remove("display-justify");
+    }
+  }
+
+
   const handleClickSearchStat = async () => {
     let dayWeekData = [];
     setHookReset();
@@ -142,7 +187,7 @@ const StatMgr = () => {
       return false;
     }
 
-    await getStatInfo(typeValue, guCode, areaCode, startDate, endDate, strCode).then(resp => {
+    await getStatInfo(typeValue, guCode, areaCode, strCode,  startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
       if (resp.data['result'] === "success") {
         // 상점일 경우
         if(typeValue === "store") {
@@ -200,7 +245,7 @@ const StatMgr = () => {
     });
 
     if(typeValue !== "store") {
-      await getStatInfoList(typeValue, guCode, areaCode, startDate, endDate).then(resp => {
+      await getStatInfoList(typeValue, guCode, areaCode, dateType, startDate, endDate, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
         if (resp.data['result'] === "success") {
           if(resp.data["areaKwhStat"] !== null)
             setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
@@ -284,10 +329,35 @@ const StatMgr = () => {
                   </CSelect>
                   <input className="form-control" id={"strSelect"} type={"text"} onClick={e => setOnStrModal(true)} readOnly={true}/>
                 </div>
+                <div className={"d-flex justify-content-center mb-0 align-items-center mt-1 mr-2"}>
+                  <CSelect style={{ width: "185px" }} id={"selectGroup"} onChange={handleChangeDateGroup}>
+                    <option>년</option>
+                    <option>월</option>
+                    <option>반기</option>
+                    <option>분기</option>
+                  </CSelect>
+                </div>
+                <div id={"year"}>
+                  <DatePicker locale={ko} className={"form-control mt-1"}  selected={yearDate} dateFormat="yyyy" onChange={(date) => {
+                    setYearDate(date); console.log(date);
+                  }} maxDate={new Date()} showYearPicker/>
+                </div>
+                <div id={"month"} className={"display-none"}>
+                  <DatePicker locale={ko} className={"form-control mt-1"} selected={monthDate} dateFormat="yyyy-MM" onChange={(date) => setMonthDate(date)} maxDate={new Date()} showMonthYearPicker/>
+                </div>
+                <div className={"d-flex justify-content-center mb-0 align-items-center mt-1 mr-2 display-none"} id={"halfItem"}>
+                  <DatePicker locale={ko} className={"form-control"} selected={halfDate} dateFormat="yyyy" onChange={(date) => setHalfDate(date)} maxDate={new Date()} showYearPicker/>
+                  <CSelect style={{ width: "130px" }} id={"halfSelect"} onChange={(e) => setHalfSelect(e.target.value)}>
+                    <option>상반기</option>
+                    <option>하반기</option>
+                  </CSelect>
+                </div>
+                <div id={"quarter"} className={"display-none"}>
+                  <DatePicker locale={ko} className={"form-control mt-1"} selected={quarterDate} dateFormat="yyyy, QQQ" onChange={(date) => {setQuarterDate(date)}} maxDate={new Date()} showQuarterYearPicker/>
+                </div>
 
-                <DatePicker locale={ko} className={"form-control mt-1"} selected={startDate} dateFormat="yyyy-MM-dd" onChange={(date) => setStartDate(date)}/>
-                <span className={'ml-1 mt-2'}>~</span>
-                <DatePicker className={'ml-1 form-control mt-1'} locale={ko} selected={endDate} dateFormat="yyyy-MM-dd" onChange={(date) => setEndDate(date)}/>
+                {/*<span className={'ml-1 mt-2'}>~</span>*/}
+                {/*<DatePicker className={'ml-1 form-control mt-1'} locale={ko} selected={endDate} dateFormat="yyyy-MM-dd" onChange={(date) => setEndDate(date)}/>*/}
                 <CButton color="info" className={"ml-2"} onClick={handleClickSearchStat}>
                   검색
                 </CButton>
