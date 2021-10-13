@@ -307,7 +307,6 @@
         on_obj = $('.center-left-sensor-list p')[0];
 
       $(on_obj).addClass('on');
-
       $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
 
       if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode')) 
@@ -378,9 +377,7 @@
                   fn_toggleCenterCont();
                 }
             );
-          }
-        }
-      }
+      }}}
 
       fn_loadMainAreaList();
     });
@@ -448,8 +445,7 @@
         $.post($('#contextRoot').val() + '/mng/mainAreaLogChartAjax', { areacode:i }, function(data) {
           fn_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
         });
-      }
-    }
+    }}
   }
 
   function fn_setChart(title, target, data, colors) {
@@ -658,8 +654,7 @@
               , anchor: new naver.maps.Point(13, 35)
           }
         }));
-      }
-    }
+    }}
   }
 
   function movePageAdm(type) {

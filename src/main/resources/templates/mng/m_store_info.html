@@ -130,14 +130,16 @@
     function fn_initStoreInfo() {
       $.template(
         'store-info-sensor',
-        '<p class="store-info-check {{html CHECK}}">' +
-          '<span class="btn-check-start" data-snsrid="{{html SNSRID}}">점검하기</span>' +
-          '<span class="btn-check-end" data-snsrid="{{html SNSRID}}">점검중...</span>' +
-        '</p>' +
-        '<p class="btn-datalog {{html STATE}}" data-snsrid="{{html SNSRID}}" data-checktype="{{html STATE}}">' +
-          '{{html SNSRNICK}}<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span>' +
-          '<br/>{{html SNSRID}}' +
-        '</p>'
+        '<div class="form-inline">' +
+          '<p class="mb-0 mr-1"><input type="radio" name="snsr-radio-btn" value="{{html SNSRID}}" /></p>' +
+          '<p class="store-info-check {{html CHECK}}">' +
+            '<span class="btn-check-start" data-snsrid="{{html SNSRID}}">점검</span>' +
+            '<span class="btn-check-end" data-snsrid="{{html SNSRID}}">점검중</span>' +
+          '</p>' +
+          '<p class="nobtn-datalog {{html STATE}}" data-snsrid="{{html SNSRID}}" data-checktype="{{html STATE}}" onclick="fn_checkNobtnDatalog(\'${SNSRID}\')">' +
+            '{{html SNSRNICK}} ({{html SNSRIDTRIM}})' +
+          '</p>' +
+        '</div>'
       );
 
       $.template(
@@ -187,6 +189,10 @@
       fn_getDataLog();
       fn_getLogWeekStat();
       fn_getStoreInfoSensorList();
+    }
+
+    function fn_checkNobtnDatalog(snsrId) {
+      $("input:radio[name='snsr-radio-btn']:input[value='" + snsrId + "']").prop('checked', true);
     }
 
     function fn_refreshStoreInfo() {
@@ -376,13 +382,13 @@
               danger_bar.css('padding-top', 70 * temp[i].DANGER / dmax + 'px');
               danger_bar.text(temp[i].DANGER);
               danger_bar.attr('data-regdate', temp[i].SDATE);
-              danger_bar.attr('data-checktype','danger');
+              danger_bar.attr('data-checktype', 'danger');
 
               let warn_bar = $('.store-log-week-stat td.w' + temp[i].WEEK + ' .warn-' + a);
               warn_bar.css('padding-top', 70 * temp[i].WARN / wmax + 'px');
               warn_bar.text(temp[i].WARN);
               warn_bar.attr('data-regdate', temp[i].SDATE);
-              warn_bar.attr('data-checktype','warn');
+              warn_bar.attr('data-checktype', 'warn');
 
               if (temp[i].WEEK == 7) 
                 a = 'this';
@@ -435,6 +441,8 @@
 
               $('.store-info-sensor-list').append($.tmpl('store-info-sensor', d[i]));
             }
+
+            $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
           }
       );
     }

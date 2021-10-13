@@ -86,6 +86,9 @@
 
       $('.store-log #regdt').val(regdate);
 
+      $('#check-danger').prop('checked', true);
+      $('#check-warn').prop('checked', true);
+
       fn_getDataLogFiltered();
       fn_getStoreLogSensorList();
     }
@@ -161,8 +164,10 @@
                 if ($('.store-log #check-warn:checked').length < 1) {
                   $('.store-log #check-warn').click();
                 }
-              } else if ($('.store-log #check-total:checked').length < 1) {
-                $('.store-log #check-total').click();
+              } else if (checktype == 'total') {
+                if ($('.store-log #check-total:checked').length < 1) {
+                  $('.store-log #check-total').click();
+                }
               }
 
               fn_showDataLogFiltered();

@@ -77,6 +77,7 @@
 .center-cont-page { border:1px solid #2b559b; min-height:650px; }
 .center-cont-page .btn-chart { cursor:pointer; }
 .center-cont-page .btn-datalog { cursor:pointer; }
+.center-cont-page .nobtn-datalog { cursor:pointer; }
 
 .store-info .store-meta tr { border-bottom:1px solid #7c91df; margin:0; }
 .store-info .store-meta th { background:#7c91df; width:60px; padding:0; line-height:35px; text-align:center; color:#fff; font-size:12px; font-weight:bold; border-top:1px solid #fff; }
@@ -98,6 +99,8 @@
 .store-info-sensor-list p.btn-datalog { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; line-height:16px; }
 .store-info-sensor-list p.btn-datalog span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
 .store-info-sensor-list p.btn-datalog span.cnt2 { display:none; }
+.store-info-sensor-list p.nobtn-datalog { position:relative; padding:5px 10px 0px 5px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:0px; line-height:16px; }
+.store-info-sensor-list p.nobtn-datalog span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
 .store-info-sensor-list p.danger { color:#ff2f44; }
 .store-info-sensor-list p.warn { color:#efaf77; }
 .store-info-sensor-list p.danger span { color:#fff; background:#f88; }
@@ -105,7 +108,7 @@
 .store-info-sensor-list p.warn span { color:#fff; background:#fd8; }
 .store-info-sensor-list p.discon span { color:#fff; background:#999; }
 .store-info-sensor-list p.store-info-check { margin-bottom:0; line-height:20px; }
-.store-info-sensor-list p.store-info-check span { display:inline-block; width:70px; font-weight:bold; font-size:11px; color:#fff; border-radius:10px; text-align:center; cursor:pointer; }
+.store-info-sensor-list p.store-info-check span { display:inline-block; width:50px; font-weight:bold; font-size:11px; color:#fff; border-radius:10px; text-align:center; cursor:pointer; }
 .store-info-sensor-list p.store-info-check .btn-check-start { background:#999; }
 .store-info-sensor-list p.store-info-check .btn-check-end { background:#47b73a; display:none; }
 .store-info-sensor-list p.store-info-check.CHECKING .btn-check-start { display:none; }
