@@ -187,12 +187,12 @@
           FROM ${tblSensorData} A
                 LEFT JOIN ${tblSensorLog} B
                     ON A.SNSRID = B.SNSRID
-                    AND <![CDATA[ A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED) - 5 AND B.DSEQ + 5 ]]>
+                    AND A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED) - 5 AND B.DSEQ + 5
                 LEFT JOIN F_SENSOR_INFO C
                     ON A.SNSRID = C.SNSRID
          WHERE 1 = 1
            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(regdt)">
-           AND ( A.SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND CONCAT(#{regdt}, ' 23:59:59') )
+           AND <![CDATA[( A.SNSRRCVTIME <= CONCAT(#{regdt}, ' 23:59:59') )]]>
            </if>
            <if test="@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(regdt)">
            AND ( A.SNSRRCVTIME BETWEEN CONCAT(DATE(NOW()), ' 00:00:00') AND NOW() )
@@ -200,6 +200,7 @@
            AND C.AREACODE = #{areacode}
            AND C.STRCODE = #{strcode}
          ORDER BY A.SNSRRCVTIME DESC
+         LIMIT 1000
     </select>
 
     <select id="SELECT_SENSOR_USEKWH_MONTH" parameterType="map" resultType="map">

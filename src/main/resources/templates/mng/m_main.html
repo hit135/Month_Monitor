@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 <th:block th:replace="mng/layout/m_head"></th:block>
-<link rel="stylesheet" th:href="@{/fs/css/custom.css}">
+<link rel="stylesheet" th:href="@{/fs/css/custom.css}" />
 </head>
 
 <body class="mod-bg-1 mod-nav-link">
-<div class="top"><th:block th:replace="mng/layout/m_top"></th:block></div>
-
+<div class="top">
+  <th:block th:replace="mng/layout/m_top"></th:block>
+</div>
 <div class="row">
   <div class="left col-md-2 mt-md-n7 col-12 mt-0"><th:block th:replace="mng/layout/m_left"></th:block></div>
   <div class="center col-md-8 col-12">
@@ -67,40 +68,31 @@
             <ul id="js-nav-menu" class="nav-menu">
               <li>
                 <a href="javascript:movePageAdm('area')">
-                  <i class="fal fa-home"></i>
-                  <span class="nav-link-text" data-i18n="nav.application_intel">구역관리</span>
+                  <i class="fal fa-home"></i><span class="nav-link-text" data-i18n="nav.application_intel">구역관리</span>
                 </a>
                 <a href="javascript:movePageAdm('mem')">
-                  <i class="fal fa-user"></i>
-                  <span class="nav-link-text" data-i18n="nav.application_intel">회원관리</span>
+                  <i class="fal fa-user"></i><span class="nav-link-text" data-i18n="nav.application_intel">회원관리</span>
                 </a>
                 <a href="javascript:movePageAdm('str')">
-                  <i class="fal fa-store"></i>
-                  <span class="nav-link-text" data-i18n="nav.application_intel">상점관리</span>
+                  <i class="fal fa-store"></i><span class="nav-link-text" data-i18n="nav.application_intel">상점관리</span>
                 </a>
                 <a href="javascript:movePageAdm('snsr')">
-                  <i class="fal fa-siren"></i>
-                  <span class="nav-link-text" data-i18n="nav.application_intel">센서관리</span>
+                  <i class="fal fa-siren"></i><span class="nav-link-text" data-i18n="nav.application_intel">센서관리</span>
                 </a>
                 <a href="javascript:movePageAdm('inspr')">
-                  <i class="fal fa-user"></i>
-                  <span class="nav-link-text" data-i18n="nav.application_intel">점검자관리</span>
+                  <i class="fal fa-user"></i><span class="nav-link-text" data-i18n="nav.application_intel">점검자관리</span>
                 </a>
                 <a href="javascript:movePageAdm('insp')">
-                  <i class="fal fa-list"></i>
-                  <span class="nav-link-text" data-i18n="nav.application_intel">점검관리</span>
+                  <i class="fal fa-list"></i><span class="nav-link-text" data-i18n="nav.application_intel">점검관리</span>
                 </a>
                 <a href="javascript:movePageAdm('push')">
-                  <i class="fal fa-bell"></i>
-                  <span class="nav-link-text" data-i18n="nav.application_intel">발송이력</span>
+                  <i class="fal fa-bell"></i><span class="nav-link-text" data-i18n="nav.application_intel">발송이력</span>
                 </a>
                 <a href="javascript:movePageAdm('stat')">
-                  <i class="fal fa-chart-pie"></i>
-                  <span class="nav-link-text" data-i18n="nav.application_intel">보고서</span>
+                  <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">보고서</span>
                 </a>
                 <a href="javascript:void(0);" onclick="fn_logout()">
-                  <i class="fal fa-chart-pie"></i>
-                  <span class="nav-link-text" data-i18n="nav.application_intel">로그아웃</span>
+                  <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">로그아웃</span>
                 </a>
               </li>
             </ul>
