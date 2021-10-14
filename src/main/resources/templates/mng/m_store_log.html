@@ -105,16 +105,13 @@
 
       $('.store-log #regdt').val(regdate);
 
-      /*
       if ($("#prm_checktype").val() == '') {
         $('#check-danger').prop('checked', true);
         $('#check-warn').prop('checked', true);
       } else {
         $('#check-' + $("#prm_checktype").val()).prop('checked', true);
       }
-      */
 
-      $('#check-total').prop('checked', true);
       fn_getStoreLogSensorList();
     }
 
@@ -182,7 +179,7 @@
 
               for (let i = 0; i < d.length; i++) {
                 d[i].INDEX = i;
-                if (d[i].STATE) {
+                if (d[i].LCAUSE) {
                   d[i].DATALOG = d[i].LCAUSE;
                 } else {
                   d[i].DATALOG = '전력: ' + d[i].SNSRWATT + 'kW | 전류: ' + d[i].SNSRAMPERE + 'mA | 누설전류: ' + d[i].SNSRIGO + 'mA';

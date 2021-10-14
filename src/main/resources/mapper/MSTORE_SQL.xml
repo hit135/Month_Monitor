@@ -215,32 +215,95 @@
     </select>
 
     <select id="LIST_DATA_LOG_TOTAL" parameterType="map" resultType="map">
-        ( SELECT A.DSEQ
-               , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
-               , A.SNSRID
-               , A.SNSRWATT
-               , A.SNSRAMPERE
-               , A.SNSRIGO
-            FROM F_SENSOR_DATA A
-                    LEFT JOIN F_SENSOR_INFO B
-                        ON A.SNSRID = B.SNSRID
-           WHERE A.SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
-             AND A.SNSRID = #{snsrid}
-           ORDER BY A.SNSRRCVTIME DESC
+        ( SELECT DSEQ
+               , DATE_FORMAT(SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+               , SNSRID
+               , SNSRWATT
+               , SNSRAMPERE
+               , SNSRIGO
+            FROM F_SENSOR_DATA
+           WHERE SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+             AND SNSRID = #{snsrid}
+           ORDER BY SNSRRCVTIME DESC
            LIMIT #{pagelimit} )
            UNION ALL
-        ( SELECT A.DSEQ
-               , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
-               , A.SNSRID
-               , A.SNSRWATT
-               , A.SNSRAMPERE
-               , A.SNSRIGO
-            FROM F_SENSOR_DATA_2021 A
-                    LEFT JOIN F_SENSOR_INFO B
-                        ON A.SNSRID = B.SNSRID
-           WHERE A.SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
-             AND A.SNSRID = #{snsrid}
-           ORDER BY A.SNSRRCVTIME DESC
+        ( SELECT DSEQ
+               , DATE_FORMAT(SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+               , SNSRID
+               , SNSRWATT
+               , SNSRAMPERE
+               , SNSRIGO
+            FROM F_SENSOR_DATA_2021
+           WHERE SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+             AND SNSRID = #{snsrid}
+           ORDER BY SNSRRCVTIME DESC
+           LIMIT #{pagelimit} )
+        LIMIT #{pagestart}, 1000
+    </select>
+
+    <select id="CNT_DATA_LOG_EVENT" parameterType="map" resultType="int">
+        SELECT A.CNT + B.CNT
+          FROM ( SELECT COUNT(LSEQ) AS CNT
+                   FROM F_SENSOR_LOG
+                  WHERE SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+                    AND SNSRID = #{snsrid}
+                    AND <choose>
+                            <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
+                            <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
+                            <when test='"check-warn".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0</when>
+                        </choose>
+                ) A
+             , ( SELECT COUNT(LSEQ) CNT
+                   FROM F_SENSOR_LOG_2021
+                  WHERE SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+                    AND SNSRID = #{snsrid}
+                    AND <choose>
+                            <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
+                            <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
+                            <when test='"check-warn".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0</when>
+                        </choose>
+               ) B
+    </select>
+
+    <select id="LIST_DATA_LOG_EVENT" parameterType="map" resultType="map">
+        ( SELECT DSEQ
+               , LSEQ
+               , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+               , SNSRID
+               , LCAUSE
+               , CASE
+                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
+                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 'WARN'
+                 END AS STATE
+            FROM F_SENSOR_LOG
+           WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+             AND SNSRID = #{snsrid}
+             AND <choose>
+                     <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
+                     <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
+                     <when test='"check-warn".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0</when>
+                 </choose>
+           ORDER BY REGDATE DESC
+           LIMIT #{pagelimit} )
+        UNION ALL
+        ( SELECT DSEQ
+               , LSEQ
+               , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+               , SNSRID
+               , LCAUSE
+               , CASE
+                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
+                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 'WARN'
+                 END AS STATE
+            FROM F_SENSOR_LOG_2021
+           WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+             AND SNSRID = #{snsrid}
+             AND <choose>
+                     <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
+                     <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
+                     <when test='"check-warn".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0</when>
+                 </choose>
+           ORDER BY REGDATE DESC
            LIMIT #{pagelimit} )
         LIMIT #{pagestart}, 1000
     </select>

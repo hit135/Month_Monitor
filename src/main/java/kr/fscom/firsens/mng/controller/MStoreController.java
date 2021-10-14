@@ -286,11 +286,16 @@ public class MStoreController {
             */
             prm.put("snsrid", paramMap.get("snsrid"));
             prm.put("regdt", paramMap.get("regdt"));
+            prm.put("type", paramMap.get("type"));
 
             prm.put("pagelimit", Integer.parseInt((String) paramMap.get("pageindex")) * 1000);
             prm.put("pagestart", Integer.parseInt((String) paramMap.get("pageindex")) - 1);
 
-            return storeRepo.LIST_DATA_LOG_TOTAL(prm);
+            if ("check-total".equals(paramMap.get("type"))) {
+                return storeRepo.LIST_DATA_LOG_TOTAL(prm);
+            }
+
+            return storeRepo.LIST_DATA_LOG_EVENT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
