@@ -1,4 +1,13 @@
 // Here you can add other styles
+.display-inline {
+  display: inline-block !important;
+}
+.display-justify {
+  justify-content: center !important;
+}
+.display-none {
+  display: none !important;
+}
 .c-sidebar {
   width: 210px;
 }

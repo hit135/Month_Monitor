@@ -8,7 +8,7 @@ const axios = require('axios');
 export const getSelectGroup = (type) =>
   axios.get( `${API_ROOT}/selectGroup?type=${type}`)
 
-export const getStatInfo = (type, guCode, areaCode, startDate, endDate, strCode) =>
+export const getStatInfo = (type, guCode, areaCode, strCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
   axios.get([
       `${API_ROOT}/statInfo?type=${type}`
     , `guCode=${guCode}`
@@ -16,15 +16,27 @@ export const getStatInfo = (type, guCode, areaCode, startDate, endDate, strCode)
     , `strCode=${strCode}`
     , `startDate=${formatDate(startDate)}`
     , `endDate=${formatDate(endDate)}`
+    , `dateType=${dateType}`
+    , `yearDate=${formatDate(yearDate)}`
+    , `monthDate=${formatDate(monthDate)}`
+    , `halfDate=${formatDate(halfDate)}`
+    , `halfSelect=${halfSelect}`
+    , `quarterDate=${formatDate(quarterDate)}`
     ].join('&'));
 
-export const getStatInfoList = (type, guCode, areaCode, startDate, endDate) =>
+export const getStatInfoList = (type, guCode, areaCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
   axios.get([
     `${API_ROOT}/statInfoList?type=${type}`
     , `guCode=${guCode}`
     , `areaCode=${areaCode}`
     , `startDate=${formatDate(startDate)}`
     , `endDate=${formatDate(endDate)}`
+    , `dateType=${dateType}`
+    , `yearDate=${formatDate(yearDate)}`
+    , `monthDate=${formatDate(monthDate)}`
+    , `halfDate=${formatDate(halfDate)}`
+    , `halfSelect=${halfSelect}`
+    , `quarterDate=${formatDate(quarterDate)}`
   ].join('&'));
 
 // 시장, 상점 전기안전현황 컴포넌트

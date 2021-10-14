@@ -73,6 +73,7 @@ function PageStrTableModalWidget(props) {
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
       clickStrRow(row);
+      setOnStrModal(!onStrModal);
     }
   };
 

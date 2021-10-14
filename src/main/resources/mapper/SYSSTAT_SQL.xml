@@ -106,14 +106,26 @@
                                         <when test='"areaCode".equals(type)'>
                                           FROM F_CRN_AREA_ELEC_EVT_STAT
                                          WHERE AREACODE = #{areaCode}
-                                           AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
+                                           AND (
+                                            <choose>
+                                                <when test='dateType == "year"'>date_format(DATETIME, '%Y') = #{startDate}</when>
+                                                <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{startDate}</when>
+                                                <otherwise>date_format(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                            </choose>
+                                            )
                                          GROUP BY AREACODE, DATE_FORMAT(DATETIME, '%H')
                                         </when>
                                         <when test='"store".equals(type)'>
                                             FROM F_CRN_SNSR_ELEC_EVT_STAT
                                             WHERE AREACODE = #{areaCode}
                                             AND STRCODE = #{strCode}
-                                            AND (DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23'))
+                                            AND (
+                                            <choose>
+                                                <when test='dateType == "year"'>date_format(DATETIME, '%Y') = #{startDate}</when>
+                                                <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{startDate}</when>
+                                                <otherwise>date_format(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                            </choose>
+                                            )
                                             GROUP BY AREACODE, STRCODE, DATE_FORMAT(DATETIME, '%H')
                                         </when>
                                     </choose>
@@ -135,14 +147,26 @@
                                                 <when test='"areaCode".equals(type)'>
                                                      FROM F_CRN_AREA_KWH_HIST
                                                     WHERE AREACODE = #{areaCode}
-                                                      AND ( DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23') )
+                                                      AND (
+                                                        <choose>
+                                                            <when test='dateType == "year"'>date_format(DATETIME, '%Y') = #{startDate}</when>
+                                                            <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{startDate}</when>
+                                                            <otherwise>date_format(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                                        </choose>
+                                                    )
                                                     GROUP BY AREACODE
                                                 </when>
                                                 <when test='"store".equals(type)'>
                                                     FROM F_CRN_SNSR_KWH_HIST
                                                     WHERE AREACODE = #{areaCode}
                                                     AND STRCODE = #{strCode}
-                                                    AND (DATETIME BETWEEN CONCAT(#{startDate}, ' 00') AND CONCAT(#{endDate}, ' 23'))
+                                                    AND (
+                                                    <choose>
+                                                        <when test='dateType == "year"'>date_format(DATETIME, '%Y') = #{startDate}</when>
+                                                        <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{startDate}</when>
+                                                        <otherwise>date_format(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                                    </choose>
+                                                    )
                                                     GROUP BY AREACODE, STRCODE
                                                 </when>
                                             </choose>
@@ -197,7 +221,13 @@
                                         WHERE AREACODE = #{areaCode} AND STRCODE = #{strCode}
                                     </when>
                                 </choose>
-                                   AND ( SDATE BETWEEN #{startDate} AND #{endDate} )
+                                   AND (
+                                        <choose>
+                                            <when test='dateType == "year"'>date_format(SDATE, '%Y') = #{startDate}</when>
+                                            <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{startDate}</when>
+                                            <otherwise>date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                        </choose>
+                                    )
                                  GROUP BY DAYOFWEEK(SDATE) ) A
                                     ON T.DAYOFWEEK = A.DAYOFWEEK
     </select>
@@ -211,7 +241,13 @@
                       , SUM(SNSRIGOAVG) AS SNSRIGO
                       , SUM(SNSRKWHDAILY) + SUM(SNSRIGOAVG) AS SNSRSUM
                    FROM F_ELEC_SENSOR_STAT
-                  WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
+                  WHERE (
+                        <choose>
+                            <when test='dateType == "year"'>date_format(SDATE, '%Y') = #{startDate}</when>
+                            <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{startDate}</when>
+                            <otherwise>date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                        </choose>
+                    )
                     AND AREACODE = #{areaCode}
                    <if test='"store".equals(type)'>AND STRCODE = #{strCode}</if>
         ) S
@@ -246,7 +282,13 @@
         , SUM(SNSRKWHDAILY) AS SNSRKWH
         , SUM(SNSRIGOAVG) AS SNSRIGO
         FROM F_ELEC_SENSOR_STAT
-        WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
+        WHERE (
+            <choose>
+                <when test='dateType == "year"'>date_format(SDATE, '%Y') = #{startDate}</when>
+                <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{startDate}</when>
+                <otherwise>date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+            </choose>
+        )
         AND AREACODE = #{areaCode}
         <if test='"store".equals(type)'>AND STRCODE = #{strCode}</if>
         GROUP BY DATE_FORMAT(SDATE, '%m') ) E
@@ -266,7 +308,13 @@
         , SUM(SNSRKWHDAILY) AS SNSRKWH
         , SUM(SNSRIGOAVG) AS SNSRIGO
         FROM F_ELEC_SENSOR_STAT
-        WHERE (SDATE BETWEEN #{startDate} AND #{endDate})
+        WHERE (
+        <choose>
+            <when test='dateType == "year"'>date_format(SDATE, '%Y') = #{startDate}</when>
+            <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{startDate}</when>
+            <otherwise>date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+        </choose>
+        )
         AND AREACODE = #{areaCode}
         <if test='"store".equals(type)'>AND STRCODE = #{strCode}</if>
         ORDER BY sDate
@@ -286,7 +334,13 @@
                    , SUM(E.SNSRKWHDAILY)                                                  AS snsrKwh
                    , (oc1st + oc2nd + igo1st + igo2nd + igr1st + igr2nd)
                FROM F_ELEC_SENSOR_STAT E
-              WHERE E.AREACODE = #{areaCode} AND (E.SDATE BETWEEN #{startDate} AND #{endDate})
+              WHERE E.AREACODE = #{areaCode} AND (
+                <choose>
+                    <when test='dateType == "year"'>date_format(E.SDATE, '%Y') = #{startDate}</when>
+                    <when test='dateType == "month"'>date_format(E.SDATE, '%Y-%m') = #{startDate}</when>
+                    <otherwise>date_format(E.SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                </choose>
+                  )
            GROUP BY levelAreaCode
         ) A
         ORDER BY (oc1st + oc2nd + igo1st + igo2nd + igr1st + igr2nd) DESC
@@ -313,7 +367,11 @@
 --                     , SUM(DISCONN) AS DISCONN
                FROM F_ELEC_SENSOR_STAT
                WHERE AREACODE = #{areaCode}
-                 AND SDATE BETWEEN #{startDate} AND #{endDate}
+                <choose>
+                    <when test='dateType == "year"'>AND date_format(SDATE, '%Y') = #{startDate}</when>
+                    <when test='dateType == "month"'>AND date_format(SDATE, '%Y-%m') = #{startDate}</when>
+                    <otherwise>AND date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                </choose>
                GROUP BY AREACODE, STRCODE ) S
         WHERE (S.OC1ST + S.OC2ND + S.IGO1ST + S.IGO2ND + S.IGR1ST + S.IGR2ND) > 0
         ORDER BY (S.OC1ST + S.OC2ND + S.IGO1ST + S.IGO2ND + S.IGR1ST + S.IGR2ND) DESC
@@ -330,7 +388,11 @@
                     , SUM(SNSRIGOAVG) AS SNSRIGO
                FROM F_ELEC_SENSOR_STAT
                WHERE AREACODE = #{areaCode}
-                 AND SDATE BETWEEN #{startDate} AND #{endDate}
+                <choose>
+                    <when test='dateType == "year"'>AND date_format(SDATE, '%Y') = #{startDate}</when>
+                    <when test='dateType == "month"'>AND date_format(SDATE, '%Y-%m') = #{startDate}</when>
+                    <otherwise>AND date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                </choose>
                GROUP BY AREACODE, STRCODE ) S
         ORDER BY (S.SNSRKWH) DESC
             LIMIT 20

@@ -37,13 +37,49 @@ public class SYSStatController {
     }
 
     @GetMapping(value = "/statInfo")
-    public HashMap<String, Object> statInfo(String type, String guCode, String areaCode, String startDate, String endDate, String strCode) throws Exception {
+    public HashMap<String, Object> statInfo(String type, String guCode, String areaCode, String startDate, String endDate, String strCode
+            , String dateType, String yearDate, String monthDate, String halfDate, String halfSelect, String quarterDate) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         HashMap<String, Object> paramMap = new HashMap<>();
         try {
+            if(dateType.equals("년")) {
+                paramMap.put("dateType", "year");
+                paramMap.put("startDate", yearDate.split("-")[0]);
+            } else if(dateType.equals("월")) {
+                paramMap.put("dateType", "month");
+                paramMap.put("startDate", monthDate.split("-")[0] + "-" + monthDate.split("-")[1]);
+            } else if(dateType.equals("반기")) {
+                String halfDate1;
+                String halfDate2;
+                paramMap.put("dateType", "half");
+                if(halfSelect.equals("상반기")) {
+                    halfDate1 = halfDate.split("-")[0] + "-01";
+                    halfDate2 = halfDate.split("-")[0] + "-06";
+                } else {
+                    halfDate1 = halfDate.split("-")[0] + "-07";
+                    halfDate2 = halfDate.split("-")[0] + "-12";
+                }
+                paramMap.put("startDate", halfDate1);
+                paramMap.put("endDate", halfDate2);
+            } else if(dateType.equals("분기")) {
+                paramMap.put("dateType", "quarter");
+                String[] quarter = quarterDate.split("-");
+                if(quarter[1].equals("01")) {
+                    paramMap.put("startDate", quarter[0] + "-01");
+                    paramMap.put("endDate", quarter[0] + "-03");
+                } else if(quarter[1].equals("04")) {
+                    paramMap.put("startDate", quarter[0] + "-04");
+                    paramMap.put("endDate", quarter[0] + "-06");
+                } else if(quarter[1].equals("07")) {
+                    paramMap.put("startDate", quarter[0] + "-07");
+                    paramMap.put("endDate", quarter[0] + "-09");
+                } else if(quarter[1].equals("10")) {
+                    paramMap.put("startDate", quarter[0] + "-10");
+                    paramMap.put("endDate", quarter[0] + "-12");
+                }
+            }
             paramMap.put("type", type);
-            paramMap.put("startDate", startDate);
-            paramMap.put("endDate", endDate);
+
             paramMap.put("areaCode", areaCode);
             rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_AREA_INFO_STAT(areaCode));
             rtn.put("weekMonthStat", sysStatRepo.LIST_SYS_STAT_AREA_MONTHLY_STAT(paramMap));
@@ -71,10 +107,48 @@ public class SYSStatController {
     }
 
     @GetMapping(value = "/statInfoList")
-    public HashMap<String, Object> statInfoList(String type, String guCode, String areaCode, String startDate, String endDate, String strCode) throws Exception {
+    public HashMap<String, Object> statInfoList(String type, String guCode, String areaCode, String startDate, String endDate,
+            String dateType, String yearDate, String monthDate, String halfDate, String halfSelect, String quarterDate) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         HashMap<String, Object> paramMap = new HashMap<>();
         try {
+            if(dateType.equals("년")) {
+                paramMap.put("dateType", "year");
+                paramMap.put("startDate", monthDate.split("-")[0] + "-" + monthDate.split("-")[1]);
+            } else if(dateType.equals("월")) {
+                paramMap.put("dateType", "month");
+                paramMap.put("startDate", monthDate);
+            } else if(dateType.equals("반기")) {
+                String halfDate1;
+                String halfDate2;
+                paramMap.put("dateType", "half");
+                if(halfSelect.equals("상반기")) {
+                    halfDate1 = halfDate.split("-")[0] + "-01";
+                    halfDate2 = halfDate.split("-")[0] + "-06";
+                } else {
+                    halfDate1 = halfDate.split("-")[0] + "-07";
+                    halfDate2 = halfDate.split("-")[0] + "-12";
+                }
+                paramMap.put("startDate", halfDate1);
+                paramMap.put("endDate", halfDate2);
+            } else if(dateType.equals("분기")) {
+                paramMap.put("dateType", "quarter");
+                String[] quarter = quarterDate.split("-");
+                if(quarter[1].equals("01")) {
+                    paramMap.put("startDate", quarter[0] + "-01");
+                    paramMap.put("endDate", quarter[0] + "-03");
+                } else if(quarter[1].equals("04")) {
+                    paramMap.put("startDate", quarter[0] + "-04");
+                    paramMap.put("endDate", quarter[0] + "-06");
+                } else if(quarter[1].equals("07")) {
+                    paramMap.put("startDate", quarter[0] + "-07");
+                    paramMap.put("endDate", quarter[0] + "-09");
+                } else if(quarter[1].equals("10")) {
+                    paramMap.put("startDate", quarter[0] + "-10");
+                    paramMap.put("endDate", quarter[0] + "-12");
+                }
+            }
+
             paramMap.put("type", type);
             paramMap.put("startDate", startDate);
             paramMap.put("endDate", endDate);
@@ -94,7 +168,4 @@ public class SYSStatController {
 
         return rtn;
     }
-
-
-
 }
