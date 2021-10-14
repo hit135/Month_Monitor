@@ -1,14 +1,14 @@
 package kr.fscom.firsens.mng.controller;
 
 import kr.fscom.firsens.mng.repository.MStoreRepo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -267,6 +267,30 @@ public class MStoreController {
             prm.put("strcode", req.getParameter("strcode"));
 
             return storeRepo.SELECT_DATA_LOG_LIST(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
+    @RequestMapping(value = "/dataLogList2Ajax", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @ResponseBody
+    public List<HashMap<String, Object>> dataLogList2Ajax(HttpServletRequest req, @RequestParam HashMap<String, Object> paramMap) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            /*
+            prm.put("areacode", paramMap.get("areacode"));
+            prm.put("strcode", paramMap.get("strcode"));
+            */
+            prm.put("snsrid", paramMap.get("snsrid"));
+            prm.put("regdt", paramMap.get("regdt"));
+
+            prm.put("pagelimit", Integer.parseInt((String) paramMap.get("pageindex")) * 1000);
+            prm.put("pagestart", Integer.parseInt((String) paramMap.get("pageindex")) - 1);
+
+            return storeRepo.LIST_DATA_LOG_TOTAL(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

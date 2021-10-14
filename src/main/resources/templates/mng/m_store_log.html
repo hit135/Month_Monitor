@@ -31,15 +31,15 @@
       <div class="row p-2">
         <div class="col-12 align-middle">
           <div class="form-group custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="check-total" />
+            <input type="checkbox" class="custom-control-input strlogtype-chkbox" id="check-total" />
             <label class="custom-control-label" for="check-total">전체</label>
           </div><!-- /#check-total -->
           <div class="form-group custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="check-danger" />
+            <input type="checkbox" class="custom-control-input strlogtype-chkbox" id="check-danger" />
             <label class="custom-control-label" for="check-danger">경고</label>
           </div><!-- /#check-danger -->
           <div class="form-group custom-control custom-checkbox custom-control-inline">
-            <input type="checkbox" class="custom-control-input" id="check-warn" />
+            <input type="checkbox" class="custom-control-input strlogtype-chkbox" id="check-warn" />
             <label class="custom-control-label" for="check-warn">주의</label>
           </div><!-- /#check-warn -->
           <div class="form-group custom-control-inline">
@@ -54,15 +54,15 @@
 
   <script type="text/javascript">
     $(function() {
-      fn_initStoreSetting();
+      fn_initStoreSetup();
       fn_initStoreDataLog();
     });
 
-    function fn_initStoreSetting() {
+    function fn_initStoreSetup() {
       $.template(
         'store-log-sensor',
         '<p class="{{html STATE}} mb-0 pb-0">' +
-          '<input type="radio" name="snsr-radio-btn" value="{{html SNSRID}}"/> {{html SNSRNICK}} ({{html SNSRIDTRIM}})' +
+          '<input type="radio" class="snsr-radio-class" name="snsr-radio-btn" value="{{html SNSRID}}"/> {{html SNSRNICK}} ({{html SNSRIDTRIM}})' +
         '</p>'
       );
 
@@ -75,59 +75,83 @@
         '</p>'
       );
 
-      $('.store-log #check-total').on('click', fn_checkDataLogFiltered);
-      $('.store-log #check-danger').on('click', fn_checkDataLogFiltered);
-      $('.store-log #check-warn').on('click', fn_checkDataLogFiltered);
-      $('.store-log #regdt').on('change', fn_getDataLogFiltered);
-      $('.store-log-sensor-list').on('click', 'input', fn_checkDataLogFiltered);
+      // $('.store-log #regdt').on('change', fn_getDataLogFiltered);
+      // $('.store-log-sensor-list').on('click', 'input', fn_checkDataLogFiltered);
       // $('.store-datalog-filtered-list').on('click', 'p', function() { fn_setDataLogMeta($(this).attr('data-index')); });
+
+      $('.store-log #check-total').on('click', function() {
+        if ($(this).is(":checked")) {
+          $('#check-danger').prop('checked', false);
+          $('#check-warn').prop('checked', false);
+        } else {
+          $('#check-danger').prop('checked', true);
+          $('#check-warn').prop('checked', true);
+        }
+      });
+
+      $('.store-log #check-danger, .store-log #check-warn').on('click', function() {
+        if ($(this).is(":checked") && $('.store-log #check-total').is(":checked")) {
+          $('#check-total').prop('checked', false);
+        } else if (!$('.store-log #check-danger').is(":checked") && !$('.store-log #check-warn').is(":checked")) {
+          $('#check-total').prop('checked', true);
+        }
+      });
     }
 
     function fn_initStoreDataLog() {
-      fn_getStoreLogSensorList();
-
       let regdate = $('#prm_regdate').val();
       if (!regdate)
         regdate = fn_dateToString(new Date()).slice(0, 10);
 
       $('.store-log #regdt').val(regdate);
 
+      /*
       if ($("#prm_checktype").val() == '') {
         $('#check-danger').prop('checked', true);
         $('#check-warn').prop('checked', true);
       } else {
         $('#check-' + $("#prm_checktype").val()).prop('checked', true);
       }
+      */
 
-      fn_getDataLogFiltered();
+      $('#check-total').prop('checked', true);
+      fn_getStoreLogSensorList();
     }
 
-
     function fn_getStoreLogSensorList() {
+      window.pageIndex = 1;
+
       $.post(
         $('#contextRoot').val() + '/mng/areaSensorListAjax'
         , { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() }
         , function(d) {
-          $('.store-log-sensor-list').html('');
+            $('.store-log-sensor-list').html('');
 
-          for (let i = 0; i < d.length; i++) {
-            d[i].CNT = 0;
+            for (let i = 0; i < d.length; i++) {
+              d[i].CNT = 0;
 
-            if (d[i].DANGER > 0) {
-              d[i].STATE = 'danger';
-              d[i].CNT = d[i].DANGER;
-              d[i].CNT2 = d[i].WARN;
-            } else if (d[i].WARN > 0) {
-              d[i].STATE = 'warn';
-              d[i].CNT = d[i].WARN;
-            } else if (d[i].CON == 0) {
-              d[i].STATE = 'discon';
+              if (d[i].DANGER > 0) {
+                d[i].STATE = 'danger';
+                d[i].CNT = d[i].DANGER;
+                d[i].CNT2 = d[i].WARN;
+              } else if (d[i].WARN > 0) {
+                d[i].STATE = 'warn';
+                d[i].CNT = d[i].WARN;
+              } else if (d[i].CON == 0) {
+                d[i].STATE = 'discon';
+              }
+
+              $('.store-log-sensor-list').append($.tmpl('store-log-sensor', d[i]));
             }
 
-            $('.store-log-sensor-list').append($.tmpl('store-log-sensor', d[i]));
-          }
+            $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
 
-          $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
+            $("input:radio[name='snsr-radio-btn']").on('change', function() {
+              PAGE_INDEX = 1;
+              fn_getDataLogFiltered();
+            });
+
+            fn_getDataLogFiltered();
         }
       );
     }
@@ -141,37 +165,41 @@
       );
 
       $.post(
-          $('#contextRoot').val() + '/mng/dataLogListAjax'
-        , { areacode: $('#prm_areacode').val(), strcode: $('.store-log #prm_strcode').val(), regdt: $('.store-log #regdt').val() }
+          $('#contextRoot').val() + '/mng/dataLogList2Ajax'
+        , {
+              /*
+              'areacode': $('#prm_areacode').val()
+            , 'strcode': $('.store-log #prm_strcode').val()
+            , */
+              'snsrid': $("input:radio[name='snsr-radio-btn']:checked").val()
+            , 'regdt': $('.store-log #regdt').val()
+            , 'type': $(".strlogtype-chkbox:checkbox:checked").map(function() { return this.id }).get().join(',')
+            , 'pageindex': window.pageIndex
+          }
         , function(d) {
             if (d.length > 0) {
-              window.datalog = d;
               $('.store-datalog-filtered-list').html('');
 
               for (let i = 0; i < d.length; i++) {
                 d[i].INDEX = i;
-                d[i].DATALOG = '전력: ' + d[i].SNSRWATT + 'kW | 전류: ' + d[i].SNSRAMPERE + 'mA | 누설전류: ' + d[i].SNSRIGO + 'mA';
-
                 if (d[i].STATE) {
                   d[i].DATALOG = d[i].LCAUSE;
+                } else {
+                  d[i].DATALOG = '전력: ' + d[i].SNSRWATT + 'kW | 전류: ' + d[i].SNSRAMPERE + 'mA | 누설전류: ' + d[i].SNSRIGO + 'mA';
                 }
 
                 $('.store-datalog-filtered-list').append($.tmpl('datalog', d[i]));
               }
 
-              fn_showDataLogFiltered();
-              // fn_setDataLogMeta($($('.store-datalog-filtered-list p:visible')[0]).attr('data-index'));
+              // fn_showDataLogFiltered();
             } else {
-              window.datalog = null;
-
               $('.store-datalog-filtered-list').html('데이터가 없습니다');
-              // fn_setDataLogMeta();
             }
           }
       );
     }
 
-    function fn_checkDataLogFiltered() {
+   /* function fn_checkDataLogFiltered() {
       if ($(this).attr('id') == 'check-total') {
         $('.store-log #check-danger').prop('checked', false);
         $('.store-log #check-warn').prop('checked', false);
@@ -196,41 +224,8 @@
 
       for (let i = 0; i < temp.length; i++)
         $('.store-datalog-filtered-list p[data-snsrid="' + temp[i].value + '"]').hide();
-    }
+    }*/
 
-    /*
-    function fn_setDataLogMeta(i) {
-      if (window.datalog) {
-        $('.store-datalog-meta').show();
-        $('.store-datalog-filtered-list p').removeClass('on');
-        $($('.store-datalog-filtered-list p')[i]).addClass('on');
-
-        if ($('.store-log #regdt').val()) {
-          $.post(
-              $('#contextRoot').val() + '/mng/sensorUsekwhMonthAjax'
-            , { snsrid: window.datalog[i].SNSRID, regdt: $('.store-log #regdt').val() }
-            , function(d) {
-                $('.store-datalog-meta .monkwh th span').text($('.store-log #regdt').val().substring(0, 4) + '년 ' +$('.store-log #regdt').val().substring(5, 7) + '월');
-                $('.store-datalog-meta .monkwh td span').text(d[0].USEKWH);
-              }
-          );
-        }
-
-        $('.store-datalog-meta .kw td span').text(window.datalog[i].SNSRWATT.toFixed(3));
-        $('.store-datalog-meta .vo td span').text(window.datalog[i].SNSRVOLT.toFixed(3));
-        $('.store-datalog-meta .am td span').text(window.datalog[i].SNSRAMPERE.toFixed(3));
-        $('.store-datalog-meta .hz td span').text(window.datalog[i].SNSRHZ.toFixed(3));
-        $('.store-datalog-meta .igo td span').text(window.datalog[i].SNSRIGO.toFixed(3));
-        $('.store-datalog-meta .igr td span').text(window.datalog[i].SNSRIGR.toFixed(3));
-        $('.store-datalog-meta .igc td span').text(window.datalog[i].SNSRIGC.toFixed(3));
-        $('.store-datalog-meta .meg td span').text(window.datalog[i].SNSRREG.toFixed(3));
-        $('.store-datalog-meta .kwh td span').text(window.datalog[i].SNSRKWH.toFixed(3));
-        $('.store-datalog-meta .dbm td span').text(window.datalog[i].SNSRRSSI);
-      } else {
-        $('.store-datalog-meta').hide();
-      }
-    }
-    */
 
     function fn_refreshStoreInfo() {}
   </script>
