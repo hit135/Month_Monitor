@@ -1,5 +1,6 @@
 package kr.fscom.firsens.mng.controller;
 
+import kr.fscom.firsens.common.paging.PaginationInfo;
 import kr.fscom.firsens.mng.repository.MStoreRepo;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -276,31 +278,53 @@ public class MStoreController {
 
     @RequestMapping(value = "/dataLogList2Ajax", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @ResponseBody
-    public List<HashMap<String, Object>> dataLogList2Ajax(HttpServletRequest req, @RequestParam HashMap<String, Object> paramMap) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
+    public HashMap<String, Object> dataLogList2Ajax(HttpServletRequest req, @RequestParam HashMap<String, Object> paramMap) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        boolean result = false;
+        int resultCnt = 0;
+        List<HashMap<String, Object>> resultList = new ArrayList<>();
+        PaginationInfo pInfo = new PaginationInfo();
 
         try {
-            /*
-            prm.put("areacode", paramMap.get("areacode"));
-            prm.put("strcode", paramMap.get("strcode"));
-            */
-            prm.put("snsrid", paramMap.get("snsrid"));
-            prm.put("regdt", paramMap.get("regdt"));
-            prm.put("type", paramMap.get("type"));
+            HashMap<String, Object> param = new HashMap<>();
+            param.put("snsrid", paramMap.get("snsrid"));
+            param.put("regdt", paramMap.get("regdt"));
+            param.put("type", paramMap.get("type"));
+            param.put("pagelimit", Integer.parseInt((String) paramMap.get("pageindex")) * 1000);
+            param.put("pagestart", (Integer.parseInt((String) paramMap.get("pageindex")) - 1) * 1000);
 
-            prm.put("pagelimit", Integer.parseInt((String) paramMap.get("pageindex")) * 1000);
-            prm.put("pagestart", Integer.parseInt((String) paramMap.get("pageindex")) - 1);
+            HashMap<String, Object> pagingPrm = new HashMap<>();
+            pagingPrm.put("pageSize", 5);
+            pagingPrm.put("recordCountPerPage", 1000);
+            pagingPrm.put("currentPageNo", Integer.parseInt((String) paramMap.get("pageindex")));
 
             if ("check-total".equals(paramMap.get("type"))) {
-                return storeRepo.LIST_DATA_LOG_TOTAL(prm);
+                resultCnt = storeRepo.CNT_DATA_LOG_TOTAL(param);
+                if (resultCnt > 0) {
+                    pagingPrm.put("totalRecordCount", resultCnt);
+                    pInfo = new PaginationInfo().getPaginationInfo(pagingPrm);
+                    resultList = storeRepo.LIST_DATA_LOG_TOTAL(param);
+                }
+            } else {
+                resultCnt = storeRepo.CNT_DATA_LOG_EVENT(param);
+                if (resultCnt > 0) {
+                    pagingPrm.put("totalRecordCount", resultCnt);
+                    pInfo = new PaginationInfo().getPaginationInfo(pagingPrm);
+                    resultList = storeRepo.LIST_DATA_LOG_EVENT(param);
+                }
             }
 
-            return storeRepo.LIST_DATA_LOG_EVENT(prm);
+            result = true;
         } catch (Exception e) {
             LOG.debug(e.getMessage());
+        } finally {
+            rtn.put("result", result);
+            rtn.put("resultCnt", resultCnt);
+            rtn.put("resultList", resultList);
+            rtn.put("pInfo", pInfo);
         }
 
-        return null;
+        return rtn;
     }
 
     @RequestMapping(value = "/sensorUsekwhMonthAjax")

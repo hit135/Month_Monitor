@@ -245,7 +245,7 @@
         SELECT A.CNT + B.CNT
           FROM ( SELECT COUNT(LSEQ) AS CNT
                    FROM F_SENSOR_LOG
-                  WHERE SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+                  WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
                     AND SNSRID = #{snsrid}
                     AND <choose>
                             <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
@@ -255,7 +255,7 @@
                 ) A
              , ( SELECT COUNT(LSEQ) CNT
                    FROM F_SENSOR_LOG_2021
-                  WHERE SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+                  WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
                     AND SNSRID = #{snsrid}
                     AND <choose>
                             <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
