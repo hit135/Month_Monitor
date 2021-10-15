@@ -199,16 +199,19 @@
            </if>
            AND C.AREACODE = #{areacode}
            AND C.STRCODE = #{strcode}
+           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">
+           AND C.SNSRID = #{snsrid}
+           </if>
          ORDER BY A.SNSRRCVTIME DESC
     </select>
 
     <select id="CNT_DATA_LOG_TOTAL" parameterType="map" resultType="int">
-        SELECT A.CNT + B.CNT
+        SELECT A.CNT + B.CNT + C.CNT
           FROM ( SELECT COUNT(DSEQ) AS CNT
                    FROM F_SENSOR_DATA
                   WHERE SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
                     AND SNSRID = #{snsrid} ) A
-             , ( SELECT COUNT(DSEQ) CNT
+             , ( SELECT COUNT(DSEQ) AS CNT
                    FROM F_SENSOR_DATA_2021
                   WHERE SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
                     AND SNSRID = #{snsrid} ) B
@@ -242,7 +245,7 @@
     </select>
 
     <select id="CNT_DATA_LOG_EVENT" parameterType="map" resultType="int">
-        SELECT A.CNT + B.CNT
+        SELECT A.CNT + B.CNT + C.CNT
           FROM ( SELECT COUNT(LSEQ) AS CNT
                    FROM F_SENSOR_LOG
                   WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
@@ -251,11 +254,10 @@
                             <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                             <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                             <when test='"check-warn".equals(type)'>
-                            ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 )
+                            ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 )
                             </when>
-                        </choose>
-                ) A
-             , ( SELECT COUNT(LSEQ) CNT
+                        </choose> ) A
+             , ( SELECT COUNT(LSEQ) AS CNT
                    FROM F_SENSOR_LOG_2021
                   WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
                     AND SNSRID = #{snsrid}
@@ -263,10 +265,20 @@
                             <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                             <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                             <when test='"check-warn".equals(type)'>
-                            ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 )
+                            ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 )
                             </when>
-                        </choose>
-               ) B
+                        </choose> ) B
+             , ( SELECT COUNT(LSEQ) AS CNT
+                   FROM F_SENSOR_LOG_2020
+                  WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+                    AND SNSRID = #{snsrid}
+                    AND <choose>
+                            <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
+                            <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
+                            <when test='"check-warn".equals(type)'>
+                            ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 )
+                            </when>
+                        </choose> ) C
     </select>
 
     <select id="LIST_DATA_LOG_EVENT" parameterType="map" resultType="map">
@@ -276,7 +288,7 @@
                , SNSRID
                , LCAUSE
                , ( CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
-                        WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 THEN 'WARN'
+                        WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 'WARN'
                    END ) AS STATE
             FROM F_SENSOR_LOG
            WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
@@ -285,7 +297,7 @@
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                      <when test='"check-warn".equals(type)'>
-                     ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 )
+                     ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 )
                      </when>
                  </choose>
            ORDER BY REGDATE DESC
@@ -297,7 +309,7 @@
                , SNSRID
                , LCAUSE
                , ( CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
-                        WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 THEN 'WARN'
+                        WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 'WARN'
                    END ) AS STATE
             FROM F_SENSOR_LOG_2021
            WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
@@ -306,7 +318,28 @@
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                      <when test='"check-warn".equals(type)'>
-                     ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 )
+                     ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 )
+                     </when>
+                 </choose>
+           ORDER BY REGDATE DESC
+           LIMIT #{pagelimit} )
+        UNION ALL
+        ( SELECT DSEQ
+               , LSEQ
+               , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+               , SNSRID
+               , LCAUSE
+               , ( CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
+                        WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 'WARN'
+                   END ) AS STATE
+            FROM F_SENSOR_LOG_2020
+           WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+             AND SNSRID = #{snsrid}
+             AND <choose>
+                     <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
+                     <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
+                     <when test='"check-warn".equals(type)'>
+                     ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 )
                      </when>
                  </choose>
            ORDER BY REGDATE DESC
@@ -324,7 +357,6 @@
     </select>
 
     <select id="SELECT_LOG_WEEK_STAT" parameterType="map" resultType="map">
-        <![CDATA[
         SELECT A.SDATE
              , DAYOFWEEK(A.SDATE)                       AS WEEK
              , IFNULL(IFNULL(C.DANGER, B.DANGER), 0)    AS DANGER
@@ -339,6 +371,9 @@
                                           FROM F_ELEC_SENSOR_STAT
                                          WHERE AREACODE = #{areacode}
                                            AND STRCODE = #{strcode}
+                                           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">
+                                           AND SNSRID = #{snsrid}
+                                           </if>
                                            AND SDATE > DATE(NOW() - INTERVAL -13 DAY)
                                          GROUP BY AREACODE, STRCODE ) B
                                 ON A.SDATE = B.SDATE
@@ -350,11 +385,13 @@
                                                     ON A.SNSRID = B.SNSRID
                                          WHERE B.AREACODE = #{areacode}
                                            AND B.STRCODE = #{strcode}
+                                           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">
+                                           AND B.SNSRID = #{snsrid}
+                                           </if>
                                            AND A.REGDATE > NOW() - INTERVAL 13 DAY
                                          GROUP BY 1 ) C
                                 ON A.SDATE = C.SDATE
          ORDER BY A.SDATE ASC
-        ]]>
     </select>
 
     <insert id="INSERT_SENSOR_CHECK" parameterType="map">

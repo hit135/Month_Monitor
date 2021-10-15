@@ -267,6 +267,7 @@ public class MStoreController {
 
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+            prm.put("snsrid", req.getParameter("snsrid"));
 
             return storeRepo.SELECT_DATA_LOG_LIST(prm);
         } catch (Exception e) {
@@ -363,6 +364,7 @@ public class MStoreController {
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+            prm.put("snsrid", req.getParameter("snsrid"));
 
             return storeRepo.SELECT_LOG_WEEK_STAT(prm);
         } catch (Exception e) {
