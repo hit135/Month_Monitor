@@ -268,6 +268,7 @@ public class MStoreController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
             prm.put("snsrid", req.getParameter("snsrid"));
+            prm.put("regdt", req.getParameter("regdt"));
 
             return storeRepo.SELECT_DATA_LOG_LIST(prm);
         } catch (Exception e) {

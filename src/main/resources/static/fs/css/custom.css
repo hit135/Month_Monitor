@@ -34,7 +34,7 @@
 .center-top { background:#2b559b; color:#fff; border-radius:4px; margin-bottom:15px; }
 .center .area-name { font-size:30px; font-weight:bold; }
 .center .area-stat span { display:inline-block; font-size:18px; font-weight:bold; padding:8px; }
-.center-left-sensor-list { height:700px; overflow-y:scroll; direction:rtl; padding:10px; }
+.center-left-sensor-list { height:800px; overflow-y:scroll; direction:rtl; padding:10px; }
 .center-left-sensor-list p { position:relative; padding:5px 10px; border-radius:3px; background:#eee; border-bottom:1px solid #ccc; font-size:14px; font-weight:bold; color:#2b559b; cursor:pointer; margin-bottom:7px; }
 .center-left-sensor-list p span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
 .center-left-sensor-list p span.cnt2 { display:none; }
@@ -84,8 +84,8 @@
 .store-info .store-meta td { padding:0 10px; line-height:35px; font-size:16px; font-weight:bold; }
 .store-info .store-meta td.store-sensor-cont { font-size:12px; }
 .store-info .store-meta td.store-sensor-cont p { margin:0; }
-.store-info .store-datalog-list { height:200px; overflow-y:scroll; }
-.store-info .store-datalog-list p { font-weight:bold; color:#666; font-size:13px; margin:0; }
+.store-info .store-datalog-list { height:400px; overflow-x:scroll; overflow-y:scroll; }
+.store-info .store-datalog-list p { font-weight:bold; color:#666; font-size:13px; margin:0; width:550px; }
 .store-info .store-datalog-list p.DANGER { color:#ff2f44; }
 .store-info .store-datalog-list p.WARN { color:#efaf77; }
 .store-info .store-log-week-stat table { width:100%; table-layout:fixed; }
