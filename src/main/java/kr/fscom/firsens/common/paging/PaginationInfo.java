@@ -16,7 +16,6 @@ package kr.fscom.firsens.common.paging;
  * limitations under the License.
  */
 
-import kr.fscom.firsens.sys.controller.SYSAreaController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

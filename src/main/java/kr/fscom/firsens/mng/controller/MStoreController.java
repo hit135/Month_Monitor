@@ -283,7 +283,6 @@ public class MStoreController {
         boolean result = false;
         int resultCnt = 0;
         List<HashMap<String, Object>> resultList = new ArrayList<>();
-        PaginationInfo pInfo = new PaginationInfo();
 
         try {
             HashMap<String, Object> param = new HashMap<>();
@@ -302,14 +301,16 @@ public class MStoreController {
                 resultCnt = storeRepo.CNT_DATA_LOG_TOTAL(param);
                 if (resultCnt > 0) {
                     pagingPrm.put("totalRecordCount", resultCnt);
-                    pInfo = new PaginationInfo().getPaginationInfo(pagingPrm);
+                    rtn.put("pInfo", new PaginationInfo().getPaginationInfo(pagingPrm));
+
                     resultList = storeRepo.LIST_DATA_LOG_TOTAL(param);
                 }
             } else {
                 resultCnt = storeRepo.CNT_DATA_LOG_EVENT(param);
                 if (resultCnt > 0) {
                     pagingPrm.put("totalRecordCount", resultCnt);
-                    pInfo = new PaginationInfo().getPaginationInfo(pagingPrm);
+                    rtn.put("pInfo", new PaginationInfo().getPaginationInfo(pagingPrm));
+
                     resultList = storeRepo.LIST_DATA_LOG_EVENT(param);
                 }
             }
@@ -321,7 +322,6 @@ public class MStoreController {
             rtn.put("result", result);
             rtn.put("resultCnt", resultCnt);
             rtn.put("resultList", resultList);
-            rtn.put("pInfo", pInfo);
         }
 
         return rtn;

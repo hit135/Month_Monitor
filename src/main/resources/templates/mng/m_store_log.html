@@ -30,10 +30,12 @@
     <div class="col-md-9 col-12">
       <div class="row p-2">
         <div class="col-12 align-middle">
+          <!--
           <div class="form-group custom-control custom-checkbox custom-control-inline">
             <input type="checkbox" class="custom-control-input strlogtype-chkbox" id="check-total" />
             <label class="custom-control-label" for="check-total">전체</label>
-          </div><!-- /#check-total -->
+          </div>
+          -->
           <div class="form-group custom-control custom-checkbox custom-control-inline">
             <input type="checkbox" class="custom-control-input strlogtype-chkbox" id="check-danger" />
             <label class="custom-control-label" for="check-danger">경고</label>
@@ -78,16 +80,21 @@
     // $('.store-log-sensor-list').on('click', 'input', fn_checkDataLogFiltered);
     // $('.store-datalog-filtered-list').on('click', 'p', function() { fn_setDataLogMeta($(this).attr('data-index')); });
 
-    $('.store-log #check-total').on('click', function() {
-      $('#check-danger, #check-warn').prop('checked', !$(this).is(":checked"));
-      fn_getDataLogFiltered(1);
-    });
+    // $('.store-log #check-total').on('click', function() {
+    //   $('#check-danger, #check-warn').prop('checked', !$(this).is(":checked"));
+    //   fn_getDataLogFiltered(1);
+    // });
 
     $('.store-log #check-danger, .store-log #check-warn').on('click', function() {
-      if ($(this).is(":checked") && $('.store-log #check-total').is(":checked"))
-        $('#check-total').prop('checked', false);
-      else if (!$('.store-log #check-danger').is(":checked") && !$('.store-log #check-warn').is(":checked"))
-        $('#check-total').prop('checked', true);
+      // if ($(this).is(":checked") && $('.store-log #check-total').is(":checked"))
+      //   $('#check-total').prop('checked', false);
+      // else if (!$('.store-log #check-danger').is(":checked") && !$('.store-log #check-warn').is(":checked"))
+      //   $('#check-total').prop('checked', true);
+
+      if (!$('.store-log #check-danger').is(":checked") && !$('.store-log #check-warn').is(":checked")) {
+        alert("경고나 주의 둘 중 하나는 반드시 선택해야 합니다.");
+        $('#check-danger').prop('checked', true);
+      }
 
       fn_getDataLogFiltered(1);
     });

@@ -250,7 +250,9 @@
                     AND <choose>
                             <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                             <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
-                            <when test='"check-warn".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0</when>
+                            <when test='"check-warn".equals(type)'>
+                            ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 )
+                            </when>
                         </choose>
                 ) A
              , ( SELECT COUNT(LSEQ) CNT
@@ -260,7 +262,9 @@
                     AND <choose>
                             <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                             <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
-                            <when test='"check-warn".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0</when>
+                            <when test='"check-warn".equals(type)'>
+                            ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 )
+                            </when>
                         </choose>
                ) B
     </select>
@@ -271,17 +275,18 @@
                , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
                , SNSRID
                , LCAUSE
-               , CASE
-                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
-                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 'WARN'
-                 END AS STATE
+               , ( CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
+                        WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 THEN 'WARN'
+                   END ) AS STATE
             FROM F_SENSOR_LOG
            WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
              AND SNSRID = #{snsrid}
              AND <choose>
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
-                     <when test='"check-warn".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0</when>
+                     <when test='"check-warn".equals(type)'>
+                     ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 )
+                     </when>
                  </choose>
            ORDER BY REGDATE DESC
            LIMIT #{pagelimit} )
@@ -291,17 +296,18 @@
                , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
                , SNSRID
                , LCAUSE
-               , CASE
-                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
-                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 'WARN'
-                 END AS STATE
+               , ( CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
+                        WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 THEN 'WARN'
+                   END ) AS STATE
             FROM F_SENSOR_LOG_2021
            WHERE REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
              AND SNSRID = #{snsrid}
              AND <choose>
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
-                     <when test='"check-warn".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0</when>
+                     <when test='"check-warn".equals(type)'>
+                     ( INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 )
+                     </when>
                  </choose>
            ORDER BY REGDATE DESC
            LIMIT #{pagelimit} )
