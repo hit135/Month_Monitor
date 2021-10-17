@@ -202,36 +202,6 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             </div>
           </CRow>
         </div>
-
-        <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
-            <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
-            <div className={"p-5"}>
-              <h3 style={{fontSize: "30px"}}>
-                {props.type}
-              </h3>
-            </div>
-          </div>
-
-          <div className={"pl-4 pr-4 pt-4"} style={{marginBottom: "50%"}}>
-            {props.strKwhStat}
-          </div>
-
-          <CRow>
-            <div className="position-absolute-ct">
-              {
-                props.areaTitle === "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 7 -</h3>
-              }
-              {
-                props.areaTitle !== "대전중앙시장" && <h3 className="m-0" style={{fontSize: "30px"}}>- 6 -</h3>
-              }
-            </div>
-
-            <div className="position-absolute-rb">
-              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-            </div>
-          </CRow>
-        </div>
       </CCardBody>
     </CCard>
   </div>

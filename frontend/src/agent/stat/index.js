@@ -41,6 +41,7 @@ export const getStatInfoList = (type, guCode, areaCode, startDate, endDate, date
 
 // 시장, 상점 전기안전현황 컴포넌트
 export const areaStatusComponent = (param, startDate, endDate, type, strName, snsrCnt) => {
+  console.log(startDate, endDate);
   return (
     <div>
       <table className="table table-sm table-bordered mb-0 printTable">
@@ -78,7 +79,8 @@ export const areaStatusComponent = (param, startDate, endDate, type, strName, sn
         <tr>
           <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>조회기간</td>
           <td>
-            {formatDate(startDate)} ~ {formatDate(endDate)}
+            {endDate === undefined ? startDate : startDate + " - " + endDate}
+            {/*{formatDate(startDate)} ~ {formatDate(endDate)}*/}
           </td>
         </tr>
         <tr>
@@ -111,7 +113,7 @@ export const areaTotalWarningComp = (areaName, item) => {
   return (
       <div className={"mt-5"}>
         <h5 className={"title"}>{areaName} 전기위험 경보 발생 현황</h5>
-        <span className={"mb-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(종합)</span>
+        <span className={"mb-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전기위험 경보 발생 현황(종합)</span>
         <table className="table table-sm table-bordered mb-0 printTable">
           <colgroup>
             <col width="25%"/>
@@ -171,7 +173,7 @@ export const areaTotalWarningComp = (areaName, item) => {
           </tbody>
         </table>
 
-        <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
+        <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
         <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_event_monthly_table">
           <tbody>
           <tr>
@@ -390,7 +392,7 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
         </div>
         <CRow>
           <CCol sm={"5"}>
-            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 과전류 발생현황</span>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 과전류 발생현황</span>
             <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_oc_warning_hourly_table">
               <tbody>
               <tr>
@@ -445,7 +447,7 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
 
         <CRow>
           <CCol sm={"5"}>
-            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 요일별 과전류 발생현황</span>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 과전류 발생현황</span>
             <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_igo_danger_dayofweek_table">
               <tbody>
               <tr>
@@ -506,7 +508,7 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
 
         <CRow>
           <CCol sm={"5"}>
-            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 IGR 발생현황</span>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGR 발생현황</span>
             <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_oc_warning_hourly_table">
               <tbody>
               <tr>
@@ -600,7 +602,7 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
     <div className={"printRow"}>
       <CRow>
         <CCol sm={"5"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 요일별 IGR 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGR 발생현황</span>
           <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_igo_danger_dayofweek_table">
             <tbody>
             <tr>
@@ -661,7 +663,7 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
 
       <CRow>
         <CCol sm={"5"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 IGO 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGO 발생현황</span>
           <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_oc_warning_hourly_table">
             <tbody>
             <tr>
@@ -716,7 +718,7 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
 
       <CRow>
         <CCol sm={"5"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 요일별 IGO 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGO 발생현황</span>
           <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_igo_danger_dayofweek_table">
             <tbody>
             <tr>
@@ -841,9 +843,9 @@ export const levelAreaStatComp = (areaName, item) => {
             <CRow style={{ height: "530px"}}>
               <CCol sm={12} style={{marginTop: "20px", marginBottom: "-30px"}}>
                 <div className={"d-flex justify-content-between"}>
-                  <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 단위시장별 전기위험 알림 발생현황</span>
+                  <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 단위시장별 전기위험 알림 발생현황</span>
                   <div className={"d-flex align-items-center"}>
-                    <span className={"subTitleType"} style={{fontSize: "0.8rem", display: "block"}}>(단위 : 건)</span>
+                    <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
                   </div>
                 </div>
 
@@ -854,9 +856,9 @@ export const levelAreaStatComp = (areaName, item) => {
             <CRow style={{ height: "530px"}}>
               <CCol sm={12} style={{marginTop: "20px", marginBottom: "-30px"}}>
                 <div className={"d-flex justify-content-between"}>
-                  <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 단위시장별 전력사용량</span>
+                  <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 단위시장별 전력사용량</span>
                   <div className={"d-flex align-items-center"}>
-                    <span className={"subTitleType"} style={{fontSize: "0.8rem", display: "block"}}>(단위 : 건)</span>
+                    <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
                   </div>
                 </div>
 
@@ -921,7 +923,7 @@ export const areaKwhStatComp = (areaName, item) => {
       <CRow>
         <CCol sm={"12"} style={{paddingTop: "7%"}}>
           <h5 className={"title"}>{areaName} 전력사용량 현황(종합)</h5>
-          <span className={"mb-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전력사용량 현황(종합)</span>
+          <span className={"mb-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전력사용량 현황(종합)</span>
           <table className="table table-sm table-bordered mb-0 printTable">
             <tbody>
             <tr>
@@ -964,7 +966,7 @@ export const areaKwhStatYearComp = (item, item2) => {
 
   return (
     <div>
-      <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전력사용량 현황(상세)</span>
+      <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전력사용량 현황(상세)</span>
       <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_kwh_monthly_table">
         <tbody>
         <tr>
@@ -1013,7 +1015,7 @@ export const areaKwhStatYearComp = (item, item2) => {
 
       <CRow>
         <CCol sm={"5"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 전력사용량</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 전력사용량</span>
           <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_oc_warning_hourly_table">
             <tbody>
             <tr>
@@ -1078,7 +1080,7 @@ export const strKwhStatComp = (areaName, item, item3) => {
     <div>
       <CRow>
         <CCol sm={"5"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 요일별 전력사용량</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 전력사용량</span>
           <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_oc_warning_hourly_table">
             <tbody>
             <tr>
@@ -1129,7 +1131,7 @@ export const strKwhStatComp = (areaName, item, item3) => {
         </CCol>
       </CRow>
 
-      <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>상점별 전력사용량</span>
+      <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>상점별 전력사용량</span>
       <table className="table table-sm table-bordered mb-0 printTable" id="wme_str_kwh_table">
         <tbody>
         <tr>
@@ -1258,13 +1260,13 @@ export const storeYearWarningComp = (item) => {
   return (
     <div className={"mt-5"}>
       <div className={"d-flex justify-content-between"}>
-        <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
+        <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
         <div className={"d-flex align-items-center"}>
-          <span className={"subTitleType"} style={{fontSize: "0.8rem", display: "block"}}></span>
+          <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}></span>
         </div>
       </div>
 
-      {/*<span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>전기위험 경보 발생 현황(상세)</span>*/}
+      {/*<span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전기위험 경보 발생 현황(상세)</span>*/}
       <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_event_monthly_table">
         <tbody>
         <tr>
@@ -1505,126 +1507,78 @@ export const storeChartComp = (item1, item2, item3) => {
 
   return (
     <div className={"mt-5"}>
-      <CRow>
+      <CRow className={"mb-5"}>
          <CCol sm={"6"}>
-           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 과전류 발생현황</span>
+           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 과전류 발생현황</span>
            <div style={{ height: "300px"}}>
              {areaHourlDayStatChart(keys, hourOcChartData, "nivo")}
            </div>
          </CCol>
         <CCol sm={"6"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 요일별 과전류 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 과전류 발생현황</span>
           <div style={{ height: "300px"}}>
             {areaHourlDayStatChart(keys, dayOcChartData, "nivo")}
           </div>
         </CCol>
        </CRow>
-      <CRow>
+      <CRow className={"mb-5"}>
         <CCol sm={"6"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 IGR 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGR 발생현황</span>
           <div style={{ height: "300px"}}>
             {areaHourlDayStatChart(keys, hourIgrChartData, "nivo")}
           </div>
         </CCol>
         <CCol sm={"6"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 요일별 IGR 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGR 발생현황</span>
           <div style={{ height: "300px"}}>
             {areaHourlDayStatChart(keys, dayIgrChartData, "nivo")}
           </div>
         </CCol>
       </CRow>
 
-      <CRow>
+      <CRow className={"mb-5"}>
         <CCol md={"12"} style={{ height: "550px"}}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 월별 전력소비량</span>
-          <ResponsiveBar
-            data={chartData}
-            keys={[ "전력사용량" ]}
-            indexBy="label"
-            margin={{ top: 50, right: 30, bottom: 100, left: 60 }}
-            padding={0.2}
-            innerPadding={1}
-            groupMode="grouped"
-            valueScale={{ type: 'linear' }}
-            indexScale={{ type: 'band', round: true }}
-            valueFormat={{ format: '', enabled: false }}
-            colors={{ scheme: 'set3' }}
-            borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-            theme={{
-              axis: {
-                ticks: {
-                  text: {
-                    fontSize: 18,
-                    fill: "#333"
-                  }
-                }
-              },
-              legends: {
-                text: {
-                  fontSize: 16,
-                  fill: "#333"
-                }
-              },
-              labels: {
-                text: {
-                  fontSize: 18,
-                }
-              }
-            }}
-            axisTop={null}
-            axisRight={null}
-            axisLeft={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              legendPosition: 'middle',
-              legendOffset: -40
-            }}
-            borderRadius={4}
-            borderWidth={1}
-            labelSkipWidth={12}
-            labelSkipHeight={12}
-            labelTextColor="#333"
-            legends={[
-              {
-                dataFrom: 'keys',
-                anchor: 'bottom',
-                direction: 'row',
-                justify: false,
-                translateX: 10,
-                translateY: 85,
-                itemsSpacing: 21,
-                itemWidth: 130,
-                itemHeight: 61,
-                itemDirection: 'left-to-right',
-                itemOpacity: 0.85,
-                symbolSize: 20,
-                effects: [
-                  {
-                    on: 'hover',
-                    style: {
-                      itemOpacity: 1
-                    }
-                  }
-                ]
-              }
-            ]}
-          />
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 월별 전력소비량</span>
+          {areaBarChart(["전력사용량"], chartData, "set3")}
         </CCol>
       </CRow>
 
       <CRow>
         <CCol sm={"6"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 시간대별 IGR 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGR 발생현황</span>
           <div style={{ height: "300px"}}>
             {areaHourlDayStatChart(["전력사용량"], hourSnsrChartData, "set3")}
           </div>
         </CCol>
         <CCol sm={"6"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "1rem", display: "block"}}>* 요일별 IGR 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGR 발생현황</span>
           <div style={{ height: "300px"}}>
             {areaHourlDayStatChart(["전력사용량"], daySnsrChartData, "set3")}
           </div>
+        </CCol>
+      </CRow>
+    </div>
+  )
+}
+
+export const storePrintChartComp = (item1) => {
+  let chartData = [];
+
+  item1.map((item, idx) => {
+    if( idx !== 12) {
+      chartData.push({
+        "label": (idx + 1) + "월",
+        "전력사용량": Math.round(item["snsrKwh"]),
+      })
+    }
+  });
+
+  return (
+    <div>
+      <CRow>
+        <CCol md={"12"} style={{ height: "550px"}}>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 월별 전력소비량</span>
+          {areaBarChart(["전력사용량"], chartData, "set3")}
         </CCol>
       </CRow>
     </div>
