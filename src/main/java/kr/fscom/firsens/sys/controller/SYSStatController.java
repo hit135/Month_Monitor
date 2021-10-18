@@ -91,8 +91,8 @@ public class SYSStatController {
                 }
             }
             paramMap.put("type", type);
-
             paramMap.put("areaCode", areaCode);
+            paramMap.put("strCode", strCode);
             rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_AREA_INFO_STAT(areaCode));
             rtn.put("weekMonthStat", sysStatRepo.LIST_SYS_STAT_AREA_MONTHLY_STAT(paramMap));
             rtn.put("hourlyStat", sysStatRepo.LIST_SYS_STAT_AREA_HOURLY_STAT(paramMap));
@@ -105,7 +105,6 @@ public class SYSStatController {
                 rtn.put("levelAreaStat", sysStatRepo.LIST_SYS_STAT_LEVEL_AREA_STAT(paramMap));
                 rtn.put("levelStrStat", sysStatRepo.LIST_SYS_STAT_STR_EVENT_STAT(paramMap));
             } else {
-                paramMap.put("strCode", strCode);
                 rtn.put("strInfo", sysStatRepo.SELECT_SYS_STAT_STR_INFO(paramMap));
 //                rtn.put("areaKwhStat", sysStatRepo.SELECT_SYS_STAT_AREA_KWHIGO_STAT(paramMap));
             }
