@@ -124,8 +124,6 @@
           $('.store-log-sensor-list').html('');
 
           for (let i = 0; i < d.length; i++) {
-            d[i]['CNT'] = 0;
-
             if      (d[i]['DANGER'] > 0) d[i]['STATE'] = 'danger';
             else if (d[i]['WARN'] > 0)   d[i]['STATE'] = 'warn';
             else if (d[i]['CON'] == 0)   d[i]['STATE'] = 'discon';

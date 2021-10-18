@@ -34,9 +34,9 @@
     </div><!-- /.store-img -->
     <div class="col-md-8 m-md-0 col-12 m-3">
       <div class="row mt-2">
-        <div class="col-5 store-log">
+        <div class="col-5">
           <table class="store-datalog-meta" style="margin-top:30px;">
-            <tr class="monkwh"><th><span></span><br/>사용전력량</th><td><span></span>kWh</td></tr>
+            <tr class="monkwh"><th>사용전력량</th><td><span></span>kWh</td></tr>
             <tr class="kw"><th>전력</th><td><span></span>kW</td></tr>
             <tr class="vo"><th>전압</th><td><span></span>V</td></tr>
             <tr class="am"><th>전류</th><td><span></span>A</td></tr>
@@ -254,10 +254,10 @@
         $('#contextRoot').val() + '/mng/storeInfoAjax'
       , { 'snsrid': $('#prm_snsrid').val() }
       , function(d) {
-          $('.store-name-cont').html(d[0]['STRNAME']);
-          $('.store-addr-cont').html(d[0]['STRADDR']);
-          $('.store-tel-cont').html(d[0]['STRTEL']);
-          $('.store-owntel-cont').html(d[0]['STROWNTEL']);
+          $('.store-meta .store-name-cont').html(d[0]['STRNAME']);
+          $('.store-meta .store-addr-cont').html(d[0]['STRADDR']);
+          $('.store-meta .store-tel-cont').html(d[0]['STRTEL']);
+          $('.store-meta .store-owntel-cont').html(d[0]['STROWNTEL']);
         }
     );
   }
@@ -361,8 +361,6 @@
           $('.store-info-sensor-list').html('');
 
           for (let i = 0; i < d.length; i++) {
-            d[i]['CNT'] = 0;
-
             if      (d[i]['DANGER'] > 0) d[i]['STATE'] = 'danger';
             else if (d[i]['WARN'] > 0)   d[i]['STATE'] = 'warn';
             else if (d[i]['CON'] == 0)   d[i]['STATE'] = 'discon';
@@ -386,33 +384,60 @@
             'strcode': $('#prm_strcode').val()
           , 'areacode': $('#prm_areacode').val()
           , 'snsrid': $("input:radio[name='snsr-radio-btn']:checked").val()
-          , 'regdt': $('#regdt').val()
+          , 'regdt': $('.store-info #regdt').val()
         }
       , function(d) {
           $('.store-datalog-list').html('');
 
-          for (let i = 0; i < d.length; i++) {
-            d[i]['DATALOG'] = '전력: ' + d[i]['SNSRWATT'] + 'kW | 전류: ' + d[i]['SNSRAMPERE'] + 'mA | 누설전류: ' + d[i]['SNSRIGO'] + 'mA';
+          if ( d != null && d.length > 0) {
+            for (let i = 0; i < d.length; i++) {
+              d[i]['DATALOG'] = '전력: ' + d[i]['SNSRWATT'] + 'kW | 전류: ' + d[i]['SNSRAMPERE'] + 'mA | 누설전류: ' + d[i]['SNSRIGO'] + 'mA';
 
-            if (d[i]['STATE'])
-              d[i]['DATALOG'] = d[i]['LCAUSE'];
+              if (d[i]['STATE'])
+                d[i]['DATALOG'] = d[i]['LCAUSE'];
 
-            $('.store-datalog-list').append($.tmpl('datalog', d[i]));
+              $('.store-datalog-list').append($.tmpl('datalog', d[i]));
+
+              if (i == 0) {
+                if ($('#regdt').val()) {
+                  $.post(
+                    $('#contextRoot').val() + '/mng/sensorUsekwhMonthAjax'
+                    , { 'snsrid': $("input:radio[name='snsr-radio-btn']:checked").val(), 'regdt': $('.store-info #regdt').val() }
+                    , function(d) {
+                        $('.store-datalog-meta .monkwh td span').text(d[0]['USEKWH']);
+                      }
+                  );
+                }
+
+                $(".store-datalog-meta .kw td span").text(d[i]['SNSRWATT']);
+                $(".store-datalog-meta .vo td span").text(d[i]['SNSRVOLT']);
+                $(".store-datalog-meta .am td span").text(d[i]['SNSRAMPERE']);
+                $(".store-datalog-meta .hz td span").text(d[i]['SNSRHZ']);
+                $(".store-datalog-meta .igo td span").text(d[i]['SNSRIGO']);
+                $(".store-datalog-meta .igr td span").text(d[i]['SNSRIGR']);
+                $(".store-datalog-meta .igc td span").text(d[i]['SNSRIGC']);
+                $(".store-datalog-meta .meg td span").text(d[i]['SNSRREG']);
+                $(".store-datalog-meta .kwh td span").text(d[i]['SNSRKWH']);
+                $(".store-datalog-meta .dbm td span").text(d[i]['SNSRRSSI']);
+              }
+            }
+
+            // if ($('.store-datalog-list p.DANGER').length > 0) {
+            //   if ($('.store-info #check-danger:checked').length < 1) {
+            //     $('.store-info #check-danger').click();
+            //   }
+            // } else if ($('.store-datalog-list p.WARN').length > 0) {
+            //   if ($('.store-info #check-warn:checked').length < 1) {
+            //     $('.store-info #check-warn').click();
+            //   }
+            // } else if ($('.store-info #check-total:checked').length < 1) {
+            //   $('.store-info #check-total').click();
+            // }
+
+            // fn_showDataLog();
+          } else {
+            $('.store-datalog-list').html('데이터가 없습니다');
           }
-
-          // if ($('.store-datalog-list p.DANGER').length > 0) {
-          //   if ($('.store-info #check-danger:checked').length < 1) {
-          //     $('.store-info #check-danger').click();
-          //   }
-          // } else if ($('.store-datalog-list p.WARN').length > 0) {
-          //   if ($('.store-info #check-warn:checked').length < 1) {
-          //     $('.store-info #check-warn').click();
-          //   }
-          // } else if ($('.store-info #check-total:checked').length < 1) {
-          //   $('.store-info #check-total').click();
-          // }
-
-          //fn_showDataLog();
 
           $('.store-datalog-list p').show();
         }

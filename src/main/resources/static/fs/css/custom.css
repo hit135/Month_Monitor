@@ -84,7 +84,7 @@
 .store-info .store-meta td { padding:0 10px; line-height:35px; font-size:16px; font-weight:bold; }
 .store-info .store-meta td.store-sensor-cont { font-size:12px; }
 .store-info .store-meta td.store-sensor-cont p { margin:0; }
-.store-info .store-datalog-list { height:400px; overflow-x:scroll; overflow-y:scroll; }
+.store-info .store-datalog-list { height:435px; overflow-x:scroll; overflow-y:scroll; }
 .store-info .store-datalog-list p { font-weight:bold; color:#666; font-size:13px; margin:0; width:550px; }
 .store-info .store-datalog-list p.DANGER { color:#ff2f44; }
 .store-info .store-datalog-list p.WARN { color:#efaf77; }
@@ -95,6 +95,11 @@
 .store-info .tbl-bar .progress-bar { display:block; position:absolute; bottom:0; width:100%; border-radius:3px 3px 0 0; }
 .store-info .tbl-bar .progress-bar.danger-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
 .store-info .tbl-bar .progress-bar.warn-this { font-weight:bold; text-shadow:1px 1px 5px #000; }
+.store-info .store-datalog-meta { width:100%; table-layout:fixed; }
+.store-info .store-datalog-meta tr { border-bottom:1px solid; }
+.store-info .store-datalog-meta th { color:#666; width:95px; font-weight:bold; text-align:right; }
+.store-info .store-datalog-meta td { color:#666; padding:8px; }
+.store-info .store-datalog-meta td span { display:inline-block; text-align:right; width:80px; margin-right:5px; color:#000; font-weight:bold; font-size:16px; }
 .store-info-sensor-list { margin-top: 5px; /*margin-bottom:20px; height:200px; overflow-y:scroll;*/ }
 .store-info-sensor-list p.btn-datalog { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; line-height:16px; }
 .store-info-sensor-list p.btn-datalog span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }
@@ -114,11 +119,6 @@
 .store-info-sensor-list p.store-info-check.CHECKING .btn-check-start { display:none; }
 .store-info-sensor-list p.store-info-check.CHECKING .btn-check-end { display:inline-block; }
 
-.store-log .store-datalog-meta { width:100%; table-layout:fixed; }
-.store-log .store-datalog-meta tr { border-bottom:1px solid; }
-.store-log .store-datalog-meta th { color:#666; width:95px; font-weight:bold; text-align:right; }
-.store-log .store-datalog-meta td { color:#666; padding:8px; }
-.store-log .store-datalog-meta td span { display:inline-block; text-align:right; width:80px; margin-right:5px; color:#000; font-weight:bold; font-size:16px; }
 .store-log .form-group { margin-bottom:0; }
 .store-log .store-datalog-filtered-list { height:580px; overflow-y:scroll; }
 .store-log .store-datalog-filtered-list p { font-weight:bold; color:#666; font-size:13px; margin:0; cursor:pointer; }
