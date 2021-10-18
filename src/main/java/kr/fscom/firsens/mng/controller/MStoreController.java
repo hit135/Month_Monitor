@@ -1,17 +1,19 @@
 package kr.fscom.firsens.mng.controller;
 
+import kr.fscom.firsens.common.paging.PaginationInfo;
 import kr.fscom.firsens.mng.repository.MStoreRepo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -265,6 +267,7 @@ public class MStoreController {
 
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+            prm.put("snsrid", req.getParameter("snsrid"));
 
             return storeRepo.SELECT_DATA_LOG_LIST(prm);
         } catch (Exception e) {
@@ -272,6 +275,57 @@ public class MStoreController {
         }
 
         return null;
+    }
+
+    @RequestMapping(value = "/dataLogList2Ajax", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @ResponseBody
+    public HashMap<String, Object> dataLogList2Ajax(HttpServletRequest req, @RequestParam HashMap<String, Object> paramMap) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        boolean result = false;
+        int resultCnt = 0;
+        List<HashMap<String, Object>> resultList = new ArrayList<>();
+
+        try {
+            HashMap<String, Object> param = new HashMap<>();
+            param.put("snsrid", paramMap.get("snsrid"));
+            param.put("regdt", paramMap.get("regdt"));
+            param.put("type", paramMap.get("type"));
+            param.put("pagelimit", Integer.parseInt((String) paramMap.get("pageindex")) * 1000);
+            param.put("pagestart", (Integer.parseInt((String) paramMap.get("pageindex")) - 1) * 1000);
+
+            HashMap<String, Object> pagingPrm = new HashMap<>();
+            pagingPrm.put("pageSize", 5);
+            pagingPrm.put("recordCountPerPage", 1000);
+            pagingPrm.put("currentPageNo", Integer.parseInt((String) paramMap.get("pageindex")));
+
+            if ("check-total".equals(paramMap.get("type"))) {
+                resultCnt = storeRepo.CNT_DATA_LOG_TOTAL(param);
+                if (resultCnt > 0) {
+                    pagingPrm.put("totalRecordCount", resultCnt);
+                    rtn.put("pInfo", new PaginationInfo().getPaginationInfo(pagingPrm));
+
+                    resultList = storeRepo.LIST_DATA_LOG_TOTAL(param);
+                }
+            } else {
+                resultCnt = storeRepo.CNT_DATA_LOG_EVENT(param);
+                if (resultCnt > 0) {
+                    pagingPrm.put("totalRecordCount", resultCnt);
+                    rtn.put("pInfo", new PaginationInfo().getPaginationInfo(pagingPrm));
+
+                    resultList = storeRepo.LIST_DATA_LOG_EVENT(param);
+                }
+            }
+
+            result = true;
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        } finally {
+            rtn.put("result", result);
+            rtn.put("resultCnt", resultCnt);
+            rtn.put("resultList", resultList);
+        }
+
+        return rtn;
     }
 
     @RequestMapping(value = "/sensorUsekwhMonthAjax")
@@ -310,6 +364,7 @@ public class MStoreController {
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+            prm.put("snsrid", req.getParameter("snsrid"));
 
             return storeRepo.SELECT_LOG_WEEK_STAT(prm);
         } catch (Exception e) {

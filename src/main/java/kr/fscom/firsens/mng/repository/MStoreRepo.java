@@ -33,7 +33,13 @@ public interface MStoreRepo {
     List<HashMap<String, Object>> SELECT_STORE_SENSOR_DATA(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_LIST_SENSOR(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_STORE_IMG(Map<String, Object> param) throws Exception;
+
     List<HashMap<String, Object>> SELECT_DATA_LOG_LIST(Map<String, Object> param) throws Exception;
+    int CNT_DATA_LOG_TOTAL(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_DATA_LOG_TOTAL(Map<String, Object> param) throws Exception;
+    int CNT_DATA_LOG_EVENT(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_DATA_LOG_EVENT(Map<String, Object> param) throws Exception;
+
     List<HashMap<String, Object>> SELECT_LOG_WEEK_STAT(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_SENSOR_USEKWH_MONTH(Map<String, Object> param) throws Exception;
     void INSERT_SENSOR_CHECK(Map<String, Object> param) throws Exception;

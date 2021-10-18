@@ -209,9 +209,11 @@
     </select>
 
     <select id="SELECT_AREA_SENSOR_LIST" parameterType="map" resultType="map">
-        SELECT E.STRCODE
+        SELECT ROW_NUMBER() over (ORDER BY C.DANGER DESC, D.WARN DESC, G.CON DESC, A.SNSRID) AS ROWNUM
+             , E.STRCODE
              , E.STRNAME
              , A.SNSRID
+             , TRIM(LEADING '0' FROM A.SNSRID) AS SNSRIDTRIM
              , A.SNSRNICK
              , IFNULL(C.DANGER, 0)  AS DANGER
              , IFNULL(D.WARN, 0)    AS WARN
