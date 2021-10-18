@@ -126,18 +126,18 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
               </div>
             </div>
 
-            <CRow>
-              <div className={"pl-4 pr-4 pt-4"}>
-                {props.levelAreaStat}
-              </div>
-              <div className="position-absolute-ct">
-                <h3 className="m-0" style={{fontSize: "30px"}}>- 4 -</h3>
-              </div>
 
-              <div className="position-absolute-rb">
-                <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
-              </div>
-            </CRow>
+            <div className={"pl-4 pr-4 pt-4"}>
+              {props.levelAreaStat}
+            </div>
+            <div className="position-absolute-ct">
+              <h3 className="m-0" style={{fontSize: "30px"}}>- 4 -</h3>
+            </div>
+
+            <div className="position-absolute-rb">
+              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            </div>
+
           </div>
         }
 

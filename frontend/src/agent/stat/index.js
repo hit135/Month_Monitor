@@ -41,9 +41,8 @@ export const getStatInfoList = (type, guCode, areaCode, startDate, endDate, date
 
 // 시장, 상점 전기안전현황 컴포넌트
 export const areaStatusComponent = (param, startDate, endDate, type, strName, snsrCnt) => {
-  console.log(startDate, endDate);
   return (
-    <div>
+    <div className={"printMargin"}>
       <table className="table table-sm table-bordered mb-0 printTable">
         <tbody>
         <tr>
@@ -111,7 +110,7 @@ export const areaTotalWarningComp = (areaName, item) => {
     }
   });
   return (
-      <div className={"mt-5"}>
+      <div className={"mt-5 printMargin"}>
         <h5 className={"title"}>{areaName} 전기위험 경보 발생 현황</h5>
         <span className={"mb-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전기위험 경보 발생 현황(종합)</span>
         <table className="table table-sm table-bordered mb-0 printTable">
@@ -383,7 +382,7 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
   });
 
   return (
-    <div>
+    <div className={"printMargin"}>
       <div>
         <div>
           <CRow style={{ height: "500px"}}>
@@ -599,7 +598,7 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
     });
   });
   return (
-    <div className={"printRow"}>
+    <div className={"printRow printMargin"}>
       <CRow>
         <CCol sm={"5"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGR 발생현황</span>
@@ -719,7 +718,7 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
       <CRow>
         <CCol sm={"5"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGO 발생현황</span>
-          <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_igo_danger_dayofweek_table">
+          <table className="table table-sm table-bordered mb-0 printTable">
             <tbody>
             <tr>
               <td className="wme_table_td_title text-center">요일</td>
@@ -801,9 +800,9 @@ export const levelAreaStatComp = (areaName, item) => {
     })
   }
   return (
-    <div className={"mt-4"}>
+    <div className={"mt-4 printMargin"}>
       <h5 className={"title"}>{areaName} 내 시장별 현황</h5>
-      <table className="table table-sm table-bordered mb-0 printTable" >
+      <table className="table table-sm table-bordered mb-0 printTable">
         <tbody id="wme_level_area_table">
         <tr>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소시장명</td>
@@ -876,7 +875,7 @@ export const levelAreaStatComp = (areaName, item) => {
 // 내상점별 현황
 export const levelStoreStatComp = (areaName, item) => {
   return (
-    <div className={"mt-5"}>
+    <div className={"mt-5 printMargin"}>
       <h5 className={"title"}>{areaName} 내 상점별 현황</h5>
       <table className="table table-sm table-bordered mb-0 printTable" >
         <tbody id="wme_str_event_table">
@@ -919,7 +918,7 @@ export const levelStoreStatComp = (areaName, item) => {
 // 전기사용량 현황
 export const areaKwhStatComp = (areaName, item) => {
   return (
-    <div className={"mt-4"}>
+    <div className={"mt-4 printMargin"}>
       <CRow>
         <CCol sm={"12"} style={{paddingTop: "7%"}}>
           <h5 className={"title"}>{areaName} 전력사용량 현황(종합)</h5>
@@ -965,7 +964,7 @@ export const areaKwhStatYearComp = (item, item2) => {
   console.log(hourKwhData);
 
   return (
-    <div>
+    <div className={"printMargin"}>
       <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전력사용량 현황(상세)</span>
       <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_kwh_monthly_table">
         <tbody>
@@ -1077,7 +1076,7 @@ export const strKwhStatComp = (areaName, item, item3) => {
     });
   });
   return (
-    <div>
+    <div className={"printMargin"}>
       <CRow>
         <CCol sm={"5"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 전력사용량</span>
@@ -1258,7 +1257,7 @@ export const storeYearWarningComp = (item) => {
     }
   });
   return (
-    <div className={"mt-5"}>
+    <div className={"mt-5 printMargin"}>
       <div className={"d-flex justify-content-between"}>
         <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
         <div className={"d-flex align-items-center"}>
@@ -1506,7 +1505,7 @@ export const storeChartComp = (item1, item2, item3) => {
   });
 
   return (
-    <div className={"mt-5"}>
+    <div className={"mt-5 printMargin"}>
       <CRow className={"mb-5"}>
          <CCol sm={"6"}>
            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 과전류 발생현황</span>
@@ -1520,7 +1519,7 @@ export const storeChartComp = (item1, item2, item3) => {
             {areaHourlDayStatChart(keys, dayOcChartData, "nivo")}
           </div>
         </CCol>
-       </CRow>
+      </CRow>
       <CRow className={"mb-5"}>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGR 발생현황</span>
@@ -1590,7 +1589,7 @@ const areaBarChart = (key, data, color) => (
     data={data}
     keys={key}
     indexBy="label"
-    margin={{ top: 50, right: 30, bottom: 100, left: 60 }}
+    margin={{ top: 50, right: 100, bottom: 100, left: 100 }}
     padding={0.1}
     innerPadding={1}
     groupMode="grouped"
