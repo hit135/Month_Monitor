@@ -43,6 +43,8 @@ const StatMgr = () => {
   let areaNameTitle = "";
   let strName = "";
   let snsrCnt = 0;
+  let strTel = "";
+  let strOwnTel = "";
   let searchStartDate = "";
   let searchEndDate = "";
   const [onStrModal, setOnStrModal] = useState(false);
@@ -113,6 +115,7 @@ const StatMgr = () => {
   };
 
   const handleClickBtnGroup = type => {
+    setTotalLoading(true);
     setHookReset();
     if(type !== "store") {
       document.getElementById("strSelect").style.display = "none";
@@ -207,6 +210,8 @@ const StatMgr = () => {
         if(typeValue === "store") {
           if(resp.data["strInfo"] !== null) {
             strName = resp.data["strInfo"]["strName"];
+            strTel = resp.data["strInfo"]["strTel"];
+            strOwnTel = resp.data["strInfo"]["strOwnTel"];
             setPropStrName(resp.data["strInfo"]["strName"]);
             snsrCnt = resp.data["strInfo"]["snsrCnt"];
           }
@@ -228,14 +233,13 @@ const StatMgr = () => {
           const temp = resp.data["infoStat"];
           setAreaName(temp.areaName);
           areaNameTitle = temp.areaName;
-          setAreaState(areaStatusComponent(temp, searchStartDate, searchEndDate, typeValue, strName, snsrCnt));
+          setAreaState(areaStatusComponent(temp, searchStartDate, searchEndDate, typeValue, strName, snsrCnt, strTel, strOwnTel));
         }
 
         if(typeValue === "areaCode") {
           setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"]));
           setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
           setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
-          // setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
           if(resp.data["levelAreaStat"].length > 0)
             setLevelAreaStat(levelAreaStatComp(areaNameTitle, resp.data["levelAreaStat"]));
           else
@@ -450,8 +454,8 @@ const StatMgr = () => {
       {printLoading && typeValue !== "store" &&
          <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
                            levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}
-                           areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}
-                           endDate={formatDate(endDate)} />
+                           areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={startDate}
+                           endDate={endDate} />
       }
 
       {printLoading && typeValue === "store" &&

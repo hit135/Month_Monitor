@@ -40,56 +40,103 @@ export const getStatInfoList = (type, guCode, areaCode, startDate, endDate, date
   ].join('&'));
 
 // 시장, 상점 전기안전현황 컴포넌트
-export const areaStatusComponent = (param, startDate, endDate, type, strName, snsrCnt) => {
+export const areaStatusComponent = (param, startDate, endDate, type, strName, snsrCnt, strTel, strOwnTel) => {
+  console.log(param);
   return (
-    <div className={"printMargin"}>
-      <table className="table table-sm table-bordered mb-0 printTable">
-        <tbody>
-        <tr>
-          <td className="wme_table_td_title table-title text-center" colSpan={2}>{param.areaName} {strName} 전기위험 현황</td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>대상</td>
-          <td>
-            {type !== "store" ?
-              param.snsrCnt?.toLocaleString() + "대 (상점수 " + param.strCnt?.toLocaleString() + "개)" :
-              "전기감지 센서 " + snsrCnt + "대"
-            }
-          </td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>설치일자</td>
-          <td>
+
+    <div>
+      {type !== "store" ?
+        <div className={"printMargin"}>
+          <table className="table table-sm table-bordered mb-0 printTable">
+            <tbody>
+            <tr>
+              <td className="wme_table_td_title table-title text-center" colSpan={2}>{param.areaName} {strName} 전기위험 현황</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>대상</td>
+              <td>
                 {type !== "store" ?
-                  param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일" :
-                  param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일"
+                  param.snsrCnt?.toLocaleString() + "대 (상점수 " + param.strCnt?.toLocaleString() + "개)" :
+                  "전기감지 센서 " + snsrCnt + "대"
                 }
-          </td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>운영기간</td>
-          <td>
-            {type !== "store" ?
-              param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일 ~ 현재" :
-              param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재"
-            }
-          </td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>조회기간</td>
-          <td>
-            {endDate === undefined ? startDate : startDate + " - " + endDate}
-            {/*{formatDate(startDate)} ~ {formatDate(endDate)}*/}
-          </td>
-        </tr>
-        <tr>
-          <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>주소</td>
-          <td>
-            {param.areaAddr}
-          </td>
-        </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>설치일자</td>
+              <td>
+                    {type !== "store" ?
+                      param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일" :
+                      param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일"
+                    }
+              </td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>운영기간</td>
+              <td>
+                {type !== "store" ?
+                  param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일 ~ 현재" :
+                  param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재"
+                }
+              </td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>조회기간</td>
+              <td>
+                {endDate === undefined ? startDate : startDate + " - " + endDate}
+                {/*{formatDate(startDate)} ~ {formatDate(endDate)}*/}
+              </td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>주소</td>
+              <td>
+                {param.areaAddr}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+         :
+        <div className={"printMargin"}>
+          <table className="table table-sm table-bordered mb-0 printTable">
+            <tbody>
+            <tr>
+              <td className="wme_table_td_title table-title text-center" colSpan={4}>{param.areaName} {strName} 전기위험 현황</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title">대상</td>
+              <td>
+                {type !== "store" ?
+                  param.snsrCnt?.toLocaleString() + "대 (상점수 " + param.strCnt?.toLocaleString() + "개)" :
+                  "전기감지 센서 " + snsrCnt + "대"
+                }
+              </td>
+              <td className="wme_table_td_title">조회기간</td>
+              <td>{endDate === undefined ? startDate : startDate + " - " + endDate}</td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title">설치일자</td>
+              <td>{param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일"}</td>
+              <td className="wme_table_td_title" style={{width: "15%"}}>상점주 연락처</td>
+              <td>
+                {strOwnTel}
+              </td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title">운영기간</td>
+              <td>{param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재"}</td>
+              <td className="wme_table_td_title" style={{width: "15%"}}>상점 연락처</td>
+              <td>
+                {strTel}
+              </td>
+            </tr>
+            <tr>
+              <td className="wme_table_td_title">주소</td>
+              <td colSpan="3">{param.areaAddr}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      }
     </div>
     )
 }
@@ -386,7 +433,7 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
       <div>
         <div>
           <CRow style={{ height: "500px"}}>
-            {areaBarChart(["전체누설전류 1차 경보", "전체누설전류 2차 경보", "저항누설전류 1차 경보", "저항누설전류 2차 경보" ], chartData, "set3")}
+            {areaBarChart(["전체누설전류 1차 경보", "전체누설전류 2차 경보", "저항누설전류 1차 경보", "저항누설전류 2차 경보" ], chartData, ["#e8c1a0", "#f47560", "#bdf192", "#4e8124"], false)}
           </CRow>
         </div>
         <CRow>
@@ -857,7 +904,7 @@ export const levelAreaStatComp = (areaName, item) => {
                 <div className={"d-flex justify-content-between"}>
                   <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 단위시장별 전력사용량</span>
                   <div className={"d-flex align-items-center"}>
-                    <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+                    <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : kWh)</span>
                   </div>
                 </div>
 
@@ -1584,7 +1631,7 @@ export const storePrintChartComp = (item1) => {
   )
 }
 
-const areaBarChart = (key, data, color) => (
+const areaBarChart = (key, data, color, colorType = true) => (
   <ResponsiveBar
     data={data}
     keys={key}
@@ -1596,7 +1643,9 @@ const areaBarChart = (key, data, color) => (
     valueScale={{ type: 'linear' }}
     indexScale={{ type: 'band', round: true }}
     valueFormat=" >-,"
-    colors={{ scheme: color }}
+    colors={colorType ? { scheme: color } : color}
+    // colors={}
+    // colorBy="nivo"
     enableLabel={false}
     theme={{
       axis: {
@@ -1660,7 +1709,7 @@ const areaHourlDayStatChart = (key, data, color) => (
     data={data}
     keys={key}
     indexBy="label"
-    margin={{ top: 50, right: 140, bottom: 50, left: 60 }}
+    margin={{ top: 50, right: 60, bottom: 100, left: 60 }}
     padding={0.2}
     innerPadding={1}
     groupMode="grouped"
@@ -1715,14 +1764,14 @@ const areaHourlDayStatChart = (key, data, color) => (
     legends={[
       {
         dataFrom: 'keys',
-        anchor: 'bottom-right',
-        direction: 'column',
+        anchor: 'bottom',
+        direction: 'row',
         justify: false,
-        translateX: 120,
-        translateY: 0,
-        itemsSpacing: 2,
-        itemWidth: 100,
-        itemHeight: 20,
+        translateX: 0,
+        translateY: 100,
+        itemsSpacing: 21,
+        itemWidth: 180,
+        itemHeight: 61,
         itemDirection: 'left-to-right',
         itemOpacity: 0.85,
         symbolSize: 20,
@@ -1736,5 +1785,29 @@ const areaHourlDayStatChart = (key, data, color) => (
         ]
       }
     ]}
+    // legends={[
+    //   {
+    //     dataFrom: 'keys',
+    //     anchor: 'bottom-right',
+    //     direction: 'column',
+    //     justify: false,
+    //     translateX: 120,
+    //     translateY: 0,
+    //     itemsSpacing: 2,
+    //     itemWidth: 100,
+    //     itemHeight: 20,
+    //     itemDirection: 'left-to-right',
+    //     itemOpacity: 0.85,
+    //     symbolSize: 20,
+    //     effects: [
+    //       {
+    //         on: 'hover',
+    //         style: {
+    //           itemOpacity: 1
+    //         }
+    //       }
+    //     ]
+    //   }
+    // ]}
   />
 );

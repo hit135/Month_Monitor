@@ -16,7 +16,7 @@ export const ComponentToPrint2 = React.forwardRef((props, ref) => (
       <CCardBody className={"p-0"}>
         {/* 전기안전 현황 */}
         <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
+          <div className={"d-flex justify-content-between logoMargin"}>
             <div>
               <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             </div>

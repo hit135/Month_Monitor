@@ -16,7 +16,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
     {
       props.typeName !== "store" &&
       <div className={"printRow"}>
-        <div className={"d-flex justify-content-between"}>
+        <div className={"d-flex justify-content-between logoMargin"}>
           <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
           <div className={"p-5"}>
             <h3 style={{fontSize: "40px"}}>
@@ -48,7 +48,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
       <CCardBody className={"p-0"}>
         {/* 전기안전 현황 */}
         <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
+          <div className={"d-flex justify-content-between logoMargin"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
@@ -71,7 +71,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
 
         {/* 과전류, IGO */}
         <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
+          <div className={"d-flex justify-content-between logoMargin"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
@@ -93,7 +93,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
         </div>
 
         <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
+          <div className={"d-flex justify-content-between logoMargin"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
@@ -117,7 +117,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
         {
           props.areaTitle === "대전중앙시장" &&
           <div className={"printRow"}>
-            <div className={"d-flex justify-content-between"}>
+            <div className={"d-flex justify-content-between logoMargin"}>
               <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
               <div className={"p-5"}>
                 <h3 style={{fontSize: "30px"}}>
@@ -143,7 +143,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
 
         {/* 내 상점별 현황 */}
         <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
+          <div className={"d-flex justify-content-between logoMargin"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
@@ -172,7 +172,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
         </div>
 
         <div className={"printRow"}>
-          <div className={"d-flex justify-content-between"}>
+          <div className={"d-flex justify-content-between logoMargin"}>
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
