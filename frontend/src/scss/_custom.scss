@@ -110,7 +110,7 @@ table tr {
 
 .subTitle {
   font-weight: 600 !important;
-  font-size : 1rem !important;
+  font-size : 18px !important;
   color: #2ca8ff  !important;
 }
 
@@ -140,7 +140,7 @@ table tr {
   //  left: 0;
   //}
   .chartHeight {
-    height: 500px;
+    height: 500px !important;
   }
   .logoMargin {
     margin : 10mm 10mm 5mm 20mm;
@@ -148,6 +148,7 @@ table tr {
   .printMargin {
     margin-right: 15mm;
     margin-left: 15mm;
+    margin-bottom: 10mm;
   }
 
   .printRow {
@@ -161,13 +162,13 @@ table tr {
   }
   .position-absolute-ct {
     position: absolute;
-    bottom : 2%;
+    bottom : 0%;
     left : 50%;
   }
 
   .position-absolute-rb {
     position: absolute;
-    bottom : 2%;
+    bottom : 0%;
     right : 5%;
   }
 
