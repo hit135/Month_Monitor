@@ -53,6 +53,8 @@
         SELECT DISTINCT A.STRCODE AS strCode
              , A.STRNAME AS strName
              , COUNT(B.SNSRID) AS snsrCnt
+             , A.STRTEL AS strTel
+             , A.STROWNTEL AS strOwnTel
           FROM F_STORE A
         LEFT JOIN F_SENSOR_INFO B
                ON A.STRCODE = B.STRCODE

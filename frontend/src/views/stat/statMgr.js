@@ -23,27 +23,38 @@ import {
   areaTotalKwhComp,
   areaTotalChartStatComp,
   levelAreaStatComp,
-  levelStoreStatComp, areaKwhStatComp, areaKwhStatYearComp, strKwhStatComp, getStatInfoList, areaTotalChartStatComp2,
+  levelStoreStatComp,
+  areaKwhStatComp,
+  areaKwhStatYearComp,
+  strKwhStatComp,
+  getStatInfoList,
+  areaTotalChartStatComp2,
+  storePrintChartComp,
 } from "../../agent/stat";
 import ReactToPrint, {useReactToPrint} from "react-to-print";
 import {ComponentToPrint} from "./printStatMgr";
 import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
 import {formatDate} from "../../agent/commonIndex";
 import '../../scss/react-datepicker.css';
+import {ComponentToPrint2} from "./printStatStoreMgr";
 
 const StatMgr = () => {
   let Spinner = require('react-spinkit');
   let areaNameTitle = "";
   let strName = "";
   let snsrCnt = 0;
+  let strTel = "";
+  let strOwnTel = "";
+  let searchStartDate = "";
+  let searchEndDate = "";
   const [onStrModal, setOnStrModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalLoading, setTotalLoading] = useState(true);
   const [printLoading, setPrintLoading] = useState(false);
   const [typeValue, setTypeValue] = useState("areaCode");
   const [strCode, setStrCode] = useState("");
-  const [startDate, setStartDate] = useState(new Date('2021-01-01'));
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const [dateType, setDateType] = useState("년");
   const [yearDate, setYearDate] = useState(new Date());
   const [monthDate, setMonthDate] = useState(new Date());
@@ -65,6 +76,8 @@ const StatMgr = () => {
   const [areaKwhYearStat, setAreaKwhYearStat] = useState();
   const [strKwhStat, setStrKwhStat] = useState();
 
+  const [propStrName, setPropStrName] = useState();
+  const [printChartComp, setPrintChartComp] = useState();
   const [storeYearWarning, setStoreYearWarning] = useState();     // 상점
   const [storeChart, setStoreChart] = useState();                 // 상점
 
@@ -96,13 +109,13 @@ const StatMgr = () => {
   }
 
   const clickStrRow = e => {
-    console.log(e);
     document.getElementById("strSelect").value = e.strName;
     setStrCode(e.strCode);
     setAreaCode(e.areaCode);
   };
 
   const handleClickBtnGroup = type => {
+    setTotalLoading(true);
     setHookReset();
     if(type !== "store") {
       document.getElementById("strSelect").style.display = "none";
@@ -189,37 +202,44 @@ const StatMgr = () => {
 
     await getStatInfo(typeValue, guCode, areaCode, strCode,  startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
       if (resp.data['result'] === "success") {
+        searchStartDate = resp.data["startDate"];
+        searchEndDate = resp.data["endDate"];
+        setStartDate(searchStartDate);
+        setEndDate(searchEndDate);
         // 상점일 경우
         if(typeValue === "store") {
           if(resp.data["strInfo"] !== null) {
             strName = resp.data["strInfo"]["strName"];
+            strTel = resp.data["strInfo"]["strTel"];
+            strOwnTel = resp.data["strInfo"]["strOwnTel"];
+            setPropStrName(resp.data["strInfo"]["strName"]);
             snsrCnt = resp.data["strInfo"]["snsrCnt"];
           }
 
           if(resp.data["weekMonthStat"] !== null) {
             setStoreYearWarning(storeYearWarningComp(resp.data["weekMonthStat"]));
             setStoreChart(storeChartComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
+            setPrintChartComp(storePrintChartComp(resp.data["weekMonthStat"]));
           }
         }
 
         if(resp.data["infoStat"].length > 1) {
           let compList = [];
           resp.data["infoStat"].map((item, idx) => {
-            compList.push(areaStatusComponent(item.areaName, startDate, endDate, item.areaAddr));
+            compList.push(areaStatusComponent(item.areaName, searchStartDate, searchEndDate, item.areaAddr));
           })
           setAreaState(compList);
         } else {
           const temp = resp.data["infoStat"];
           setAreaName(temp.areaName);
           areaNameTitle = temp.areaName;
-          setAreaState(areaStatusComponent(temp, startDate, endDate, typeValue, strName, snsrCnt));
+          setAreaState(areaStatusComponent(temp, searchStartDate, searchEndDate, typeValue, strName, snsrCnt, strTel, strOwnTel));
         }
 
         if(typeValue === "areaCode") {
           setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"]));
           setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
           setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
-          // setAreaKwhHourlyStat(areaTotalKwhComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
           if(resp.data["levelAreaStat"].length > 0)
             setLevelAreaStat(levelAreaStatComp(areaNameTitle, resp.data["levelAreaStat"]));
           else
@@ -300,7 +320,7 @@ const StatMgr = () => {
 
   return (
     <>
-      <CCol md={"12"} style={{ paddingLeft: "150px", paddingRight: "150px"}}>
+      <CCol md={"12"}>
         <CCard>
           <CCardHeader>
             <div className={'d-flex justify-content-between'}>
@@ -432,14 +452,17 @@ const StatMgr = () => {
       <PageStrTableModalWidget onStrModal={onStrModal} setOnStrModal={setOnStrModal} clickStrRow={clickStrRow} initStrCode={initStrCode} areaId={"areaSelect"} />
 
       {printLoading && typeValue !== "store" &&
+         <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
+                           levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}
+                           areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={startDate}
+                           endDate={endDate} />
+      }
 
-               <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
-                                 levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}
-                                 areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={formatDate(startDate)}
-                                 endDate={formatDate(endDate)} />
+      {printLoading && typeValue === "store" &&
+        <ComponentToPrint2 ref={componentRef} areaState={areaState} storeYearWarning={storeYearWarning} storeChart={printChartComp} type={topBtnValue} areaTitle={areaName} strName={propStrName} startDate={startDate} endDate={endDate} />
       }
     </>
   )
-};
+}
 
 export default StatMgr;
