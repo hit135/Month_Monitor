@@ -157,7 +157,7 @@ export const areaTotalWarningComp = (areaName, item) => {
     }
   });
   return (
-      <div className={"mt-5 printMargin"}>
+      <div className={"mt-3 printMargin"}>
         <h5 className={"title"}>{areaName} 전기위험 경보 발생 현황</h5>
         <span className={"mb-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전기위험 경보 발생 현황(종합)</span>
         <table className="table table-sm table-bordered mb-0 printTable">
@@ -362,6 +362,13 @@ export const areaTotalWarningComp = (areaName, item) => {
           </tbody>
         </table>
 
+        <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 전기위험 경보 발생 현황 차트</span>
+          <div className={"d-flex align-items-center"}>
+            <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+          </div>
+        </div>
+
         <CRow style={{ height: "500px"}}>
           {areaBarChart([ '과전류 1차 경보', '과전류 2차 경보' ], chartData, "paired")}
         </CRow>
@@ -432,6 +439,12 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
     <div className={"printMargin"}>
       <div>
         <div>
+          <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 전체누설 및 저항누설 전류차트</span>
+            <div className={"d-flex align-items-center"}>
+              <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+            </div>
+          </div>
           <CRow style={{ height: "500px"}}>
             {areaBarChart(["전체누설전류 1차 경보", "전체누설전류 2차 경보", "저항누설전류 1차 경보", "저항누설전류 2차 경보" ], chartData, ["#e8c1a0", "#f47560", "#bdf192", "#4e8124"], false)}
           </CRow>
@@ -487,6 +500,13 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
             </table>
           </CCol>
           <CCol sm={"7"} style={{ height: "380px"}}>
+            <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+              <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}></span>
+              <div className={"d-flex align-items-center"}>
+                <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+              </div>
+            </div>
+
             {areaHourlDayStatChart(keys, hourOcChartData, "paired")}
           </CCol>
         </CRow>
@@ -548,6 +568,12 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
             </table>
           </CCol>
           <CCol sm={"7"} style={{ height: "380px"}}>
+            <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+              <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}></span>
+              <div className={"d-flex align-items-center"}>
+                <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+              </div>
+            </div>
             {areaHourlDayStatChart(keys, dayOcChartData, "paired")}
           </CCol>
         </CRow>
@@ -603,6 +629,12 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
             </table>
           </CCol>
           <CCol sm={"7"} style={{ height: "380px"}}>
+            <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+              <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}></span>
+              <div className={"d-flex align-items-center"}>
+                <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+              </div>
+            </div>
             {areaHourlDayStatChart(keys, hourIgrChartData, 'nivo')}
           </CCol>
         </CRow>
@@ -703,6 +735,12 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
           </table>
         </CCol>
         <CCol sm={"7"} style={{ height: "380px"}}>
+          <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}></span>
+            <div className={"d-flex align-items-center"}>
+              <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+            </div>
+          </div>
           {areaHourlDayStatChart(keys, dayIgrChartData, "nivo")}
         </CCol>
       </CRow>
@@ -758,6 +796,12 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
           </table>
         </CCol>
         <CCol sm={"7"} style={{ height: "380px"}}>
+          <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}></span>
+            <div className={"d-flex align-items-center"}>
+              <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+            </div>
+          </div>
           {areaHourlDayStatChart(keys, hourIgoChartData, 'nivo')}
         </CCol>
       </CRow>
@@ -819,6 +863,12 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
           </table>
         </CCol>
         <CCol sm={"7"} style={{ height: "380px"}}>
+          <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}></span>
+            <div className={"d-flex align-items-center"}>
+              <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+            </div>
+          </div>
           {areaHourlDayStatChart(keys, dayIgoChartData, "nivo")}
         </CCol>
       </CRow>
@@ -1102,7 +1152,7 @@ export const areaKwhStatYearComp = (item, item2) => {
             </tbody>
           </table>
         </CCol>
-        <CCol sm={"7"} style={{ height: "380px"}}>
+        <CCol sm={"7"} style={{ height: "450px"}}>
           {areaHourlDayStatChart(["사용량(kWh)"], hourKwhData, "set3")}
         </CCol>
       </CRow>
@@ -1420,76 +1470,29 @@ export const storeYearWarningComp = (item) => {
         </tbody>
       </table>
 
-      <CRow style={{ height: "600px"}}>
-        <ResponsiveBar
-          data={chartData}
-          keys={[ '과전류 1차 경보', '과전류 2차 경보', '저항누설전류 1차 경보', '저항누설전류 2차 경보' ]}
-          indexBy="label"
-          margin={{ top: 50, right: 30, bottom: 100, left: 60 }}
-          padding={0.1}
-          innerPadding={1}
-          groupMode="grouped"
-          valueScale={{ type: 'linear' }}
-          indexScale={{ type: 'band', round: true }}
-          valueFormat={{ format: '', enabled: false }}
-          colors={{ scheme: 'paired' }}
-          enableLabel={false}
-          theme={{
-            axis: {
-              ticks: {
-                text: {
-                  fontSize: 18,
-                  fill: "#333"
-                }
-              }
-            },
-            legends: {
-              text: {
-                fontSize: 16,
-                fill: "#333"
-              }
-            }
-          }}
-          borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-          axisTop={null}
-          axisRight={null}
-          axisLeft={{
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legendPosition: 'middle',
-            legendOffset: -40
-          }}
-          borderRadius={3}
-          borderWidth={1}
-          labelSkipWidth={12}
-          labelSkipHeight={12}
-          labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-          legends={[
-            {
-              dataFrom: 'keys',
-              anchor: 'bottom',
-              direction: 'row',
-              justify: false,
-              translateX: 0,
-              translateY: 100,
-              itemsSpacing: 21,
-              itemWidth: 180,
-              itemHeight: 61,
-              itemDirection: 'left-to-right',
-              itemOpacity: 0.85,
-              symbolSize: 20,
-              effects: [
-                {
-                  on: 'hover',
-                  style: {
-                    itemOpacity: 1
-                  }
-                }
-              ]
-            }
-          ]}
-        />
+      <CRow className={"mt-4"}>
+        <CCol md={12}>
+          <div className="card text-white bg-secondary">
+            <div className="card-header" style={{color : "#333", fontSize: "20px"}}>상점 전기위험 순위</div>
+            <div className="card-body" style={{color : "#333", fontSize: "23px"}}>
+              중앙시장에서 옥천주단은 전기위험순위는 234상점중 <span style={{color : "#0d9ad2"}}>12위</span> 입니다. <br/>
+              전력사용량은 234상점중 <span style={{color : "#0d9ad2"}}>12위</span> 입니다.<br/>
+              전기위험 등급은 <span style={{color : "#0d9ad2"}}>3등급</span> 입니다.<br/>
+            </div>
+          </div>
+        </CCol>
+      </CRow>
+
+      <CRow className={"mb-5"}>
+        <CCol md={"12"} style={{ height: "400px"}}>
+          <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 전기위험 경보 발생 현황 차트</span>
+            <div className={"d-flex align-items-center"}>
+              <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
+            </div>
+          </div>
+          {areaBarChart([ '과전류 1차 경보', '과전류 2차 경보', '저항누설전류 1차 경보', '저항누설전류 2차 경보' ], chartData, "paired")}
+        </CCol>
       </CRow>
     </div>
   )
@@ -1556,13 +1559,13 @@ export const storeChartComp = (item1, item2, item3) => {
       <CRow className={"mb-5"}>
          <CCol sm={"6"}>
            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 과전류 발생현황</span>
-           <div style={{ height: "300px"}}>
+           <div style={{ height: "380px"}}>
              {areaHourlDayStatChart(keys, hourOcChartData, "nivo")}
            </div>
          </CCol>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 과전류 발생현황</span>
-          <div style={{ height: "300px"}}>
+          <div style={{ height: "380px"}}>
             {areaHourlDayStatChart(keys, dayOcChartData, "nivo")}
           </div>
         </CCol>
@@ -1570,13 +1573,13 @@ export const storeChartComp = (item1, item2, item3) => {
       <CRow className={"mb-5"}>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGR 발생현황</span>
-          <div style={{ height: "300px"}}>
+          <div style={{ height: "380px"}}>
             {areaHourlDayStatChart(keys, hourIgrChartData, "nivo")}
           </div>
         </CCol>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGR 발생현황</span>
-          <div style={{ height: "300px"}}>
+          <div style={{ height: "380px"}}>
             {areaHourlDayStatChart(keys, dayIgrChartData, "nivo")}
           </div>
         </CCol>
@@ -1584,7 +1587,12 @@ export const storeChartComp = (item1, item2, item3) => {
 
       <CRow className={"mb-5"}>
         <CCol md={"12"} style={{ height: "550px"}}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 월별 전력소비량</span>
+          <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 월별 전력소비량</span>
+            <div className={"d-flex align-items-center"}>
+              <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : kWh)</span>
+            </div>
+          </div>
           {areaBarChart(["전력사용량"], chartData, "set3")}
         </CCol>
       </CRow>
@@ -1592,13 +1600,13 @@ export const storeChartComp = (item1, item2, item3) => {
       <CRow>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGR 발생현황</span>
-          <div style={{ height: "300px"}}>
+          <div style={{ height: "380px"}}>
             {areaHourlDayStatChart(["전력사용량"], hourSnsrChartData, "set3")}
           </div>
         </CCol>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGR 발생현황</span>
-          <div style={{ height: "300px"}}>
+          <div className={"chartHeight"} style={{ height: "380px"}}>
             {areaHourlDayStatChart(["전력사용량"], daySnsrChartData, "set3")}
           </div>
         </CCol>
@@ -1620,10 +1628,15 @@ export const storePrintChartComp = (item1) => {
   });
 
   return (
-    <div>
+    <div className={"printMargin"}>
       <CRow>
-        <CCol md={"12"} style={{ height: "550px"}}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 월별 전력소비량</span>
+        <CCol md={"12"} style={{ height: "380px"}}>
+          <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 월별 전력소비량</span>
+            <div className={"d-flex align-items-center"}>
+              <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : kWh)</span>
+            </div>
+          </div>
           {areaBarChart(["전력사용량"], chartData, "set3")}
         </CCol>
       </CRow>

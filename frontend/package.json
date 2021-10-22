@@ -38,7 +38,7 @@
     "antd": "^4.16.8",
     "axios": "^0.21.1",
     "classnames": "^2.2.6",
-    "core-js": "^3.9.1",
+    "core-js": "^3.18.1",
     "enzyme": "^3.11.0",
     "material-ui-dropzone": "^3.5.0",
     "prop-types": "^15.7.2",
