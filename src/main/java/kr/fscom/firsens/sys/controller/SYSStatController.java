@@ -48,7 +48,8 @@ public class SYSStatController {
                 rtn.put("startDate", yearDate.split("-")[0] + "년");
             } else if(dateType.equals("월")) {
                 paramMap.put("dateType", "month");
-                paramMap.put("startDate", monthDate.split("-")[0] + "-" + monthDate.split("-")[1]);
+                paramMap.put("startDate", monthDate.split("-")[0] + "-" + "01");
+                paramMap.put("endDate", monthDate.split("-")[0] + "-" + monthDate.split("-")[1]);
                 rtn.put("startDate", monthDate.split("-")[0] + "년 " + monthDate.split("-")[1] + "월");
             } else if(dateType.equals("반기")) {
                 String halfDate1;
@@ -129,7 +130,8 @@ public class SYSStatController {
                 rtn.put("startDate", yearDate.split("-")[0] + "년");
             } else if(dateType.equals("월")) {
                 paramMap.put("dateType", "month");
-                paramMap.put("startDate", monthDate.split("-")[0] + "-" + monthDate.split("-")[1]);
+                paramMap.put("startDate", monthDate.split("-")[0] + "-" + "01");
+                paramMap.put("endDate", monthDate.split("-")[0] + "-" + monthDate.split("-")[1]);
                 rtn.put("startDate", monthDate.split("-")[0] + "년 " + monthDate.split("-")[1] + "월");
             } else if(dateType.equals("반기")) {
                 String halfDate1;
