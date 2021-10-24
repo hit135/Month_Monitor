@@ -12,8 +12,8 @@
 
 .left p { padding:3px 7px; margin-bottom:3px; border-radius:4px; }
 .left span { display:inline-block; text-shadow:1px 1px 5px #fff; }
-.left .name { width:55%; }
-.left .danger { width:20%; text-align:right; color:#ff2f44; }
+.left .name { width:60%; }
+.left .danger { width:15%; text-align:right; color:#ff2f44; }
 .left .warn { width:20%; text-align:right; color:#efaf77; }
 .left .area-lv1 { font-size:20px; font-weight:bold; background:#ddd; width:90%; margin-left:5%; }
 .left .area-lv2 { font-size:14px; font-weight:bold; background:#eee; width:85%; margin-left:10%; border-bottom:1px solid #ccc; cursor:pointer; }
@@ -98,8 +98,8 @@
 .store-info .store-datalog-meta { width:100%; table-layout:fixed; }
 .store-info .store-datalog-meta tr { border-bottom:1px solid; }
 .store-info .store-datalog-meta th { color:#666; width:95px; font-weight:bold; text-align:right; }
-.store-info .store-datalog-meta td { color:#666; padding:8px; }
-.store-info .store-datalog-meta td span { display:inline-block; text-align:right; width:80px; margin-right:5px; color:#000; font-weight:bold; font-size:16px; }
+.store-info .store-datalog-meta td { color:#666; padding:8px; text-align:right; }
+.store-info .store-datalog-meta td span:nth-child(1) { display:inline-block; text-align:right; width:80px; margin-right:5px; color:#000; font-weight:bold; font-size:16px; }
 .store-info-sensor-list { margin-top: 5px; /*margin-bottom:20px; height:200px; overflow-y:scroll;*/ }
 .store-info-sensor-list p.btn-datalog { position:relative; padding:5px 10px; font-size:14px; font-weight:bold; color:#2b559b; margin-bottom:7px; line-height:16px; }
 .store-info-sensor-list p.btn-datalog span { display:inline-block; width:30px; float:right; background:#8df; color:#fff; font-size:12px; font-weight:bold; text-align:center; text-shadow:1px 1px 5px #000; padding:3px 5px; border-radius:8px; }

@@ -22,7 +22,7 @@ spring:
       enabled: true
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://1.223.40.19:13331/ifiresens_v2?autoReconnect=true&useSSL=false
+    url: jdbc:mariadb://192.168.0.252:3306/ifiresens_v2?autoReconnect=true&useSSL=false
     username: ifire_usr
     password: ifU@S12!20
   sql:
@@ -58,7 +58,7 @@ spring:
       max-request-size: 110MB
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://1.223.40.19:13331/ifiresens_v2?autoReconnect=true&useSSL=false
+    url: jdbc:mariadb://192.168.0.252:3306/ifiresens_v2?autoReconnect=true&useSSL=false
     username: ifire_usr
     password: ifU@S12!20
   sql:

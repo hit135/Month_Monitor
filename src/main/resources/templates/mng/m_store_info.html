@@ -37,16 +37,16 @@
         <div class="col-5">
           <table class="store-datalog-meta" style="margin-top:30px;">
             <tr class="monkwh"><th>사용전력량</th><td><span></span>kWh</td></tr>
-            <tr class="kw"><th>전력</th><td><span></span>kW</td></tr>
-            <tr class="vo"><th>전압</th><td><span></span>V</td></tr>
-            <tr class="am"><th>전류</th><td><span></span>A</td></tr>
-            <tr class="hz"><th>주파수</th><td><span></span>Hz</td></tr>
-            <tr class="igo"><th>누설전류(IGO)</th><td><span></span>mA</td></tr>
-            <tr class="igr"><th>누설전류(IGR)</th><td><span></span>mA</td></tr>
-            <tr class="igc"><th>누설전류(IGC)</th><td><span></span>mA</td></tr>
-            <tr class="meg"><th>절연저항</th><td><span></span>MΩ</td></tr>
-            <tr class="kwh"><th>누적전력량</th><td><span></span>kWh</td></tr>
-            <tr class="dbm"><th>수신감도(RSSI)</th><td><span></span>dBm</td></tr>
+            <tr class="kw"><th>전력</th><td><span></span><span style="margin-right: 7px;">kW</span></td></tr>
+            <tr class="vo"><th>전압</th><td><span></span><span style="margin-right: 17px;">V</span></td></tr>
+            <tr class="am"><th>전류</th><td><span></span><span style="margin-right: 17px;">A</span></td></tr>
+            <tr class="hz"><th>주파수</th><td><span></span><span style="margin-right: 10px;">Hz</span></td></tr>
+            <tr class="igo"><th>누설전류(IGO)</th><td><span></span><span style="margin-right: 6px;">mA</span></td></tr>
+            <tr class="igr"><th>누설전류(IGR)</th><td><span></span><span style="margin-right: 6px;">mA</span></td></tr>
+            <tr class="igc"><th>누설전류(IGC)</th><td><span></span><span style="margin-right: 6px;">mA</span></td></tr>
+            <tr class="meg"><th>절연저항</th><td><span></span><span style="margin-right: 7px;">MΩ</span></td></tr>
+            <tr class="kwh"><th>누적전력량</th><td><span></span><span style="margin-right: 2px;">kWh</span></td></tr>
+            <tr class="dbm"><th>수신감도(RSSI)</th><td><span></span><span style="margin-right: 2px;">dBm</span></td></tr>
           </table>
         </div>
         <div class="col-7">
@@ -409,16 +409,16 @@
                   );
                 }
 
-                $(".store-datalog-meta .kw td span").text(d[i]['SNSRWATT']);
-                $(".store-datalog-meta .vo td span").text(d[i]['SNSRVOLT']);
-                $(".store-datalog-meta .am td span").text(d[i]['SNSRAMPERE']);
-                $(".store-datalog-meta .hz td span").text(d[i]['SNSRHZ']);
-                $(".store-datalog-meta .igo td span").text(d[i]['SNSRIGO']);
-                $(".store-datalog-meta .igr td span").text(d[i]['SNSRIGR']);
-                $(".store-datalog-meta .igc td span").text(d[i]['SNSRIGC']);
-                $(".store-datalog-meta .meg td span").text(d[i]['SNSRREG']);
-                $(".store-datalog-meta .kwh td span").text(d[i]['SNSRKWH']);
-                $(".store-datalog-meta .dbm td span").text(d[i]['SNSRRSSI']);
+                $(".store-datalog-meta .kw td span:first").text(d[i]['SNSRWATT']);
+                $(".store-datalog-meta .vo td span:first").text(d[i]['SNSRVOLT']);
+                $(".store-datalog-meta .am td span:first").text(d[i]['SNSRAMPERE']);
+                $(".store-datalog-meta .hz td span:first").text(d[i]['SNSRHZ']);
+                $(".store-datalog-meta .igo td span:first").text(d[i]['SNSRIGO']);
+                $(".store-datalog-meta .igr td span:first").text(d[i]['SNSRIGR']);
+                $(".store-datalog-meta .igc td span:first").text(d[i]['SNSRIGC']);
+                $(".store-datalog-meta .meg td span:first").text(d[i]['SNSRREG']);
+                $(".store-datalog-meta .kwh td span:first").text(d[i]['SNSRKWH']);
+                $(".store-datalog-meta .dbm td span:first").text(d[i]['SNSRRSSI']);
               }
             }
 
