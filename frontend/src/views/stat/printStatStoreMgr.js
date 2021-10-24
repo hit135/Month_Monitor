@@ -22,13 +22,13 @@ export const ComponentToPrint2 = React.forwardRef((props, ref) => (
             </div>
 
             <div className="p-2 bd-highlight text-center">
-              <h2>대전 스마트시티 챌린지 사업</h2>
-              <h2>&lt;전기화재 예방 서비스&gt;</h2>
-              <h2>{props.areaTitle} [<span style={{color: "red"}}>{props.endDate === undefined ? props.startDate : props.startDate + " ~ " + props.endDate}</span>] {props.strName} 현황 보고서</h2>
+              <h2 style={{fontSize: "30px", fontWeight : "bold"}}>대전 스마트시티 챌린지 사업</h2>
+              <h2 style={{fontSize: "30px", fontWeight : "bold"}}>{props.areaTitle} [<span style={{color: "red"}}>{props.endDate === undefined ? props.startDate : props.startDate + " ~ " + props.endDate}</span>] {props.strName} 현황 보고서</h2>
             </div>
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
-                {props.type}
+                {/*{props.type}*/}
+                <h2>[전기화재 예방 서비스]</h2>
               </h3>
             </div>
           </div>
@@ -43,7 +43,7 @@ export const ComponentToPrint2 = React.forwardRef((props, ref) => (
           </div>
 
           <div className="position-absolute-rb">
-            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "150px" }} />
           </div>
         </div>
       </CCardBody>

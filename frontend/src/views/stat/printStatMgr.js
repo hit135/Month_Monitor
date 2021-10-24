@@ -32,8 +32,8 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
         </div>
 
         <div className={"d-flex justify-content-center"} style={{marginTop: "10rem"}}>
-          <h1 className={"text-center"}style={{fontSize: "80px", textDecoration: "underline", textUnderlinePosition: "under"}}>
-            {props.areaTitle} [<span style={{color : "#d24242"}}>{props.startDate}</span>]<br/><br/>
+          <h1 className={"text-center"}style={{fontSize: "65px", textDecoration: "underline", textUnderlinePosition: "under"}}>
+            {props.areaTitle} [<span style={{color : "#d24242"}}>{props.endDate === undefined ? props.startDate : props.startDate + " ~ " + props.endDate}</span>]<br/><br/>
             관제서비스 운영보고서
           </h1>
         </div>
@@ -52,7 +52,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
-                {props.type}
+                {props.areaTitle} 운영보고서
               </h3>
             </div>
           </div>
@@ -65,7 +65,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           </div>
 
           <div className="position-absolute-rb">
-            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "150px" }} />
           </div>
         </div>
 
@@ -75,7 +75,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
-                {props.type}
+                {props.areaTitle} 운영보고서
               </h3>
             </div>
           </div>
@@ -88,7 +88,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           </div>
 
           <div className="position-absolute-rb">
-            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "150px" }} />
           </div>
         </div>
 
@@ -97,7 +97,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
-                {props.type}
+                {props.areaTitle} 운영보고서
               </h3>
             </div>
           </div>
@@ -110,7 +110,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           </div>
 
           <div className="position-absolute-rb">
-            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "150px" }} />
           </div>
         </div>
 
@@ -121,7 +121,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
               <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
               <div className={"p-5"}>
                 <h3 style={{fontSize: "30px"}}>
-                  {props.type}
+                  {props.areaTitle} 운영보고서
                 </h3>
               </div>
             </div>
@@ -135,7 +135,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             </div>
 
             <div className="position-absolute-rb">
-              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "150px" }} />
             </div>
 
           </div>
@@ -147,7 +147,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
-                {props.type}
+                {props.areaTitle} 운영보고서
               </h3>
             </div>
           </div>
@@ -166,7 +166,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           </div>
 
           <div className="position-absolute-rb">
-            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "150px" }} />
           </div>
           </CRow>
         </div>
@@ -176,7 +176,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
             <div className={"p-5"}>
               <h3 style={{fontSize: "30px"}}>
-                {props.type}
+                {props.areaTitle} 운영보고서
               </h3>
             </div>
           </div>
@@ -198,7 +198,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             </div>
 
             <div className="position-absolute-rb">
-              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "80px" }} />
+              <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "150px" }} />
             </div>
           </CRow>
         </div>

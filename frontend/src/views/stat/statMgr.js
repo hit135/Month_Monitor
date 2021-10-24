@@ -215,12 +215,6 @@ const StatMgr = () => {
             setPropStrName(resp.data["strInfo"]["strName"]);
             snsrCnt = resp.data["strInfo"]["snsrCnt"];
           }
-
-          if(resp.data["weekMonthStat"] !== null) {
-            setStoreYearWarning(storeYearWarningComp(resp.data["weekMonthStat"]));
-            setStoreChart(storeChartComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
-            setPrintChartComp(storePrintChartComp(resp.data["weekMonthStat"]));
-          }
         }
 
         if(resp.data["infoStat"].length > 1) {
@@ -234,6 +228,12 @@ const StatMgr = () => {
           setAreaName(temp.areaName);
           areaNameTitle = temp.areaName;
           setAreaState(areaStatusComponent(temp, searchStartDate, searchEndDate, typeValue, strName, snsrCnt, strTel, strOwnTel));
+
+          if(resp.data["weekMonthStat"] !== null) {
+            setStoreYearWarning(storeYearWarningComp(resp.data["weekMonthStat"], strName, temp.areaName, temp.strCnt));
+            setStoreChart(storeChartComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
+            setPrintChartComp(storePrintChartComp(resp.data["weekMonthStat"]));
+          }
         }
 
         if(typeValue === "areaCode") {

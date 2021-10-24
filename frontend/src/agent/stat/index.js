@@ -118,7 +118,7 @@ export const areaStatusComponent = (param, startDate, endDate, type, strName, sn
               <td>{param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일"}</td>
               <td className="wme_table_td_title" style={{width: "15%"}}>상점주 연락처</td>
               <td>
-                {strOwnTel}
+                {/*{strOwnTel}*/}
               </td>
             </tr>
             <tr>
@@ -126,7 +126,7 @@ export const areaStatusComponent = (param, startDate, endDate, type, strName, sn
               <td>{param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재"}</td>
               <td className="wme_table_td_title" style={{width: "15%"}}>상점 연락처</td>
               <td>
-                {strTel}
+                {/*{strTel}*/}
               </td>
             </tr>
             <tr>
@@ -446,7 +446,7 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
             </div>
           </div>
           <CRow style={{ height: "500px"}}>
-            {areaBarChart(["전체누설전류 1차 경보", "전체누설전류 2차 경보", "저항누설전류 1차 경보", "저항누설전류 2차 경보" ], chartData, ["#e8c1a0", "#f47560", "#bdf192", "#4e8124"], false)}
+            {areaBarChart(["전체누설전류 1차 경보", "전체누설전류 2차 경보", "저항누설전류 1차 경보", "저항누설전류 2차 경보" ], chartData, ["#bdf192", "#4e8124", "#e8c1a0", "#f47560"], false)}
           </CRow>
         </div>
         <CRow>
@@ -903,9 +903,9 @@ export const levelAreaStatComp = (areaName, item) => {
         <tbody id="wme_level_area_table">
         <tr>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소시장명</td>
-          <td colSpan="2" className="wme_table_td_title text-center">과전류경보</td>
-          <td colSpan="2" className="wme_table_td_title text-center">저항성누설전류(IGR)</td>
-          <td colSpan="2" className="wme_table_td_title text-center">전체누설전류(IGO)</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width : "20%"}}>과전류경보</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width : "20%"}}>저항성누설전류(IGR)</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width : "20%"}}>전체누설전류(IGO)</td>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소비전력</td>
         </tr>
         <tr>
@@ -978,9 +978,9 @@ export const levelStoreStatComp = (areaName, item) => {
         <tbody id="wme_str_event_table">
         <tr>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>상점명</td>
-          <td colSpan="2" className="wme_table_td_title text-center">과전류경보</td>
-          <td colSpan="2" className="wme_table_td_title text-center">저항성누설전류(IGR)</td>
-          <td colSpan="2" className="wme_table_td_title text-center">전체누설전류(IGO)</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width : "20%"}}>과전류경보</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width : "20%"}}>저항성누설전류(IGR)</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width : "20%"}}>전체누설전류(IGO)</td>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>비고</td>
         </tr>
         <tr>
@@ -1340,7 +1340,7 @@ export const strKwhStatComp = (areaName, item, item3) => {
 
 // 상점 =================================================================================================================
 // 전기위험 경보 발생현황
-export const storeYearWarningComp = (item) => {
+export const storeYearWarningComp = (item, strName, areaName, strCnt) => {
   let chartData = [];
   item.map((item, idx) => {
     if( idx !== 12) {
@@ -1355,14 +1355,26 @@ export const storeYearWarningComp = (item) => {
   });
   return (
     <div className={"mt-5 printMargin"}>
+      <CRow className={"mt-4"}>
+        <CCol md={12}>
+          <div className="card text-white bg-secondary">
+            <div className="card-header" style={{color : "#333", fontSize: "23px"}}>{strName} 전기위험 종합평가</div>
+            <div className="card-body" style={{color : "#333", fontSize: "23px"}}>
+              {strName}은 {areaName}에서 전기위험순위는 {strCnt}개 상점 중 <span style={{color : "#0d9ad2"}}>12위</span> 입니다. <br/>
+              전력사용량은 {strCnt}개 상점 중 <span style={{color : "#0d9ad2"}}>12위</span> 입니다.<br/>
+              {/*전기위험 등급은 <span style={{color : "#0d9ad2"}}>3등급</span> 입니다.<br/>*/}
+            </div>
+          </div>
+        </CCol>
+      </CRow>
+
       <div className={"d-flex justify-content-between"}>
         <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전기위험 경보 발생 현황(상세)</span>
         <div className={"d-flex align-items-center"}>
-          <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}></span>
+          <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}> </span>
         </div>
       </div>
 
-      {/*<span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전기위험 경보 발생 현황(상세)</span>*/}
       <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_event_monthly_table">
         <tbody>
         <tr>
@@ -1469,19 +1481,6 @@ export const storeYearWarningComp = (item) => {
         </tr>
         </tbody>
       </table>
-
-      <CRow className={"mt-4"}>
-        <CCol md={12}>
-          <div className="card text-white bg-secondary">
-            <div className="card-header" style={{color : "#333", fontSize: "20px"}}>상점 전기위험 순위</div>
-            <div className="card-body" style={{color : "#333", fontSize: "23px"}}>
-              중앙시장에서 옥천주단은 전기위험순위는 234상점중 <span style={{color : "#0d9ad2"}}>12위</span> 입니다. <br/>
-              전력사용량은 234상점중 <span style={{color : "#0d9ad2"}}>12위</span> 입니다.<br/>
-              전기위험 등급은 <span style={{color : "#0d9ad2"}}>3등급</span> 입니다.<br/>
-            </div>
-          </div>
-        </CCol>
-      </CRow>
 
       <CRow className={"mb-5"}>
         <CCol md={"12"} style={{ height: "400px"}}>
@@ -1650,7 +1649,7 @@ const areaBarChart = (key, data, color, colorType = true) => (
     keys={key}
     indexBy="label"
     margin={{ top: 50, right: 100, bottom: 100, left: 100 }}
-    padding={0.1}
+    padding={0.6}
     innerPadding={1}
     groupMode="grouped"
     valueScale={{ type: 'linear' }}
@@ -1664,14 +1663,14 @@ const areaBarChart = (key, data, color, colorType = true) => (
       axis: {
         ticks: {
           text: {
-            fontSize: 18,
+            fontSize: 20,
             fill: "#333"
           }
         }
       },
       legends: {
         text: {
-          fontSize: 16,
+          fontSize: 18,
           fill: "#333"
         }
       }
@@ -1700,7 +1699,7 @@ const areaBarChart = (key, data, color, colorType = true) => (
         translateX: 0,
         translateY: 100,
         itemsSpacing: 21,
-        itemWidth: 180,
+        itemWidth: 250,
         itemHeight: 61,
         itemDirection: 'left-to-right',
         itemOpacity: 0.85,

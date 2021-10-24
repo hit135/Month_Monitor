@@ -79,23 +79,17 @@
         SELECT ( CASE TRUNCATE(T.HOUR / 4, 0) WHEN 0 THEN   '0 ~ 3' WHEN 1 THEN   '4 ~ 7' WHEN 2 THEN  '8 ~ 11'
                                               WHEN 3 THEN '12 ~ 15' WHEN 4 THEN '16 ~ 19' WHEN 5 THEN '20 ~ 23' END ) AS hour
              , COALESCE(SUM(A.OCWARNINGCNT), 0) AS ocWarningCnt
---              , COALESCE(SUM(A.OCWARNINGCNT) * 100 / SUM(SUM(A.OCWARNINGCNT)) OVER(), 0) AS ocWarningPer
              , COALESCE(SUM(A.OCDANGERCNT), 0) AS ocDangerCnt
---              , COALESCE(SUM(A.OCDANGERCNT) * 100 / SUM(SUM(A.OCDANGERCNT)) OVER(), 0) AS ocDangerPer
-             , COALESCE((SUM(A.OCDANGERCNT) + SUM(A.OCWARNINGCNT)) * 100 / SUM(SUM(A.OCDANGERCNT) + SUM(A.OCWARNINGCNT)) OVER(), 0) as ocTotalPer
+             , ROUND(COALESCE((SUM(A.OCDANGERCNT) + SUM(A.OCWARNINGCNT)) * 100 / SUM(SUM(A.OCDANGERCNT) + SUM(A.OCWARNINGCNT)) OVER(), 0), 1) as ocTotalPer
              , COALESCE(SUM(A.IGOWARNINGCNT), 0) AS igoWarningCnt
---              , COALESCE(SUM(A.IGOWARNINGCNT) * 100 / SUM(SUM(A.IGOWARNINGCNT)) OVER(), 0) AS igoWarningPer
              , COALESCE(SUM(A.IGODANGERCNT), 0) AS igoDangerCnt
---              , COALESCE(SUM(A.IGODANGERCNT) * 100 / SUM(SUM(A.IGODANGERCNT)) OVER(), 0) AS igoDangerPer
-             , COALESCE((SUM(A.IGODANGERCNT) + SUM(A.IGOWARNINGCNT)) * 100 / SUM(SUM(A.IGODANGERCNT) + SUM(A.IGOWARNINGCNT)) OVER(), 0) as igoTotalPer
+             , ROUND(COALESCE((SUM(A.IGODANGERCNT) + SUM(A.IGOWARNINGCNT)) * 100 / SUM(SUM(A.IGODANGERCNT) + SUM(A.IGOWARNINGCNT)) OVER(), 0), 1) as igoTotalPer
              , COALESCE(SUM(A.IGRWARNINGCNT), 0) AS igrWarningCnt
---              , COALESCE(SUM(A.IGRWARNINGCNT) * 100 / SUM(SUM(A.IGRWARNINGCNT)) OVER(), 0) AS igrWarningPer
              , COALESCE(SUM(A.IGRDANGERCNT), 0) AS igrDangerCnt
---              , COALESCE(SUM(A.IGRDANGERCNT) * 100 / SUM(SUM(A.IGRDANGERCNT)) OVER(), 0) AS igrDangerPer
-             , COALESCE((SUM(A.IGRDANGERCNT) + SUM(A.IGRWARNINGCNT)) * 100 / SUM(SUM(A.IGRDANGERCNT) + SUM(A.IGRWARNINGCNT)) OVER(), 0) as igrTotalPer
+             , ROUND(COALESCE((SUM(A.IGRDANGERCNT) + SUM(A.IGRWARNINGCNT)) * 100 / SUM(SUM(A.IGRDANGERCNT) + SUM(A.IGRWARNINGCNT)) OVER(), 0), 1) as igrTotalPer
 
              , COALESCE(SUM(B.USEKWH), 0) AS snsrKwh
-             , COALESCE(SUM(B.USEKWH) * 100 / SUM(SUM(B.USEKWH)) OVER(), 0) AS snsrKwhPer
+             , ROUND(COALESCE(SUM(B.USEKWH) * 100 / SUM(SUM(B.USEKWH)) OVER(), 0), 1) AS snsrKwhPer
           FROM ( SELECT LPAD(seq, 2, '0') AS HOUR FROM seq_0_to_23 ) T
                     LEFT JOIN ( SELECT DATE_FORMAT(DATETIME, '%H') AS HOUR
                                      , SUM(OCWARNINGCNT) AS OCWARNINGCNT
@@ -111,7 +105,7 @@
                                            AND (
                                             <choose>
                                                 <when test='dateType == "year"'>date_format(DATETIME, '%Y') = #{startDate}</when>
-                                                <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{startDate}</when>
+                                                <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{endDate}</when>
                                                 <otherwise>date_format(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                                             </choose>
                                             )
@@ -124,7 +118,7 @@
                                             AND (
                                             <choose>
                                                 <when test='dateType == "year"'>date_format(DATETIME, '%Y') = #{startDate}</when>
-                                                <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{startDate}</when>
+                                                <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{endDate}</when>
                                                 <otherwise>date_format(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                                             </choose>
                                             )
@@ -152,7 +146,7 @@
                                                       AND (
                                                         <choose>
                                                             <when test='dateType == "year"'>date_format(DATETIME, '%Y') = #{startDate}</when>
-                                                            <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{startDate}</when>
+                                                            <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{endDate}</when>
                                                             <otherwise>date_format(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                                                         </choose>
                                                     )
@@ -165,7 +159,7 @@
                                                     AND (
                                                     <choose>
                                                         <when test='dateType == "year"'>date_format(DATETIME, '%Y') = #{startDate}</when>
-                                                        <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{startDate}</when>
+                                                        <when test='dateType == "month"'>date_format(DATETIME, '%Y-%m') = #{endDate}</when>
                                                         <otherwise>date_format(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                                                     </choose>
                                                     )
@@ -183,15 +177,15 @@
         SELECT T.DAYNAME AS dayName
              , COALESCE(A.OC1STCNT, 0) AS oc1stCnt
              , COALESCE(A.OC2NDCNT, 0) AS oc2ndCnt
-             , COALESCE (A.OCTOTALPER, 0) AS ocTotalPer
+             , ROUND(COALESCE (A.OCTOTALPER, 0), 1) AS ocTotalPer
              , COALESCE(A.IGO1STCNT, 0)  AS igo1stCnt
              , COALESCE(A.IGO2NDCNT, 0)  AS igo2ndCnt
-             , COALESCE (A.IGOTOTALPER, 0) AS igoTotalPer
+             , ROUND(COALESCE (A.IGOTOTALPER, 0), 1) AS igoTotalPer
              , COALESCE(A.IGR1STCNT, 0)  AS igr1stCnt
              , COALESCE(A.IGR2NDCNT, 0)  AS igr2ndCnt
-             , COALESCE (A.IGRTOTALPER, 0) AS igrTotalPer
+             , ROUND(COALESCE (A.IGRTOTALPER, 0), 1) AS igrTotalPer
              , COALESCE(A.SNSRKWH, 0) AS snsrKwh
-             , COALESCE(A.SNSRKWPER, 0) AS snsrKwhPer
+             , ROUND(COALESCE(A.SNSRKWPER, 0), 1) AS snsrKwhPer
           FROM ( SELECT '일요일' AS DAYNAME, 1 AS DAYOFWEEK UNION SELECT '월요일' AS DAYNAME, 2 AS DAYOFWEEK UNION
                  SELECT '화요일' AS DAYNAME, 3 AS DAYOFWEEK UNION SELECT '수요일' AS DAYNAME, 4 AS DAYOFWEEK UNION
                  SELECT '목요일' AS DAYNAME, 5 AS DAYOFWEEK UNION SELECT '금요일' AS DAYNAME, 6 AS DAYOFWEEK UNION
@@ -204,15 +198,15 @@
                                      , DAYOFWEEK(SDATE) AS DAYOFWEEK
                                      , SUM(OC1ST) AS OC1STCNT
                                      , SUM(OC2ND) AS OC2NDCNT
-                                     , (SUM(OC1ST) + SUM(OC2ND)) * 100 / SUM(SUM(OC1ST) + SUM(OC2ND)) OVER() as OCTOTALPER
+                                     , ROUND((SUM(OC1ST) + SUM(OC2ND)) * 100 / SUM(SUM(OC1ST) + SUM(OC2ND)) OVER(), 1) as OCTOTALPER
                                      , SUM(IGO1ST) AS IGO1STCNT
                                      , SUM(IGO2ND) AS IGO2NDCNT
-                                     , (SUM(IGO1ST) + SUM(IGO2ND)) * 100 / SUM(SUM(IGO1ST) + SUM(IGO2ND)) OVER() as IGOTOTALPER
+                                     , ROUND((SUM(IGO1ST) + SUM(IGO2ND)) * 100 / SUM(SUM(IGO1ST) + SUM(IGO2ND)) OVER(), 1) as IGOTOTALPER
                                      , SUM(IGR1ST) AS IGR1STCNT
                                      , SUM(IGR2ND) AS IGR2NDCNT
-                                     , (SUM(IGR1ST) + SUM(IGR2ND)) * 100 / SUM(SUM(IGR1ST) + SUM(IGR2ND)) OVER() as IGRTOTALPER
+                                     , ROUND((SUM(IGR1ST) + SUM(IGR2ND)) * 100 / SUM(SUM(IGR1ST) + SUM(IGR2ND)) OVER(), 1) as IGRTOTALPER
                                      , SUM(SNSRKWHDAILY) AS SNSRKWH
-                                     , SUM(SNSRKWHDAILY) * 100 / SUM(SUM(SNSRKWHDAILY)) OVER() AS SNSRKWPER
+                                     , ROUND(SUM(SNSRKWHDAILY) * 100 / SUM(SUM(SNSRKWHDAILY)) OVER(), 1) AS SNSRKWPER
                                 <choose>
                                     <when test='"areaCode".equals(type)'>
                                          FROM F_CRN_AREA_ELEC_DAILY_STAT
@@ -226,7 +220,7 @@
                                    AND (
                                         <choose>
                                             <when test='dateType == "year"'>date_format(SDATE, '%Y') = #{startDate}</when>
-                                            <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{startDate}</when>
+                                            <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{endDate}</when>
                                             <otherwise>date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                                         </choose>
                                     )
@@ -236,9 +230,9 @@
 
     <select id="SELECT_SYS_STAT_AREA_KWHIGO_STAT" parameterType="map" resultType="map">
         SELECT S.SNSRKWH AS snsrKwh
-             , (S.SNSRKWH * 100 / SNSRSUM) AS snsrKwhPer
+             , ROUND((S.SNSRKWH * 100 / SNSRSUM), 1) AS snsrKwhPer
              , S.SNSRIGO AS snsrIgo
-             , (S.SNSRIGO * 100 / SNSRSUM) AS snsrIgoPer
+             , ROUND((S.SNSRIGO * 100 / SNSRSUM), 1) AS snsrIgoPer
           FROM ( SELECT SUM(SNSRKWHDAILY) AS SNSRKWH
                       , SUM(SNSRIGOAVG) AS SNSRIGO
                       , SUM(SNSRKWHDAILY) + SUM(SNSRIGOAVG) AS SNSRSUM
@@ -246,7 +240,7 @@
                   WHERE (
                         <choose>
                             <when test='dateType == "year"'>date_format(SDATE, '%Y') = #{startDate}</when>
-                            <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{startDate}</when>
+                            <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{endDate}</when>
                             <otherwise>date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                         </choose>
                     )
@@ -287,7 +281,6 @@
         WHERE (
             <choose>
                 <when test='dateType == "year"'>date_format(SDATE, '%Y') = #{startDate}</when>
-                <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{startDate}</when>
                 <otherwise>date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
             </choose>
         )
@@ -313,7 +306,6 @@
         WHERE (
         <choose>
             <when test='dateType == "year"'>date_format(SDATE, '%Y') = #{startDate}</when>
-            <when test='dateType == "month"'>date_format(SDATE, '%Y-%m') = #{startDate}</when>
             <otherwise>date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
         </choose>
         )
@@ -339,7 +331,7 @@
               WHERE E.AREACODE = #{areaCode} AND (
                 <choose>
                     <when test='dateType == "year"'>date_format(E.SDATE, '%Y') = #{startDate}</when>
-                    <when test='dateType == "month"'>date_format(E.SDATE, '%Y-%m') = #{startDate}</when>
+                    <when test='dateType == "month"'>date_format(E.SDATE, '%Y-%m') = #{endDate}</when>
                     <otherwise>date_format(E.SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                 </choose>
                   )
@@ -371,7 +363,7 @@
                WHERE AREACODE = #{areaCode}
                 <choose>
                     <when test='dateType == "year"'>AND date_format(SDATE, '%Y') = #{startDate}</when>
-                    <when test='dateType == "month"'>AND date_format(SDATE, '%Y-%m') = #{startDate}</when>
+                    <when test='dateType == "month"'>AND date_format(SDATE, '%Y-%m') = #{endDate}</when>
                     <otherwise>AND date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                 </choose>
                GROUP BY AREACODE, STRCODE ) S
@@ -392,7 +384,7 @@
                WHERE AREACODE = #{areaCode}
                 <choose>
                     <when test='dateType == "year"'>AND date_format(SDATE, '%Y') = #{startDate}</when>
-                    <when test='dateType == "month"'>AND date_format(SDATE, '%Y-%m') = #{startDate}</when>
+                    <when test='dateType == "month"'>AND date_format(SDATE, '%Y-%m') = #{endDate}</when>
                     <otherwise>AND date_format(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                 </choose>
                GROUP BY AREACODE, STRCODE ) S
