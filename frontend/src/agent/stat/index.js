@@ -227,22 +227,22 @@ export const areaTotalWarningComp = (areaName, item) => {
             <td className="wme_table_td_title text-center" colSpan="13">월별 경보 발생 건수</td>
           </tr>
           <tr>
-            <td className="wme_table_td_title text-center">1월</td>
-            <td className="wme_table_td_title text-center">2월</td>
-            <td className="wme_table_td_title text-center">3월</td>
-            <td className="wme_table_td_title text-center">4월</td>
-            <td className="wme_table_td_title text-center">5월</td>
-            <td className="wme_table_td_title text-center">6월</td>
-            <td className="wme_table_td_title text-center">7월</td>
-            <td className="wme_table_td_title text-center">8월</td>
-            <td className="wme_table_td_title text-center">9월</td>
-            <td className="wme_table_td_title text-center">10월</td>
-            <td className="wme_table_td_title text-center">11월</td>
-            <td className="wme_table_td_title text-center">12월</td>
-            <td className="wme_table_td_title text-center">계</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>1월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>2월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>3월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>4월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>5월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>6월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>7월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>8월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>9월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>10월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>11월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>12월</td>
+            <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>계</td>
           </tr>
           <tr>
-            <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>과전류 경보</td>
+            <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle", width: "15%"}}>과전류 경보</td>
             <td className="wme_table_td_title text-center">주의(1차경보)</td>
             <td className="text-right">{item[0]["oc1st"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[1]["oc1st"]?.toLocaleString() || 0}</td>
@@ -1482,7 +1482,7 @@ export const storeYearWarningComp = (item, strName, areaName, strCnt) => {
         </tbody>
       </table>
 
-      <CRow className={"mb-5"}>
+      <CRow className={"mb-5 mt-5"}>
         <CCol md={"12"} style={{ height: "400px"}}>
           <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
             <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 전기위험 경보 발생 현황 차트</span>
@@ -1627,7 +1627,7 @@ export const storePrintChartComp = (item1) => {
   });
 
   return (
-    <div className={"printMargin"}>
+    <div className={"printMargin mt-5"}>
       <CRow>
         <CCol md={"12"} style={{ height: "380px"}}>
           <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
@@ -1648,7 +1648,7 @@ const areaBarChart = (key, data, color, colorType = true) => (
     data={data}
     keys={key}
     indexBy="label"
-    margin={{ top: 50, right: 100, bottom: 100, left: 100 }}
+    margin={{ top: 50, right: 120, bottom: 100, left: 0 }}
     padding={0.6}
     innerPadding={1}
     groupMode="grouped"

@@ -34,9 +34,11 @@ export const ComponentToPrint2 = React.forwardRef((props, ref) => (
           </div>
 
           <div className={"pl-4 pr-4 pt-4"}>
-            {props.areaState}
-            {props.storeYearWarning}
-            {props.storeChart}
+            <div style={{width: "1650px"}}>
+              {props.areaState}
+              {props.storeYearWarning}
+              {props.storeChart}
+            </div>
           </div>
           <div className="position-absolute-ct">
             <h3 className="m-0" style={{fontSize: "30px"}}>- 1 -</h3>

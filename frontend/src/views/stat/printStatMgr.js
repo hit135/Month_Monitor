@@ -57,8 +57,10 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             </div>
           </div>
           <div className={"pl-4 pr-4 pt-4"}>
-            {props.areaState}
-            {props.areaTotalWarning}
+            <div style={{width: "1650px"}}>
+              {props.areaState}
+              {props.areaTotalWarning}
+            </div>
           </div>
           <div className="position-absolute-ct">
             <h3 className="m-0" style={{fontSize: "30px"}}>- 1 -</h3>
@@ -80,7 +82,9 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             </div>
           </div>
           <div className={"pl-4 pr-4 pt-4"}>
-            {props.areaHourlyStat}
+            <div style={{width: "1650px"}}>
+              {props.areaHourlyStat}
+            </div>
           </div>
 
           <div className="position-absolute-ct">
@@ -102,7 +106,9 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             </div>
           </div>
           <div className={"pl-4 pr-4 pt-4"}>
-            {props.areaHourlyStat2}
+            <div style={{width: "1650px"}}>
+              {props.areaHourlyStat2}
+            </div>
           </div>
 
           <div className="position-absolute-ct">
@@ -128,7 +134,9 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
 
 
             <div className={"pl-4 pr-4 pt-4"}>
-              {props.levelAreaStat}
+              <div style={{width: "1650px"}}>
+                {props.levelAreaStat}
+              </div>
             </div>
             <div className="position-absolute-ct">
               <h3 className="m-0" style={{fontSize: "30px"}}>- 4 -</h3>
@@ -152,7 +160,9 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
             </div>
           </div>
           <div className={"pl-4 pr-4 pt-4"}>
-            {props.levelStrStat}
+            <div style={{width: "1650px"}}>
+              {props.levelStrStat}
+            </div>
           </div>
 
           <CRow>
@@ -182,9 +192,11 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
           </div>
 
           <div className={"pl-4 pr-4 pt-4"}>
-            {props.areaKwhStat}
-            {props.areaKwhYearStat}
-            {props.areaKwhHourlyStat}
+            <div style={{width: "1650px"}}>
+              {props.areaKwhStat}
+              {props.areaKwhYearStat}
+              {props.areaKwhHourlyStat}
+            </div>
           </div>
 
           <CRow>
