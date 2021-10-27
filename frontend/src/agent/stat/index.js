@@ -243,7 +243,7 @@ export const areaTotalWarningComp = (areaName, item) => {
           </tr>
           <tr>
             <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle", width: "15%"}}>과전류 경보</td>
-            <td className="wme_table_td_title text-center">주의(1차경보)</td>
+            <td className="wme_table_td_title text-center">주의(1차)</td>
             <td className="text-right">{item[0]["oc1st"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[1]["oc1st"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[2]["oc1st"]?.toLocaleString() || 0}</td>
@@ -259,7 +259,7 @@ export const areaTotalWarningComp = (areaName, item) => {
             <td className="text-right">{item[12]["oc1st"]?.toLocaleString() || 0}</td>
           </tr>
           <tr>
-            <td className="wme_table_td_title text-center">경고(2차경보)</td>
+            <td className="wme_table_td_title text-center">경고(2차)</td>
             <td className="text-right">{item[0]["oc2nd"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[1]["oc2nd"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[2]["oc2nd"]?.toLocaleString() || 0}</td>
@@ -277,7 +277,7 @@ export const areaTotalWarningComp = (areaName, item) => {
           <tr>
             <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>저항성누설전류(IGR) 경보
             </td>
-            <td className="wme_table_td_title text-center">주의(1차경보)</td>
+            <td className="wme_table_td_title text-center">주의(1차)</td>
             <td className="text-right">{item[0]["igr1st"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[1]["igr1st"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[2]["igr1st"]?.toLocaleString() || 0}</td>
@@ -293,7 +293,7 @@ export const areaTotalWarningComp = (areaName, item) => {
             <td className="text-right">{item[12]["igr1st"]?.toLocaleString() || 0}</td>
           </tr>
           <tr>
-            <td className="wme_table_td_title text-center">경고(2차경보)</td>
+            <td className="wme_table_td_title text-center">경고(2차)</td>
             <td className="text-right">{item[0]["igr2nd"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[1]["igr2nd"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[2]["igr2nd"]?.toLocaleString() || 0}</td>
@@ -312,7 +312,7 @@ export const areaTotalWarningComp = (areaName, item) => {
             <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle"}}>전체누설전류(IGO)
               경보
             </td>
-            <td className="wme_table_td_title text-center">주의(1차경보)</td>
+            <td className="wme_table_td_title text-center">주의(1차)</td>
             <td className="text-right">{item[0]["igo1st"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[1]["igo1st"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[2]["igo1st"]?.toLocaleString() || 0}</td>
@@ -328,7 +328,7 @@ export const areaTotalWarningComp = (areaName, item) => {
             <td className="text-right">{item[12]["igo1st"]?.toLocaleString() || 0}</td>
           </tr>
           <tr>
-            <td className="wme_table_td_title text-center">경고(2차경보)</td>
+            <td className="wme_table_td_title text-center">경고(2차)</td>
             <td className="text-right">{item[0]["igo2nd"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[1]["igo2nd"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[2]["igo2nd"]?.toLocaleString() || 0}</td>
