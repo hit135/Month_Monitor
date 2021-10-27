@@ -33,90 +33,110 @@
       </table>
     </div><!-- /.store-img -->
     <div class="col-md-8 m-md-0 col-12 m-3">
-      <h3 style="margin: 10px 0; border-bottom: 2px solid #ddd;">오늘 경보 이력</h3>
-
-      <div>
-        <div class="row pl-2">
-          <div class="col-12 align-middle">
-            <div class="form-group custom-control custom-checkbox custom-control-inline">
-              <input type="checkbox" class="custom-control-input" id="check-total">
-              <label class="custom-control-label" for="check-total">전체</label>
-            </div><!-- /#check-total -->
-            <div class="form-group custom-control custom-checkbox custom-control-inline">
-              <input type="checkbox" class="custom-control-input" id="check-danger" checked="checked">
-              <label class="custom-control-label" for="check-danger">경고</label>
-            </div><!-- /#check-danger -->
-            <div class="form-group custom-control custom-checkbox custom-control-inline">
-              <input type="checkbox" class="custom-control-input" id="check-warn">
-              <label class="custom-control-label" for="check-warn">주의</label>
-            </div><!-- /#check-warn -->
-
-            <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_showDataLog();">조회</button>
-          </div><!-- /.col-12 align-middle -->
-        </div><!-- /.row pl-2 -->
-
-        <div class="store-datalog-list alert alert-info bg-white"></div>
-
-        <h3 style="margin: 10px 0; border-bottom: 2px solid #ddd;">주간 경보 추이</h3>
-        <div class="store-log-week-stat alert alert-info bg-white mb-0" role="alert">
-          <div class="text-center">
-            <span class="bg-danger-100">&nbsp;&nbsp;&nbsp;</span>
-            <span class="bg-warning-300">&nbsp;&nbsp;&nbsp;</span>
-            지난주
-            <span class="bg-danger ml-3">&nbsp;&nbsp;&nbsp;</span>
-            <span class="bg-warning">&nbsp;&nbsp;&nbsp;</span>
-            이번주
-          </div>
-
-          <table class="tbl-bar">
-            <tr class="tr-bar">
-              <td rowspan="2"><h1>경<br/>고</h1></td>
-              <td class="w1"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-              <td class="w1"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-              <td class="w2 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-              <td class="w2"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-              <td class="w3 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-              <td class="w3"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-              <td class="w4 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-              <td class="w4"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-              <td class="w5 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-              <td class="w5"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-              <td class="w6 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-              <td class="w6"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-              <td class="w7 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-              <td class="w7"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-            </tr>
+      <div class="row mt-2">
+        <div class="col-5">
+          <table class="store-datalog-meta" style="margin-top:30px;">
+            <tr class="monkwh"><th>사용전력량</th><td><span></span>kWh</td></tr>
+            <tr class="kw"><th>전력</th><td><span></span><span style="margin-right: 7px;">kW</span></td></tr>
+            <tr class="vo"><th>전압</th><td><span></span><span style="margin-right: 17px;">V</span></td></tr>
+            <tr class="am"><th>전류</th><td><span></span><span style="margin-right: 17px;">A</span></td></tr>
+            <tr class="hz"><th>주파수</th><td><span></span><span style="margin-right: 10px;">Hz</span></td></tr>
+            <tr class="igo"><th>누설전류(IGO)</th><td><span></span><span style="margin-right: 6px;">mA</span></td></tr>
+            <tr class="igr"><th>누설전류(IGR)</th><td><span></span><span style="margin-right: 6px;">mA</span></td></tr>
+            <tr class="igc"><th>누설전류(IGC)</th><td><span></span><span style="margin-right: 6px;">mA</span></td></tr>
+            <tr class="meg"><th>절연저항</th><td><span></span><span style="margin-right: 7px;">MΩ</span></td></tr>
+            <tr class="kwh"><th>누적전력량</th><td><span></span><span style="margin-right: 2px;">kWh</span></td></tr>
+            <tr class="dbm"><th>수신감도(RSSI)</th><td><span></span><span style="margin-right: 2px;">dBm</span></td></tr>
           </table>
-          <table class="tbl-bar w-100">
-            <tr class="tr-bar">
-              <td rowspan="2"><h1>주<br/>의</h1></td>
-              <td class="w1"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-              <td class="w1"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-              <td class="w2 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-              <td class="w2"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-              <td class="w3 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-              <td class="w3"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-              <td class="w4 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-              <td class="w4"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-              <td class="w5 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-              <td class="w5"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-              <td class="w6 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-              <td class="w6"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-              <td class="w7 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-              <td class="w7"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-            </tr>
-            <tr>
-              <td class="w1" colspan="2">일</td>
-              <td class="w2" colspan="2">월</td>
-              <td class="w3" colspan="2">화</td>
-              <td class="w4" colspan="2">수</td>
-              <td class="w5" colspan="2">목</td>
-              <td class="w6" colspan="2">금</td>
-              <td class="w7" colspan="2">토</td>
-            </tr>
-          </table>
-        </div><!-- /. store-log-week-stat alert alert-info bg-white mb-0 -->
+        </div>
+        <div class="col-7">
+          <div class="row pl-2">
+            <div class="col-12 align-middle">
+<!--              <div class="form-group custom-control custom-checkbox custom-control-inline">-->
+<!--                <input type="checkbox" class="custom-control-input" id="check-total">-->
+<!--                <label class="custom-control-label" for="check-total">전체</label>-->
+<!--              </div>&lt;!&ndash; /#check-total &ndash;&gt;-->
+              <!--
+              <div class="form-group custom-control custom-checkbox custom-control-inline">
+                <input type="checkbox" class="custom-control-input" id="check-danger" checked="checked">
+                <label class="custom-control-label" for="check-danger">경고</label>
+              </div>&lt;!&ndash; /#check-danger &ndash;&gt;
+              <div class="form-group custom-control custom-checkbox custom-control-inline">
+                <input type="checkbox" class="custom-control-input" id="check-warn">
+                <label class="custom-control-label" for="check-warn">주의</label>
+              </div>&lt;!&ndash; /#check-warn &ndash;&gt;
+              -->
+              <div class="form-group custom-control-inline mb-0">
+                <input class="form-control" id="regdt" type="date" />
+              </div>
+
+              <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_getDataLog();">조회</button>
+            </div><!-- /.col-12 align-middle -->
+          </div><!-- /.row pl-2 -->
+
+          <div class="mt-1 store-datalog-list alert alert-info bg-white"></div>
+        </div>
       </div>
+
+      <h3 style="margin: 10px 0; border-bottom: 2px solid #ddd;">주간 경보 추이</h3>
+      <div class="store-log-week-stat alert alert-info bg-white mb-0" role="alert">
+        <div class="text-center">
+          <span class="bg-danger-100">&nbsp;&nbsp;&nbsp;</span>
+          <span class="bg-warning-300">&nbsp;&nbsp;&nbsp;</span>
+          지난주
+          <span class="bg-danger ml-3">&nbsp;&nbsp;&nbsp;</span>
+          <span class="bg-warning">&nbsp;&nbsp;&nbsp;</span>
+          이번주
+        </div>
+
+        <table class="tbl-bar">
+          <tr class="tr-bar">
+            <td rowspan="2"><h1>경<br/>고</h1></td>
+            <td class="w1"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
+            <td class="w1"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
+            <td class="w2 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
+            <td class="w2"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
+            <td class="w3 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
+            <td class="w3"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
+            <td class="w4 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
+            <td class="w4"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
+            <td class="w5 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
+            <td class="w5"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
+            <td class="w6 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
+            <td class="w6"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
+            <td class="w7 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
+            <td class="w7"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
+          </tr>
+        </table>
+        <table class="tbl-bar w-100">
+          <tr class="tr-bar">
+            <td rowspan="2"><h1>주<br/>의</h1></td>
+            <td class="w1"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
+            <td class="w1"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
+            <td class="w2 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
+            <td class="w2"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
+            <td class="w3 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
+            <td class="w3"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
+            <td class="w4 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
+            <td class="w4"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
+            <td class="w5 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
+            <td class="w5"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
+            <td class="w6 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
+            <td class="w6"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
+            <td class="w7 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
+            <td class="w7"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
+          </tr>
+          <tr>
+            <td class="w1" colspan="2">일</td>
+            <td class="w2" colspan="2">월</td>
+            <td class="w3" colspan="2">화</td>
+            <td class="w4" colspan="2">수</td>
+            <td class="w5" colspan="2">목</td>
+            <td class="w6" colspan="2">금</td>
+            <td class="w7" colspan="2">토</td>
+          </tr>
+        </table>
+      </div><!-- /. store-log-week-stat alert alert-info bg-white mb-0 -->
     </div><!-- /.col-md-8 m-md-0 col-12 m-3 -->
   </div><!-- /.row store-info -->
 
@@ -145,9 +165,11 @@
         '[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}' +
       '</p>');
 
-    $('.store-info #check-total').on('click', fn_checkDataLog);
-    $('.store-info #check-danger').on('click', fn_checkDataLog);
-    $('.store-info #check-warn').on('click', fn_checkDataLog);
+    $('#regdt').val(fn_dateToString(new Date()).slice(0, 10));
+
+    // $('.store-info #check-total').on('click', fn_checkDataLog);
+    // $('.store-info #check-danger').on('click', fn_checkDataLog);
+    // $('.store-info #check-warn').on('click', fn_checkDataLog);
 
     $('.store-info').on('click', '.btn-check-start', function() {
       if (confirm('점검 등록할까요?')) {
@@ -190,8 +212,7 @@
     fn_getStoreInfo();
     fn_getSensorList();
     fn_getListStoreImg();
-    // fn_getDataLog();
-    // fn_getLogWeekStat();
+
     fn_getStoreInfoSensorList();
   }
 
@@ -205,38 +226,38 @@
     fn_getLogWeekStat();
   }
 
-  function fn_checkDataLog() {
-    if ($(this).attr('id') == 'check-total')
-      $('.store-info #check-danger, .store-info #check-warn').prop('checked', false);
+  // function fn_checkDataLog() {
+  //   if ($(this).attr('id') == 'check-total')
+  //     $('.store-info #check-danger, .store-info #check-warn').prop('checked', false);
+  //
+  //   $('.store-info #check-total')
+  //     .prop('checked', $('.store-info #check-danger:checked').length + $('.store-info #check-warn:checked').length == 0);
+  //
+  //   fn_showDataLog();
+  // }
 
-    $('.store-info #check-total')
-      .prop('checked', $('.store-info #check-danger:checked').length + $('.store-info #check-warn:checked').length == 0);
-
-    fn_showDataLog();
-  }
-
-  function fn_showDataLog() {
-    if ($('.store-info #check-total:checked').length > 0)
-      $('.store-datalog-list p').show();
-    else
-      $('.store-datalog-list p').hide();
-
-    if ($('.store-info #check-danger:checked').length > 0)
-      $('.store-datalog-list p.DANGER').show();
-
-    if ($('.store-info #check-warn:checked').length > 0)
-      $('.store-datalog-list p.WARN').show();
-  }
+  // function fn_showDataLog() {
+  //   if ($('.store-info #check-total:checked').length > 0)
+  //    $('.store-datalog-list p').show();
+  //   else
+  //     $('.store-datalog-list p').hide();
+  //
+  //   if ($('.store-info #check-danger:checked').length > 0)
+  //     $('.store-datalog-list p.DANGER').show();
+  //
+  //   if ($('.store-info #check-warn:checked').length > 0)
+  //     $('.store-datalog-list p.WARN').show();
+  // }
 
   function fn_getStoreInfo() {
     $.post(
         $('#contextRoot').val() + '/mng/storeInfoAjax'
       , { 'snsrid': $('#prm_snsrid').val() }
       , function(d) {
-          $('.store-name-cont').html(d[0]['STRNAME']);
-          $('.store-addr-cont').html(d[0]['STRADDR']);
-          $('.store-tel-cont').html(d[0]['STRTEL']);
-          $('.store-owntel-cont').html(d[0]['STROWNTEL']);
+          $('.store-meta .store-name-cont').html(d[0]['STRNAME']);
+          $('.store-meta .store-addr-cont').html(d[0]['STRADDR']);
+          $('.store-meta .store-tel-cont').html(d[0]['STRTEL']);
+          $('.store-meta .store-owntel-cont').html(d[0]['STROWNTEL']);
         }
     );
   }
@@ -340,8 +361,6 @@
           $('.store-info-sensor-list').html('');
 
           for (let i = 0; i < d.length; i++) {
-            d[i]['CNT'] = 0;
-
             if      (d[i]['DANGER'] > 0) d[i]['STATE'] = 'danger';
             else if (d[i]['WARN'] > 0)   d[i]['STATE'] = 'warn';
             else if (d[i]['CON'] == 0)   d[i]['STATE'] = 'discon';
@@ -361,32 +380,66 @@
   function fn_getDataLog() {
     $.post(
         $('#contextRoot').val() + '/mng/dataLogListAjax'
-      , { 'strcode': $('#prm_strcode').val(), 'areacode': $('#prm_areacode').val(), 'snsrid': $("input:radio[name='snsr-radio-btn']:checked").val() }
+      , {
+            'strcode': $('#prm_strcode').val()
+          , 'areacode': $('#prm_areacode').val()
+          , 'snsrid': $("input:radio[name='snsr-radio-btn']:checked").val()
+          , 'regdt': $('.store-info #regdt').val()
+        }
       , function(d) {
           $('.store-datalog-list').html('');
 
-          for (let i = 0; i < d.length; i++) {
-            d[i]['DATALOG'] = '전력: ' + d[i]['SNSRWATT'] + 'kW | 전류: ' + d[i]['SNSRAMPERE'] + 'mA | 누설전류: ' + d[i]['SNSRIGO'] + 'mA';
+          if ( d != null && d.length > 0) {
+            for (let i = 0; i < d.length; i++) {
+              d[i]['DATALOG'] = '전력: ' + d[i]['SNSRWATT'] + 'kW | 전류: ' + d[i]['SNSRAMPERE'] + 'mA | 누설전류: ' + d[i]['SNSRIGO'] + 'mA';
 
-            if (d[i]['STATE'])
-              d[i]['DATALOG'] = d[i]['LCAUSE'];
+              if (d[i]['STATE'])
+                d[i]['DATALOG'] = d[i]['LCAUSE'];
 
-            $('.store-datalog-list').append($.tmpl('datalog', d[i]));
+              $('.store-datalog-list').append($.tmpl('datalog', d[i]));
+
+              if (i == 0) {
+                if ($('#regdt').val()) {
+                  $.post(
+                    $('#contextRoot').val() + '/mng/sensorUsekwhMonthAjax'
+                    , { 'snsrid': $("input:radio[name='snsr-radio-btn']:checked").val(), 'regdt': $('.store-info #regdt').val() }
+                    , function(d) {
+                        $('.store-datalog-meta .monkwh td span').text(d[0]['USEKWH']);
+                      }
+                  );
+                }
+
+                $(".store-datalog-meta .kw td span:first").text(d[i]['SNSRWATT']);
+                $(".store-datalog-meta .vo td span:first").text(d[i]['SNSRVOLT']);
+                $(".store-datalog-meta .am td span:first").text(d[i]['SNSRAMPERE']);
+                $(".store-datalog-meta .hz td span:first").text(d[i]['SNSRHZ']);
+                $(".store-datalog-meta .igo td span:first").text(d[i]['SNSRIGO']);
+                $(".store-datalog-meta .igr td span:first").text(d[i]['SNSRIGR']);
+                $(".store-datalog-meta .igc td span:first").text(d[i]['SNSRIGC']);
+                $(".store-datalog-meta .meg td span:first").text(d[i]['SNSRREG']);
+                $(".store-datalog-meta .kwh td span:first").text(d[i]['SNSRKWH']);
+                $(".store-datalog-meta .dbm td span:first").text(d[i]['SNSRRSSI']);
+              }
+            }
+
+            // if ($('.store-datalog-list p.DANGER').length > 0) {
+            //   if ($('.store-info #check-danger:checked').length < 1) {
+            //     $('.store-info #check-danger').click();
+            //   }
+            // } else if ($('.store-datalog-list p.WARN').length > 0) {
+            //   if ($('.store-info #check-warn:checked').length < 1) {
+            //     $('.store-info #check-warn').click();
+            //   }
+            // } else if ($('.store-info #check-total:checked').length < 1) {
+            //   $('.store-info #check-total').click();
+            // }
+
+            // fn_showDataLog();
+          } else {
+            $('.store-datalog-list').html('데이터가 없습니다');
           }
 
-          if ($('.store-datalog-list p.DANGER').length > 0) {
-            if ($('.store-info #check-danger:checked').length < 1) {
-              $('.store-info #check-danger').click();
-            }
-          } else if ($('.store-datalog-list p.WARN').length > 0) {
-            if ($('.store-info #check-warn:checked').length < 1) {
-              $('.store-info #check-warn').click();
-            }
-          } else if ($('.store-info #check-total:checked').length < 1) {
-            $('.store-info #check-total').click();
-          }
-
-          fn_showDataLog();
+          $('.store-datalog-list p').show();
         }
     );
   }
