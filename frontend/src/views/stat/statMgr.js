@@ -47,6 +47,7 @@ const StatMgr = () => {
   let strOwnTel = "";
   let searchStartDate = "";
   let searchEndDate = "";
+
   const [onStrModal, setOnStrModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalLoading, setTotalLoading] = useState(true);
@@ -80,7 +81,6 @@ const StatMgr = () => {
   const [printChartComp, setPrintChartComp] = useState();
   const [storeYearWarning, setStoreYearWarning] = useState();     // 상점
   const [storeChart, setStoreChart] = useState();                 // 상점
-
 
   useEffect(async () => {
     await handleClickBtnGroup("areaCode");
@@ -117,9 +117,11 @@ const StatMgr = () => {
   const handleClickBtnGroup = type => {
     setTotalLoading(true);
     setHookReset();
-    if(type !== "store") {
+
+    if (type !== "store") {
       document.getElementById("strSelect").style.display = "none";
       document.getElementById("strSelect").value = "";
+
       setStrCode("");
       setAreaCode("AREA_000003");
 
@@ -127,11 +129,12 @@ const StatMgr = () => {
         setTypeValue(type);
         document.getElementById("selectGroup").innerHTML = '';
         document.getElementById("selectGroup").style.display = "block";
-        if(type !== "store") {
+
+        if (type !== "store") {
           if (resp.data['result'] === "success") {
             let html = '';
             for (let item of resp.data['resultList'])
-              if(type === "guCode")
+              if (type === "guCode")
                 html += `<option value="${item['guCode']}">${item['guName']}</option>`;
               else if(type === "areaCode")
                 html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
@@ -139,7 +142,7 @@ const StatMgr = () => {
             document.getElementById("selectGroup").innerHTML += html;
           }
         }
-      } );
+      });
     } else {
       setTypeValue(type);
       document.getElementById("strSelect").style.display = "block";
@@ -148,7 +151,7 @@ const StatMgr = () => {
   }
 
   const handleChangeGroup = e => {
-    if(typeValue === "guCode") setGuCode(e.target.value);
+    if (typeValue === "guCode") setGuCode(e.target.value);
     else setAreaCode(e.target.value);
   }
 
@@ -159,28 +162,32 @@ const StatMgr = () => {
     let monthElement = document.getElementById("month");
     let halfElement = document.getElementById("halfItem");
     let quarterElement = document.getElementById("quarter");
-    if(type === "년") {
+
+    if (type === "년") {
       yearElement.classList.add("display-inline");
       yearElement.classList.remove("display-none");
     } else {
       yearElement.classList.add("display-none");
       yearElement.classList.remove("display-inline");
     }
-    if(type === "월") {
+
+    if (type === "월") {
       monthElement.classList.add("display-inline");
       monthElement.classList.remove("display-none");
     } else {
       monthElement.classList.add("display-none");
       monthElement.classList.remove("display-inline");
     }
-    if(type === "반기") {
+
+    if (type === "반기") {
       halfElement.classList.add("display-justify");
       halfElement.classList.remove("display-none");
     } else {
       halfElement.classList.add("display-none");
       halfElement.classList.remove("display-justify");
     }
-    if(type === "분기") {
+
+    if (type === "분기") {
       quarterElement.classList.add("display-justify");
       quarterElement.classList.remove("display-none");
     } else {
@@ -195,7 +202,8 @@ const StatMgr = () => {
     setHookReset();
     setLoading(true);
     setTotalLoading(true);
-    if(typeValue === "store" && strCode === "") {
+
+    if (typeValue === "store" && strCode === "") {
       alert("상점을 선택해주세요.");
       return false;
     }
@@ -206,9 +214,10 @@ const StatMgr = () => {
         searchEndDate = resp.data["endDate"];
         setStartDate(searchStartDate);
         setEndDate(searchEndDate);
+
         // 상점일 경우
-        if(typeValue === "store") {
-          if(resp.data["strInfo"] !== null) {
+        if (typeValue === "store") {
+          if (resp.data["strInfo"] !== null) {
             strName = resp.data["strInfo"]["strName"];
             strTel = resp.data["strInfo"]["strTel"];
             strOwnTel = resp.data["strInfo"]["strOwnTel"];
@@ -217,11 +226,12 @@ const StatMgr = () => {
           }
         }
 
-        if(resp.data["infoStat"].length > 1) {
+        if (resp.data["infoStat"].length > 1) {
           let compList = [];
-          resp.data["infoStat"].map((item, idx) => {
+          resp.data["infoStat"].map(item => {
             compList.push(areaStatusComponent(item.areaName, searchStartDate, searchEndDate, item.areaAddr));
           })
+
           setAreaState(compList);
         } else {
           const temp = resp.data["infoStat"];
@@ -229,29 +239,31 @@ const StatMgr = () => {
           areaNameTitle = temp.areaName;
           setAreaState(areaStatusComponent(temp, searchStartDate, searchEndDate, typeValue, strName, snsrCnt, strTel, strOwnTel));
 
-          if(resp.data["weekMonthStat"] !== null) {
+          if (resp.data["weekMonthStat"] !== null) {
             setStoreYearWarning(storeYearWarningComp(resp.data["weekMonthStat"], strName, temp.areaName, temp.strCnt));
             setStoreChart(storeChartComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
             setPrintChartComp(storePrintChartComp(resp.data["weekMonthStat"]));
           }
         }
 
-        if(typeValue === "areaCode") {
+        if (typeValue === "areaCode") {
           setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"]));
           setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
           setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
-          if(resp.data["levelAreaStat"].length > 0)
+
+          if (resp.data["levelAreaStat"].length > 0)
             setLevelAreaStat(levelAreaStatComp(areaNameTitle, resp.data["levelAreaStat"]));
           else
             setLevelAreaStat("");
-          if(resp.data["levelStrStat"] !== null)
-            if(resp.data["levelStrStat"].length > 0)
+
+          if (resp.data["levelStrStat"] !== null)
+            if (resp.data["levelStrStat"].length > 0)
               setLevelStrStat(levelStoreStatComp(areaNameTitle, resp.data["levelStrStat"]));
             else
               setLevelStrStat("");
 
-          if(resp.data["weekMonthStat"] !== null)
-            if(resp.data["weekMonthStat"].length > 0)
+          if (resp.data["weekMonthStat"] !== null)
+            if (resp.data["weekMonthStat"].length > 0)
               setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"], resp.data["hourlyStat"]));
             else
               setAreaKwhYearStat("");
@@ -264,15 +276,15 @@ const StatMgr = () => {
       }
     });
 
-    if(typeValue !== "store") {
+    if (typeValue !== "store") {
       await getStatInfoList(typeValue, guCode, areaCode, dateType, startDate, endDate, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
         if (resp.data['result'] === "success") {
-          if(resp.data["areaKwhStat"] !== null)
+          if (resp.data["areaKwhStat"] !== null)
             setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
           else
             setAreaKwhStat("");
 
-          if(resp.data["areaStrKwhStat"] !== null)
+          if (resp.data["areaStrKwhStat"] !== null)
             if(resp.data["areaStrKwhStat"].length > 0)
               setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData))
             else
@@ -282,12 +294,13 @@ const StatMgr = () => {
           alert("서버 통신에 오류가 발생했습니다.");
         }
       });
+
       setTotalLoading(false);
     } else {
       setTotalLoading(false);
     }
-
   }
+
   const componentRef = React.useRef(null);
   const onBeforeGetContentResolve = React.useRef();
 
@@ -305,9 +318,7 @@ const StatMgr = () => {
     return new Promise((resolve) => {
       onBeforeGetContentResolve.current = resolve;
       setPrintLoading(true);
-      setTimeout(() => {
-        resolve();
-      }, 2000);
+      setTimeout(() => resolve(), 2000);
     });
   }, [setLoading]);
 
@@ -350,7 +361,7 @@ const StatMgr = () => {
                   <input className="form-control" id={"strSelect"} type={"text"} onClick={e => setOnStrModal(true)} readOnly={true}/>
                 </div>
                 <div className={"d-flex justify-content-center mb-0 align-items-center mt-1 mr-2"}>
-                  <CSelect style={{ width: "185px" }} id={"selectGroup"} onChange={handleChangeDateGroup}>
+                  <CSelect style={{ width: "185px" }} id={"selectDateGroup"} onChange={handleChangeDateGroup}>
                     <option>년</option>
                     <option>월</option>
                     <option>반기</option>
@@ -400,52 +411,15 @@ const StatMgr = () => {
                 </CCol>
               </CRow>
             }
-
-            {
-              typeValue !== "store" ?
-                areaState :
-                areaState
-            }
-            {
-              typeValue !== "store" ?
-                areaTotalWarning :
-                storeYearWarning
-            }
-            {
-              typeValue !== "store" ?
-                areaHourlyStat:
-                storeChart
-            }
-            {
-              typeValue !== "store" ?
-                areaHourlyStat2:
-                ""
-            }
-            {
-              typeValue !== "store" ?
-                levelAreaStat :
-                ""
-            }
-            {
-              typeValue !== "store" ?
-                levelStrStat :
-                ""
-            }
-            {
-              typeValue !== "store" ?
-                areaKwhStat :
-                ""
-            }
-            {
-              typeValue !== "store" ?
-                areaKwhYearStat :
-                ""
-            }
-            {
-              typeValue !== "store" ?
-                strKwhStat :
-                ""
-            }
+            { typeValue !== "store" ? areaState : areaState }
+            { typeValue !== "store" ? areaTotalWarning : storeYearWarning }
+            { typeValue !== "store" ? areaHourlyStat: storeChart }
+            { typeValue !== "store" ? areaHourlyStat2: "" }
+            { typeValue !== "store" ? levelAreaStat : "" }
+            { typeValue !== "store" ? levelStrStat : "" }
+            { typeValue !== "store" ? areaKwhStat : "" }
+            { typeValue !== "store" ? areaKwhYearStat : "" }
+            { typeValue !== "store" ? strKwhStat : "" }
           </CCardBody>
         </CCard>
       </CCol>
