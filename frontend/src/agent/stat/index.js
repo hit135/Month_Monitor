@@ -363,7 +363,7 @@ export const areaTotalWarningComp = (areaName, item) => {
         </table>
 
         <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 전기위험 경보 발생 현황 차트</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 과전류 경보 발생 현황 차트</span>
           <div className={"d-flex align-items-center"}>
             <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : 건)</span>
           </div>
@@ -580,7 +580,7 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
 
         <CRow>
           <CCol sm={"5"}>
-            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGR 발생현황</span>
+            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 저항성누설전류(IGR) 발생현황</span>
             <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_oc_warning_hourly_table">
               <tbody>
               <tr>
@@ -680,7 +680,7 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
     <div className={"printRow printMargin"}>
       <CRow>
         <CCol sm={"5"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGR 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 저항성누설전류(IGR) 발생현황</span>
           <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_igo_danger_dayofweek_table">
             <tbody>
             <tr>
@@ -747,7 +747,7 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
 
       <CRow>
         <CCol sm={"5"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGO 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 전체누설전류(IGO) 발생현황</span>
           <table className="table table-sm table-bordered mb-0 printTable" id="wme_area_oc_warning_hourly_table">
             <tbody>
             <tr>
@@ -808,7 +808,7 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
 
       <CRow>
         <CCol sm={"5"}>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGO 발생현황</span>
+          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 전체누설전류(IGO) 발생현황</span>
           <table className="table table-sm table-bordered mb-0 printTable">
             <tbody>
             <tr>
