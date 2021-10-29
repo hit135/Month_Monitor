@@ -242,7 +242,7 @@ export const areaTotalWarningComp = (areaName, item) => {
             <td className="wme_table_td_title text-center" style={{width: "5.5%"}}>계</td>
           </tr>
           <tr>
-            <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle", width: "15%"}}>과전류 경보</td>
+            <td className="wme_table_td_title text-center" rowSpan="2" style={{verticalAlign: "middle", width: "12%"}}>과전류 경보</td>
             <td className="wme_table_td_title text-center">주의(1차)</td>
             <td className="text-right">{item[0]["oc1st"]?.toLocaleString() || 0}</td>
             <td className="text-right">{item[1]["oc1st"]?.toLocaleString() || 0}</td>
