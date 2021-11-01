@@ -357,6 +357,24 @@ public class MStoreController {
         return null;
     }
 
+    @RequestMapping(value = "/log3DaysStatAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> log3DaysStatAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            prm.put("strcode", req.getParameter("strcode"));
+            prm.put("snsrid", req.getParameter("snsrid"));
+
+            return storeRepo.SELECT_LOG_3DAYS_STAT(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
     @RequestMapping(value = "/logWeekStatAjax")
     @ResponseBody
     public List<HashMap<String, Object>> logWeekStatAjax(HttpServletRequest req) throws Exception {

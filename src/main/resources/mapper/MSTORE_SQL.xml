@@ -357,42 +357,77 @@
            AND SNSRID = #{snsrid}
     </select>
 
+    <select id="SELECT_LOG_3DAYS_STAT" parameterType="map" resultType="map">
+        SELECT DATE(A.DATETIME) AS DATETIME
+             , COALESCE(B.DANGER, 0) AS DANGER
+             , COALESCE(B.WARN, 0) AS WARN
+          FROM ( SELECT DATE(NOW()) - INTERVAL seq DAY DATETIME FROM seq_0_to_2 ) A
+                    LEFT JOIN ( SELECT DATE(S.DATETIME) AS DATETIME
+                                     , SUM(S.DANGERCNT) AS DANGER
+                                     , SUM(S.WARNINGCNT) AS WARN
+                                  FROM F_CRN_SNSR_ELEC_EVT_STAT S
+                                 WHERE S.AREACODE = #{areacode}
+                                   AND S.STRCODE = #{strcode}
+                                   AND S.SNSRSEQ = ( SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid} )
+                                   AND DATE(S.DATETIME) BETWEEN DATE(NOW() - INTERVAL 2 DAY) AND DATE(NOW())
+                                 GROUP BY DATE(S.DATETIME) ) B
+                        ON A.DATETIME = B.DATETIME
+         GROUP BY DATE(A.DATETIME)
+         ORDER BY DATETIME
+    </select>
+
     <select id="SELECT_LOG_WEEK_STAT" parameterType="map" resultType="map">
-        SELECT A.SDATE
-             , DAYOFWEEK(A.SDATE)                       AS WEEK
-             , IFNULL(IFNULL(C.DANGER, B.DANGER), 0)    AS DANGER
-             , IFNULL(IFNULL(C.WARN, B.WARN), 0)        AS WARN
-          FROM ( SELECT DATE(NOW() - INTERVAL (A.A) DAY) AS SDATE
-                   FROM ( SELECT 0 AS A UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
-                           UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
-                           UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 ) AS A ) A
-                            LEFT JOIN ( SELECT SDATE
-                                             , SUM(IGR2ND + IGO2ND + OC2ND) AS DANGER
-                                             , SUM(IGR1ST + IGO1ST + OC1ST) AS WARN
-                                          FROM F_ELEC_SENSOR_STAT
-                                         WHERE AREACODE = #{areacode}
-                                           AND STRCODE = #{strcode}
-                                           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">
-                                           AND SNSRID = #{snsrid}
-                                           </if>
-                                           AND SDATE > DATE(NOW() - INTERVAL -13 DAY)
-                                         GROUP BY AREACODE, STRCODE ) B
-                                ON A.SDATE = B.SDATE
-                            LEFT JOIN ( SELECT DATE(A.REGDATE)                                                                      AS SDATE
-                                             , SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGER
-                                             , SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARN
-                                          FROM F_SENSOR_LOG A
-                                                LEFT JOIN F_SENSOR_INFO B
-                                                    ON A.SNSRID = B.SNSRID
-                                         WHERE B.AREACODE = #{areacode}
-                                           AND B.STRCODE = #{strcode}
-                                           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">
-                                           AND B.SNSRID = #{snsrid}
-                                           </if>
-                                           AND A.REGDATE > NOW() - INTERVAL 13 DAY
-                                         GROUP BY 1 ) C
-                                ON A.SDATE = C.SDATE
-         ORDER BY A.SDATE ASC
+<!--        SELECT A.SDATE-->
+<!--             , DAYOFWEEK(A.SDATE)                       AS WEEK-->
+<!--             , IFNULL(IFNULL(C.DANGER, B.DANGER), 0)    AS DANGER-->
+<!--             , IFNULL(IFNULL(C.WARN, B.WARN), 0)        AS WARN-->
+<!--          FROM ( SELECT DATE(NOW() - INTERVAL (A.A) DAY) AS SDATE-->
+<!--                   FROM ( SELECT 0 AS A UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4-->
+<!--                           UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9-->
+<!--                           UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 ) AS A ) A-->
+<!--                            LEFT JOIN ( SELECT SDATE-->
+<!--                                             , SUM(IGR2ND + IGO2ND + OC2ND) AS DANGER-->
+<!--                                             , SUM(IGR1ST + IGO1ST + OC1ST) AS WARN-->
+<!--                                          FROM F_ELEC_SENSOR_STAT-->
+<!--                                         WHERE AREACODE = #{areacode}-->
+<!--                                           AND STRCODE = #{strcode}-->
+<!--                                           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">-->
+<!--                                           AND SNSRID = #{snsrid}-->
+<!--                                           </if>-->
+<!--                                           AND SDATE > DATE(NOW() - INTERVAL -13 DAY)-->
+<!--                                         GROUP BY AREACODE, STRCODE ) B-->
+<!--                                ON A.SDATE = B.SDATE-->
+<!--                            LEFT JOIN ( SELECT DATE(A.REGDATE)                                                                      AS SDATE-->
+<!--                                             , SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGER-->
+<!--                                             , SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARN-->
+<!--                                          FROM F_SENSOR_LOG A-->
+<!--                                                LEFT JOIN F_SENSOR_INFO B-->
+<!--                                                    ON A.SNSRID = B.SNSRID-->
+<!--                                         WHERE B.AREACODE = #{areacode}-->
+<!--                                           AND B.STRCODE = #{strcode}-->
+<!--                                           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">-->
+<!--                                           AND B.SNSRID = #{snsrid}-->
+<!--                                           </if>-->
+<!--                                           AND A.REGDATE > NOW() - INTERVAL 13 DAY-->
+<!--                                         GROUP BY 1 ) C-->
+<!--                                ON A.SDATE = C.SDATE-->
+<!--         ORDER BY A.SDATE ASC-->
+        SELECT DATE(A.DATETIME) AS DATETIME
+             , COALESCE(B.DANGER, 0) AS DANGER
+             , COALESCE(B.WARN, 0) AS WARN
+          FROM ( SELECT DATE(NOW()) - INTERVAL seq DAY DATETIME FROM seq_0_to_6 ) A
+                    LEFT JOIN ( SELECT DATE(S.DATETIME) AS DATETIME
+                                     , SUM(S.DANGERCNT) AS DANGER
+                                     , SUM(S.WARNINGCNT) AS WARN
+                                  FROM F_CRN_SNSR_ELEC_EVT_STAT S
+                                 WHERE S.AREACODE = #{areacode}
+                                   AND S.STRCODE = #{strcode}
+                                   AND S.SNSRSEQ = ( SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid} )
+                                   AND DATE(S.DATETIME) BETWEEN DATE(NOW() - INTERVAL 6 DAY) AND DATE(NOW())
+                                 GROUP BY DATE(S.DATETIME) ) B
+                        ON A.DATETIME = B.DATETIME
+         GROUP BY DATE(A.DATETIME)
+         ORDER BY DATETIME
     </select>
 
     <insert id="INSERT_SENSOR_CHECK" parameterType="map">

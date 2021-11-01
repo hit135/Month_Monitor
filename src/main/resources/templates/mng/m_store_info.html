@@ -78,65 +78,154 @@
         </div>
       </div>
 
-      <h3 style="margin: 10px 0; border-bottom: 2px solid #ddd;">주간 경보 추이</h3>
-      <div class="store-log-week-stat alert alert-info bg-white mb-0" role="alert">
-        <div class="text-center">
-          <span class="bg-danger-100">&nbsp;&nbsp;&nbsp;</span>
-          <span class="bg-warning-300">&nbsp;&nbsp;&nbsp;</span>
-          지난주
-          <span class="bg-danger ml-3">&nbsp;&nbsp;&nbsp;</span>
-          <span class="bg-warning">&nbsp;&nbsp;&nbsp;</span>
-          이번주
+      <div class="row ml-0 mr-0">
+        <div class="col-6 pl-0 pr-0 store-log-3days-stat-border">
+          <div class="store-log-3days-stat-title">누적 경보</div>
+          <div class="row ml-0 mr-0">
+            <div class="col-6 pl-0 pr-0">
+              <div class="store-log-3days-stat-type">경고</div>
+              <div class="p-3">
+                <table class="tbl-bar w-100">
+                  <tr class="tr-bar">
+                    <td class="store-log-3days-stat-d0">
+                      <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                    </td>
+                    <td class="store-log-3days-stat-d1">
+                      <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                    </td>
+                    <td class="store-log-3days-stat-d2">
+                      <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar progress-bar-striped progress-bar-animated" style="padding-top: 0px;"><b>0</b></span></span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="col-6 pl-0 pr-0">
+              <div class="store-log-3days-stat-type">주의</div>
+              <div class="p-3">
+                <table class="tbl-bar w-100">
+                  <tr class="tr-bar">
+                    <td class="store-log-3days-stat-w0">
+                      <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                    </td>
+                    <td class="store-log-3days-stat-w1">
+                      <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                    </td>
+                    <td class="store-log-3days-stat-w2">
+                      <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar progress-bar-striped progress-bar-animated" style="padding-top: 0px;"><b>0</b></span></span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
+        <div class="col-6 pl-0 pr-0 store-log-week-stat-border">
+<!--          <h3 style="margin: 10px 0; border-bottom: 2px solid #ddd;">일주일 경보</h3>-->
+<!--          <div class="store-log-week-stat alert alert-info bg-white mb-0" role="alert">-->
+<!--            <div class="text-center">-->
+<!--              <span class="bg-danger-100">&nbsp;&nbsp;&nbsp;</span>-->
+<!--              <span class="bg-warning-300">&nbsp;&nbsp;&nbsp;</span>-->
+<!--              지난주-->
+<!--              <span class="bg-danger ml-3">&nbsp;&nbsp;&nbsp;</span>-->
+<!--              <span class="bg-warning">&nbsp;&nbsp;&nbsp;</span>-->
+<!--              이번주-->
+<!--            </div>-->
 
-        <table class="tbl-bar">
-          <tr class="tr-bar">
-            <td rowspan="2"><h1>경<br/>고</h1></td>
-            <td class="w1"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-            <td class="w1"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-            <td class="w2 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-            <td class="w2"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-            <td class="w3 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-            <td class="w3"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-            <td class="w4 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-            <td class="w4"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-            <td class="w5 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-            <td class="w5"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-            <td class="w6 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-            <td class="w6"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-            <td class="w7 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>
-            <td class="w7"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>
-          </tr>
-        </table>
-        <table class="tbl-bar w-100">
-          <tr class="tr-bar">
-            <td rowspan="2"><h1>주<br/>의</h1></td>
-            <td class="w1"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-            <td class="w1"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-            <td class="w2 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-            <td class="w2"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-            <td class="w3 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-            <td class="w3"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-            <td class="w4 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-            <td class="w4"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-            <td class="w5 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-            <td class="w5"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-            <td class="w6 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-            <td class="w6"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-            <td class="w7 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>
-            <td class="w7"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>
-          </tr>
-          <tr>
-            <td class="w1" colspan="2">일</td>
-            <td class="w2" colspan="2">월</td>
-            <td class="w3" colspan="2">화</td>
-            <td class="w4" colspan="2">수</td>
-            <td class="w5" colspan="2">목</td>
-            <td class="w6" colspan="2">금</td>
-            <td class="w7" colspan="2">토</td>
-          </tr>
-        </table>
-      </div><!-- /. store-log-week-stat alert alert-info bg-white mb-0 -->
+<!--            <table class="tbl-bar">-->
+<!--              <tr class="tr-bar">-->
+<!--                <td rowspan="2"><h1>경<br/>고</h1></td>-->
+<!--                <td class="w1"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w1"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w2 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w2"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w3 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w3"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w4 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w4"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w5 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w5"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w6 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w6"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w7 bl"><span class="block"><span class="btn-datalog danger-prev bg-danger-100 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w7"><span class="block"><span class="btn-datalog danger-this bg-danger progress-bar"><b>0</b></span></span></td>-->
+<!--              </tr>-->
+<!--            </table>-->
+<!--            <table class="tbl-bar w-100">-->
+<!--              <tr class="tr-bar">-->
+<!--                <td rowspan="2"><h1>주<br/>의</h1></td>-->
+<!--                <td class="w1"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w1"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w2 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w2"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w3 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w3"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w4 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w4"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w5 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w5"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w6 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w6"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w7 bl"><span class="block"><span class="btn-datalog warn-prev bg-warning-300 progress-bar"><b>0</b></span></span></td>-->
+<!--                <td class="w7"><span class="block"><span class="btn-datalog warn-this bg-warning progress-bar"><b>0</b></span></span></td>-->
+<!--              </tr>-->
+<!--            </table>-->
+<!--          </div>-->
+          <div class="store-log-week-stat-title">일주일 경보</div>
+          <div class="text-center">
+            <span class="bg-danger">&nbsp;&nbsp;&nbsp;</span> 경고
+            <span class="bg-warning">&nbsp;&nbsp;&nbsp;</span> 주의
+          </div>
+          <div class="p-3">
+            <table class="tbl-bar w-100">
+              <tr class="tr-bar">
+                <td class="store-log-week-stat-d0">
+                  <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-w0">
+                  <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-d1">
+                  <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-w1">
+                  <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-d2">
+                  <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-w2">
+                  <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-d3">
+                  <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-w3">
+                  <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-d4">
+                  <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-w4">
+                  <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-d5">
+                  <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-w5">
+                  <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-d6" style="background: rgb(231, 240, 248);">
+                  <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+                <td class="store-log-week-stat-w6" style="background: rgb(231, 240, 248);">
+                  <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div><!-- /.row -->
     </div><!-- /.col-md-8 m-md-0 col-12 m-3 -->
   </div><!-- /.row store-info -->
 
@@ -223,6 +312,7 @@
 
   function fn_refreshStoreInfo() {
     fn_getDataLog();
+    fn_getLog3DaysStat();
     fn_getLogWeekStat();
   }
 
@@ -444,57 +534,92 @@
     );
   }
 
+  function fn_getLog3DaysStat() {
+    $.post(
+        $('#contextRoot').val() + '/mng/log3DaysStatAjax'
+      , { 'strcode': $('#prm_strcode').val(), 'areacode': $('#prm_areacode').val(), 'snsrid': $("input:radio[name='snsr-radio-btn']:checked").val() }
+      , function(d) {
+          let max = -1;
+
+          for (let i = 0; i < d.length; i++) {
+            if (max < d[i]['DANGER']) max = d[i]['DANGER'];
+            if (max < d[i]['WARN'])   max = d[i]['WARN'];
+          }
+
+          for (let i = 0; i < d.length; i++) {
+            $(".store-log-3days-stat-d" + i + " .danger-this").css("paddingTop", 70 * d[i]['DANGER'] / max + 'px');
+            $(".store-log-3days-stat-d" + i + " .danger-this b").text(d[i]['DANGER']);
+            $(".store-log-3days-stat-w" + i + " .warn-this").css("paddingTop", 70 * d[i]['WARN'] / max + 'px');
+            $(".store-log-3days-stat-w" + i + " .warn-this b").text(d[i]['WARN']);
+          }
+        }
+    );
+  }
+
   function fn_getLogWeekStat() {
     $.post(
         $('#contextRoot').val() + '/mng/logWeekStatAjax'
       , { 'strcode': $('#prm_strcode').val(), 'areacode': $('#prm_areacode').val(), 'snsrid': $("input:radio[name='snsr-radio-btn']:checked").val() }
       , function(d) {
-          let temp = [];
+          // let temp = [];
+          //
+          // for (let i = 0; i < d.length; i++) {
+          //   if (d[i]['WEEK'] == 1) {
+          //     temp = d.slice(i);
+          //     break;
+          //   }
+          // }
+          //
+          // let dmax = Math.max.apply(null, temp.map(function(o) { return o.DANGER; } ));
+          // let wmax = Math.max.apply(null, temp.map(function(o) { return o.WARN; } ));
+          // let a = 'prev';
+          //
+          // for (let i = 0; i < temp.length; i++) {
+          //   let danger_bar = $('.store-log-week-stat td.w' + temp[i]['WEEK'] + ' .danger-' + a);
+          //   danger_bar.css('padding-top', 70 * temp[i]['DANGER'] / dmax + 'px');
+          //   danger_bar.text(temp[i]['DANGER']);
+          //   danger_bar.attr('data-regdate', temp[i]['SDATE']);
+          //   danger_bar.attr('data-checktype', 'danger');
+          //
+          //   let warn_bar = $('.store-log-week-stat td.w' + temp[i]['WEEK'] + ' .warn-' + a);
+          //   warn_bar.css('padding-top', 70 * temp[i]['WARN'] / wmax + 'px');
+          //   warn_bar.text(temp[i]['WARN']);
+          //   warn_bar.attr('data-regdate', temp[i]['SDATE']);
+          //   warn_bar.attr('data-checktype', 'warn');
+          //
+          //   if (temp[i]['WEEK'] == 7)
+          //     a = 'this';
+          // }
+          //
+          // let this_week = temp[temp.length - 1].WEEK;
+          // $('.store-log-week-stat td').css('background', 'transparents');
+          // $('.store-log-week-stat td.w' + this_week).css('background', '#e7f0f8');
+          //
+          // $('.store-log-week-stat td.w' + this_week + ' .danger-this').addClass('progress-bar-striped');
+          // $('.store-log-week-stat td.w' + this_week + ' .danger-this').addClass('progress-bar-animated');
+          // $('.store-log-week-stat td.w' + this_week + ' .warn-this').addClass('progress-bar-striped');
+          // $('.store-log-week-stat td.w' + this_week + ' .warn-this').addClass('progress-bar-animated');
+          //
+          // $('.store-log-week-stat td .danger-this').show();
+          // $('.store-log-week-stat td .warn-this').show();
+          //
+          // for (let i = this_week + 1; i < 8; i++) {
+          //   $('.store-log-week-stat td.w' + i + ' .danger-this').hide();
+          //   $('.store-log-week-stat td.w' + i + ' .warn-this').hide();
+          // }
+            let max = -1;
 
-          for (let i = 0; i < d.length; i++) {
-            if (d[i]['WEEK'] == 1) {
-              temp = d.slice(i);
-              break;
+            for (let i = 0; i < d.length; i++) {
+              if (max < d[i]['DANGER']) max = d[i]['DANGER'];
+              if (max < d[i]['WARN'])   max = d[i]['WARN'];
             }
-          }
 
-          let dmax = Math.max.apply(null, temp.map(function(o) { return o.DANGER; } ));
-          let wmax = Math.max.apply(null, temp.map(function(o) { return o.WARN; } ));
-          let a = 'prev';
-
-          for (let i = 0; i < temp.length; i++) {
-            let danger_bar = $('.store-log-week-stat td.w' + temp[i]['WEEK'] + ' .danger-' + a);
-            danger_bar.css('padding-top', 70 * temp[i]['DANGER'] / dmax + 'px');
-            danger_bar.text(temp[i]['DANGER']);
-            danger_bar.attr('data-regdate', temp[i]['SDATE']);
-            danger_bar.attr('data-checktype', 'danger');
-
-            let warn_bar = $('.store-log-week-stat td.w' + temp[i]['WEEK'] + ' .warn-' + a);
-            warn_bar.css('padding-top', 70 * temp[i]['WARN'] / wmax + 'px');
-            warn_bar.text(temp[i]['WARN']);
-            warn_bar.attr('data-regdate', temp[i]['SDATE']);
-            warn_bar.attr('data-checktype', 'warn');
-
-            if (temp[i]['WEEK'] == 7)
-              a = 'this';
-          }
-
-          let this_week = temp[temp.length - 1].WEEK;
-          $('.store-log-week-stat td').css('background', 'transparents');
-          $('.store-log-week-stat td.w' + this_week).css('background', '#e7f0f8');
-
-          $('.store-log-week-stat td.w' + this_week + ' .danger-this').addClass('progress-bar-striped');
-          $('.store-log-week-stat td.w' + this_week + ' .danger-this').addClass('progress-bar-animated');
-          $('.store-log-week-stat td.w' + this_week + ' .warn-this').addClass('progress-bar-striped');
-          $('.store-log-week-stat td.w' + this_week + ' .warn-this').addClass('progress-bar-animated');
-
-          $('.store-log-week-stat td .danger-this').show();
-          $('.store-log-week-stat td .warn-this').show();
-
-          for (let i = this_week + 1; i < 8; i++) {
-            $('.store-log-week-stat td.w' + i + ' .danger-this').hide();
-            $('.store-log-week-stat td.w' + i + ' .warn-this').hide();
-          }
+            for (let i = 0; i < d.length; i++) {
+              $(".store-log-week-stat-d" + i + " .danger-this").css("paddingTop", 70 * d[i]['DANGER'] / max + 'px');
+              $(".store-log-week-stat-d" + i + " .danger-this b").text(d[i]['DANGER']);
+              $(".store-log-week-stat-w" + i + " .warn-this").css("paddingTop", 70 * d[i]['WARN'] / max + 'px');
+              $(".store-log-week-stat-w" + i + " .warn-this b").text(d[i]['WARN']);
+            }
         }
     );
   }

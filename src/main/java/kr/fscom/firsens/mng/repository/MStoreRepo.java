@@ -40,6 +40,7 @@ public interface MStoreRepo {
     int CNT_DATA_LOG_EVENT(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> LIST_DATA_LOG_EVENT(Map<String, Object> param) throws Exception;
 
+    List<HashMap<String, Object>> SELECT_LOG_3DAYS_STAT(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_LOG_WEEK_STAT(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_SENSOR_USEKWH_MONTH(Map<String, Object> param) throws Exception;
     void INSERT_SENSOR_CHECK(Map<String, Object> param) throws Exception;
