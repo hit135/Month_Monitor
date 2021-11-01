@@ -282,7 +282,10 @@
         SELECT '1'                                                              AS TYPE
              , CONCAT(SUBSTR(DATE_FORMAT(A.SNSRRCVTIME, '%H:%i'), 1, 4), '0')   AS RCVTIME
              , IFNULL(COUNT(*), 0)                                              AS CNT
-          FROM F_SENSOR_DATA A
+          FROM <choose>
+                <when test="day == 1">F_SENSOR_DATA_2021 A</when>
+                <otherwise>F_SENSOR_DATA A</otherwise>
+               </choose>
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.SNSRID = B.SNSRID
          WHERE ( A.SNSRRCVTIME <![CDATA[ < ]]> DATE(NOW()) AND A.SNSRRCVTIME > DATE(NOW() - INTERVAL 1 DAY) )
@@ -307,7 +310,10 @@
         SELECT '1'                                                          AS TYPE
              , CONCAT(SUBSTR(DATE_FORMAT(A.REGDATE, '%H:%i'), 1, 4), '0')   AS RCVTIME
              , IFNULL(COUNT(*), 0)                                          AS CNT
-          FROM F_SENSOR_LOG A
+          FROM <choose>
+                <when test="day == 1">F_SENSOR_LOG_2021 A</when>
+                <otherwise>F_SENSOR_LOG A</otherwise>
+               </choose>
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.SNSRID = B.SNSRID
          WHERE ( A.REGDATE <![CDATA[ < ]]> DATE(NOW()) AND A.REGDATE > DATE(NOW() - INTERVAL 1 DAY) )

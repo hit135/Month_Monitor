@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -202,6 +204,8 @@ public class MMainController {
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
+            prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
+
             return mainRepo.SELECT_MAIN_AREA_DATA_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
@@ -217,6 +221,8 @@ public class MMainController {
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
+            prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
+
             return mainRepo.SELECT_MAIN_AREA_LOG_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
