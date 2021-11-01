@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 
@@ -304,8 +304,8 @@ public class SYSStrController {
         try {
             SYSFileDomain fvo = new SYSFileDomain();
             String fileName = String.valueOf(System.currentTimeMillis());
-            String base64EncoderImg = Base64.encode(file.getBytes());
-            byte[] data = Base64.decode(base64EncoderImg);
+            String base64EncoderImg = new String(Base64.getEncoder().encode(file.getBytes()));
+            byte[] data = Base64.getDecoder().decode(base64EncoderImg);
 
             try (OutputStream stream = new FileOutputStream(filePath + fileName + ".png")) {
                 stream.write(data);
