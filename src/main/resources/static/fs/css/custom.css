@@ -84,8 +84,8 @@
 .store-info .store-meta td { padding:0 10px; line-height:35px; font-size:16px; font-weight:bold; }
 .store-info .store-meta td.store-sensor-cont { font-size:12px; }
 .store-info .store-meta td.store-sensor-cont p { margin:0; }
-.store-info .store-datalog-list { height:435px; overflow-x:scroll; overflow-y:scroll; }
-.store-info .store-datalog-list p { font-weight:bold; color:#666; font-size:13px; margin:0; width:550px; }
+.store-info .store-datalog-list { height:435px; /*overflow-x:scroll;*/ overflow-y:scroll; }
+.store-info .store-datalog-list p { font-weight:bold; color:#666; font-size:13px; margin:0; /*width:550px;*/ }
 .store-info .store-datalog-list p.DANGER { color:#ff2f44; }
 .store-info .store-datalog-list p.WARN { color:#efaf77; }
 .store-info .store-log-3days-stat-border { border: 1px solid #ff7f00; }

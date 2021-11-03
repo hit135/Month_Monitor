@@ -4,31 +4,63 @@
 <mapper namespace="kr.fscom.firsens.mng.repository.MMainRepo">
 
     <select id="SELECT_SENSOR_COUNT" parameterType="map" resultType="map">
-        ( SELECT 'TODAY' AS TERM, 'TOTAL' AS TYPE, COUNT(DISTINCT SNSRID) AS CNT FROM F_SENSOR_INFO WHERE DELYN != 'Y' )
-        UNION
-        ( SELECT 'TODAY' AS TERM, 'DANGER' AS TYPE, COUNT(DISTINCT SNSRID) AS CNT
-            FROM F_SENSOR_LOG
-           WHERE REGDATE > DATE(NOW())
-             AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 )
-        UNION
-        ( SELECT 'COUNT' AS TERN, 'DANGER' AS TYPE, COUNT(*) AS CNT
-            FROM F_SENSOR_LOG
-           WHERE REGDATE > DATE(NOW())
-             AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 )
-        UNION
-        ( SELECT 'TODAY' AS TERN, 'WARN' AS TYPE, COUNT(DISTINCT SNSRID) AS CNT
-            FROM F_SENSOR_LOG
-           WHERE REGDATE > DATE(NOW())
-             AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 )
-        UNION
-        ( SELECT 'COUNT' AS TERM, 'WARN' AS TYPE, COUNT(*) AS CNT
-            FROM F_SENSOR_LOG
-           WHERE REGDATE > DATE(NOW())
-             AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 )
-        UNION
-        ( SELECT 'TODAY' AS TERM, 'DISCON' AS TYPE, COUNT(DISTINCT SNSRID) AS CNT
+        ( SELECT 'TODAY' AS TERM
+               , 'TOTAL' AS TYPE
+               , COUNT(DISTINCT SNSRID) AS CNT
             FROM F_SENSOR_INFO
            WHERE DELYN != 'Y'
+             AND AREACODE != '0' )
+        UNION
+        ( SELECT 'TODAY' AS TERM
+               , 'DANGER' AS TYPE
+               , COUNT(DISTINCT A.SNSRID) AS CNT
+            FROM F_SENSOR_LOG A
+                    LEFT JOIN F_SENSOR_INFO B
+                        ON A.SNSRID = B.SNSRID
+           WHERE A.REGDATE > DATE(NOW())
+             AND B.DELYN != 'Y'
+             AND B.AREACODE != '0'
+             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0 )
+        UNION
+        ( SELECT 'COUNT' AS TERN
+               , 'DANGER' AS TYPE
+               , COUNT(A.LSEQ) AS CNT
+            FROM F_SENSOR_LOG A
+                    LEFT JOIN F_SENSOR_INFO B
+                        ON A.SNSRID = B.SNSRID
+           WHERE A.REGDATE > DATE(NOW())
+             AND B.DELYN != 'Y'
+             AND B.AREACODE != '0'
+             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0 )
+        UNION
+        ( SELECT 'TODAY' AS TERN
+               , 'WARN' AS TYPE
+               , COUNT(DISTINCT A.SNSRID) AS CNT
+            FROM F_SENSOR_LOG A
+                    LEFT JOIN F_SENSOR_INFO B
+                        ON A.SNSRID = B.SNSRID
+           WHERE A.REGDATE > DATE(NOW())
+             AND B.DELYN != 'Y'
+             AND B.AREACODE != '0'
+             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 )
+        UNION
+        ( SELECT 'COUNT' AS TERM
+               , 'WARN' AS TYPE
+               , COUNT(A.LSEQ) AS CNT
+            FROM F_SENSOR_LOG A
+                    LEFT JOIN F_SENSOR_INFO B
+                        ON A.SNSRID = B.SNSRID
+           WHERE A.REGDATE > DATE(NOW())
+             AND B.DELYN != 'Y'
+             AND B.AREACODE != '0'
+             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 )
+        UNION
+        ( SELECT 'TODAY' AS TERM
+               , 'DISCON' AS TYPE
+               , COUNT(DISTINCT SNSRID) AS CNT
+            FROM F_SENSOR_INFO
+           WHERE DELYN != 'Y'
+             AND AREACODE != '0'
              AND DATARCVTIME <![CDATA[ < ]]> NOW() - INTERVAL 1 HOUR )
         ORDER BY TERM, TYPE
     </select>
@@ -125,12 +157,13 @@
                   WHERE A.REGDATE > DATE(NOW())
                     AND B.SNSRIGO > 50
                   GROUP BY A.SNSRID ) A
-                    LEFT JOIN F_SENSOR_INFO B
+                    LEFT JOIN ( SELECT AREACODE, STRCODE, SNSRID, SNSRNICK FROM F_SENSOR_INFO WHERE DELYN = 'N' AND STRCODE != '0' ) B
                         ON A.SNSRID = B.SNSRID
-                    LEFT JOIN F_STORE C
+                    LEFT JOIN ( SELECT STRCODE FROM F_STORE WHERE USEYN = 'Y' AND DELYN = 'N' ) C
                         ON B.STRCODE = C.STRCODE
-                    LEFT JOIN F_AREA D
+                    LEFT JOIN ( SELECT AREACODE, AREANAME FROM F_AREA WHERE DELYN = 'N' ) D
                         ON B.AREACODE = D.AREACODE
+         WHERE D.AREACODE IS NOT NULL
          ORDER BY A.STATE, A.CNT DESC
     </select>
 

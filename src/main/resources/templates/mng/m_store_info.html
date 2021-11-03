@@ -270,7 +270,8 @@
 
     $.template('datalog',
       '<p class="{{html STATE}}" data-regdate="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">' +
-        '[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}' +
+        // '[{{html SNSRRCVTIME}}] {{html SNSRID}} : {{html DATALOG}}' +
+        '[{{html SNSRRCVTIME}}]  {{html SNSRID}}' +
       '</p>');
 
     $('#regdt').val(fn_dateToString(new Date()).slice(0, 10));
@@ -498,12 +499,12 @@
       , function(d) {
           $('.store-datalog-list').html('');
 
-          if ( d != null && d.length > 0) {
+          if (d != null && d.length > 0) {
             for (let i = 0; i < d.length; i++) {
-              d[i]['DATALOG'] = '전력: ' + d[i]['SNSRWATT'] + 'kW | 전류: ' + d[i]['SNSRAMPERE'] + 'mA | 누설전류: ' + d[i]['SNSRIGO'] + 'mA';
+              // d[i]['DATALOG'] = '전력: ' + d[i]['SNSRWATT'] + 'kW | 전류: ' + d[i]['SNSRAMPERE'] + 'mA | 누설전류: ' + d[i]['SNSRIGO'] + 'mA';
 
-              if (d[i]['STATE'])
-                d[i]['DATALOG'] = d[i]['LCAUSE'];
+              // if (d[i]['STATE'])
+              //   d[i]['DATALOG'] = d[i]['LCAUSE'];
 
               $('.store-datalog-list').append($.tmpl('datalog', d[i]));
 
