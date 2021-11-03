@@ -358,7 +358,7 @@
     </select>
 
     <select id="SELECT_LOG_3DAYS_STAT" parameterType="map" resultType="map">
-        SELECT DATE(A.DATETIME) AS DATETIME
+        SELECT DATE_FORMAT(A.DATETIME, '%m-%d') AS DATETIME
              , COALESCE(B.DANGER, 0) AS DANGER
              , COALESCE(B.WARN, 0) AS WARN
           FROM ( SELECT DATE(NOW()) - INTERVAL seq DAY DATETIME FROM seq_0_to_2 ) A
@@ -412,7 +412,7 @@
 <!--                                         GROUP BY 1 ) C-->
 <!--                                ON A.SDATE = C.SDATE-->
 <!--         ORDER BY A.SDATE ASC-->
-        SELECT DATE(A.DATETIME) AS DATETIME
+        SELECT DATE_FORMAT(A.DATETIME, '%m-%d') AS DATETIME
              , COALESCE(B.DANGER, 0) AS DANGER
              , COALESCE(B.WARN, 0) AS WARN
           FROM ( SELECT DATE(NOW()) - INTERVAL seq DAY DATETIME FROM seq_0_to_6 ) A

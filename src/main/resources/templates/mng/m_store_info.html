@@ -97,6 +97,11 @@
                       <span class="block"><span class="btn-datalog danger-this bg-danger progress-bar progress-bar-striped progress-bar-animated" style="padding-top: 0px;"><b>0</b></span></span>
                     </td>
                   </tr>
+                  <tr class="tr-bar">
+                    <td class="store-log-3days-stat-day0"></td>
+                    <td class="store-log-3days-stat-day1"></td>
+                    <td class="store-log-3days-stat-day2"></td>
+                  </tr>
                 </table>
               </div>
             </div>
@@ -114,6 +119,11 @@
                     <td class="store-log-3days-stat-w2">
                       <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar progress-bar-striped progress-bar-animated" style="padding-top: 0px;"><b>0</b></span></span>
                     </td>
+                  </tr>
+                  <tr class="tr-bar">
+                    <td class="store-log-3days-stat-day0"></td>
+                    <td class="store-log-3days-stat-day1"></td>
+                    <td class="store-log-3days-stat-day2"></td>
                   </tr>
                 </table>
               </div>
@@ -221,6 +231,15 @@
                 <td class="store-log-week-stat-w6" style="background: rgb(231, 240, 248);">
                   <span class="block"><span class="btn-datalog warn-this bg-warning progress-bar" style="padding-top: 0px;"><b>0</b></span></span>
                 </td>
+                <tr class="tr-bar">
+                  <td colspan="2" class="store-log-week-stat-day0"></td>
+                  <td colspan="2" class="store-log-week-stat-day1"></td>
+                  <td colspan="2" class="store-log-week-stat-day2"></td>
+                  <td colspan="2" class="store-log-week-stat-day3"></td>
+                  <td colspan="2" class="store-log-week-stat-day4"></td>
+                  <td colspan="2" class="store-log-week-stat-day5"></td>
+                  <td colspan="2" class="store-log-week-stat-day6"></td>
+                </tr>
               </tr>
             </table>
           </div>
@@ -547,10 +566,19 @@
           }
 
           for (let i = 0; i < d.length; i++) {
-            $(".store-log-3days-stat-d" + i + " .danger-this").css("paddingTop", 70 * d[i]['DANGER'] / max + 'px');
-            $(".store-log-3days-stat-d" + i + " .danger-this b").text(d[i]['DANGER']);
-            $(".store-log-3days-stat-w" + i + " .warn-this").css("paddingTop", 70 * d[i]['WARN'] / max + 'px');
-            $(".store-log-3days-stat-w" + i + " .warn-this b").text(d[i]['WARN']);
+            $(".store-log-3days-stat-day" + i).text(d[i]['DATETIME']);
+
+            if (max == 0) {
+              $(".store-log-3days-stat-d" + i + " .danger-this").css("paddingTop", '0px');
+              $(".store-log-3days-stat-d" + i + " .danger-this b").text('0');
+              $(".store-log-3days-stat-w" + i + " .warn-this").css("paddingTop", '0px');
+              $(".store-log-3days-stat-w" + i + " .warn-this b").text('0');
+            } else {
+              $(".store-log-3days-stat-d" + i + " .danger-this").css("paddingTop", 70 * d[i]['DANGER'] / max + 'px');
+              $(".store-log-3days-stat-d" + i + " .danger-this b").text(d[i]['DANGER']);
+              $(".store-log-3days-stat-w" + i + " .warn-this").css("paddingTop", 70 * d[i]['WARN'] / max + 'px');
+              $(".store-log-3days-stat-w" + i + " .warn-this b").text(d[i]['WARN']);
+            }
           }
         }
     );
@@ -615,10 +643,19 @@
             }
 
             for (let i = 0; i < d.length; i++) {
-              $(".store-log-week-stat-d" + i + " .danger-this").css("paddingTop", 70 * d[i]['DANGER'] / max + 'px');
-              $(".store-log-week-stat-d" + i + " .danger-this b").text(d[i]['DANGER']);
-              $(".store-log-week-stat-w" + i + " .warn-this").css("paddingTop", 70 * d[i]['WARN'] / max + 'px');
-              $(".store-log-week-stat-w" + i + " .warn-this b").text(d[i]['WARN']);
+              $(".store-log-week-stat-day" + i).text(d[i]['DATETIME']);
+
+              if (max == 0) {
+                $(".store-log-week-stat-d" + i + " .danger-this").css("paddingTop", '0px');
+                $(".store-log-week-stat-d" + i + " .danger-this b").text('0');
+                $(".store-log-week-stat-w" + i + " .warn-this").css("paddingTop", '0px');
+                $(".store-log-week-stat-w" + i + " .warn-this b").text('0');
+              } else {
+                $(".store-log-week-stat-d" + i + " .danger-this").css("paddingTop", 70 * d[i]['DANGER'] / max + 'px');
+                $(".store-log-week-stat-d" + i + " .danger-this b").text(d[i]['DANGER']);
+                $(".store-log-week-stat-w" + i + " .warn-this").css("paddingTop", 70 * d[i]['WARN'] / max + 'px');
+                $(".store-log-week-stat-w" + i + " .warn-this b").text(d[i]['WARN']);
+              }
             }
         }
     );
