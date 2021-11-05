@@ -4,20 +4,21 @@
 <mapper namespace="kr.fscom.firsens.mng.repository.MLoginRepo">
 
     <select id="SELECT_SYS_LOGIN" parameterType="map" resultType="map">
-        SELECT USERID         AS userId
-             , MEMNAME        AS memName
-             , MEMLEVEL       AS memLevel
-             , MEMTEL         AS memTel
-             , MEMMOBILE      AS memMobile
-          FROM F_MEMBER
-         WHERE USERID = #{userId}
-           AND MEMPWD = #{memPwd}
+        SELECT
+            USERID AS userId
+            , MEMNAME AS memName
+            , MEMLEVEL AS memLevel
+            , MEMTEL AS memTel
+            , MEMMOBILE AS memMobile
+        FROM
+            F_MEMBER
+        WHERE
+            USERID = #{userId}
+            AND MEMPWD = #{memPwd}
     </select>
 
     <update id="UPDATE_SYS_MEMRSNTDATE" parameterType="map">
-        UPDATE F_MEMBER
-           SET MEMRSNTDATE = NOW()
-         WHERE USERID = #{userId}
+        UPDATE F_MEMBER SET MEMRSNTDATE = NOW() WHERE USERID = #{userId}
     </update>
 
 </mapper>
