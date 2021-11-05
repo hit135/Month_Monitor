@@ -257,6 +257,7 @@
                    WHEN IGOALM > 0 THEN 'IGO'
                    WHEN IGRALM > 0 THEN 'IGR'
               END) AS ALMTYPE
+            , DATE_FORMAT(C.DATARCVTIME, '%Y-%m-%d %H:%i:%s') AS DATARCVTIME
         FROM
             ${tblSensorData} A
                 LEFT JOIN ${tblSensorLog} B
@@ -308,6 +309,7 @@
              DSEQ
              , DATE_FORMAT(SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
+             , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , SNSRWATT
              , SNSRAMPERE
              , SNSRIGO
@@ -327,6 +329,7 @@
              DSEQ
              , DATE_FORMAT(SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
+             , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , SNSRWATT
              , SNSRAMPERE
              , SNSRIGO
@@ -399,6 +402,7 @@
              , LSEQ
              , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
+             , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , LCAUSE
              , (CASE
                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
@@ -428,6 +432,7 @@
              , LSEQ
              , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
+             , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , LCAUSE
              , (CASE
                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
@@ -457,6 +462,7 @@
              , LSEQ
              , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
+             , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , LCAUSE
              , (CASE
                     WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 'DANGER'
@@ -489,7 +495,7 @@
             ${tblSensorData} A
         WHERE
             A.SNSRRCVTIME BETWEEN CONCAT(DATE_FORMAT(#{regdt}, '%Y-%m'), '-01 00:00:00')
-                          AND CONCAT(LAST_DAY(DATE(#{regdt})), ' 23:59:59')
+                              AND CONCAT(LAST_DAY(DATE(#{regdt})), ' 23:59:59')
             AND SNSRID = #{snsrid}
     </select>
 

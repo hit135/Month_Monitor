@@ -47,6 +47,7 @@
             <tr class="meg"><th>절연저항</th><td><span></span><span style="margin-right: 7px;">MΩ</span></td></tr>
             <tr class="kwh"><th>누적전력량</th><td><span></span><span style="margin-right: 2px;">kWh</span></td></tr>
             <tr class="dbm"><th>수신감도(RSSI)</th><td><span></span><span style="margin-right: 2px;">dBm</span></td></tr>
+            <tr class="datarcvtime"><th>최근수신시간</th><td><span style="font-size: 14px;"></span><span style="margin-right: 2px;"></span></td></tr>
           </table>
         </div>
         <div class="col-7">
@@ -78,7 +79,7 @@
         </div>
       </div>
 
-      <div class="row ml-0 mr-0">
+      <div class="row mt-3 ml-0 mr-0">
         <div class="col-6 pl-0 pr-0 store-log-3days-stat-border">
           <div class="store-log-3days-stat-title">누적 경보</div>
           <div class="row ml-0 mr-0">
@@ -529,6 +530,7 @@
                 $(".store-datalog-meta .meg td span:first").text(d[i]['SNSRREG']);
                 $(".store-datalog-meta .kwh td span:first").text(d[i]['SNSRKWH']);
                 $(".store-datalog-meta .dbm td span:first").text(d[i]['SNSRRSSI']);
+                $(".store-datalog-meta .datarcvtime td span:first").text(d[i]['DATARCVTIME']);
               }
             }
 

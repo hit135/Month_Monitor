@@ -448,11 +448,11 @@
                  F_ELEC_SENSOR_STAT E
              WHERE
                  E.AREACODE = #{areaCode}
-                 AND (<choose>
-                          <when test='dateType == "year"'>DATE_FORMAT(E.SDATE, '%Y') = #{startDate}</when>
-                          <when test='dateType == "month"'>DATE_FORMAT(E.SDATE, '%Y-%m') = #{endDate}</when>
-                          <otherwise>DATE_FORMAT(E.SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
-                      </choose>)
+                 AND <choose>
+                         <when test='dateType == "year"'>DATE_FORMAT(E.SDATE, '%Y') = #{startDate}</when>
+                         <when test='dateType == "month"'>DATE_FORMAT(E.SDATE, '%Y-%m') = #{endDate}</when>
+                         <otherwise>DATE_FORMAT(E.SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                     </choose>
              GROUP BY
                 levelAreaCode) A
         ORDER BY
