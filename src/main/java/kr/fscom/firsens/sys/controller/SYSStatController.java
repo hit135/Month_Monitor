@@ -123,52 +123,61 @@ public class SYSStatController {
             String dateType, String yearDate, String monthDate, String halfDate, String halfSelect, String quarterDate) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         HashMap<String, Object> paramMap = new HashMap<>();
+
         try {
-            if(dateType.equals("년")) {
+            if (dateType.equals("년")) {
                 paramMap.put("dateType", "year");
                 paramMap.put("startDate", yearDate.split("-")[0]);
                 rtn.put("startDate", yearDate.split("-")[0] + "년");
-            } else if(dateType.equals("월")) {
+            } else if (dateType.equals("월")) {
                 paramMap.put("dateType", "month");
                 paramMap.put("startDate", monthDate.split("-")[0] + "-" + "01");
                 paramMap.put("endDate", monthDate.split("-")[0] + "-" + monthDate.split("-")[1]);
                 rtn.put("startDate", monthDate.split("-")[0] + "년 " + monthDate.split("-")[1] + "월");
-            } else if(dateType.equals("반기")) {
+            } else if (dateType.equals("반기")) {
                 String halfDate1;
                 String halfDate2;
                 paramMap.put("dateType", "half");
-                if(halfSelect.equals("상반기")) {
+
+                if (halfSelect.equals("상반기")) {
                     halfDate1 = halfDate.split("-")[0] + "-01";
                     halfDate2 = halfDate.split("-")[0] + "-06";
                 } else {
                     halfDate1 = halfDate.split("-")[0] + "-07";
                     halfDate2 = halfDate.split("-")[0] + "-12";
                 }
+
                 paramMap.put("startDate", halfDate1);
                 paramMap.put("endDate", halfDate2);
+
                 rtn.put("startDate", halfDate1.split("-")[0] + "년 " + halfDate1.split("-")[1] + "월");
                 rtn.put("endDate",  halfDate2.split("-")[0] + "년 " + halfDate2.split("-")[1] + "월");
-            } else if(dateType.equals("분기")) {
+            } else if (dateType.equals("분기")) {
                 paramMap.put("dateType", "quarter");
                 String[] quarter = quarterDate.split("-");
-                if(quarter[1].equals("01")) {
+
+                if (quarter[1].equals("01")) {
                     paramMap.put("startDate", quarter[0] + "-01");
                     paramMap.put("endDate", quarter[0] + "-03");
+
                     rtn.put("startDate", quarter[0] + "년 01월");
                     rtn.put("endDate", quarter[0] + "년 03월");
-                } else if(quarter[1].equals("04")) {
+                } else if (quarter[1].equals("04")) {
                     paramMap.put("startDate", quarter[0] + "-04");
                     paramMap.put("endDate", quarter[0] + "-06");
+
                     rtn.put("startDate", quarter[0] + "년 04월");
                     rtn.put("endDate", quarter[0] + "년 06월");
-                } else if(quarter[1].equals("07")) {
+                } else if (quarter[1].equals("07")) {
                     paramMap.put("startDate", quarter[0] + "-07");
                     paramMap.put("endDate", quarter[0] + "-09");
+
                     rtn.put("startDate", quarter[0] + "년 07월");
                     rtn.put("endDate", quarter[0] + "년 09월");
-                } else if(quarter[1].equals("10")) {
+                } else if (quarter[1].equals("10")) {
                     paramMap.put("startDate", quarter[0] + "-10");
                     paramMap.put("endDate", quarter[0] + "-12");
+
                     rtn.put("startDate", quarter[0] + "년 10월");
                     rtn.put("endDate", quarter[0] + "년 12월");
                 }
@@ -177,11 +186,13 @@ public class SYSStatController {
             paramMap.put("type", type);
             paramMap.put("startDate", startDate);
             paramMap.put("endDate", endDate);
-            if(type.equals("guCode")) {
+
+            if (type.equals("guCode")) {
                 paramMap.put("guCode", guCode);
                 rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_GU_INFO_STAT(guCode));
-            } else if(type.equals("areaCode")){
+            } else if (type.equals("areaCode")){
                 paramMap.put("areaCode", areaCode);
+
                 rtn.put("areaKwhStat", sysStatRepo.SELECT_SYS_STAT_AREA_KWHIGO_STAT(paramMap));
                 rtn.put("areaStrKwhStat", sysStatRepo.LIST_SYS_STAT_STR_KWH_STAT(paramMap));
             }
@@ -193,4 +204,5 @@ public class SYSStatController {
 
         return rtn;
     }
+
 }

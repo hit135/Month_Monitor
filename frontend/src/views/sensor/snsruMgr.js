@@ -1,21 +1,21 @@
-import React, { lazy, useEffect, useState } from 'react';
-import { CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch } from "@coreui/react";
+import React, {lazy, useEffect, useState} from 'react';
+import {CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
 
-import { numCommaFormat } from "../../agent/commonIndex";
+import {numCommaFormat} from "../../agent/commonIndex";
 import PageTableWidget from "../../widget/pageTableWidget";
-import { getSnsruList } from "../../agent/sensor";
+import {getSnsruList} from "../../agent/sensor";
 import SnsruInsertModal from "./snsruInsertModal";
 import SnsruUpdateModal from "./snsruUpdateModal";
 
 const columns = [
-    { dataField: 'seq', text: '번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'right' }, formatter: numCommaFormat }
-  , { dataField: 'dateTime', text: '날짜', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'content', text: '내용', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'left' } }
+  {dataField: 'seq', text: '번호', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'right'}, formatter: numCommaFormat}
+  , {dataField: 'dateTime', text: '날짜', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'content', text: '내용', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'left'}}
 ];
 
 const SnsruMgr = () => {
   const [repo, setRepo] = useState([]);               // 리스트 hook
-  const [pageItem, setPageItem] = useState({ page: 1, sizePerPage: 10 }); // 페이징 hook
+  const [pageItem, setPageItem] = useState({page: 1, sizePerPage: 10}); // 페이징 hook
   const [insertModal, setInsertModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
   const [snsruContent, setSnsruContent] = useState({});
@@ -26,7 +26,7 @@ const SnsruMgr = () => {
     getSnsruList(pageItem.page, pageItem.sizePerPage).then(resp => {
       if (resp.data['result']) {
         setRepo(resp.data["resultList"]);
-        setPageItem({ page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"] });
+        setPageItem({page: pageItem.page, sizePerPage: pageItem.sizePerPage, totalElementsCount: resp.data["totalElements"]});
       }
     });
   };

@@ -5,7 +5,7 @@ const axios = require('axios');
 export const getStrList = (page, sizePerPage, searchItem) =>
   axios.get(`${API_ROOT}/strs?page=${page}&size=${sizePerPage}&searchWrd=${searchItem.searchWrd}&useYn=${searchItem.useYn}&areaCode=${searchItem.areaCode}`)
 
-const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+const config = {headers: {'Content-Type': 'multipart/form-data'}};
 
 export const insertStr = array => {
   let formData = new FormData();
@@ -18,12 +18,7 @@ export const insertStr = array => {
     else
       formData.append(key, value.toString());
 
-  return axios({
-      method: "post"
-    , url: `${API_ROOT}/insertStr`
-    , data: formData
-    , headers: { "Content-Type": "multipart/form-data" }
-  });
+  return axios({method: "post", url: `${API_ROOT}/insertStr`, data: formData, headers: {"Content-Type": "multipart/form-data"}});
 };
 
 export const getStr = (array) => axios.post(`${API_ROOT}/selectStr`, array);
@@ -41,12 +36,7 @@ export const updateStr = (array) => {
     else
       formData.append(key, value.toString());
 
-  return axios({
-      method: "post"
-    , url: `${API_ROOT}/updateStr`
-    , data: formData
-    , headers: { "Content-Type": "multipart/form-data" }
-  });
+  return axios({method: "post", url: `${API_ROOT}/updateStr`, data: formData, headers: {"Content-Type": "multipart/form-data"}});
 };
 
 export const deleteStr = (strCode, areaCode, levelAreaCode, files) => {
@@ -58,12 +48,7 @@ export const deleteStr = (strCode, areaCode, levelAreaCode, files) => {
   if (files)
     files.map((item, idx) => formData.append("files", item));
 
-  return axios({
-      method: "post"
-    , url : `${API_ROOT}/deleteStr`
-    , data: formData
-    , headers: { "Content-Type": "multipart/form-data" }
-  });
+  return axios({method: "post", url : `${API_ROOT}/deleteStr`, data: formData, headers: {"Content-Type": "multipart/form-data"}});
 };
 
 export const getModalStrList = searchWrd => axios.get(`${API_ROOT}/modalStr?searchWrd=${searchWrd}`);

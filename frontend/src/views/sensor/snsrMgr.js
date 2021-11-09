@@ -1,23 +1,23 @@
-import React, { lazy, useEffect, useState } from 'react'
-import { Tree } from "antd";
-import { CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch } from "@coreui/react";
+import React, {lazy, useEffect, useState} from 'react'
+import {Tree } from "antd";
+import {CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
 
-import { dataList, generateList, getAreaList, getParentKey } from "../../agent/area";
+import {dataList, generateList, getAreaList, getParentKey} from "../../agent/area";
 import PageTableWidget from "../../widget/pageTableWidget";
 import SnsrInsertModal from "./snsrInsertModal";
 import SnsrUpdateModal from "./snsrUpdateModal";
-import { getSnsr, getSnsrList } from "../../agent/sensor";
-import { getInputValue, numCommaFormat } from "../../agent/commonIndex";
+import {getSnsr, getSnsrList} from "../../agent/sensor";
+import {getInputValue, numCommaFormat} from "../../agent/commonIndex";
 
 let gData = [];
 
 const columns = [
-    { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'right' }, formatter: numCommaFormat }
-  , { dataField: 'snsrSeq', text: '센서코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'snsrId', text: '센서아이디', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'snsrNick', text: '센서명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'regDate', text: '등록일자', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color: '#fff' }, style: { textAlign: 'center' } }
+  {dataField: 'rowNum', text: '번호', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'right'}, formatter: numCommaFormat}
+  , {dataField: 'snsrSeq', text: '센서코드', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'snsrId', text: '센서아이디', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'strName', text: '상점명', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'snsrNick', text: '센서명', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'regDate', text: '등록일자', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
 ];
 
 const SnsrMgr = () => {
@@ -30,8 +30,8 @@ const SnsrMgr = () => {
   const [inPutSearchValue, setInputSearchValue] = useState("");
   const [repo, setRepo] = useState([]);               // 리스트 hook
 
-  const [pageItem, setPageItem] = useState({ page: 1, sizePerPage: 10 }); // 페이징 hook
-  const [searchItem, setSearchItem] = useState({ searchWrd: "", delYn: "N", areaCode: "all", levelAreaCode: "all" });
+  const [pageItem, setPageItem] = useState({page: 1, sizePerPage: 10}); // 페이징 hook
+  const [searchItem, setSearchItem] = useState({searchWrd: "", delYn: "N", areaCode: "all", levelAreaCode: "all"});
 
   const onExpand = expandedKeys => {
     setExpandedKeys(expandedKeys);
@@ -70,11 +70,11 @@ const SnsrMgr = () => {
   const handleInitTree = async (page = 1, sizePerPage = 10) =>
     await getAreaList(page, sizePerPage).then(resp => {
       if (resp.data["result"] === "success") {
-        const data = [{ title: "전체", children: [], key: "all" }];
+        const data = [{title: "전체", children: [], key: "all"}];
         // data.push();
 
         resp.data["resultList"].map((item, idx) => data.push(item));
-        data.push({ title: "알수없음", children: [], key: "none" });
+        data.push({title: "알수없음", children: [], key: "none"});
         gData = data;
       }
     });
@@ -98,8 +98,7 @@ const SnsrMgr = () => {
       <span>{item.title.substr(0, index)}<span className={"site-tree-search-value"}>{searchValue}</span>{item.title.substr(index + searchValue.length)}</span> :
       <span>{item.title}</span>;
 
-    return (item.children) ?
-      { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) } : { title, key: item.key };
+    return (item.children) ? {title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children)} : {title, key: item.key};
   });
 
   // 초기 테이블 셋팅
@@ -164,7 +163,7 @@ const SnsrMgr = () => {
             <CCol className={"pl-0"}>
               <CCol sm={"8"} className={"float-left pl-0"}>
                 <CInput placeholder="검색어 입력" onChange={e => setInputSearchValue(e.target.value)}
-                        onKeyUp={e => { if (e.key === "Enter") clickSearchTree(); }} />
+                        onKeyUp={e => {if (e.key === "Enter") clickSearchTree();}} />
               </CCol>
               <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
             </CCol>

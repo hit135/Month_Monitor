@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import React, {useEffect, useState} from "react";
+import {useForm} from "react-hook-form";
 import axios from "axios";
 
-import { CCard, CCardBody, CCardHeader, CCol, CLabel, CFormGroup, CButton, CSwitch, CRow } from "@coreui/react";
-import { getValidInput, getInputValue, API_ROOT } from "../../agent/commonIndex";
+import {CCard, CCardBody, CCardHeader, CCol, CLabel, CFormGroup, CButton, CSwitch, CRow} from "@coreui/react";
+import {getValidInput, getInputValue, API_ROOT} from "../../agent/commonIndex";
 
 const AreaUpdateMgr = props => {
-  let { areaContent, nodeLv2Btn, handleClickUpdateItem } = props;
-  const [appSwitch, setAppSwitch] = useState({ useYn: false });
+  let {areaContent, nodeLv2Btn, handleClickUpdateItem} = props;
+  const [appSwitch, setAppSwitch] = useState({useYn: false});
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues, setFocus, setError } = useForm({ mode: "all" });
+  const {register, handleSubmit, formState: {errors}, reset, setValue, getValues, setFocus, setError} = useForm({mode: "all"});
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, checkValid, placeholder, required) =>
     <CCol md={"6"}>
-      <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
+      <CLabel htmlFor={id}>{txt}{required && <span className={"required-span"}> *</span>}</CLabel>
       <input className={getValidInput(errors[id], getValues(id), checkValid)} id={id} type={"text"} placeholder={placeholder}
-             { ...register(id, regOpts[id]) } />
-      { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
+             {...register(id, regOpts[id])} />
+      {errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span>}
     </CCol>;
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -26,7 +26,7 @@ const AreaUpdateMgr = props => {
       areaContent = undefined;
 
       reset({
-          areaCode: "", areaName: "", areaPosLat: null, areaPosLon: null, areaAddr: "", areaManager: "", areaOrder: 0, useYn: "N"
+        areaCode: "", areaName: "", areaPosLat: null, areaPosLon: null, areaAddr: "", areaManager: "", areaOrder: 0, useYn: "N"
         , areaOrderUpdate: false, areaOrderType: false
       });
     } else {
@@ -37,20 +37,21 @@ const AreaUpdateMgr = props => {
       appSwitch.useYn = (areaContent.useYn === "Y");
       setValue("prevAreaCode", areaContent.areaCode);
     } else {
-      setAppSwitch(data => ({ ...data, ["useYn"]: false }));
+      setAppSwitch(data => ({...data, ["useYn"]: false}));
     }
   }, [areaContent]);
 
   const setUpdSwitchValue = e => {
     const value = getInputValue(e);
-    setAppSwitch(data => ({ ...data, [e.target.id]: (value === "Y") }));
+
+    setAppSwitch(data => ({...data, [e.target.id]: (value === "Y")}));
     setValue(e.target.id, value);
   };
 
   const { onBlur, ...rest } = register("areaCode", {
-      required: { value: true, message: "구역코드를 입력해주세요." }
-    , minLength: { value: 11, message: "구역코드를 11글자 이상으로 입력해주세요." }
-    , maxLength: { value: 11, message: "구역코드를 11글자 이하으로 입력해주세요." }
+    required: {value: true, message: "구역코드를 입력해주세요."}
+    , minLength: {value: 11, message: "구역코드를 11글자 이상으로 입력해주세요."}
+    , maxLength: {value: 11, message: "구역코드를 11글자 이하으로 입력해주세요."}
   });
 
   const handleOnBlurAreaCode = e => {
@@ -66,22 +67,22 @@ const AreaUpdateMgr = props => {
   };
 
   const regOpts = {
-      upAreaCode: { required: { value: true, message: "상위구역코드를 입력해주세요." } }
+    upAreaCode: {required: { value: true, message: "상위구역코드를 입력해주세요."}}
     , areaName: {
-          required: { value: true, message: "구역명을 입력해주세요." }
-        , minLength: { value: 1, message: "구역명을 1글자 이상으로 입력해주세요." }
-        , maxLength: { value: 100, message: "구역명을 100글자 이하로 입력해주세요." }
-      }
+      required: {value: true, message: "구역명을 입력해주세요."}
+      , minLength: {value: 1, message: "구역명을 1글자 이상으로 입력해주세요."}
+      , maxLength: {value: 100, message: "구역명을 100글자 이하로 입력해주세요."}
+    }
     , areaAddr: {
-          minLength: { value: 5, message: "주소를 5글자 이상으로 입력해주세요." }
-        , maxLength: { value: 200, message: "주소를 200글자 이하으로 입력해주세요." }
-      }
+      minLength: {value: 5, message: "주소를 5글자 이상으로 입력해주세요."}
+      , maxLength: {value: 200, message: "주소를 200글자 이하으로 입력해주세요."}
+    }
     , areaManager: {
-          minLength: { value: 1, message: "구역담당자를 1글자 이상으로 입력해주세요." }
-        , maxLength: { value: 50, message: "구역담당자를 50글자 이하로 입력해주세요." }
-      }
-    , areaPosLat: { pattern: { value: /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000" } }
-    , areaPosLon: { pattern: { value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"} }
+      minLength: {value: 1, message: "구역담당자를 1글자 이상으로 입력해주세요."}
+      , maxLength: {value: 50, message: "구역담당자를 50글자 이하로 입력해주세요."}
+    }
+    , areaPosLat: {pattern: {value: /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000"}}
+    , areaPosLon: {pattern: {value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"}}
   };
 
   const onSubmit = (data, e) => {
@@ -102,7 +103,7 @@ const AreaUpdateMgr = props => {
           <CCol md={"12"} xl={"12"} className={"pl-0 pr-0"}>
             <div className={"d-flex align-item-center"}>
               <div className={"mr-auto"}>
-                <h5 className={"mb-0 ml-0"}>{ (typeof areaContent === 'undefined') ? "" : areaContent.areaName } 상세 및 수정</h5>
+                <h5 className={"mb-0 ml-0"}>{(typeof areaContent === 'undefined') ? "" : areaContent.areaName} 상세 및 수정</h5>
               </div>
             </div>
           </CCol>
@@ -113,20 +114,20 @@ const AreaUpdateMgr = props => {
               <CCol md={"6"}>
                 <CLabel htmlFor={"areaCode"}>구역코드<span className={"required-span"}> *</span></CLabel>
                 <input className={getValidInput(errors["areaCode"], getValues("areaCode"), "")} id={"areaCode"} type={"text"} placeholder={"AREA_000000"}
-                       onBlur={handleOnBlurAreaCode} { ...rest } />
-                { errors.areaCode && <span className={"invalid-feedback"}>{errors.areaCode.message}</span> }
+                       onBlur={handleOnBlurAreaCode} {...rest} />
+                {errors.areaCode && <span className={"invalid-feedback"}>{errors.areaCode.message}</span>}
               </CCol>
               <CCol md={"6"}>
                 <CLabel htmlFor={"upAreaCode"}>상위구역코드</CLabel>
-                <input className={"form-control"} id={"upAreaCode"} type={"text"} readOnly={true} { ...register("upAreaCode", regOpts['upAreaCode']) } />
-                { errors.upAreaCode && <span className={"invalid-feedback"}>{errors.upAreaCode.message}</span> }
+                <input className={"form-control"} id={"upAreaCode"} type={"text"} readOnly={true} {...register("upAreaCode", regOpts['upAreaCode'])} />
+                {errors.upAreaCode && <span className={"invalid-feedback"}>{errors.upAreaCode.message}</span>}
               </CCol>
             </CFormGroup>
             <CFormGroup row>
               {inputCmmHtml('areaName', '구역명', "", '구역명을 입력해주세요.', true)}
               <CCol md={"6"}>
                 <CLabel htmlFor={"areaOrder"}>구역순번<span className={"required-span"}> *</span></CLabel>
-                <select className={"form-control"} id={"areaOrder"} { ...register("areaOrder") }>{
+                <select className={"form-control"} id={"areaOrder"} {...register("areaOrder")}>{
                   Array.from(
                     Array((typeof areaContent === "undefined") ? 0 : areaContent.orderCnt), (e, i) => <option key={i} value={i + 1}>{i + 1}</option>
                   )

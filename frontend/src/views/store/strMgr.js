@@ -1,6 +1,6 @@
-import React, { lazy, useEffect, useState } from 'react'
+import React, {lazy, useEffect, useState} from 'react'
 import PageTableWidget from "../../widget/pageTableWidget";
-import { CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSelect, CSwitch } from "@coreui/react";
+import {CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSelect, CSwitch} from "@coreui/react";
 
 import StrInsertModal from "./strInsertModal";
 import StrUpdateModal from "./strUpdateModal";
@@ -13,16 +13,16 @@ const ynStyleFormatter = cell =>
   <h5 className={"mr-0 mb-0"}><CBadge color={(cell === "N") ? 'danger' : 'primary'}>{(cell === "N") ? '미사용' : '사용'}</CBadge></h5>;
 
 const columns = [
-    { dataField: 'rowNum', text: '번호', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'right', height: '42px', width: '5rem' }, formatter: numCommaFormat }
-  , { dataField: 'areaName', text: '구역명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'strCode', text: '상점코드', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'strName', text: '상점명', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'strOwnName', text: '상점주', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'strAddr', text: '주소', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'strTel', text: '상점 전화번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'strOwnTel', text: '상점주 전화번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: ynStyleFormatter }
-  , { dataField: 'regDate', text: '등록일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
+  {dataField: 'rowNum', text: '번호', headerStyle: {textAlign: 'center', height: '42px', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'right', height: '42px', width: '5rem'}, formatter: numCommaFormat}
+  , {dataField: 'areaName', text: '구역명', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'strCode', text: '상점코드', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'strName', text: '상점명', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'strOwnName', text: '상점주', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'strAddr', text: '주소', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'strTel', text: '상점 전화번호', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'strOwnTel', text: '상점주 전화번호', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'useYn', text: '사용유무', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}, formatter: ynStyleFormatter}
+  , {dataField: 'regDate', text: '등록일', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
 ];
 
 const StrMgr = () => {

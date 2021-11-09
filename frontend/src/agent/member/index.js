@@ -4,7 +4,7 @@ const axios = require('axios');
 
 export const getMemList = (page, sizePerPage, searchItem) =>
   axios.get([
-      `${API_ROOT}/mems?page=${page}`
+    `${API_ROOT}/mems?page=${page}`
     , `size=${sizePerPage}`
     , `searchWrd=${searchItem.searchWrd}`
     , `useYn=${searchItem.useYn}`

@@ -6,7 +6,7 @@ export const getSimulAreaList = () => axios.post(`${API_ROOT}/listSimulArea`);
 
 export const getSimulList = (simulType, page, size, areaCode, regDate) =>
   axios.get([
-      `${API_ROOT}/simulList?simulType=${simulType}`
+    `${API_ROOT}/simulList?simulType=${simulType}`
     , `page=${page}`
     , `size=${size}`
     , `areaCode=${areaCode}`

@@ -1,27 +1,26 @@
-import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch, CInput, CFormText } from "@coreui/react";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import {CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch, CInput, CFormText} from "@coreui/react";
+import React, {useEffect, useState} from "react";
+import {useForm} from "react-hook-form";
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import { getAreaList, getParentKey } from "../../agent/area";
-import { deleteSnsr, updateSnsr } from "../../agent/sensor";
+import {getAreaList, getParentKey} from "../../agent/area";
+import {deleteSnsr, updateSnsr} from "../../agent/sensor";
 import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
 import {getValidInput} from "../../agent/commonIndex";
 
 const SnsrUpdateModal = props => {
   let gData = [];
 
-  const { modal, setModal, snsrContent, handleInitTable } = props
+  const {modal, setModal, snsrContent, handleInitTable} = props;
   const [onAreaModal, setOnAreaModal] = useState();
   const [onStrModal, setOnStrModal] = useState();
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm(
-    {
+  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } =
+    useForm({
       defaultValues: {
-          sVol: 20, sSce: 240, sOc1V1: 100, sOc1V2: 120, sOc1T1: 60, sOc1T2: 30, sOc2V1: 120, sOc2V2: 130, sOc2T1: 60, sOc2T2: 10
+        sVol: 20, sSce: 240, sOc1V1: 100, sOc1V2: 120, sOc1T1: 60, sOc1T2: 30, sOc2V1: 120, sOc2V2: 130, sOc2T1: 60, sOc2T2: 10
         , sIgo1V: 15, sIgo1T: 10, sIgo2V: 17, sIgo2T: 10, sIgr1V: 3, sIgr1T: 10, sIgr2V: 5, sIgr2T: 120, snsrPosLat: null, snsrPosLon: null
       }, mode: "all"
-    }
-  );
+    });
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, checkValid, placeholder, required) =>

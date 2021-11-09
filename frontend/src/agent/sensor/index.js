@@ -4,7 +4,7 @@ const axios = require('axios');
 
 export const getSnsrList = (page, sizePerPage, searchItem) =>
    axios.get([
-       `${API_ROOT}/snsrs?page=${page}`
+     `${API_ROOT}/snsrs?page=${page}`
      , `size=${sizePerPage}`
      , `searchWrd=${searchItem.searchWrd}`
      , `areaCode=${searchItem.areaCode}`

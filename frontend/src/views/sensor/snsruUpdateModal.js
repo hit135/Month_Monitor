@@ -1,21 +1,18 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol } from "@coreui/react";
-import { updateSnsru } from "../../agent/sensor";
+import React, {useState} from "react";
+import {useForm} from "react-hook-form";
+import {CButton, CFormGroup, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol} from "@coreui/react";
+import {updateSnsru} from "../../agent/sensor";
 
 const SnsruUpdateModal = props => {
 
-  const { modal, setModal, handleInitTable } = props;
+  const {modal, setModal, handleInitTable} = props;
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm(
-    {
-      defaultValues: {}, mode: "all"
-    }
-  );
+  const {register, handleSubmit, formState: {errors}, reset, setValue, getValues} = useForm({defaultValues: {}, mode: "all"});
 
   const onSubmit = (data, e) => updateSnsru(data).then(resp => {
     if (resp.data["result"]) {
       alert("센서 갱신 이력 등록을 완료했습니다.");
+
       closeModal();
       handleInitTable();
     } else {
@@ -33,7 +30,7 @@ const SnsruUpdateModal = props => {
       <CModal show={modal} onClose={closeModal} color={"info"}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CModalHeader>
-            <CModalTitle style={{ color: "#fff" }}>센서 갱신 이력 수정</CModalTitle>
+            <CModalTitle style={{color: "#fff"}}>센서 갱신 이력 수정</CModalTitle>
           </CModalHeader>
           <CModalBody>
 
@@ -43,7 +40,6 @@ const SnsruUpdateModal = props => {
       </CModal>
     </>
   );
-
 };
 
 export default SnsruUpdateModal;

@@ -1,14 +1,16 @@
-import { API_ROOT, formatDate, numCommaFormat } from "../commonIndex";
-import { CButton, CCol, CRow } from "@coreui/react";
-import { ResponsiveBar } from '@nivo/bar'
-import { ResponsivePie } from '@nivo/pie'
+import {API_ROOT, formatDate, numCommaFormat} from "../commonIndex";
+import {CButton, CCol, CRow} from "@coreui/react";
+import {ResponsiveBar} from '@nivo/bar'
+import {ResponsivePie} from '@nivo/pie'
 import React from "react";
+
 const axios = require('axios');
-export const getSelectGroup = (type) =>
-  axios.get( `${API_ROOT}/selectGroup?type=${type}`)
+
+export const getSelectGroup = type => axios.get( `${API_ROOT}/selectGroup?type=${type}`);
+
 export const getStatInfo = (type, guCode, areaCode, strCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
   axios.get([
-      `${API_ROOT}/statInfo?type=${type}`
+    `${API_ROOT}/statInfo?type=${type}`
     , `guCode=${guCode}`
     , `areaCode=${areaCode}`
     , `strCode=${strCode}`
@@ -21,9 +23,10 @@ export const getStatInfo = (type, guCode, areaCode, strCode, startDate, endDate,
     , `halfSelect=${halfSelect}`
     , `quarterDate=${formatDate(quarterDate)}`
   ].join('&'));
+
 export const getStatInfoList = (type, guCode, areaCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
   axios.get([
-     `${API_ROOT}/statInfoList?type=${type}`
+   `${API_ROOT}/statInfoList?type=${type}`
     , `guCode=${guCode}`
     , `areaCode=${areaCode}`
     , `startDate=${formatDate(startDate)}`
@@ -35,102 +38,103 @@ export const getStatInfoList = (type, guCode, areaCode, startDate, endDate, date
     , `halfSelect=${halfSelect}`
     , `quarterDate=${formatDate(quarterDate)}`
   ].join('&'));
+
 // 시장, 상점 전기안전현황 컴포넌트
-export const areaStatusComponent = (param, startDate, endDate, type, strName, snsrCnt, strTel, strOwnTel) => {
-  return (
-    <div>
-      {type !== "store" ?
-        <div className={"printMargin"}>
-          <table className="table table-sm table-bordered mb-0 printTable">
-            <tbody>
-            <tr>
-              <td className="wme_table_td_title table-title text-center" colSpan={2}>{param.areaName} {strName} 전기위험 현황</td>
-            </tr>
-            <tr>
-              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>대상</td>
-              <td>
-                {type !== "store" ?
-                  param.snsrCnt?.toLocaleString() + "대 (상점수 " + param.strCnt?.toLocaleString() + "개)" : "전기감지 센서 " + snsrCnt + "대"}
-              </td>
-            </tr>
-            <tr>
-              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>설치일자</td>
-              <td>
-                {type !== "store" ?
-                  param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일" :
-                  param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일"}
-              </td>
-            </tr>
-            <tr>
-              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>운영기간</td>
-              <td>
-                {type !== "store" ?
-                  param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일 ~ 현재" :
-                  param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재"}
-              </td>
-            </tr>
-            <tr>
-              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>조회기간</td>
-              <td>
-                {endDate === undefined ? startDate : startDate + " - " + endDate}
-                {/*{formatDate(startDate)} ~ {formatDate(endDate)}*/}
-              </td>
-            </tr>
-            <tr>
-              <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>주소</td>
-              <td>{param.areaAddr}</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        :
-        <div className={"printMargin"}>
-          <table className="table table-sm table-bordered mb-0 printTable">
-            <tbody>
-            <tr>
-              <td className="wme_table_td_title table-title text-center" colSpan={4}>{param.areaName} {strName} 전기위험 현황</td>
-            </tr>
-            <tr>
-              <td className="wme_table_td_title">대상</td>
-              <td>
-                {type !== "store" ?
-                  param.snsrCnt?.toLocaleString() + "대 (상점수 " + param.strCnt?.toLocaleString() + "개)" : "전기감지 센서 " + snsrCnt + "대"}
-              </td>
-              <td className="wme_table_td_title">조회기간</td>
-              <td>{endDate === undefined ? startDate : startDate + " - " + endDate}</td>
-            </tr>
-            <tr>
-              <td className="wme_table_td_title">설치일자</td>
-              <td>{param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일"}</td>
-              <td className="wme_table_td_title" style={{width: "15%"}}>상점주 연락처</td>
-              <td>{/*{strOwnTel}*/}</td>
-            </tr>
-            <tr>
-              <td className="wme_table_td_title">운영기간</td>
-              <td>{param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재"}</td>
-              <td className="wme_table_td_title" style={{width: "15%"}}>상점 연락처</td>
-              <td>{/*{strTel}*/}</td>
-            </tr>
-            <tr>
-              <td className="wme_table_td_title">주소</td>
-              <td colSpan="3">{param.areaAddr}</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>}
-    </div>
-  );
-}
+export const areaStatusComponent = (param, startDate, endDate, type, strName, snsrCnt, strTel, strOwnTel) =>
+  <div>
+    {type !== "store" ?
+      <div className={"printMargin"}>
+        <table className="table table-sm table-bordered mb-0 printTable">
+          <tbody>
+          <tr>
+            <td className="wme_table_td_title table-title text-center" colSpan={2}>{param.areaName} {strName} 전기위험 현황</td>
+          </tr>
+          <tr>
+            <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>대상</td>
+            <td>
+              {type !== "store" ?
+                param.snsrCnt?.toLocaleString() + "대 (상점수 " + param.strCnt?.toLocaleString() + "개)" : "전기감지 센서 " + snsrCnt + "대"}
+            </td>
+          </tr>
+          <tr>
+            <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>설치일자</td>
+            <td>
+              {type !== "store" ?
+                param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일" :
+                param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일"}
+            </td>
+          </tr>
+          <tr>
+            <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>운영기간</td>
+            <td>
+              {type !== "store" ?
+                param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일 ~ 현재" :
+                param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재"}
+            </td>
+          </tr>
+          <tr>
+            <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>조회기간</td>
+            <td>
+              {endDate === undefined ? startDate : startDate + " - " + endDate}
+              {/*{formatDate(startDate)} ~ {formatDate(endDate)}*/}
+            </td>
+          </tr>
+          <tr>
+            <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>주소</td>
+            <td>{param.areaAddr}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      :
+      <div className={"printMargin"}>
+        <table className="table table-sm table-bordered mb-0 printTable">
+          <tbody>
+          <tr>
+            <td className="wme_table_td_title table-title text-center" colSpan={4}>{param.areaName} {strName} 전기위험 현황</td>
+          </tr>
+          <tr>
+            <td className="wme_table_td_title">대상</td>
+            <td>
+              {type !== "store" ?
+                param.snsrCnt?.toLocaleString() + "대 (상점수 " + param.strCnt?.toLocaleString() + "개)" : "전기감지 센서 " + snsrCnt + "대"}
+            </td>
+            <td className="wme_table_td_title">조회기간</td>
+            <td>{endDate === undefined ? startDate : startDate + " - " + endDate}</td>
+          </tr>
+          <tr>
+            <td className="wme_table_td_title">설치일자</td>
+            <td>{param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일"}</td>
+            <td className="wme_table_td_title" style={{width: "15%"}}>상점주 연락처</td>
+            <td>{/*{strOwnTel}*/}</td>
+          </tr>
+          <tr>
+            <td className="wme_table_td_title">운영기간</td>
+            <td>{param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재"}</td>
+            <td className="wme_table_td_title" style={{width: "15%"}}>상점 연락처</td>
+            <td>{/*{strTel}*/}</td>
+          </tr>
+          <tr>
+            <td className="wme_table_td_title">주소</td>
+            <td colSpan="3">{param.areaAddr}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>}
+  </div>;
+
 // 시장
 // 전기안전 경보 발생현황(종합) 컴포넌트
 export const areaTotalWarningComp = (areaName, item) => {
   let chartData = [];
   let totalWarning1stNum = item[12]["oc1st"] + item[12]["igo1st"] + item[12]["igr1st"];
   let totalWarning2ndNum = item[12]["oc2nd"] + item[12]["igo2nd"] + item[12]["igr2nd"];
+
   item.map((item, idx) => {
     if (idx !== 12)
       chartData.push({"label": (idx + 1) + "월", "과전류 1차 경보": item["oc1st"], "과전류 2차 경보": item["oc2nd"]});
   });
+
   return (
     <div className={"mt-3 printMargin"}>
       <h5 className={"title"}>{areaName} 전기위험 경보 발생 현황</h5>
@@ -343,7 +347,8 @@ export const areaTotalWarningComp = (areaName, item) => {
       </CRow>
     </div>
   );
-}
+};
+
 export const areaTotalChartStatComp = (item1, item2, item3) => {
   let hourOcChartData = [];
   let hourIgoChartData = [];
@@ -352,17 +357,21 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
   let dayIgoChartData = [];
   let dayIgrChartData = [];
   let keys = ["주의", "경고"];
+
   item1.map(item => {
     hourOcChartData.push({"label" : item["hour"], "주의" : item["ocWarningCnt"], "경고" : item["ocDangerCnt"]});
     hourIgoChartData.push({"label" : item["hour"], "주의" : item["igoWarningCnt"], "경고" : item["igoDangerCnt"]});
     hourIgrChartData.push({"label" : item["hour"], "주의" : item["igrWarningCnt"], "경고" : item["igrDangerCnt"]});
   });
+
   item2.map(items => {
     dayOcChartData.push({"label" : items["dayName"], "주의" : items["oc1stCnt"], "경고" : items["oc2ndCnt"]});
     dayIgoChartData.push({"label" : items["dayName"], "주의" : items["igo1stCnt"], "경고" : items["igo2ndCnt"]});
     dayIgrChartData.push({"label" : items["dayName"], "주의" : items["igr1stCnt"], "경고" : items["igr2ndCnt"]});
   });
+
   let chartData = [];
+
   item3.map((item, idx) => {
     if (idx !== 12) {
       chartData.push({
@@ -374,6 +383,7 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
       });
     }
   });
+
   return (
     <div className={"printMargin"}>
       <div>
@@ -577,21 +587,25 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
       </div>
     </div>
   );
-}
+};
+
 export const areaTotalChartStatComp2 = (item1, item2) => {
   let hourIgoChartData = [];
   let hourIgrChartData = [];
   let dayIgoChartData = [];
   let dayIgrChartData = [];
   let keys = ["주의", "경고"];
+
   item1.map(item => {
     hourIgoChartData.push({"label" : item["hour"], "주의" : item["igoWarningCnt"], "경고" : item["igoDangerCnt"]});
     hourIgrChartData.push({"label" : item["hour"], "주의" : item["igrWarningCnt"], "경고" : item["igrDangerCnt"]});
   });
+
   item2.map(items => {
     dayIgoChartData.push({"label" : items["dayName"], "주의" : items["igo1stCnt"], "경고" : items["igo2ndCnt"]});
     dayIgrChartData.push({"label" : items["dayName"], "주의" : items["igr1stCnt"], "경고" : items["igr2ndCnt"]});
   });
+
   return (
     <div className={"printRow printMargin"}>
       <CRow>
@@ -788,14 +802,17 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
       </CRow>
     </div>
   );
-}
+};
+
 // 시장별 현황
 export const levelAreaStatComp = (areaName, item) => {
   let areaType = false;
   let chartData = [];
   let chartData2 = [];
+
   if (areaName === "대전중앙시장")
     areaType = true;
+
   if (areaType) {
     item.map(item => {
       // chartKey.push(item["areaName"]);
@@ -803,6 +820,7 @@ export const levelAreaStatComp = (areaName, item) => {
       chartData2.push({"label" : item["areaName"], "전력사용량(kWh)" : Math.round(item["snsrKwh"])});
     });
   }
+
   return (
     <div className={"mt-4 printMargin"}>
       <h5 className={"title"}>{areaName} 내 시장별 현황</h5>
@@ -863,7 +881,8 @@ export const levelAreaStatComp = (areaName, item) => {
         </div>}
     </div>
   );
-}
+};
+
 //
 // 내상점별 현황
 export const levelStoreStatComp = (areaName, item) =>
@@ -901,6 +920,7 @@ export const levelStoreStatComp = (areaName, item) =>
       </tbody>
     </table>
   </div>;
+
 // 전기사용량 현황
 export const areaKwhStatComp = (areaName, item) =>
   <div className={"mt-4 printMargin"}>
@@ -923,19 +943,21 @@ export const areaKwhStatComp = (areaName, item) =>
       </CCol>
     </CRow>
   </div>;
+
 //
 // 전기사용량 상세 현황
 export const areaKwhStatYearComp = (item, item2, item3) => {
-  console.log(item2);
   let chartData = [];
   item.map((item, idx) => {
     if (idx !== 12)
       chartData.push({"label" : (idx + 1) + "월", "전력사용량" : Math.round(item["snsrKwh"])});
   });
+
   let hourKwhData = [];
   item2.map(item => hourKwhData.push({"label" : item["hour"], "사용량(kWh)" : Math.round(item["snsrKwh"])}));
   let dayKWhData = [];
   item3.map(item => dayKWhData.push({"label" : item["dayName"], "사용량(kWh)" : Math.round(item["snsrKwh"])}));
+
   return (
     <div className={"printMargin"}>
       <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전력사용량 현황(상세)</span>
@@ -1033,11 +1055,13 @@ export const areaKwhStatYearComp = (item, item2, item3) => {
       </CRow>
     </div>
   );
-}
+};
+
 //
 export const strKwhStatComp = (areaName, item, item3) => {
   let dayKwhData = [];
   item3.map(items => dayKwhData.push({"label" : items["dayName"], "사용량(kWh)" : Math.round(items["snsrKwh"])}));
+
   return (
     <div className={"printMargin"}>
       <CRow>
@@ -1112,11 +1136,13 @@ export const strKwhStatComp = (areaName, item, item3) => {
       </table>
     </div>
   );
-}
+};
+
 // 상점 =================================================================================================================
 // 전기위험 경보 발생현황
 export const storeYearWarningComp = (item, strName, areaName, strCnt) => {
   let chartData = [];
+
   item.map((item, idx) => {
     if (idx !== 12) {
       chartData.push({
@@ -1128,6 +1154,7 @@ export const storeYearWarningComp = (item, strName, areaName, strCnt) => {
       });
     }
   });
+
   return (
     <div className={"mt-5 printMargin"}>
       <CRow className={"mt-4"}>
@@ -1268,6 +1295,7 @@ export const storeYearWarningComp = (item, strName, areaName, strCnt) => {
     </div>
   );
 }
+
 // 시간대별, 요일별 차트
 export const storeChartComp = (item1, item2, item3) => {
   let chartData = [];
@@ -1278,53 +1306,49 @@ export const storeChartComp = (item1, item2, item3) => {
   let dayIgrChartData = [];
   let daySnsrChartData = [];
   let keys = ["주의", "경고"];
+
   item1.map(item => {
     hourOcChartData.push({"label" : item["hour"], "주의" : item["ocWarningCnt"], "경고" : item["ocDangerCnt"]});
     hourIgrChartData.push({"label" : item["hour"], "주의" : item["igrWarningCnt"], "경고" : item["igrDangerCnt"]});
     hourSnsrChartData.push({"label" : item["hour"], "전력사용량" : item["snsrKwh"]});
   });
+
   item2.map(items => {
     dayOcChartData.push({"label" : items["dayName"], "주의" : items["oc1stCnt"], "경고" : items["oc2ndCnt"]});
     dayIgrChartData.push({"label" : items["dayName"], "주의" : items["igr1stCnt"], "경고" : items["igr2ndCnt"]});
     daySnsrChartData.push({"label" : items["dayName"], "전력사용량" : items["snsrKwh"]});
   });
+
   item3.map((item, idx) => {
     if (idx !== 12)
       chartData.push({"label": (idx + 1) + "월", "전력사용량": Math.round(item["snsrKwh"])});
   });
+
   return (
     <div className={"mt-5 printMargin"}>
       <CRow className={"mb-5"}>
          <CCol sm={"6"}>
            <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 과전류 발생현황</span>
-           <div style={{ height: "380px"}}>
-             {areaHourlDayStatChart(keys, hourOcChartData, "nivo")}
-           </div>
+           <div style={{ height: "380px"}}>{areaHourlDayStatChart(keys, hourOcChartData, "nivo")}</div>
          </CCol>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 과전류 발생현황</span>
-          <div style={{ height: "380px"}}>
-            {areaHourlDayStatChart(keys, dayOcChartData, "nivo")}
-          </div>
+          <div style={{ height: "380px"}}>{areaHourlDayStatChart(keys, dayOcChartData, "nivo")}</div>
         </CCol>
       </CRow>
       <CRow className={"mb-5"}>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGR 발생현황</span>
-          <div style={{ height: "380px"}}>
-            {areaHourlDayStatChart(keys, hourIgrChartData, "nivo")}
-          </div>
+          <div style={{ height: "380px"}}>{areaHourlDayStatChart(keys, hourIgrChartData, "nivo")}</div>
         </CCol>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGR 발생현황</span>
-          <div style={{ height: "380px"}}>
-            {areaHourlDayStatChart(keys, dayIgrChartData, "nivo")}
-          </div>
+          <div style={{ height: "380px"}}>{areaHourlDayStatChart(keys, dayIgrChartData, "nivo")}</div>
         </CCol>
       </CRow>
       <CRow className={"mb-5"}>
-        <CCol md={"12"} style={{ height: "550px"}}>
-          <div className={"d-flex justify-content-between"} style={{marginRight : "30px"}}>
+        <CCol md={"12"} style={{height: "550px"}}>
+          <div className={"d-flex justify-content-between"} style={{marginRight: "30px"}}>
             <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 월별 전력소비량</span>
             <div className={"d-flex align-items-center"}>
               <span className={"subTitleType"} style={{fontSize: "18px", display: "block"}}>(단위 : kWh)</span>
@@ -1336,26 +1360,25 @@ export const storeChartComp = (item1, item2, item3) => {
       <CRow>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 시간대별 IGR 발생현황</span>
-          <div style={{ height: "380px"}}>
-            {areaHourlDayStatChart(["전력사용량"], hourSnsrChartData, "set3")}
-          </div>
+          <div style={{height: "380px"}}>{areaHourlDayStatChart(["전력사용량"], hourSnsrChartData, "set3")}</div>
         </CCol>
         <CCol sm={"6"}>
           <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>* 요일별 IGR 발생현황</span>
-          <div className={"chartHeight"} style={{ height: "380px"}}>
-            {areaHourlDayStatChart(["전력사용량"], daySnsrChartData, "set3")}
-          </div>
+          <div className={"chartHeight"} style={{height: "380px"}}>{areaHourlDayStatChart(["전력사용량"], daySnsrChartData, "set3")}</div>
         </CCol>
       </CRow>
     </div>
   );
-}
-export const storePrintChartComp = (item1) => {
+};
+
+export const storePrintChartComp = item1 => {
   let chartData = [];
+
   item1.map((item, idx) => {
     if (idx !== 12)
       chartData.push({"label": (idx + 1) + "월", "전력사용량": Math.round(item["snsrKwh"])});
   });
+
   return (
     <div className={"printMargin mt-5"}>
       <CRow>
@@ -1371,28 +1394,26 @@ export const storePrintChartComp = (item1) => {
       </CRow>
     </div>
   );
-}
-const areaBarChart = (key, data, color, colorType = true) => (
+};
+
+const areaBarChart = (key, data, color, colorType = true) =>
   <ResponsiveBar
     data={data}
     keys={key}
     indexBy="label"
-    margin={{ top: 50, right: 120, bottom: 100, left: 0 }}
+    margin={{top: 50, right: 120, bottom: 100, left: 0}}
     padding={0.6}
     innerPadding={1}
     groupMode="grouped"
-    valueScale={{ type: 'linear' }}
-    indexScale={{ type: 'band', round: true }}
+    valueScale={{type: 'linear'}}
+    indexScale={{type: 'band', round: true}}
     valueFormat=" >-,"
-    colors={colorType ? { scheme: color } : color}
+    colors={colorType ? {scheme: color} : color}
     // colors={}
     // colorBy="nivo"
     enableLabel={false}
-    theme={{
-      axis: {ticks: {text: {fontSize: 20, fill: "#333"}}},
-      legends: {text: {fontSize: 18, fill: "#333"}}
-    }}
-    borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+    theme={{axis: {ticks: {text: {fontSize: 20, fill: "#333"}}}, legends: {text: {fontSize: 18, fill: "#333"}}}}
+    borderColor={{from: 'color', modifiers: [['darker', 1.6]]}}
     axisTop={null}
     axisRight={null}
     axisLeft={{tickSize: 5, tickPadding: 5, tickRotation: 0, legendPosition: 'middle', legendOffset: -40}}
@@ -1401,53 +1422,33 @@ const areaBarChart = (key, data, color, colorType = true) => (
     labelSkipWidth={12}
     labelSkipHeight={12}
     labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-    legends={[
-      {
-        dataFrom: 'keys',
-        anchor: 'bottom',
-        direction: 'row',
-        justify: false,
-        translateX: 0,
-        translateY: 100,
-        itemsSpacing: 21,
-        itemWidth: 250,
-        itemHeight: 61,
-        itemDirection: 'left-to-right',
-        itemOpacity: 0.85,
-        symbolSize: 20,
-        effects: [{ on: 'hover', style: {itemOpacity: 1}}]
-      }
-    ]}
-  />
-)
-const areaHourlDayStatChart = (key, data, color) => (
+    legends={[{
+      dataFrom: 'keys', anchor: 'bottom', direction: 'row', justify: false, translateX: 0, translateY: 100, itemsSpacing: 21
+      , itemWidth: 250, itemHeight: 61, itemDirection: 'left-to-right', itemOpacity: 0.85, symbolSize: 20
+      , effects: [{on: 'hover', style: {itemOpacity: 1}}]
+    }]}
+  />;
+
+const areaHourlDayStatChart = (key, data, color) =>
   <ResponsiveBar
     data={data}
     keys={key}
     indexBy="label"
-    margin={{ top: 50, right: 60, bottom: 100, left: 60 }}
+    margin={{top: 50, right: 60, bottom: 100, left: 60}}
     padding={0.2}
     innerPadding={1}
     groupMode="grouped"
-    valueScale={{ type: 'linear' }}
-    indexScale={{ type: 'band', round: true }}
+    valueScale={{type: 'linear'}}
+    indexScale={{type: 'band', round: true}}
     valueFormat=" >-,"
-    colors={{ scheme: color }}
-    borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+    colors={{scheme: color}}
+    borderColor={{from: 'color', modifiers: [['darker', 1.6]]}}
     axisTop={null}
     axisRight={null}
-    axisBottom={{
-      tickSize: 5,
-      tickPadding: 5,
-      tickRotation: 0,
-      // legendPosition: 'middle',
-      // legendOffset: 32
-    }}
+    axisBottom={{tickSize: 5, tickPadding: 5, tickRotation: 0/* , legendPosition: 'middle', legendOffset: 32 */}}
     axisLeft={{tickSize: 5, tickPadding: 5, tickRotation: 0, legendPosition: 'middle', legendOffset: -40}}
     theme={{
-      axis: {ticks: {text: {fontSize: 18, fill: "#333"}}},
-      legends: {text: {fontSize: 16, fill: "#333"}
-      },
+      axis: {ticks: {text: {fontSize: 18, fill: "#333"}}}, legends: {text: {fontSize: 16, fill: "#333"}},
       // labels: {
       //   text: {
       //     fontSize: 20,
@@ -1460,23 +1461,11 @@ const areaHourlDayStatChart = (key, data, color) => (
     labelSkipWidth={12}
     labelSkipHeight={12}
     labelTextColor="#333"
-    legends={[
-      {
-        dataFrom: 'keys',
-        anchor: 'bottom',
-        direction: 'row',
-        justify: false,
-        translateX: 0,
-        translateY: 100,
-        itemsSpacing: 21,
-        itemWidth: 180,
-        itemHeight: 61,
-        itemDirection: 'left-to-right',
-        itemOpacity: 0.85,
-        symbolSize: 20,
-        effects: [{on: 'hover', style: {itemOpacity: 1}}]
-      }
-    ]}
+    legends={[{
+      dataFrom: 'keys', anchor: 'bottom', direction: 'row', justify: false, translateX: 0, translateY: 100
+      , itemsSpacing: 21, itemWidth: 180, itemHeight: 61, itemDirection: 'left-to-right', itemOpacity: 0.85, symbolSize: 20
+      , effects: [{on: 'hover', style: {itemOpacity: 1}}]
+    }]}
     // legends={[
     //   {
     //     dataFrom: 'keys',
@@ -1501,10 +1490,11 @@ const areaHourlDayStatChart = (key, data, color) => (
     //     ]
     //   }
     // ]}
-  />
-);
+  />;
+
 function getStatValue(paramVal, paramMonth) {
   let selectDateGroup = document.getElementById("selectDateGroup").value;
+
   if (selectDateGroup == '년')  {
     let year = document.getElementById("year").innerHTML.split('value="')[1].split('"')[0];
     if (new Date().getFullYear() == Number(year) && Number(paramMonth) > (new Date().getMonth() + 1))
@@ -1525,6 +1515,7 @@ function getStatValue(paramVal, paramMonth) {
     let date = document.getElementById("quarter").innerHTML.split('value="')[1].split('"')[0];
     let year = date.split(", ")[0];
     let quarter = date.split(", ")[1];
+
     if (quarter == 'Q1' && Number(paramMonth) > 3 || new Date().getFullYear() == Number(year) && Number(paramMonth) > (new Date().getMonth() + 1))
       return "-";
     else if (quarter == 'Q2' && (Number(paramMonth) < 4 || Number(paramMonth) > 6) || new Date().getFullYear() == Number(year) && Number(paramMonth) > (new Date().getMonth() + 1))
@@ -1536,5 +1527,6 @@ function getStatValue(paramVal, paramMonth) {
   } else if (typeof paramVal == 'undefined' || paramVal == null) {
     return 0;
   }
+
   return paramVal.toLocaleString();
 }

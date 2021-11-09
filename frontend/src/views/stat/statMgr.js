@@ -1,40 +1,17 @@
-import React, { useState, useEffect, useRef} from "react";
-import {
-  CButton,
-  CButtonGroup,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CRow,
-  CSelect,
-} from "@coreui/react";
+import React, {useState, useEffect, useRef} from "react";
+import {CButton, CButtonGroup, CCard, CCardBody, CCardHeader, CCol, CRow, CSelect} from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import {ko} from "date-fns/esm/locale";
 import {
-  areaStatusComponent,
-  storeYearWarningComp,
-  getSelectGroup,
-  getStatInfo,
-  storeChartComp,
-  areaTotalWarningComp,
-  areaTotalKwhComp,
-  areaTotalChartStatComp,
-  levelAreaStatComp,
-  levelStoreStatComp,
-  areaKwhStatComp,
-  areaKwhStatYearComp,
-  strKwhStatComp,
-  getStatInfoList,
-  areaTotalChartStatComp2,
-  storePrintChartComp,
+  areaStatusComponent, storeYearWarningComp, getSelectGroup, getStatInfo, storeChartComp, areaTotalWarningComp, areaTotalChartStatComp
+  , levelAreaStatComp, levelStoreStatComp, areaKwhStatComp, areaKwhStatYearComp, strKwhStatComp, getStatInfoList, areaTotalChartStatComp2
+  , storePrintChartComp,
 } from "../../agent/stat";
 import ReactToPrint, {useReactToPrint} from "react-to-print";
 import {ComponentToPrint} from "./printStatMgr";
 import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
-import {formatDate} from "../../agent/commonIndex";
 import '../../scss/react-datepicker.css';
 import {ComponentToPrint2} from "./printStatStoreMgr";
 
@@ -110,6 +87,7 @@ const StatMgr = () => {
 
   const clickStrRow = e => {
     document.getElementById("strSelect").value = e.strName;
+
     setStrCode(e.strCode);
     setAreaCode(e.areaCode);
   };
@@ -127,6 +105,7 @@ const StatMgr = () => {
 
       getSelectGroup(type).then(resp => {
         setTypeValue(type);
+
         document.getElementById("selectGroup").innerHTML = '';
         document.getElementById("selectGroup").style.display = "block";
 
@@ -145,19 +124,23 @@ const StatMgr = () => {
       });
     } else {
       setTypeValue(type);
+
       document.getElementById("strSelect").style.display = "block";
       document.getElementById("selectGroup").style.display = "none";
     }
-  }
+  };
 
   const handleChangeGroup = e => {
-    if (typeValue === "guCode") setGuCode(e.target.value);
-    else setAreaCode(e.target.value);
-  }
+    if (typeValue === "guCode")
+      setGuCode(e.target.value);
+    else
+      setAreaCode(e.target.value);
+  };
 
   const handleChangeDateGroup = e => {
     let type = e.target.value;
     setDateType(type);
+
     let yearElement = document.getElementById("year");
     let monthElement = document.getElementById("month");
     let halfElement = document.getElementById("halfItem");
@@ -194,11 +177,11 @@ const StatMgr = () => {
       quarterElement.classList.add("display-none");
       quarterElement.classList.remove("display-justify");
     }
-  }
-
+  };
 
   const handleClickSearchStat = async () => {
     let dayWeekData = [];
+
     setHookReset();
     setLoading(true);
     setTotalLoading(true);
@@ -230,11 +213,12 @@ const StatMgr = () => {
           let compList = [];
           resp.data["infoStat"].map(item => {
             compList.push(areaStatusComponent(item.areaName, searchStartDate, searchEndDate, item.areaAddr));
-          })
+          });
 
           setAreaState(compList);
         } else {
           const temp = resp.data["infoStat"];
+
           setAreaName(temp.areaName);
           areaNameTitle = temp.areaName;
           setAreaState(areaStatusComponent(temp, searchStartDate, searchEndDate, typeValue, strName, snsrCnt, strTel, strOwnTel));
@@ -283,7 +267,7 @@ const StatMgr = () => {
             setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
           else
             setAreaKwhStat("");
-          console.log(resp.data["areaStrKwhStat"]);
+
           if (resp.data["areaStrKwhStat"] !== null)
             setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData));
           else
@@ -298,7 +282,7 @@ const StatMgr = () => {
     } else {
       setTotalLoading(false);
     }
-  }
+  };
 
   const componentRef = React.useRef(null);
   const onBeforeGetContentResolve = React.useRef();
@@ -337,30 +321,24 @@ const StatMgr = () => {
               <h5 className={"mb-0 ml-0 d-flex justify-content-center align-items-center"}>통계 보고서</h5>
               <div className={'d-flex'}>
                 <CButtonGroup className="mr-3">
-                  {
-                    [{type: 'guCode', name : '구청보고'}, {type: 'areaCode', name : '시장보고'}, {type: 'store', name : '상점주보고'}].map((item, idx) => (
-                      <CButton
-                        color="outline-info"
-                        key={item.name}
-                        className="mx-0"
-                        active={item.name === topBtnValue}
-                        disabled={item.name === '구청보고'}
-                        onClick={(e) => { setTopBtnValue(e.target.innerHTML); handleClickBtnGroup(item.type); }}
-                      >
+                  {[{type: 'guCode', name : '구청보고'}, {type: 'areaCode', name : '시장보고'}, {type: 'store', name : '상점주보고'}].map((item, idx) => (
+                      <CButton color="outline-info" key={item.name} className="mx-0" active={item.name === topBtnValue} disabled={item.name === '구청보고'}
+                               onClick={e => {
+                                 setTopBtnValue(e.target.innerHTML);
+                                 handleClickBtnGroup(item.type);
+                               }}>
                       {item.name}
                       </CButton>
-                    ))
-                  }
+                    ))}
                 </CButtonGroup>
-
                 <div className={"d-flex justify-content-center mb-0 align-items-center mt-1 mr-2"}>
-                  <CSelect style={{ width: "185px" }} id={"selectGroup"} onChange={handleChangeGroup}>
+                  <CSelect style={{width: "185px"}} id={"selectGroup"} onChange={handleChangeGroup}>
                     <option>전체(시장)</option>
                   </CSelect>
-                  <input className="form-control" id={"strSelect"} type={"text"} onClick={e => setOnStrModal(true)} readOnly={true}/>
+                  <input className="form-control" id={"strSelect"} type={"text"} onClick={e => setOnStrModal(true)} readOnly={true} />
                 </div>
                 <div className={"d-flex justify-content-center mb-0 align-items-center mt-1 mr-2"}>
-                  <CSelect style={{ width: "185px" }} id={"selectDateGroup"} onChange={handleChangeDateGroup}>
+                  <CSelect style={{width: "185px"}} id={"selectDateGroup"} onChange={handleChangeDateGroup}>
                     <option>년</option>
                     <option>월</option>
                     <option>반기</option>
@@ -368,74 +346,69 @@ const StatMgr = () => {
                   </CSelect>
                 </div>
                 <div id={"year"}>
-                  <DatePicker locale={ko} className={"form-control mt-1"}  selected={yearDate} dateFormat="yyyy" onChange={(date) => {
-                    setYearDate(date); console.log(date);
-                  }} maxDate={new Date()} showYearPicker/>
+                  <DatePicker locale={ko} className={"form-control mt-1"}  selected={yearDate} dateFormat="yyyy" onChange={date => setYearDate(date)}
+                              maxDate={new Date()} showYearPicker />
                 </div>
                 <div id={"month"} className={"display-none"}>
-                  <DatePicker locale={ko} className={"form-control mt-1"} selected={monthDate} dateFormat="yyyy-MM" onChange={(date) => setMonthDate(date)} maxDate={new Date()} showMonthYearPicker/>
+                  <DatePicker locale={ko} className={"form-control mt-1"} selected={monthDate} dateFormat="yyyy-MM" onChange={date => setMonthDate(date)}
+                              maxDate={new Date()} showMonthYearPicker />
                 </div>
                 <div className={"d-flex justify-content-center mb-0 align-items-center mt-1 mr-2 display-none"} id={"halfItem"}>
-                  <DatePicker locale={ko} className={"form-control"} selected={halfDate} dateFormat="yyyy" onChange={(date) => setHalfDate(date)} maxDate={new Date()} showYearPicker/>
-                  <CSelect style={{ width: "130px" }} id={"halfSelect"} onChange={(e) => setHalfSelect(e.target.value)}>
+                  <DatePicker locale={ko} className={"form-control"} selected={halfDate} dateFormat="yyyy" onChange={date => setHalfDate(date)}
+                              maxDate={new Date()} showYearPicker />
+                  <CSelect style={{width: "130px"}} id={"halfSelect"} onChange={e => setHalfSelect(e.target.value)}>
                     <option>상반기</option>
                     <option>하반기</option>
                   </CSelect>
                 </div>
                 <div id={"quarter"} className={"display-none"}>
-                  <DatePicker locale={ko} className={"form-control mt-1"} selected={quarterDate} dateFormat="yyyy, QQQ" onChange={(date) => {setQuarterDate(date)}} maxDate={new Date()} showQuarterYearPicker/>
+                  <DatePicker locale={ko} className={"form-control mt-1"} selected={quarterDate} dateFormat="yyyy, QQQ" onChange={date => {setQuarterDate(date)}}
+                              maxDate={new Date()} showQuarterYearPicker />
                 </div>
-
                 {/*<span className={'ml-1 mt-2'}>~</span>*/}
                 {/*<DatePicker className={'ml-1 form-control mt-1'} locale={ko} selected={endDate} dateFormat="yyyy-MM-dd" onChange={(date) => setEndDate(date)}/>*/}
-                <CButton color="info" className={"ml-2"} onClick={handleClickSearchStat}>
-                  검색
-                </CButton>
+                <CButton color="info" className={"ml-2"} onClick={handleClickSearchStat}>검색</CButton>
                 {/*<CButton color="secondary" className={"ml-1"} onClick={() => handlePrint}><CIcon name="cil-print"/></CButton>*/}
                 <button className={"btn btn-secondary ml-2"} onClick={handlePrint} disabled={totalLoading}>
-                  <CIcon name="cil-print"/>
+                  <CIcon name="cil-print" />
                 </button>
               </div>
             </div>
           </CCardHeader>
           <CCardBody style={{padding : "2rem"}}>
-            {
-              loading && <CRow id={"loading"}>
+            {loading &&
+              <CRow id={"loading"}>
                 <CCol md={"12"}>
                   <div className={"d-flex justify-content-center"} style={{height: "300px"}}>
-                    <div className={"d-flex align-content-center align-items-center "}>
-                      <Spinner name="three-bounce" color="steelblue"/>
+                    <div className={"d-flex align-content-center align-items-center"}>
+                      <Spinner name="three-bounce" color="steelblue" />
                     </div>
                   </div>
                 </CCol>
-              </CRow>
-            }
-            { typeValue !== "store" ? areaState : areaState }
-            { typeValue !== "store" ? areaTotalWarning : storeYearWarning }
-            { typeValue !== "store" ? areaHourlyStat: storeChart }
-            { typeValue !== "store" ? areaHourlyStat2: "" }
-            { typeValue !== "store" ? levelAreaStat : "" }
-            { typeValue !== "store" ? levelStrStat : "" }
-            { typeValue !== "store" ? areaKwhStat : "" }
-            { typeValue !== "store" ? areaKwhYearStat : "" }
-            { typeValue !== "store" ? strKwhStat : "" }
+              </CRow>}
+            {(typeValue !== "store") ? areaState : areaState}
+            {(typeValue !== "store") ? areaTotalWarning : storeYearWarning}
+            {(typeValue !== "store") ? areaHourlyStat : storeChart}
+            {(typeValue !== "store") ? areaHourlyStat2 : ""}
+            {(typeValue !== "store") ? levelAreaStat : ""}
+            {(typeValue !== "store") ? levelStrStat : ""}
+            {(typeValue !== "store") ? areaKwhStat : ""}
+            {(typeValue !== "store") ? areaKwhYearStat : ""}
+            {(typeValue !== "store") ? strKwhStat : ""}
           </CCardBody>
         </CCard>
       </CCol>
       <PageStrTableModalWidget onStrModal={onStrModal} setOnStrModal={setOnStrModal} clickStrRow={clickStrRow} initStrCode={initStrCode} areaId={"areaSelect"} />
-
       {printLoading && typeValue !== "store" &&
          <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
-                           levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat} typeName={typeValue}
-                           areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat} areaTitle={areaName} type={topBtnValue} startDate={startDate}
-                           endDate={endDate} />
-      }
-
+                           levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat}
+                           typeName={typeValue} areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat}
+                           areaTitle={areaName} type={topBtnValue} startDate={startDate} endDate={endDate} />}
       {printLoading && typeValue === "store" &&
-        <ComponentToPrint2 ref={componentRef} areaState={areaState} storeYearWarning={storeYearWarning} storeChart={printChartComp} type={topBtnValue} areaTitle={areaName} strName={propStrName} startDate={startDate} endDate={endDate} />
-      }
+        <ComponentToPrint2 ref={componentRef} areaState={areaState} storeYearWarning={storeYearWarning} storeChart={printChartComp}
+                           type={topBtnValue} areaTitle={areaName} strName={propStrName} startDate={startDate} endDate={endDate} />}
     </>
-  )
-}
+  );
+};
 
 export default StatMgr;

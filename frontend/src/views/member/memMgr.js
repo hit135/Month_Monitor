@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch } from "@coreui/react";
+import React, {useEffect, useState} from 'react';
+import {CBadge, CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSwitch} from "@coreui/react";
 
 import PageTableWidget from "../../widget/pageTableWidget";
 import MemInsertModal from "../member/memInsertModal";
 import MemUpdateModal from "./memUpdateModal";
-import { getMem, getMemList } from "../../agent/member";
-import { numCommaFormat, getInputValue } from "../../agent/commonIndex";
+import {getMem, getMemList} from "../../agent/member";
+import {numCommaFormat, getInputValue} from "../../agent/commonIndex";
 
 const authStyleFormatter = cell => {
   let cellStr = "";
@@ -34,24 +34,24 @@ const storeCountStyleFormatter = cell =>
   <h5 className={"mr-0 mb-0"}><CBadge color={(cell > 0) ? 'danger' : 'primary'}>{cell}</CBadge></h5>;
 
 const columns = [
-    { dataField: 'rowNum', text: '순번', headerStyle: { textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff' }, style: {  textAlign: 'right', height: '42px', width: '5rem' }
-      , formatter: numCommaFormat }
-  , { dataField: 'userId', text: 'ID', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'left' } }
-  , { dataField: 'memName', text: '이름', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'left' } }
-  , { dataField: 'memLevel', text: '권한', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: authStyleFormatter }
-  , { dataField: 'memTel', text: '전화번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'memMobile', text: '휴대폰번호', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
-  , { dataField: 'strCnt', text: '상점수', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'right' }, formatter: storeCountStyleFormatter }
-  , { dataField: 'useYn', text: '사용유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: memUseStyleFormatter }
-  , { dataField: 'delYn', text: '삭제유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: memDeleteStyleFormatter }
-  , { dataField: 'memIsLeave', text: '탈퇴유무', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' }, formatter: memLeaveStyleFormatter }
-  , { dataField: 'memRsntDate', text: '최근접속일', headerStyle: { textAlign: 'center', backgroundColor: '#111827', color : '#fff' }, style: { textAlign: 'center' } }
+  {dataField: 'rowNum', text: '순번', headerStyle: {textAlign: 'center', height: '42px', backgroundColor: '#111827', color : '#fff'}, style: {textAlign: 'right', height: '42px', width: '5rem'}
+   , formatter: numCommaFormat }
+  , {dataField: 'userId', text: 'ID', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'left'}}
+  , {dataField: 'memName', text: '이름', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'left'}}
+  , {dataField: 'memLevel', text: '권한', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}, formatter: authStyleFormatter}
+  , {dataField: 'memTel', text: '전화번호', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'memMobile', text: '휴대폰번호', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
+  , {dataField: 'strCnt', text: '상점수', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'right'}, formatter: storeCountStyleFormatter}
+  , {dataField: 'useYn', text: '사용유무', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}, formatter: memUseStyleFormatter}
+  , {dataField: 'delYn', text: '삭제유무', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}, formatter: memDeleteStyleFormatter}
+  , {dataField: 'memIsLeave', text: '탈퇴유무', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}, formatter: memLeaveStyleFormatter}
+  , {dataField: 'memRsntDate', text: '최근접속일', headerStyle: {textAlign: 'center', backgroundColor: '#111827', color: '#fff'}, style: {textAlign: 'center'}}
 ];
 
 const MemMgr = () => {
   const [repo, setRepo] = useState([]);               // 리스트 hook
-  const [pageItem, setPageItem] = useState({ page: 1, sizePerPage: 10 }); // 페이징 hook
-  const [searchItem, setSearchItem] = useState({ searchWrd: "", useYn: "Y", delYn: "N", leaveYn: "N", smsYn: "Y" });
+  const [pageItem, setPageItem] = useState({page: 1, sizePerPage: 10}); // 페이징 hook
+  const [searchItem, setSearchItem] = useState({searchWrd: "", useYn: "Y", delYn: "N", leaveYn: "N", smsYn: "Y"});
   const [userContent, setUserContent] = useState({});
   const [actionModal, setActionModal] = useState(false);            // Modal hook
   const [modifyModal, setModifyModal] = useState(false);            // Modal hook

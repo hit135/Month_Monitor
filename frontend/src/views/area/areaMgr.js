@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import 'antd/dist/antd.css';
-import { Tree } from 'antd';
-import { CCard, CCardBody, CCardHeader, CCol, CInput, CRow } from '@coreui/react'
-import { getAreaList, generateList, getParentKey, dataList, insertAreaItem, deleteAreaItem, selectAreaItem, updateAreaItem } from "../../agent/area";
+import {Tree} from 'antd';
+import {CCard, CCardBody, CCardHeader, CCol, CInput, CRow} from '@coreui/react'
+import {getAreaList, generateList, getParentKey, dataList, insertAreaItem, deleteAreaItem, selectAreaItem, updateAreaItem} from "../../agent/area";
 import AreaUpdateMgr from "./areaUpdateMgr";
 
 let gData = [];
@@ -64,7 +64,6 @@ const AreaMgr = () => {
     await selectAreaItem(node.key)
       .then(resp => {
         (resp.data["result"] === "success") ? setAreaContent(resp.data["content"]) : alert("상세 조회에 오류가 발생했습니다.");
-        console.log(resp.data);
       });
   };
 
@@ -73,11 +72,11 @@ const AreaMgr = () => {
     const index = item.title.indexOf(searchValue);
 
     const title = (index > -1) ?
-      <span>{item.title.substr(0, index)}<span className={"site-tree-search-value"}>{searchValue}</span>{item.title.substr(index + searchValue.length)}</span> :
+      <span>{item.title.substr(0, index)}<span className={"site-tree-search-value"}>{searchValue}</span>{item.title.substr(index + searchValue.length)}</span>
+      :
       <span>{item.title}</span>;
 
-    return (item.children) ?
-      { title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children) } : { title, key: item.key };
+    return (item.children) ? {title, key: item.key, areaLevel: item.areaLevel, children: loop(item.children)} : {title, key: item.key};
   });
 
   // 구역 삭제 이벤트
@@ -91,6 +90,7 @@ const AreaMgr = () => {
           if (resp.data["result"] === "success") {
             handleInitTree().then(() => {
               alert("구역 삭제를 완료했습니다.");
+
               generateList(gData);
               clickSearchTree();
               setNodeLv2Btn(true);
@@ -109,6 +109,7 @@ const AreaMgr = () => {
       if (resp.data["result"] === "success")
         handleInitTree().then(() => {
           alert("구역 등록을 완료했습니다.");
+
           generateList(gData);
           clickSearchTree();
           setNodeLv2Btn(true);
@@ -126,6 +127,7 @@ const AreaMgr = () => {
     } else if (resp.data["result"] === "success") {
       handleInitTree().then(() => {
         alert("구역 수정을 완료했습니다.");
+
         generateList(gData);
         clickSearchTree();
       });
@@ -158,8 +160,8 @@ const AreaMgr = () => {
           <CCardBody className={"pt-3"}>
             <CCol className={"pl-0"}>
               <CCol sm={"4"} className={"float-left pl-0"}>
-                <CInput placeholder={"검색어 입력"} onChange={e => setInputSearchValue(e.target.value) }
-                        onKeyUp={e => { if (e.key === "Enter") clickSearchTree(); }} />
+                <CInput placeholder={"검색어 입력"} onChange={e => setInputSearchValue(e.target.value)}
+                        onKeyUp={e => {if (e.key === "Enter") clickSearchTree();}} />
               </CCol>
               <button className={"btn btn-custom-info mt-0"} onClick={clickSearchTree}>검색</button>
             </CCol>

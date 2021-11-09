@@ -11,29 +11,14 @@ function PageTableWidget(props) {
 //
   return (
     <>
-      <BootstrapTable
-        keyField={keyField}
-        data={data.slice()}
-        columns={viewColumns}
-        onTableChange={onTableChange}
-        rowEvents={rowEvents}
-        remote
-        striped
-        hover
-        condensed
-        pagination={paginationFactory({
-          page,
-          sizePerPage,
-          totalSize,
-          paginationSize: (paginationSize) ? paginationSize : 5,
-          showTotal: false,
-          hidePageListOnlyOnePage: true,
-          hideSizePerPage: (hideSizePerPage !== undefined),
-          onSizePerPageChange: onSizePerPageChange,
-        })}
-        noDataIndication={() => <div style={{textAlign: 'center'}}>목록이 없습니다.</div>} />
+      <BootstrapTable keyField={keyField} data={data.slice()} columns={viewColumns} onTableChange={onTableChange} rowEvents={rowEvents}
+                      remote striped hover condensed
+                      pagination={paginationFactory({
+                        page, sizePerPage, totalSize, paginationSize: (paginationSize) ? paginationSize : 5, showTotal: false,
+                        hidePageListOnlyOnePage: true, hideSizePerPage: (hideSizePerPage !== undefined), onSizePerPageChange: onSizePerPageChange})}
+                      noDataIndication={() => <div style={{textAlign: 'center'}}>목록이 없습니다.</div>} />
     </>
-  )
-}
+  );
+};
 
-export default PageTableWidget
+export default PageTableWidget;

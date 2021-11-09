@@ -1,38 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import React, {useEffect, useState} from "react";
+import {useForm} from "react-hook-form";
 
-import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch } from "@coreui/react";
-import { DropzoneArea } from 'material-ui-dropzone';
+import {CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch} from "@coreui/react";
+import {DropzoneArea} from 'material-ui-dropzone';
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import { deleteStr, updateStr } from "../../agent/store";
-import { getAreaList, getParentKey } from "../../agent/area";
-import { getInputValue, handleChangePhoneNumber, filePathName, getValidInput } from "../../agent/commonIndex";
+import {deleteStr, updateStr} from "../../agent/store";
+import {getAreaList, getParentKey} from "../../agent/area";
+import {getInputValue, handleChangePhoneNumber, filePathName, getValidInput} from "../../agent/commonIndex";
 
 const StrUpdateModal = props => {
   let gData = [];
 
-  const { modal, setModal, strContent, fileContent, handleInitTable } = props;
+  const {modal, setModal, strContent, fileContent, handleInitTable} = props;
   const [onAreaModal, setOnAreaModal] = useState();
   const [initDropZone, setInitDropZone] = useState();
   const [fileList, setFileList] = useState();
   const [deleteFileList, setDeleteFileList] = useState();
-  const [appSwitch, setAppSwitch] = useState({ useYn: false });
+  const [appSwitch, setAppSwitch] = useState({useYn: false});
 
   let delFileList = [];
   let storeFileList = [];
 
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues } = useForm(
-    {
-      defaultValues: { useYn: 'Y', strPosLat: null, strPosLon: null }, mode: "all"
-    }
-  );
+  const {register, handleSubmit, watch, formState: {errors}, reset, setValue, getValues} =
+    useForm({defaultValues: {useYn: 'Y', strPosLat: null, strPosLon: null}, mode: "all"});
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, checkValid, placeholder, required, keyUp) =>
     <CCol md="6">
-      <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
+      <CLabel htmlFor={id}>{txt}{required && <span className={"required-span"}> *</span>}</CLabel>
       <input className={getValidInput(errors[id], getValues(id), checkValid)} id={id} type={"text"} placeholder={placeholder} onKeyUp={keyUp}
-             { ...register(id, regOpts[id]) } />
+             {...register(id, regOpts[id])} />
       { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
     </CCol>;
 
@@ -103,19 +100,19 @@ const StrUpdateModal = props => {
   };
 
   const regOpts = {
-      strName: {
-          required: { value: true, message: '상점명을 입력해주세요.' }
-        , minLength: { value: 2, message: '상점명을 2글자 이상으로 입력해주세요.' }
-        , maxLength: { value: 200, message: '상점명을 200글자 이하로 입력해주세요.' }
-      }
+    strName: {
+        required: {value: true, message: '상점명을 입력해주세요.' }
+      , minLength: {value: 2, message: '상점명을 2글자 이상으로 입력해주세요.'}
+      , maxLength: {value: 200, message: '상점명을 200글자 이하로 입력해주세요.'}
+    }
     , strAddr: {
-          minLength: { value: 5, message: '주소를 5글자 이상으로 입력해주세요.' }
-        , maxLength: { value: 200, message: '주소를 200글자 이하로 입력해주세요.' }
-      }
-    , strTel: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요." } }
-    , strOwnTel: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요." } }
-    , strPosLat: { pattern: { value: /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000" } }
-    , strPosLon: { pattern: { value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"} }
+        minLength: {value: 5, message: '주소를 5글자 이상으로 입력해주세요.'}
+        , maxLength: {value: 200, message: '주소를 200글자 이하로 입력해주세요.'}
+    }
+    , strTel: {pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요."}}
+    , strOwnTel: {pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요."}}
+    , strPosLat: {pattern: {value: /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000"}}
+    , strPosLon: {pattern: {value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"}}
   };
 
   const handleClickDeleteStore = () => {

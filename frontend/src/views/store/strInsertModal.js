@@ -1,34 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import React, {useEffect, useState} from "react";
+import {useForm} from "react-hook-form";
 
-import { CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch } from "@coreui/react";
-import { DropzoneArea } from 'material-ui-dropzone';
+import {CButton, CFormGroup, CRow, CLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CCol, CSwitch} from "@coreui/react";
+import {DropzoneArea} from 'material-ui-dropzone';
 import PageAreaTreeModalWidget from "../../widget/pageAreaTreeModalWidget";
-import { insertStr } from "../../agent/store";
-import { getAreaList, getParentKey } from "../../agent/area";
-import { getInputValue, getValidInput, handleChangePhoneNumber } from "../../agent/commonIndex";
+import {insertStr} from "../../agent/store";
+import {getAreaList, getParentKey} from "../../agent/area";
+import {getInputValue, getValidInput, handleChangePhoneNumber} from "../../agent/commonIndex";
 
 const StrInsertModal = props => {
   let gData = [];
 
-  const { modal, setModal, handleInitTable } = props;
+  const {modal, setModal, handleInitTable} = props;
 
   const [onAreaModal, setOnAreaModal] = useState();
   const [initDropZone, setInitDropZone] = useState();
 
-  const { register, handleSubmit, watch, formState: { errors }, reset, setValue, getValues } = useForm(
-    {
-      defaultValues: { useYn: 'Y', strCode: 'FS_STR_0000000000000', strPosLat: null, strPosLon: null }, mode: "all"
-    }
-  );
+  const {register, handleSubmit, watch, formState: {errors}, reset, setValue, getValues} =
+    useForm({defaultValues: {useYn: 'Y', strCode: 'FS_STR_0000000000000', strPosLat: null, strPosLon: null}, mode: "all"});
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   let inputCmmHtml = (id, txt, checkValid, placeholder, required, handle) =>
     <CCol md="6">
-      <CLabel htmlFor={id}>{txt}{ required && <span className={"required-span"}> *</span> }</CLabel>
+      <CLabel htmlFor={id}>{txt}{required && <span className={"required-span"}> *</span>}</CLabel>
       <input className={getValidInput(errors[id], getValues(id), checkValid)} id={id} type={"text"} placeholder={placeholder} onKeyUp={handle}
-             { ...register(id, regOpts[id]) } />
-      { errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span> }
+             {...register(id, regOpts[id])} />
+      {errors[id] && <span className={"invalid-feedback"}>{errors[id].message}</span>}
     </CCol>;
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -63,19 +60,19 @@ const StrInsertModal = props => {
   const setSwitchValue = e => setValue(e.target.id, getInputValue(e));
 
   const regOpts = {
-      strName: {
-          required: { value: true, message: '상점명을 입력해주세요.' }
-        , minLength: { value: 2, message: '상점명을 2글자 이상으로 입력해주세요.' }
-        , maxLength: { value: 200, message: '상점명을 200글자 이하로 입력해주세요.' }
-      }
+    strName: {
+      required: {value: true, message: '상점명을 입력해주세요.'}
+      , minLength: {value: 2, message: '상점명을 2글자 이상으로 입력해주세요.'}
+      , maxLength: {value: 200, message: '상점명을 200글자 이하로 입력해주세요.'}
+    }
     , strAddr: {
-          minLength: { value: 5, message: '주소를 5글자 이상으로 입력해주세요.' }
-        , maxLength: { value: 200, message: '주소를 200글자 이하로 입력해주세요.' }
-      }
-    , strTel: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요." } }
-    , strOwnTel: { pattern: { value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요." } }
-    , strPosLat: { pattern: { value: /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000" } }
-    , strPosLon: { pattern: { value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"} }
+      minLength: {value: 5, message: '주소를 5글자 이상으로 입력해주세요.'}
+      , maxLength: {value: 200, message: '주소를 200글자 이하로 입력해주세요.'}
+    }
+    , strTel: {pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "전화번호 형식에 맞게 입력해주세요."}}
+    , strOwnTel: {pattern: {value: /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/, message : "휴대폰번호 형식에 맞게 입력해주세요."}}
+    , strPosLat: {pattern: {value: /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,15}/g, message: "위도의 형식에 맞게 입력해주세요. ex) 00.00000"}}
+    , strPosLon: {pattern: {value: /^-?((1?[0-7]|[0-9]?)[0-9]{3}|180)\.[0-9]{1,15}$/g, message: "경도의 형식에 맞게 입력해주세요. ex) 100.0000"}}
   };
 
   const onSubmit = (data, e) => insertStr(data).then(resp => {
@@ -83,6 +80,7 @@ const StrInsertModal = props => {
       alert("상점코드가 중복됩니다.");
     } else if (resp.data["result"] === "success") {
       alert("상점 등록을 완료했습니다.");
+
       closeModal();
       handleInitTable();
     } else {
