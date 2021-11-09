@@ -264,7 +264,7 @@ const StatMgr = () => {
 
           if (resp.data["weekMonthStat"] !== null)
             if (resp.data["weekMonthStat"].length > 0)
-              setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"], resp.data["hourlyStat"]));
+              setAreaKwhYearStat(areaKwhStatYearComp(resp.data["weekMonthStat"], resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
             else
               setAreaKwhYearStat("");
 
@@ -283,12 +283,11 @@ const StatMgr = () => {
             setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
           else
             setAreaKwhStat("");
-
+          console.log(resp.data["areaStrKwhStat"]);
           if (resp.data["areaStrKwhStat"] !== null)
-            if(resp.data["areaStrKwhStat"].length > 0)
-              setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData))
-            else
-              setStrKwhStat("");
+            setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData));
+          else
+            setStrKwhStat("");
 
         } else {
           alert("서버 통신에 오류가 발생했습니다.");

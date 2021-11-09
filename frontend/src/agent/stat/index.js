@@ -925,7 +925,8 @@ export const areaKwhStatComp = (areaName, item) =>
   </div>;
 //
 // 전기사용량 상세 현황
-export const areaKwhStatYearComp = (item, item2) => {
+export const areaKwhStatYearComp = (item, item2, item3) => {
+  console.log(item2);
   let chartData = [];
   item.map((item, idx) => {
     if (idx !== 12)
@@ -933,6 +934,8 @@ export const areaKwhStatYearComp = (item, item2) => {
   });
   let hourKwhData = [];
   item2.map(item => hourKwhData.push({"label" : item["hour"], "사용량(kWh)" : Math.round(item["snsrKwh"])}));
+  let dayKWhData = [];
+  item3.map(item => dayKWhData.push({"label" : item["dayName"], "사용량(kWh)" : Math.round(item["snsrKwh"])}));
   return (
     <div className={"printMargin"}>
       <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>전력사용량 현황(상세)</span>
