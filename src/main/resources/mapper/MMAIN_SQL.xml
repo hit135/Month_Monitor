@@ -274,9 +274,9 @@
         SELECT
             A.AREACODE
             , A.AREANAME
-            , IFNULL(B.TOTAL, 0)  AS TOTAL
+            , IFNULL(B.TOTAL, 0) AS TOTAL
             , IFNULL(C.DANGER, 0) AS DANGER
-            , IFNULL(D.WARN, 0)   AS WARN
+            , IFNULL(D.WARN, 0) AS WARN
             , IFNULL(E.DISCON, 0) AS DISCON
         FROM
             F_AREA A
@@ -341,8 +341,8 @@
             , E.STRCODE
             , E.STRNAME
             , IFNULL(SUM(C.DANGER), 0) AS DANGER
-            , IFNULL(SUM(D.WARN), 0)   AS WARN
-            , IFNULL(SUM(E.CON), 0)    AS CON
+            , IFNULL(SUM(D.WARN), 0) AS WARN
+            , IFNULL(SUM(E.CON), 0) AS CON
             , COUNT(DISTINCT A.SNSRID) AS SNSRCOUNT
         FROM
             F_SENSOR_INFO A
@@ -401,10 +401,10 @@
             , A.SNSRID
             , TRIM(LEADING '0' FROM A.SNSRID) AS SNSRIDTRIM
             , A.SNSRNICK
-            , IFNULL(C.DANGER, 0)  AS DANGER
-            , IFNULL(D.WARN, 0)    AS WARN
-            , IFNULL(G.CON, 0)     AS CON
-            , IFNULL(F.CHK, 0)     AS CHK
+            , IFNULL(C.DANGER, 0) AS DANGER
+            , IFNULL(D.WARN, 0) AS WARN
+            , IFNULL(G.CON, 0) AS CON
+            , IFNULL(F.CHK, 0) AS CHK
         FROM
             F_SENSOR_INFO A
                 LEFT JOIN

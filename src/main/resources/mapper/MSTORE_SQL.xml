@@ -124,9 +124,9 @@
     <select id="SELECT_STORE_SENSOR_DATA" parameterType="map" resultType="map">
         SELECT
             <choose>
-                <when test='datatype == "m"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME,'%Y-%m'),'%Y-%m-%d')</when>
-                <when test='datatype == "d"'>DATE(C.SNSRRCVTIME)</when>
-                <when test='datatype == "h"'>DATE_FORMAT(C.SNSRRCVTIME,'%Y-%m-%d %H')</when>
+                <when test='datatype == "m"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME, '%Y-%m'), '%Y-%m-%d')</when>
+                <when test='datatype == "d"'>STR_TO_DATE(DATE(C.SNSRRCVTIME), '%Y-%m-%d')</when>
+                <when test='datatype == "h"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME, '%Y-%m-%d %H'), '%Y-%m-%d %H')</when>
                 <otherwise>C.SNSRRCVTIME</otherwise>
             </choose> AS REGDT
             , AVG(C.SNSRKWH) AS KWH
@@ -149,10 +149,10 @@
             AND A.SNSRID = #{snsrid}
             </if>
             <if test='termtype == "m"'>
-            AND C.SNSRRCVTIME BETWEEN CONCAT(DATE(#{regdt}), ' 00:00:00') AND CONCAT(LAST_DAY(DATE(#{regdt}), ' 23:59:59'))
+            AND C.SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND CONCAT(LAST_DAY(#{regdt}, ' 23:59:59'))
             </if>
             <if test='termtype != "m"'>
-            AND C.SNSRRCVTIME BETWEEN CONCAT(DATE(#{regdt}), ' 00:00:00') AND CONCAT(DATE(#{regdt}), ' 23:59:59')
+            AND C.SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND CONCAT(#{regdt}, ' 23:59:59')
             </if>
         GROUP BY
             1
@@ -272,7 +272,7 @@
             AND A.SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND CONCAT(#{regdt}, ' 23:59:59')
             </if>
             <if test="@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(regdt)">
-            AND A.SNSRRCVTIME BETWEEN CONCAT(DATE(NOW()), ' 00:00:00') AND NOW()
+            AND A.SNSRRCVTIME BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
             </if>
             AND C.AREACODE = #{areacode}
             AND C.STRCODE = #{strcode}
@@ -376,8 +376,9 @@
                          <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                          <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                          <when test='"check-warn".equals(type)'>
-                         (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
-                          </when>
+                         (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
+                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                         </when>
                      </choose>) B
             ,
             (SELECT
@@ -391,7 +392,8 @@
                          <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                          <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                          <when test='"check-warn".equals(type)'>
-                         (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                         (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
+                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
                          </when>
                      </choose>) C
     </select>
@@ -417,7 +419,8 @@
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                      <when test='"check-warn".equals(type)'>
-                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
+                      AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
                      </when>
                  </choose>
          ORDER BY
@@ -447,7 +450,8 @@
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                      <when test='"check-warn".equals(type)'>
-                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
+                      AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
                      </when>
                  </choose>
          ORDER BY
@@ -477,7 +481,8 @@
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                      <when test='"check-warn".equals(type)'>
-                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
+                      AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
                      </when>
                  </choose>
          ORDER BY
@@ -495,7 +500,7 @@
             ${tblSensorData} A
         WHERE
             A.SNSRRCVTIME BETWEEN CONCAT(DATE_FORMAT(#{regdt}, '%Y-%m'), '-01 00:00:00')
-                              AND CONCAT(LAST_DAY(DATE(#{regdt})), ' 23:59:59')
+                          AND CONCAT(LAST_DAY(#{regdt}), ' 23:59:59')
             AND SNSRID = #{snsrid}
     </select>
 
@@ -517,7 +522,7 @@
                          S.AREACODE = #{areacode}
                          AND S.STRCODE = #{strcode}
                          AND S.SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})
-                         AND DATE(S.DATETIME) BETWEEN DATE(NOW() - INTERVAL 2 DAY) AND DATE(NOW())
+                         AND DATE(S.DATETIME) BETWEEN DATE(NOW() - INTERVAL 2 DAY) AND CURDATE()
                      GROUP BY
                          DATE(S.DATETIME)
                     ) B
