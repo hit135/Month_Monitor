@@ -5,9 +5,24 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import {ko} from "date-fns/esm/locale";
 import {
-  areaStatusComponent, storeYearWarningComp, getSelectGroup, getStatInfo, storeChartComp, areaTotalWarningComp, areaTotalChartStatComp
-  , levelAreaStatComp, levelStoreStatComp, areaKwhStatComp, areaKwhStatYearComp, strKwhStatComp, getStatInfoList, areaTotalChartStatComp2
-  , storePrintChartComp,
+  areaStatusComponent,
+  storeYearWarningComp,
+  getSelectGroup,
+  getStatInfo,
+  storeChartComp,
+  areaTotalWarningComp,
+  areaTotalChartStatComp
+  ,
+  levelAreaStatComp,
+  levelStoreStatComp,
+  areaKwhStatComp,
+  areaKwhStatYearComp,
+  strKwhStatComp,
+  getStatInfoList,
+  areaTotalChartStatComp2
+  ,
+  storePrintChartComp,
+  strKwhListComp,
 } from "../../agent/stat";
 import ReactToPrint, {useReactToPrint} from "react-to-print";
 import {ComponentToPrint} from "./printStatMgr";
@@ -53,6 +68,7 @@ const StatMgr = () => {
   const [areaKwhStat, setAreaKwhStat] = useState();
   const [areaKwhYearStat, setAreaKwhYearStat] = useState();
   const [strKwhStat, setStrKwhStat] = useState();
+  const [strKwhList, setStrKwhList] = useState();
 
   const [propStrName, setPropStrName] = useState();
   const [printChartComp, setPrintChartComp] = useState();
@@ -61,7 +77,7 @@ const StatMgr = () => {
 
   useEffect(async () => {
     await handleClickBtnGroup("areaCode");
-  //   handleClickSearchStat();
+    //   handleClickSearchStat();
   }, []);
 
   const setHookReset = () => {
@@ -77,6 +93,7 @@ const StatMgr = () => {
     setAreaKwhYearStat("");
     setAreaKwhHourlyStat("");
     setStrKwhStat("");
+    setStrKwhList("");
   }
 
   const initStrCode = () => {
@@ -261,18 +278,20 @@ const StatMgr = () => {
     });
 
     if (typeValue !== "store") {
-      await getStatInfoList(typeValue, guCode, areaCode, dateType, startDate, endDate, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
+      await getStatInfoList(typeValue, guCode, areaCode, strCode,  startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
         if (resp.data['result'] === "success") {
           if (resp.data["areaKwhStat"] !== null)
             setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
           else
             setAreaKwhStat("");
 
-          if (resp.data["areaStrKwhStat"] !== null)
-            setStrKwhStat(strKwhStatComp(areaNameTitle, resp.data["areaStrKwhStat"], dayWeekData));
-          else
+          if (resp.data["areaStrKwhStat"] !== null) {
+            setStrKwhStat(strKwhStatComp(areaNameTitle, dayWeekData));
+            setStrKwhList(strKwhListComp(resp.data["areaStrKwhStat"]));
+          } else {
             setStrKwhStat("");
-
+            setStrKwhList("");
+          }
         } else {
           alert("서버 통신에 오류가 발생했습니다.");
         }
@@ -322,14 +341,14 @@ const StatMgr = () => {
               <div className={'d-flex'}>
                 <CButtonGroup className="mr-3">
                   {[{type: 'guCode', name : '구청보고'}, {type: 'areaCode', name : '시장보고'}, {type: 'store', name : '상점주보고'}].map((item, idx) => (
-                      <CButton color="outline-info" key={item.name} className="mx-0" active={item.name === topBtnValue} disabled={item.name === '구청보고'}
-                               onClick={e => {
-                                 setTopBtnValue(e.target.innerHTML);
-                                 handleClickBtnGroup(item.type);
-                               }}>
+                    <CButton color="outline-info" key={item.name} className="mx-0" active={item.name === topBtnValue} disabled={item.name === '구청보고'}
+                             onClick={e => {
+                               setTopBtnValue(e.target.innerHTML);
+                               handleClickBtnGroup(item.type);
+                             }}>
                       {item.name}
-                      </CButton>
-                    ))}
+                    </CButton>
+                  ))}
                 </CButtonGroup>
                 <div className={"d-flex justify-content-center mb-0 align-items-center mt-1 mr-2"}>
                   <CSelect style={{width: "185px"}} id={"selectGroup"} onChange={handleChangeGroup}>
@@ -377,15 +396,15 @@ const StatMgr = () => {
           </CCardHeader>
           <CCardBody style={{padding : "2rem"}}>
             {loading &&
-              <CRow id={"loading"}>
-                <CCol md={"12"}>
-                  <div className={"d-flex justify-content-center"} style={{height: "300px"}}>
-                    <div className={"d-flex align-content-center align-items-center"}>
-                      <Spinner name="three-bounce" color="steelblue" />
-                    </div>
+            <CRow id={"loading"}>
+              <CCol md={"12"}>
+                <div className={"d-flex justify-content-center"} style={{height: "300px"}}>
+                  <div className={"d-flex align-content-center align-items-center"}>
+                    <Spinner name="three-bounce" color="steelblue" />
                   </div>
-                </CCol>
-              </CRow>}
+                </div>
+              </CCol>
+            </CRow>}
             {(typeValue !== "store") ? areaState : areaState}
             {(typeValue !== "store") ? areaTotalWarning : storeYearWarning}
             {(typeValue !== "store") ? areaHourlyStat : storeChart}
@@ -395,18 +414,19 @@ const StatMgr = () => {
             {(typeValue !== "store") ? areaKwhStat : ""}
             {(typeValue !== "store") ? areaKwhYearStat : ""}
             {(typeValue !== "store") ? strKwhStat : ""}
+            {(typeValue !== "store") ? strKwhList : ""}
           </CCardBody>
         </CCard>
       </CCol>
       <PageStrTableModalWidget onStrModal={onStrModal} setOnStrModal={setOnStrModal} clickStrRow={clickStrRow} initStrCode={initStrCode} areaId={"areaSelect"} />
       {printLoading && typeValue !== "store" &&
-         <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
-                           levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat}
-                           typeName={typeValue} areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat}
-                           areaTitle={areaName} type={topBtnValue} startDate={startDate} endDate={endDate} />}
+      <ComponentToPrint ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
+                        levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat}
+                        typeName={typeValue} areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat} strKwhList={strKwhList}
+                        areaTitle={areaName} type={topBtnValue} startDate={startDate} endDate={endDate} />}
       {printLoading && typeValue === "store" &&
-        <ComponentToPrint2 ref={componentRef} areaState={areaState} storeYearWarning={storeYearWarning} storeChart={printChartComp}
-                           type={topBtnValue} areaTitle={areaName} strName={propStrName} startDate={startDate} endDate={endDate} />}
+      <ComponentToPrint2 ref={componentRef} areaState={areaState} storeYearWarning={storeYearWarning} storeChart={printChartComp}
+                         type={topBtnValue} areaTitle={areaName} strName={propStrName} startDate={startDate} endDate={endDate} />}
     </>
   );
 };

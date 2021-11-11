@@ -184,9 +184,6 @@ public class SYSStatController {
             }
 
             paramMap.put("type", type);
-            paramMap.put("startDate", startDate);
-            paramMap.put("endDate", endDate);
-
             if (type.equals("guCode")) {
                 paramMap.put("guCode", guCode);
                 rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_GU_INFO_STAT(guCode));
