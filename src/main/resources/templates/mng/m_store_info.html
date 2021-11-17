@@ -71,7 +71,7 @@
                 <input class="form-control" id="regdt" type="date" />
               </div><!-- /.form-group custom-control-inline mb-0 -->
 
-              <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_msi_getDataLog();">조회</button>
+              <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_msti_getDataLog();">조회</button>
             </div><!-- /.col-12 align-middle -->
           </div><!-- /.row pl-2 -->
 
@@ -252,10 +252,10 @@
 
   <script type="text/javascript">
   $(function () {
-    fn_msi_initStoreInfo();
+    fn_msti_initStoreInfo();
   });
 
-  function fn_msi_initStoreInfo() {
+  function fn_msti_initStoreInfo() {
     $.template(
       'store-info-sensor',
       '<div class="form-inline">' +
@@ -264,7 +264,7 @@
           '<span class="btn-check-start" data-snsrid="{{html SNSRID}}">점검</span>' +
           '<span class="btn-check-end" data-snsrid="{{html SNSRID}}">점검중</span>' +
         '</p>' +
-        '<p class="nobtn-datalog {{html STATE}}" data-snsrid="{{html SNSRID}}" data-checktype="{{html STATE}}" onclick="fn_msi_checkNobtnDatalog(\'${SNSRID}\')">' +
+        '<p class="nobtn-datalog {{html STATE}}" data-snsrid="{{html SNSRID}}" data-checktype="{{html STATE}}" onclick="fn_msti_checkNobtnDatalog(\'${SNSRID}\')">' +
           '{{html SNSRNICK}} ({{html SNSRIDTRIM}})' +
         '</p>' +
       '</div>'
@@ -280,9 +280,9 @@
 
     $('#regdt').val(fn_mlt_dateToString(new Date()).slice(0, 10));
 
-    // $('.store-info #check-total').on('click', fn_msi_checkDataLog);
-    // $('.store-info #check-danger').on('click', fn_msi_checkDataLog);
-    // $('.store-info #check-warn').on('click', fn_msi_checkDataLog);
+    // $('.store-info #check-total').on('click', fn_msti_checkDataLog);
+    // $('.store-info #check-danger').on('click', fn_msti_checkDataLog);
+    // $('.store-info #check-warn').on('click', fn_msti_checkDataLog);
 
     $('.store-info').on('click', '.btn-check-start', function () {
       if (confirm('점검 등록할까요?')) {
@@ -293,7 +293,7 @@
             if (d == 'success') {
               alert('점검 등록 되었습니다.');
 
-              fn_msi_getStoreInfoSensorList();
+              fn_msti_getStoreInfoSensorList();
               fn_mll_getCheckSensorList();
             } else {
               alert('점검 등록을 실패하였습니다.');
@@ -311,7 +311,7 @@
             if (d == 'success') {
               alert('점검 완료 되었습니다.');
 
-              fn_msi_getStoreInfoSensorList();
+              fn_msti_getStoreInfoSensorList();
               fn_mll_getCheckSensorList();
             } else {
               alert('점검 완료를 실패하였습니다.');
@@ -320,31 +320,31 @@
       }
     });
 
-    fn_msi_getStoreInfo();
-    fn_msi_getStoreInfoSensorList();
+    fn_msti_getStoreInfo();
+    fn_msti_getStoreInfoSensorList();
   }
 
-  function fn_msi_checkNobtnDatalog(snsrId) {
+  function fn_msti_checkNobtnDatalog(snsrId) {
     $("input:radio[name='snsr-radio-btn']:input[value='" + snsrId + "']").prop('checked', true);
-    fn_msi_refreshStoreInfo();
+    fn_msti_refreshStoreInfo();
   }
 
-  function fn_msi_refreshStoreInfo() {
-    fn_msi_getDataLog();
-    fn_msi_getLogStat();
+  function fn_msti_refreshStoreInfo() {
+    fn_msti_getDataLog();
+    fn_msti_getLogStat();
   }
 
-  // function fn_msi_checkDataLog() {
+  // function fn_msti_checkDataLog() {
   //   if ($(this).attr('id') == 'check-total')
   //     $('.store-info #check-danger, .store-info #check-warn').prop('checked', false);
   //
   //   $('.store-info #check-total')
   //     .prop('checked', $('.store-info #check-danger:checked').length + $('.store-info #check-warn:checked').length == 0);
   //
-  //   fn_msi_showDataLog();
+  //   fn_msti_showDataLog();
   // }
 
-  // function fn_msi_showDataLog() {
+  // function fn_msti_showDataLog() {
   //   if ($('.store-info #check-total:checked').length > 0)
   //    $('.store-datalog-list p').show();
   //   else
@@ -361,7 +361,7 @@
   var marker = [];
 
   // 상점 정보
-  function fn_msi_getStoreInfo() {
+  function fn_msti_getStoreInfo() {
     $.post(
       $('#contextRoot').val() + '/mng/storeInfoAjax',
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
@@ -445,7 +445,7 @@
   }
 
   // 센서 목록
-  function fn_msi_getStoreInfoSensorList() {
+  function fn_msti_getStoreInfoSensorList() {
     $.post(
       $('#contextRoot').val() + '/mng/areaSensorListAjax',
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
@@ -467,13 +467,13 @@
         }
 
         $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
-        $("input:radio[name='snsr-radio-btn']").on('change', function () { fn_msi_refreshStoreInfo(); });
-        fn_msi_refreshStoreInfo();
+        $("input:radio[name='snsr-radio-btn']").on('change', function () { fn_msti_refreshStoreInfo(); });
+        fn_msti_refreshStoreInfo();
     });
   }
 
   // 측정 데이터 및 로그 정보
-  function fn_msi_getDataLog() {
+  function fn_msti_getDataLog() {
     $.post(
       $('#contextRoot').val() + '/mng/dataLogListAjax',
       {
@@ -500,8 +500,7 @@
                   $('#contextRoot').val() + '/mng/sensorUsekwhMonthAjax',
                   { snsrid: $("input:radio[name='snsr-radio-btn']:checked").val(), regdt: $('.store-info #regdt').val() },
                   function (d) {
-                    console.log(d);
-                    $('.store-datalog-meta .monkwh td span').text(d[0].USEKWH);
+                    $('.store-datalog-meta .monkwh td span').text(d);
                 });
               }
 
@@ -531,7 +530,7 @@
           //   $('.store-info #check-total').click();
           // }
 
-          // fn_msi_showDataLog();
+          // fn_msti_showDataLog();
         } else {
           $('.store-datalog-list').html('데이터가 없습니다');
         }
@@ -541,7 +540,7 @@
   }
 
   // 3일간 경보
-  function fn_msi_getLogStat() {
+  function fn_msti_getLogStat() {
     $.post(
       $('#contextRoot').val() + '/mng/logStatAjax',
       { strcode: $('#prm_strcode').val(), areacode: $('#prm_areacode').val(), snsrid: $("input:radio[name='snsr-radio-btn']:checked").val() },

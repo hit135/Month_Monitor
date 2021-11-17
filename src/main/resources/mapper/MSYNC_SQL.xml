@@ -3,7 +3,7 @@
 
 <mapper namespace="kr.fscom.firsens.mng.repository.MSyncRepo">
 
-    <select id="SELECT_DATA_CNT_LIST" parameterType="map" resultType="map">
+    <select id="LIST_MSY_DATA_CNT" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             DATE(A.DATE) AS DATE
@@ -42,7 +42,7 @@
         ]]>
     </select>
 
-    <select id="SELECT_SENSOR_DATA_CNT_LIST" parameterType="map" resultType="map">
+    <select id="LIST_MSY_SENSOR_DATA_CNT" parameterType="map" resultType="map">
         SELECT
             C.AREACODE
             , C.AREANAME
@@ -115,7 +115,7 @@
             E.CHECKSTAT DESC, C.AREANAME, A.SNSRNICK
     </select>
 
-    <insert id="INSERT_SENSOR_CHECK" parameterType="map">
+    <insert id="INSERT_MSY_SENSOR_CHECK" parameterType="map">
         INSERT INTO F_SENSOR_CHECK (CHECKSEQ, SNSRID, REGDATE, CHECKSTAT, REQCONT)
         VALUES (NULL, #{snsrid}, NOW(), 'SYNC', #{reqcont})
     </insert>

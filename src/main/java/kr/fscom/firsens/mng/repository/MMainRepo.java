@@ -27,18 +27,18 @@ import java.util.Map;
 @Repository
 public interface MMainRepo {
 
-    List<HashMap<String, Object>> SELECT_SENSOR_COUNT(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_AREA_LIST(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_SENSOR_LIST(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_AREA_SENSOR_COUNT(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_AREA_STORE_LIST(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_AREA_SENSOR_LIST(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_STORE_SEARCH(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_CHECK_SENSOR_LIST(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_MAIN_AREA_DATA_CHART(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_MAIN_AREA_LOG_CHART(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_MAIN_AREA_DATA_CHART_WEEK(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_MAIN_AREA_LOG_CHART_WEEK(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_MAIN_AREA_MAP_SENSOR_LIST(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_SENSOR_COUNT(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_AREA_LIST(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_SENSOR_LIST(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_AREA_SENSOR_COUNT(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_AREA_STORE_LIST(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_AREA_SENSOR_LIST(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_STORE_SEARCH(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_CHECK_SENSOR_LIST(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_MAIN_AREA_DATA_CHART(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_MAIN_AREA_LOG_CHART(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_MAIN_AREA_DATA_CHART_WEEK(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_MAIN_AREA_LOG_CHART_WEEK(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MM_MAIN_AREA_MAP_SENSOR_LIST(Map<String, Object> param) throws Exception;
 
 }

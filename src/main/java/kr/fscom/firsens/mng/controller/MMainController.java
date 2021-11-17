@@ -109,7 +109,7 @@ public class MMainController {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mainRepo.SELECT_SENSOR_COUNT(prm);
+            return mainRepo.LIST_MM_SENSOR_COUNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -131,7 +131,7 @@ public class MMainController {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mainRepo.SELECT_AREA_LIST(prm);
+            return mainRepo.LIST_MM_AREA_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -153,7 +153,7 @@ public class MMainController {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mainRepo.SELECT_SENSOR_LIST(prm);
+            return mainRepo.LIST_MM_SENSOR_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -176,7 +176,7 @@ public class MMainController {
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.SELECT_AREA_SENSOR_COUNT(prm);
+            return mainRepo.LIST_MM_AREA_SENSOR_COUNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -199,7 +199,7 @@ public class MMainController {
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.SELECT_AREA_STORE_LIST(prm);
+            return mainRepo.LIST_MM_AREA_STORE_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -224,7 +224,7 @@ public class MMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
 
-            return mainRepo.SELECT_AREA_SENSOR_LIST(prm);
+            return mainRepo.LIST_MM_AREA_SENSOR_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -247,7 +247,7 @@ public class MMainController {
 
         try {
             prm.put("search", req.getParameter("search"));
-            return mainRepo.SELECT_STORE_SEARCH(prm);
+            return mainRepo.LIST_MM_STORE_SEARCH(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -269,7 +269,7 @@ public class MMainController {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mainRepo.SELECT_CHECK_SENSOR_LIST(prm);
+            return mainRepo.LIST_MM_CHECK_SENSOR_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -295,7 +295,7 @@ public class MMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
 
-            return mainRepo.SELECT_MAIN_AREA_DATA_CHART(prm);
+            return mainRepo.LIST_MM_MAIN_AREA_DATA_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -322,7 +322,7 @@ public class MMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
 
-            return mainRepo.SELECT_MAIN_AREA_LOG_CHART(prm);
+            return mainRepo.LIST_MM_MAIN_AREA_LOG_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -349,7 +349,7 @@ public class MMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
 
-            return mainRepo.SELECT_MAIN_AREA_DATA_CHART(prm);
+            return mainRepo.LIST_MM_MAIN_AREA_DATA_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -376,8 +376,8 @@ public class MMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
 
-            rtn.put("log", mainRepo.SELECT_MAIN_AREA_LOG_CHART(prm));
-            rtn.put("data", mainRepo.SELECT_MAIN_AREA_DATA_CHART(prm));
+            rtn.put("log", mainRepo.LIST_MM_MAIN_AREA_LOG_CHART(prm));
+            rtn.put("data", mainRepo.LIST_MM_MAIN_AREA_DATA_CHART(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -401,7 +401,7 @@ public class MMainController {
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.SELECT_MAIN_AREA_DATA_CHART_WEEK(prm);
+            return mainRepo.LIST_MM_MAIN_AREA_DATA_CHART_WEEK(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -426,7 +426,7 @@ public class MMainController {
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.SELECT_MAIN_AREA_LOG_CHART_WEEK(prm);
+            return mainRepo.LIST_MM_MAIN_AREA_LOG_CHART_WEEK(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -452,8 +452,8 @@ public class MMainController {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("areacode", req.getParameter("areacode"));
 
-            rtn.put("log", mainRepo.SELECT_MAIN_AREA_LOG_CHART_WEEK(prm));
-            rtn.put("data", mainRepo.SELECT_MAIN_AREA_DATA_CHART_WEEK(prm));
+            rtn.put("log", mainRepo.LIST_MM_MAIN_AREA_LOG_CHART_WEEK(prm));
+            rtn.put("data", mainRepo.LIST_MM_MAIN_AREA_DATA_CHART_WEEK(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -476,7 +476,7 @@ public class MMainController {
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.SELECT_MAIN_AREA_MAP_SENSOR_LIST(prm);
+            return mainRepo.LIST_MM_MAIN_AREA_MAP_SENSOR_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

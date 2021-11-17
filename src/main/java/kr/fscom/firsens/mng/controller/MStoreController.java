@@ -107,9 +107,9 @@ public class MStoreController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
 
-            rtn.put("store", storeRepo.SELECT_STORE_INFO(prm));
-            rtn.put("img", storeRepo.SELECT_STORE_IMG(prm));
-            rtn.put("sensor", storeRepo.SELECT_LIST_SENSOR(prm));
+            rtn.put("store", storeRepo.SELECT_MST_STORE_INFO(prm));
+            rtn.put("img", storeRepo.LIST_MST_STORE_IMG(prm));
+            rtn.put("sensor", storeRepo.LIST_MST_SENSOR_STATE(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -208,7 +208,7 @@ public class MStoreController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
 
-            return storeRepo.SELECT_LIST_STORE_SENSOR(prm);
+            return storeRepo.SELECT_MST_LIST_MST_STORE_SENSOR(prm);
         } catch (Exception e) {
             System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
@@ -250,7 +250,7 @@ public class MStoreController {
 
             prm.put("regdt", regdt);
 
-            HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
+            HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
             prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
             prm.put("termtype", termtype);
             prm.put("datatype", datatype);
@@ -260,7 +260,7 @@ public class MStoreController {
             prm.put("snsrid", snsrid);
             prm.put("dtsize", dtsize);
 
-            return storeRepo.SELECT_STORE_SENSOR_DATA(prm);
+            return storeRepo.LIST_MST_STORE_SENSOR_DATA(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -289,7 +289,7 @@ public class MStoreController {
             if (!StringUtils.isEmpty(regdt)) {
                 prm.put("regdt", regdt);
 
-                HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
+                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
                 prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
             }
@@ -299,7 +299,7 @@ public class MStoreController {
             prm.put("snsrid", req.getParameter("snsrid"));
             prm.put("regdt", req.getParameter("regdt"));
 
-            return storeRepo.SELECT_DATA_LOG_LIST(prm);
+            return storeRepo.LIST_MST_DATA_LOG_TARGET(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -342,7 +342,7 @@ public class MStoreController {
                     pagingPrm.put("totalRecordCount", resultCnt);
                     rtn.put("pInfo", new PaginationInfo().getPaginationInfo(pagingPrm));
 
-                    resultList = storeRepo.LIST_DATA_LOG_TOTAL(param);
+                    resultList = storeRepo.LIST_MST_DATA_LOG_TOTAL(param);
                 }
             } else {
                 resultCnt = storeRepo.CNT_DATA_LOG_EVENT(param);
@@ -350,7 +350,7 @@ public class MStoreController {
                     pagingPrm.put("totalRecordCount", resultCnt);
                     rtn.put("pInfo", new PaginationInfo().getPaginationInfo(pagingPrm));
 
-                    resultList = storeRepo.LIST_DATA_LOG_EVENT(param);
+                    resultList = storeRepo.LIST_MST_DATA_LOG_EVENT(param);
                 }
             }
 
@@ -372,34 +372,33 @@ public class MStoreController {
      * @작성자 : uhm
      * @변경이력 :
      * @Method 설명 : 월별 전력사용량 조회
-     * @return List<HashMap<String, Object>>
+     * @return float
      */
     @RequestMapping(value = "/sensorUsekwhMonthAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> sensorUsekwhMonthAjax(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
+    public float sensorUsekwhMonthAjax(HttpServletRequest req) throws Exception {
         try {
             String regdt = req.getParameter("regdt");
+            HashMap<String, Object> prm = new HashMap<>();
             prm.put("tblSensorData", "F_SENSOR_DATA");
             prm.put("tblSensorLog", "F_SENSOR_LOG");
 
             if (!StringUtils.isEmpty(regdt)) {
                 prm.put("regdt", regdt);
 
-                HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
+                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
                 prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
             }
 
             prm.put("snsrid", req.getParameter("snsrid"));
 
-            return storeRepo.SELECT_SENSOR_USEKWH_MONTH(prm);
+            return storeRepo.SELECT_MST_SENSOR_USEKWH_MONTH(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
 
-        return null;
+        return 0;
     }
 
     /**
@@ -421,8 +420,8 @@ public class MStoreController {
             prm.put("strcode", req.getParameter("strcode"));
             prm.put("snsrid", req.getParameter("snsrid"));
 
-            rtn.put("threedays", storeRepo.SELECT_LOG_3DAYS_STAT(prm));
-            rtn.put("week", storeRepo.SELECT_LOG_WEEK_STAT(prm));
+            rtn.put("threedays", storeRepo.LIST_MST_LOG_3DAYS_STAT(prm));
+            rtn.put("week", storeRepo.LIST_MST_LOG_WEEK_STAT(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -486,7 +485,7 @@ public class MStoreController {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("snsrid", snsrid);
 
-            List<HashMap<String, Object>> store = storeRepo.LIST_STORE_INFO(prm);
+            List<HashMap<String, Object>> store = storeRepo.LIST_MST_STORE_INFO(prm);
             ret[0] = (String) store.get(0).get("AREACODE");
             ret[1] = (String) store.get(0).get("STRCODE");
         } catch (Exception e) {
@@ -503,7 +502,7 @@ public class MStoreController {
             prm.put("areacode", areacode);
             prm.put("strcode", strcode);
 
-            List<HashMap<String, Object>> sensor = storeRepo.SELECT_SENSOR_INFO(prm);
+            List<HashMap<String, Object>> sensor = storeRepo.LIST_MST_SENSOR_EVT_CNT(prm);
             return (String) sensor.get(0).get("SNSRID");
         } catch (Exception e) {
             LOG.debug(e.getMessage());

@@ -66,11 +66,11 @@ public class MSyncController {
             prm.put("regdt", regdt);
 
             if (!StringUtils.isEmpty(regdt)) {
-                HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
+                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
             }
 
-            return syncRepo.SELECT_DATA_CNT_LIST(prm);
+            return syncRepo.LIST_MSY_DATA_CNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -89,11 +89,11 @@ public class MSyncController {
             prm.put("regdt", regdt);
 
             if (!StringUtils.isEmpty(regdt)) {
-                HashMap<String, Object> tbl_info = storeRepo.SELECT_EVENT_TABLE_INFO(prm);
+                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
             }
 
-            return syncRepo.SELECT_SENSOR_DATA_CNT_LIST(prm);
+            return syncRepo.LIST_MSY_SENSOR_DATA_CNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -109,7 +109,7 @@ public class MSyncController {
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
             prm.put("reqcont", req.getParameter("reqcont"));
-            syncRepo.INSERT_SENSOR_CHECK(prm);
+            syncRepo.INSERT_MSY_SENSOR_CHECK(prm);
             return "success";
         } catch (Exception e) {
             LOG.debug(e.getMessage());

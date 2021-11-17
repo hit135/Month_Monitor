@@ -63,7 +63,7 @@
         </div><!-- /.row -->
       </div><!-- /.col-md-4 col-10 -->
       <div class="col-md-1 col-2">
-        <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_msc_getStoreSensorData();">조회</button>
+        <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_mstc_getStoreSensorData();">조회</button>
       </div><!-- /.col-md-1 col-2 -->
     </div><!-- /.row pl-2 mt-3 -->
   </div><!-- /.panel-content p-2 -->
@@ -72,7 +72,7 @@
   var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
 
   $(function() {
-    fn_msc_initStoreChart();
+    fn_mstc_initStoreChart();
 
     $('#termtype').on('change', function(d) {
       if (this.value == 'm') {
@@ -83,18 +83,18 @@
         $('#regdt').val(fn_mlt_dateToString(new Date()).slice(0, 10));
       }
 
-      fn_msc_getStoreSensorData();
+      fn_mstc_getStoreSensorData();
     });
 
-    $('#charttype').on('change', function() { fn_msc_getStoreSensorData(); });
-    $('#datatype').on('change', function() { fn_msc_getStoreSensorData(); });
-    $('#regdt').on('change', function () { fn_msc_getStoreSensorData(); });
+    $('#charttype').on('change', function() { fn_mstc_getStoreSensorData(); });
+    $('#datatype').on('change', function() { fn_mstc_getStoreSensorData(); });
+    $('#regdt').on('change', function () { fn_mstc_getStoreSensorData(); });
 
-    $('.store-chart-sensor-list').on('change', 'input', function() { fn_msc_getStoreSensorData(); });
-    $('[name=dataname]').on('click', fn_msc_setChart);
+    $('.store-chart-sensor-list').on('change', 'input', function() { fn_mstc_getStoreSensorData(); });
+    $('[name=dataname]').on('click', fn_mstc_setChart);
   });
 
-  function fn_msc_initStoreChart() {
+  function fn_mstc_initStoreChart() {
     window.chart1 = null;
     window.datadt = null;
     window.dataset = null;
@@ -117,12 +117,12 @@
     }
 
     $('#regdt').val(fn_mlt_dateToString(new Date()).slice(0, 10));
-    fn_msc_getStoreSensor();
+    fn_mstc_getStoreSensor();
   }
 
-  function fn_msc_refreshStoreInfo() {}
+  function fn_mstc_refreshStoreInfo() {}
 
-  function fn_msc_getStoreSensor() {
+  function fn_mstc_getStoreSensor() {
     $.post(
       $('#contextRoot').val() + '/mng/areaSensorListAjax',
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
@@ -159,11 +159,11 @@
         }
 
         now.setDate(now.getDate());
-        fn_msc_getStoreSensorData('d', fn_mlt_dateToString(now).slice(0, 10), 1);
+        fn_mstc_getStoreSensorData('d', fn_mlt_dateToString(now).slice(0, 10), 1);
     });
   }
 
-  function fn_msc_initDataset() {
+  function fn_mstc_initDataset() {
     let dns = $('[name=dataname]');
 
     window.val = {};
@@ -176,7 +176,7 @@
     }
   }
 
-  function fn_msc_updateDataset(d) {
+  function fn_mstc_updateDataset(d) {
     let ret = false; // 데이터 갱신 여부
     let dns = $('[name=dataname]');
 
@@ -244,8 +244,8 @@
     return ret;
   }
 
-  function fn_msc_getStoreSensorData(termtype, regdt, dtsize, order, isinit) {
-    fn_msc_onLoading();
+  function fn_mstc_getStoreSensorData(termtype, regdt, dtsize, order, isinit) {
+    fn_mstc_onLoading();
 
     if ($('.chart-title').length > 0)
       $('.chart-title').text($('.radio-' + $('[name=snsrid]:checked').val()).text());
@@ -265,8 +265,8 @@
 
     $.post(contextPath + '/mng/listStoreSensorData', prm, function(d) {
       if (d && d.length > 0) {
-        if (!isinit) fn_msc_initDataset();
-        if (fn_msc_updateDataset(d)) fn_msc_setChart();
+        if (!isinit) fn_mstc_initDataset();
+        if (fn_mstc_updateDataset(d)) fn_mstc_setChart();
       } else {
         if (!order)
           alert('no data');
@@ -274,11 +274,11 @@
         console.log('no data');
       }
 
-      fn_msc_offLoading();
+      fn_mstc_offLoading();
     });
   }
 
-  function fn_msc_setAnnotations() {
+  function fn_mstc_setAnnotations() {
     let a1 = null, a2 = null;
     let ret = { yaxis: [] };
 
@@ -308,7 +308,7 @@
     }
   }
 
-  function fn_msc_onLoading() {
+  function fn_mstc_onLoading() {
     if (!window.loadingcnt)
       window.loadingcnt = 0;
 
@@ -318,7 +318,7 @@
     $('.loading-chart').show();
   }
 
-  function fn_msc_offLoading() {
+  function fn_mstc_offLoading() {
     window.loadingcnt--;
 
     if (window.loadingcnt <= 0) {
@@ -329,7 +329,7 @@
     }
   }
 
-  function fn_msc_getMore(order) {
+  function fn_mstc_getMore(order) {
     let dt = null;
     let termtype = $('#termtype option:selected').val();
 
@@ -354,10 +354,10 @@
     if (termtype == 'm')
       regdt = regdt.slice(0, 7);
 
-    fn_msc_getStoreSensorData(termtype, regdt, 1, order, true);
+    fn_mstc_getStoreSensorData(termtype, regdt, 1, order, true);
   }
 
-  function fn_msc_setChart() {
+  function fn_mstc_setChart() {
     let opt = {
       series: [],
       chart: {
@@ -367,14 +367,14 @@
         animations: { enabled: false },
         events: {
           zoomed: function(a, b) {
-            if (window.datadt.min > new Date(b.xaxis.min)) fn_msc_getMore("desc");
-            if (window.datadt.max < new Date(b.xaxis.max)) fn_msc_getMore("asc");
+            if (window.datadt.min > new Date(b.xaxis.min)) fn_mstc_getMore("desc");
+            if (window.datadt.max < new Date(b.xaxis.max)) fn_mstc_getMore("asc");
         }}
       },
       colors: [],
       stroke: { width: 3 },
       dataLabels: { enabled: false },
-      annotations: fn_msc_setAnnotations(),
+      annotations: fn_mstc_setAnnotations(),
       tooltip: {
         enabled: true, marker: { show: true }, fixed: { enabled: true, position: 'topLeft' },
         x: { format: 'yyyy년 MM월 dd일 HH:mm:ss' },
@@ -421,7 +421,7 @@
 
       if (window.chart1) {
         opt.chart.type = $('#charttype option:selected').val();
-        opt.annotations = fn_msc_setAnnotations();
+        opt.annotations = fn_mstc_setAnnotations();
 
         window.chart1.updateOptions(opt);
         window.chart1.updateSeries(series);

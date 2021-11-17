@@ -26,7 +26,9 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface MSyncRepo {
-    List<HashMap<String, Object>> SELECT_DATA_CNT_LIST(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_SENSOR_DATA_CNT_LIST(Map<String, Object> param) throws Exception;
-    void INSERT_SENSOR_CHECK(Map<String, Object> param) throws Exception;
+    
+    List<HashMap<String, Object>> LIST_MSY_DATA_CNT(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MSY_SENSOR_DATA_CNT(Map<String, Object> param) throws Exception;
+    void INSERT_MSY_SENSOR_CHECK(Map<String, Object> param) throws Exception;
+    
 }

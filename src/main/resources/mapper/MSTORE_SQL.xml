@@ -3,7 +3,7 @@
 
 <mapper namespace="kr.fscom.firsens.mng.repository.MStoreRepo">
 
-    <select id="SELECT_EVENT_TABLE_INFO" parameterType="map" resultType="map">
+    <select id="SELECT_MST_EVENT_TABLE_INFO" parameterType="map" resultType="map">
         SELECT
             BACKUPYEAR
             , MIN(MINDATE) AS MINDATE
@@ -29,7 +29,7 @@
             #{regdt} BETWEEN MINDATE AND MAXDATE
     </select>
 
-    <select id="SELECT_STORE_INFO" parameterType="map" resultType="map">
+    <select id="SELECT_MST_STORE_INFO" parameterType="map" resultType="map">
         SELECT
             AREACODE, STRCODE, STRNAME, STRADDR, STRTEL, STROWNTEL, STRPOSLAT, STRPOSLON
         FROM
@@ -39,7 +39,7 @@
             AND STRCODE = #{strcode}
     </select>
 
-    <select id="LIST_STORE_INFO" parameterType="map" resultType="map">
+    <select id="LIST_MST_STORE_INFO" parameterType="map" resultType="map">
         SELECT
             A.AREACODE, A.STRCODE, A.STRNAME, A.STRADDR, A.STRTEL, A.STROWNTEL, A.STRPOSLAT, A.STRPOSLON
         FROM
@@ -51,7 +51,7 @@
             B.SNSRID = #{snsrid}
     </select>
 
-    <select id="SELECT_SENSOR_INFO" parameterType="map" resultType="map">
+    <select id="LIST_MST_SENSOR_EVT_CNT" parameterType="map" resultType="map">
         SELECT
             A.AREACODE
             , A.SNSRID
@@ -70,7 +70,7 @@
     </select>
 
     <!--
-    <select id="SELECT_LIST_STORE_SENSOR" parameterType="map" resultType="map">
+    <select id="SELECT_MST_LIST_MST_STORE_SENSOR" parameterType="map" resultType="map">
         SELECT
             C.AREACODE, C.AREANAME, C2.AREACODE, C2.AREANAME, B.STRCODE, B.STRNAME
             , A.PANELNAME, A.SNSRID, A.SNSRSEQ, A.SNSRNICK, D.STATE, D.DATACNT, A.SVOL
@@ -133,7 +133,7 @@
     </select>
     -->
 
-    <select id="SELECT_STORE_SENSOR_DATA" parameterType="map" resultType="map">
+    <select id="LIST_MST_STORE_SENSOR_DATA" parameterType="map" resultType="map">
         SELECT
             <choose>
                 <when test='datatype == "m"'>STR_TO_DATE(DATE_FORMAT(C.SNSRRCVTIME, '%Y-%m'), '%Y-%m-%d')</when>
@@ -172,7 +172,7 @@
             1 ${order}
     </select>
 
-    <select id="SELECT_LIST_SENSOR" parameterType="map" resultType="map">
+    <select id="LIST_MST_SENSOR_STATE" parameterType="map" resultType="map">
         SELECT
             A.PANELNAME, A.SNSRID, A.SNSRNICK, A.SNSRMGPS, D.DATACNT, B.STRPOSLAT, B.STRPOSLON
             , (CASE
@@ -219,7 +219,7 @@
             6 DESC, D.DATACNT DESC, A.PANELNAME, A.SNSRNICK
     </select>
 
-    <select id="SELECT_STORE_IMG" parameterType="map" resultType="map">
+    <select id="LIST_MST_STORE_IMG" parameterType="map" resultType="map">
         SELECT
             SEQ
             , STRCODE
@@ -239,7 +239,7 @@
             SEQ DESC
     </select>
 
-    <select id="SELECT_DATA_LOG_LIST" parameterType="map" resultType="map">
+    <select id="LIST_MST_DATA_LOG_TARGET" parameterType="map" resultType="map">
         SELECT
             A.DSEQ
             , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
@@ -316,7 +316,7 @@
                  AND SNSRID = #{snsrid}) B
     </select>
 
-    <select id="LIST_DATA_LOG_TOTAL" parameterType="map" resultType="map">
+    <select id="LIST_MST_DATA_LOG_TOTAL" parameterType="map" resultType="map">
         (SELECT
              DSEQ
              , DATE_FORMAT(SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
@@ -410,7 +410,7 @@
                      </choose>) C
     </select>
 
-    <select id="LIST_DATA_LOG_EVENT" parameterType="map" resultType="map">
+    <select id="LIST_MST_DATA_LOG_EVENT" parameterType="map" resultType="map">
         (SELECT
              DSEQ
              , LSEQ
@@ -505,9 +505,9 @@
             #{pagestart}, 1000
     </select>
 
-    <select id="SELECT_SENSOR_USEKWH_MONTH" parameterType="map" resultType="map">
+    <select id="SELECT_MST_SENSOR_USEKWH_MONTH" parameterType="map" resultType="float">
         SELECT
-            MAX(SNSRKWH) - MIN(SNSRKWH) AS USEKWH
+            IFNULL(MAX(SNSRKWH) - MIN(SNSRKWH), 0)
         FROM
             ${tblSensorData} A
         WHERE
@@ -516,7 +516,7 @@
             AND SNSRID = #{snsrid}
     </select>
 
-    <select id="SELECT_LOG_3DAYS_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_MST_LOG_3DAYS_STAT" parameterType="map" resultType="map">
         SELECT
             DATE_FORMAT(A.DATETIME, '%m-%d') AS DATETIME
             , COALESCE(B.DANGER, 0) AS DANGER
@@ -545,7 +545,7 @@
             DATETIME
     </select>
 
-    <select id="SELECT_LOG_WEEK_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_MST_LOG_WEEK_STAT" parameterType="map" resultType="map">
 <!--        SELECT A.SDATE-->
 <!--             , DAYOFWEEK(A.SDATE)                       AS WEEK-->
 <!--             , IFNULL(IFNULL(C.DANGER, B.DANGER), 0)    AS DANGER-->
