@@ -7,20 +7,22 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.time.ZoneId;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * 설명
- *
  * @author : jjm
  * @version 1.0
  * @FileName : MMainController
@@ -84,11 +86,8 @@ public class MMainController {
         ModelAndView mav = new ModelAndView("mng/m_main_area");
 
         try {
-            String panel_index = req.getParameter("panel_index");
-            String areacode = req.getParameter("areacode");
-
-            mav.addObject("prm_panel_index", panel_index);
-            mav.addObject("prm_areacode", areacode);
+            mav.addObject("prm_panel_index", req.getParameter("panel_index"));
+            mav.addObject("prm_areacode", req.getParameter("areacode"));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -224,6 +223,7 @@ public class MMainController {
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
+
             return mainRepo.SELECT_AREA_SENSOR_LIST(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());

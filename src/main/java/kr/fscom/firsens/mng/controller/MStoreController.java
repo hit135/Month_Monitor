@@ -5,14 +5,17 @@ import kr.fscom.firsens.mng.repository.MStoreRepo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,21 +23,20 @@ import java.util.List;
 import org.thymeleaf.util.StringUtils;
 
 /**
- * 설명
- *
  * @author : jjm
  * @version 1.0
  * @FileName : MStoreController
  * @see <pre>
  * << 개정이력(Modification Information) >>
  *
- *   수정일                수정자            수정내용
+ *   수정일        수정자     수정내용
  *   -----------   --------   ---------------------------
- *   2021-07-07   jjm       최초 생성
+ *   2021-07-07    jjm        최초 생성
  *
  * </pre>
  * @since : 2021-07-07
  */
+
 @RestController
 @RequestMapping("/mng")
 public class MStoreController {
@@ -42,14 +44,22 @@ public class MStoreController {
     private static final Logger LOG = LoggerFactory.getLogger(MStoreController.class);
     private final MStoreRepo storeRepo;
 
-    @Value("${globals.naver.clientId}")
-    private String naverClientId;
-
     @Autowired
     public MStoreController(MStoreRepo repo) {
         this.storeRepo = repo;
     }
 
+    @Value("${globals.naver.clientId}")
+    private String naverClientId;
+    
+    /**
+     * @Method Name : storeInfo
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상점 동적 화면
+     * @return ModelAndView
+     */
     @RequestMapping(value="/storeInfo")
     public ModelAndView storeInfo(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_store_info");
@@ -71,9 +81,7 @@ public class MStoreController {
             mav.addObject("prm_areacode", areacode);
             mav.addObject("prm_strcode", strcode);
             mav.addObject("prm_snsrid", snsrid);
-
-            String naverMap = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization";
-            mav.addObject("naverMap", naverMap);
+            mav.addObject("naverMap", "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization");
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -81,9 +89,17 @@ public class MStoreController {
         return mav;
     }
 
+    /**
+     * @Method Name : storeInfo
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상점 기본 정보
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value="/storeInfoAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> storeInfoAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> storeInfoAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -96,6 +112,14 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : storeLog
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상점 경보 발생 화면
+     * @return ModelAndView
+     */
     @RequestMapping(value="/storeLog")
     public ModelAndView storeLog(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_store_log");
@@ -123,6 +147,14 @@ public class MStoreController {
         return mav;
     }
 
+    /**
+     * @Method Name : storeChart
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상점 차트 화면
+     * @return ModelAndView
+     */
     @RequestMapping(value="/storeChart")
     public ModelAndView storeChart(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_store_chart");
@@ -153,6 +185,14 @@ public class MStoreController {
         return mav;
     }
 
+    /**
+     * @Method Name : listStoreSensor
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상점 내 센서 목록 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/listStoreSensor")
     @ResponseBody
     public List<HashMap<String, Object>> listStoreSensor(HttpServletRequest req) throws Exception {
@@ -171,6 +211,14 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : listStoreSensorData
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 기간 내 센서 측정 평균 데이터 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/listStoreSensorData")
     @ResponseBody
     public List<HashMap<String, Object>> listStoreSensorData(HttpServletRequest req) throws Exception {
@@ -213,6 +261,14 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : listSensorAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상점 내 센서 상태 목록 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/listSensorAjax")
     @ResponseBody
     public List<HashMap<String, Object>> listSensorAjax(HttpServletRequest req) throws Exception {
@@ -230,6 +286,14 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : storeImgAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상점 이미지 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/storeImgAjax")
     @ResponseBody
     public List<HashMap<String, Object>> storeImgAjax(HttpServletRequest req) throws Exception {
@@ -247,6 +311,14 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : dataLogListAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 기간 내 센서 경보 발생 목록 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/dataLogListAjax")
     @ResponseBody
     public List<HashMap<String, Object>> dataLogListAjax(HttpServletRequest req) throws Exception {
@@ -278,6 +350,14 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : dataLogList2Ajax
+     * @작성일 : 2021-10-14
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 센서 경보 발생 페이징 목록 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/dataLogList2Ajax", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @ResponseBody
     public HashMap<String, Object> dataLogList2Ajax(HttpServletRequest req, @RequestParam HashMap<String, Object> paramMap) throws Exception {
@@ -329,6 +409,14 @@ public class MStoreController {
         return rtn;
     }
 
+    /**
+     * @Method Name : logWeekStatAjax
+     * @작성일 : 2021-07-13
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 월별 전력사용량 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/sensorUsekwhMonthAjax")
     @ResponseBody
     public List<HashMap<String, Object>> sensorUsekwhMonthAjax(HttpServletRequest req) throws Exception {
@@ -357,6 +445,14 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : logWeekStatAjax
+     * @작성일 : 2021-10-14
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 3일간 센서 경보 발생 추이 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/log3DaysStatAjax")
     @ResponseBody
     public List<HashMap<String, Object>> log3DaysStatAjax(HttpServletRequest req) throws Exception {
@@ -375,6 +471,14 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : logWeekStatAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 일주일간 센서 경보 발생 추이 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/logWeekStatAjax")
     @ResponseBody
     public List<HashMap<String, Object>> logWeekStatAjax(HttpServletRequest req) throws Exception {
@@ -393,6 +497,14 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : startCheckAjax
+     * @작성일 : 2021-07-15
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 점검센서 정보 등록
+     * @return String
+     */
     @RequestMapping(value = "/startCheckAjax")
     @ResponseBody
     public String startCheckAjax(HttpServletRequest req) throws Exception {
@@ -409,10 +521,18 @@ public class MStoreController {
         return null;
     }
 
+    /**
+     * @Method Name : endCheckAjax
+     * @작성일 : 2021-07-15
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 점검센서 정보 갱신
+     * @return String
+     */
     @RequestMapping(value = "/endCheckAjax")
     @ResponseBody
     public String endCheckAjax(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
+        HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
@@ -425,6 +545,7 @@ public class MStoreController {
         return null;
     }
 
+    // 센서 타깃 영역코드와 상점코드 조회
     private String[] getAreaStoreCode(String snsrid) {
         String[] ret = new String[2];
 
@@ -442,6 +563,7 @@ public class MStoreController {
         return ret;
     }
 
+    // 영역, 상점 첫번째 센서ID 조회
     private String getSensorCode(String areacode, String strcode) {
         try {
             HashMap<String, Object> prm = new HashMap<>();
