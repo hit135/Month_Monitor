@@ -60,7 +60,7 @@ public class MStoreController {
      * @Method 설명 : 상점 동적 화면
      * @return ModelAndView
      */
-    @RequestMapping(value="/storeInfo")
+    @RequestMapping(value = "/storeInfo")
     public ModelAndView storeInfo(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_store_info");
 
@@ -97,7 +97,7 @@ public class MStoreController {
      * @Method 설명 : 상점 기본 정보
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value="/storeInfoAjax")
+    @RequestMapping(value = "/storeInfoAjax")
     @ResponseBody
     public List<HashMap<String, Object>> storeInfoAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
@@ -120,7 +120,7 @@ public class MStoreController {
      * @Method 설명 : 상점 경보 발생 화면
      * @return ModelAndView
      */
-    @RequestMapping(value="/storeLog")
+    @RequestMapping(value = "/storeLog")
     public ModelAndView storeLog(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_store_log");
 
@@ -155,7 +155,7 @@ public class MStoreController {
      * @Method 설명 : 상점 차트 화면
      * @return ModelAndView
      */
-    @RequestMapping(value="/storeChart")
+    @RequestMapping(value = "/storeChart")
     public ModelAndView storeChart(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_store_chart");
 
@@ -546,7 +546,7 @@ public class MStoreController {
     }
 
     // 센서 타깃 영역코드와 상점코드 조회
-    private String[] getAreaStoreCode(String snsrid) {
+    private String[] getAreaStoreCode(String snsrid) throws Exception {
         String[] ret = new String[2];
 
         try {
@@ -564,7 +564,7 @@ public class MStoreController {
     }
 
     // 영역, 상점 첫번째 센서ID 조회
-    private String getSensorCode(String areacode, String strcode) {
+    private String getSensorCode(String areacode, String strcode) throws Exception {
         try {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("areacode", areacode);

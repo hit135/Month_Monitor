@@ -95,7 +95,7 @@
               <a href="javascript:movePageAdm('stat')">
                 <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">보고서</span>
               </a>
-              <a href="javascript:void(0);" onclick="fn_logout()">
+              <a href="javascript:void(0);" onclick="fn_mm_logout()">
                 <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">로그아웃</span>
               </a>
             </li>
@@ -116,10 +116,10 @@
 
 <script type="text/javascript">
 $(function () {
-  fn_init();
+  fn_mm_init();
 });
 
-function fn_init() {
+function fn_mm_init() {
   $.template(
     'center-left-store',
     '<p class="{{html STATE}}" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-strname="{{html STRNAME}}">' +
@@ -127,28 +127,28 @@ function fn_init() {
     '</p>'
   );
 
-  fn_initMainAreaList();
+  fn_mm_initMainAreaList();
 
   $('.center-left-sensor-list').on('click', 'p', function () {
     $('.center-left-sensor-list p.on').removeClass('on');
     $(this).addClass('on');
 
     $('.center-cont-top .store-name').text($(this).attr('data-strname'));
-    fn_clickContPage();
+    fn_mm_clickContPage();
   });
 
   $('.center-cont-top').on('click', '.center-cont-top-btn', function () {
     $('.center-cont-top-btn.on').removeClass('on');
     $(this).addClass('on');
 
-    fn_clickContPage();
+    fn_mm_clickContPage();
   });
 
   $('.center-cont-page').on('click', '.btn-chart', function () {
     $('.center-cont-top-btn.on').removeClass('on');
     $('.center-cont-top-btn[data-page="Chart"]').addClass('on');
 
-    fn_clickContPage({
+    fn_mm_clickContPage({
       areacode: $('#prm_areacode').val(),
       strcode: $('#prm_strcode').val(),
       snsrid: $(this).attr('data-snsrid'),
@@ -161,7 +161,7 @@ function fn_init() {
     $('.center-cont-top-btn.on').removeClass('on');
     $('.center-cont-top-btn[data-page="Log"]').addClass('on');
 
-    fn_clickContPage({
+    fn_mm_clickContPage({
       areacode: $('#prm_areacode').val(),
       strcode: $('#prm_strcode').val(),
       snsrid: $(this).attr('data-snsrid'),
@@ -172,7 +172,7 @@ function fn_init() {
 
   $('.center-main-btn').on('click', function () {
     window.center_name = 'main';
-    fn_toggleCenterCont();
+    fn_mm_toggleCenterCont();
   });
 
   $('.center-main-cont').on('click', '.js-panel-collapse', function () {
@@ -185,7 +185,7 @@ function fn_init() {
       $(this).addClass('on');
       $(id + ' .panel-container').addClass('show');
 
-      fn_updateMainAreaList(id);
+      fn_mm_updateMainAreaList(id);
     }
   });
 
@@ -199,8 +199,8 @@ function fn_init() {
       $(this).addClass('on');
       $(id).addClass('panel-fullscreen');
 
-      fn_updateMainAreaList();
-      fn_getMainAreaWeek();
+      fn_mm_updateMainAreaList();
+      fn_mm_getMainAreaWeek();
     }
   });
 
@@ -208,55 +208,55 @@ function fn_init() {
     $('.panel.panel-fullscreen .center-main-cont-top-btn.on').removeClass('on');
     $(this).addClass('on');
 
-    fn_tapCenterMainPage();
+    fn_mm_tapCenterMainPage();
   });
 }
 
 let refreshTime = window.setInterval(function () {
   if (new Date().getMinutes() % 10 === 2)
-    fn_refresh();
+    fn_mm_refresh();
 }, 60 * 1000);
 
-function fn_refresh() {
-  fn_refreshTop();
-  fn_refreshLeft();
-  fn_refreshRight();
+function fn_mm_refresh() {
+  fn_mlt_refreshTop();
+  fn_mll_refreshLeft();
+  fn_mlr_refreshRight();
 
   if (window.center_name == 'main') {
-    fn_updateMainAreaList();
-    fn_getMainAreaWeek();
+    fn_mm_updateMainAreaList();
+    fn_mm_getMainAreaWeek();
   } else {
-    fn_refreshStoreInfo();
-    setTimeout(function () { fn_onAreaLv2(window.left_area_lv2_on_code); }, 800);
+    fn_msi_refreshStoreInfo();
+    setTimeout(function () { fn_mm_onAreaLv2(window.left_area_lv2_on_code); }, 800);
   }
 }
 
-function fn_clickAreaLv2(code) {
+function fn_mm_clickAreaLv2(code) {
   window.center_name = 'store';
 
-  fn_toggleCenterCont();
-  fn_getAreaSensorCount(code);
-  fn_getAreaStoreList(code);
+  fn_mm_toggleCenterCont();
+  fn_mm_getAreaSensorCount(code);
+  fn_mm_getAreaStoreList(code);
 }
 
-function fn_onAreaLv2(code, strcode, snsrid) {
+function fn_mm_onAreaLv2(code, strcode, snsrid) {
   if (code) {
     $('.left .area-lv2').removeClass('on');
     $('.left .area-lv2[data-code="' + code + '"]').addClass('on');
 
-    fn_getAreaSensorCount(code);
-    fn_getAreaStoreList(code, strcode, snsrid);
+    fn_mm_getAreaSensorCount(code);
+    fn_mm_getAreaStoreList(code, strcode, snsrid);
   }
 }
 
-function fn_clickRightSensor(code, strcode, snsrid) {
+function fn_mm_clickRightSensor(code, strcode, snsrid) {
   window.center_name = 'store';
 
-  fn_toggleCenterCont();
-  fn_onAreaLv2(code, strcode, snsrid);
+  fn_mm_toggleCenterCont();
+  fn_mm_onAreaLv2(code, strcode, snsrid);
 }
 
-function fn_getAreaSensorCount(code) {
+function fn_mm_getAreaSensorCount(code) {
   $.post(
     $('#contextRoot').val() + '/mng/areaSensorCountAjax',
     { areacode: code },
@@ -270,7 +270,7 @@ function fn_getAreaSensorCount(code) {
   });
 }
 
-function fn_getAreaStoreList(code, strcode, snsrid) {
+function fn_mm_getAreaStoreList(code, strcode, snsrid) {
   let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
   if (strcode)
     on_strcode = strcode;
@@ -306,11 +306,11 @@ function fn_getAreaStoreList(code, strcode, snsrid) {
       $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
 
       if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode'))
-        fn_clickContPage(snsrid ? { snsrid: snsrid } : null);
+        fn_mm_clickContPage(snsrid ? { snsrid: snsrid } : null);
   });
 }
 
-function fn_clickContPage(p) {
+function fn_mm_clickContPage(p) {
   let prm = (p) ?
     p : { areacode: $('.center-left-sensor-list p.on').attr('data-areacode'),
           strcode: $('.center-left-sensor-list p.on').attr('data-strcode') };
@@ -326,7 +326,7 @@ function fn_clickContPage(p) {
   });
 }
 
-function fn_initMainAreaList() {
+function fn_mm_initMainAreaList() {
   window.min_category = [];
 
   for (let i = 0; i < 24; i++)
@@ -368,17 +368,17 @@ function fn_initMainAreaList() {
                 }
 
                 window.center_name = 'main';
-                fn_toggleCenterCont();
+                fn_mm_toggleCenterCont();
               }
             );
       }}}
 
-      fn_loadMainAreaList();
+      fn_mm_loadMainAreaList();
     }
   );
 }
 
-function fn_toggleCenterCont() {
+function fn_mm_toggleCenterCont() {
   if (window.center_name == 'main') {
     $('.center-main-cont').show();
     $('.center-store-cont').hide();
@@ -388,11 +388,11 @@ function fn_toggleCenterCont() {
   }
 }
 
-function fn_loadMainAreaList() {
-  fn_updateMainAreaList();
+function fn_mm_loadMainAreaList() {
+  fn_mm_updateMainAreaList();
 }
 
-function fn_updateMainAreaList(id) {
+function fn_mm_updateMainAreaList(id) {
   $.post(
     $('#contextRoot').val() + '/mng/areaListAjax',
     {},
@@ -408,11 +408,11 @@ function fn_updateMainAreaList(id) {
         let show_panel = $('.center-main-cont .panel-container');
 
         for (let i = 0; i < show_panel.length; i++)
-          fn_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
+          fn_mm_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
   }});
 }
 
-function fn_setMainArea(i, id) {
+function fn_mm_setMainArea(i, id) {
   let panel_id = 'panel-' + i;
 
   $('#' + panel_id + ' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
@@ -425,27 +425,27 @@ function fn_setMainArea(i, id) {
   if (typeof id === 'undefined') {
     if ($('#' + panel_id).hasClass('panel-fullscreen') || $('#' + panel_id + ' .panel-container').hasClass('show')) {
       $.post($('#contextRoot').val() + '/mng/mainAreaDataChartAjax', { areacode: i }, function (data) {
-        fn_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
+        fn_mm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
       });
 
       $.post($('#contextRoot').val() + '/mng/mainAreaLogChartAjax', { areacode: i }, function (data) {
-        fn_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
+        fn_mm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
       });
     }
   } else {
     if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
         || $('#' + panel_id + ' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
       $.post($('#contextRoot').val() + '/mng/mainAreaDataChartAjax', { areacode: i }, function (data) {
-        fn_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
+        fn_mm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
       });
 
       $.post($('#contextRoot').val() + '/mng/mainAreaLogChartAjax', { areacode: i }, function (data) {
-        fn_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
+        fn_mm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
       });
   }}
 }
 
-function fn_setChart(title, target, data, colors) {
+function fn_mm_setChart(title, target, data, colors) {
   let opt = {
     series: [],
     chart: { height: 250, type: 'line', id: target, animations: { enabled: false } },
@@ -470,7 +470,7 @@ function fn_setChart(title, target, data, colors) {
 
   let series = [{ name: '어제', data: [] }, { name:'오늘', data: [] }];
   let j = 0;
-  let now_time = fn_dateToString(new Date()).slice(11, 15) + '0';
+  let now_time = fn_mlt_dateToString(new Date()).slice(11, 15) + '0';
 
   for (let i = 0; i < window.min_category.length; i++)
     if (j < data.length && data[j].TYPE == '1' && data[j].RCVTIME == window.min_category[i])
@@ -500,7 +500,7 @@ function fn_setChart(title, target, data, colors) {
 }
 
 
-function fn_getMainAreaWeek() {
+function fn_mm_getMainAreaWeek() {
   window.week_category = ['일', '월', '화', '수', '목', '금', '토'];
   let show_panel = $('.center-main-cont .panel-fullscreen .panel-container');
 
@@ -508,16 +508,16 @@ function fn_getMainAreaWeek() {
     let idx = $(show_panel[i]).attr('data-id').replace('panel-','');
 
     $.post($('#contextRoot').val() + '/mng/mainAreaDataChartWeekAjax', { areacode: idx }, function (data) {
-      fn_setChartWeek('전력사용량 현황', '#panel-' + idx + ' .center-main-data-chart-week', data, ['#99ccff','#003399']);
+      fn_mm_setChartWeek('전력사용량 현황', '#panel-' + idx + ' .center-main-data-chart-week', data, ['#99ccff','#003399']);
     });
 
     $.post($('#contextRoot').val() + '/mng/mainAreaLogChartWeekAjax', { areacode: idx }, function (data) {
-      fn_setChartWeek('경보 발생 현황', '#panel-' + idx + ' .center-main-log-chart-week', data, ['#ff9966','#cc3300']);
+      fn_mm_setChartWeek('경보 발생 현황', '#panel-' + idx + ' .center-main-log-chart-week', data, ['#ff9966','#cc3300']);
     });
   }
 }
 
-function fn_setChartWeek(title, target, data, colors) {
+function fn_mm_setChartWeek(title, target, data, colors) {
   let opt = {
     series: [],
     chart: { height: 250, type: 'bar', id: target, animations: { enabled: false } },
@@ -583,34 +583,34 @@ function fn_setChartWeek(title, target, data, colors) {
   }
 }
 
-function fn_tapCenterMainPage() {
+function fn_mm_tapCenterMainPage() {
   let page_name = $('.panel.panel-fullscreen .center-main-cont-top-btn.on').attr('data-page');
   $('.panel.panel-fullscreen [class^=center-main-page]').removeClass('on');
   $('.panel.panel-fullscreen .center-main-page-' + page_name).addClass('on');
 
   if (page_name == 'chart') {
-    fn_updateMainAreaList();
-    fn_getMainAreaWeek();
+    fn_mm_updateMainAreaList();
+    fn_mm_getMainAreaWeek();
   }
 
   if (page_name == 'map') {
-    fn_getMainAreaMap();
+    fn_mm_getMainAreaMap();
   }
 }
 
-function fn_getMainAreaMap() {
+function fn_mm_getMainAreaMap() {
   let show_panel = $('.center-main-cont .panel-fullscreen .panel-container .center-main-page-map.on');
 
   for (let i = 0; i < show_panel.length; i++) {
     let idx = $(show_panel[i]).attr('data-id').replace('panel-','');
 
     $.post($('#contextRoot').val() + '/mng/mainAreaMapSensorListAjax', { areacode: idx }, function (data) {
-      fn_setMapMarker('#panel-' + idx + ' .center-main-page-map', data);
+      fn_mm_setMapMarker('#panel-' + idx + ' .center-main-page-map', data);
     });
   }
 }
 
-function fn_setMapMarker(target, data) {
+function fn_mm_setMapMarker(target, data) {
   let target_id = target.replace(/ /g,'-');
 
   let mark = {
@@ -657,7 +657,7 @@ function movePageAdm(type) {
   // http://1.223.40.19:30081/adm#/area
 }
 
-function fn_logout() {
+function fn_mm_logout() {
   location.href = $('#contextRoot').val() + '/mng/logout';
 }
 </script>

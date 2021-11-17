@@ -47,7 +47,7 @@
           <div class="form-group custom-control-inline">
             <input class="form-control" id="regdt" type="date" />
           </div><!-- /#regdt -->
-          <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_getDataLogFiltered(1);">조회</button>
+          <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_msl_getDataLogFiltered(1);">조회</button>
         </div><!-- /.col-12 align-middle -->
       </div><!-- /.row p-2 -->
       <div class="store-datalog-filtered-list alert alert-info bg-white m-2"></div>
@@ -58,34 +58,38 @@
   <script type="text/javascript" th:src="@{/fs/js/pagination.js}"></script>
 
   <script type="text/javascript">
-  $(function() {
-    fn_initStoreSetup();
-    fn_initStoreDataLog();
+  $(function () {
+    fn_msl_initStoreSetup();
+    fn_msl_initStoreDataLog();
   });
 
-  function fn_initStoreSetup() {
-    $.template('store-log-sensor',
+  function fn_msl_initStoreSetup() {
+    $.template(
+      'store-log-sensor',
       '<p class="{{html STATE}} mb-0 pb-0">' +
         '<input type="radio" class="snsr-radio-class mr-1" name="snsr-radio-btn" id="{{html SNSRID}}" value="{{html SNSRID}}" /> ' +
         '<label class="mb-0" for="{{html SNSRID}}" style="cursor: pointer;">{{html SNSRNICK}} ({{html SNSRIDTRIM}})</label>' +
-      '</p>');
+      '</p>'
+    );
 
-    $.template('datalog',
+    $.template(
+      'datalog',
       '<p class="{{html STATE}}" data-index="{{html INDEX}}" data-snsrid="{{html SNSRID}}">' +
         '[{{html SNSRRCVTIME}}] {{html SNSRIDSUBSTR}} : {{html DATALOG}}' +
         '<button type="button" class="btn-chart btn btn-xs btn-outline-info waves-effect waves-themed"' +
         ' data-snsrid="{{html SNSRID}}" data-regdate="{{html REGDATE}}" data-almtype="{{html ALMTYPE}}">Chart</button>' +
-      '</p>');
+      '</p>'
+    );
 
-    // $('.store-log-sensor-list').on('click', 'input', fn_checkDataLogFiltered);
-    // $('.store-datalog-filtered-list').on('click', 'p', function() { fn_setDataLogMeta($(this).attr('data-index')); });
+    // $('.store-log-sensor-list').on('click', 'input', fn_msl_checkDataLogFiltered);
+    // $('.store-datalog-filtered-list').on('click', 'p', function () { fn_msl_setDataLogMeta($(this).attr('data-index')); });
 
-    // $('.store-log #check-total').on('click', function() {
+    // $('.store-log #check-total').on('click', function () {
     //   $('#check-danger, #check-warn').prop('checked', !$(this).is(":checked"));
-    //   fn_getDataLogFiltered(1);
+    //   fn_msl_getDataLogFiltered(1);
     // });
 
-    $('.store-log #check-danger, .store-log #check-warn').on('click', function() {
+    $('.store-log #check-danger, .store-log #check-warn').on('click', function () {
       // if ($(this).is(":checked") && $('.store-log #check-total').is(":checked"))
       //   $('#check-total').prop('checked', false);
       // else if (!$('.store-log #check-danger').is(":checked") && !$('.store-log #check-warn').is(":checked"))
@@ -96,16 +100,17 @@
         $('#check-danger').prop('checked', true);
       }
 
-      fn_getDataLogFiltered(1);
+      fn_msl_getDataLogFiltered(1);
     });
 
-    $('.store-log #regdt').on('change', function() { fn_getDataLogFiltered(1); });
+    $('.store-log #regdt').on('change', function () { fn_msl_getDataLogFiltered(1); });
   }
 
-  function fn_initStoreDataLog() {
+  function fn_msl_initStoreDataLog() {
     let regdate = $('#prm_regdate').val();
     if (!regdate)
-      regdate = fn_dateToString(new Date()).slice(0, 10);
+      regdate = fn_mlt_dateToString(new Date()).slice(0, 10);
+
     $('.store-log #regdt').val(regdate);
 
     if ($("#prm_checktype").val() == '')
@@ -113,33 +118,35 @@
     else
       $('#check-' + $("#prm_checktype").val()).prop('checked', true);
 
-    fn_getStoreLogSensorList();
+    fn_msl_getStoreLogSensorList();
   }
 
-  function fn_getStoreLogSensorList() {
+  function fn_msl_getStoreLogSensorList() {
     $.post(
-        $('#contextRoot').val() + '/mng/areaSensorListAjax'
-      , { 'areacode': $('#prm_areacode').val(), 'strcode': $('#prm_strcode').val() }
-      , function(d) {
-          $('.store-log-sensor-list').html('');
+      $('#contextRoot').val() + '/mng/areaSensorListAjax', 
+      { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() }, 
+      function (d) {
+        $('.store-log-sensor-list').html('');
 
-          for (let i = 0; i < d.length; i++) {
-            if      (d[i]['DANGER'] > 0) d[i]['STATE'] = 'danger';
-            else if (d[i]['WARN'] > 0)   d[i]['STATE'] = 'warn';
-            else if (d[i]['CON'] == 0)   d[i]['STATE'] = 'discon';
+        for (let i = 0; i < d.length; i++) {
+          if (d[i].DANGER > 0)
+            d[i].STATE = 'danger';
+          else if (d[i].WARN > 0)
+            d[i].STATE = 'warn';
+          else if (d[i].CON == 0)
+            d[i].STATE = 'discon';
 
-            $('.store-log-sensor-list').append($.tmpl('store-log-sensor', d[i]));
-          }
-
-          $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
-          $("input:radio[name='snsr-radio-btn']").on('change', function() { fn_getDataLogFiltered(1); });
-
-          fn_getDataLogFiltered(1);
+          $('.store-log-sensor-list').append($.tmpl('store-log-sensor', d[i]));
         }
-    );
+
+        $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
+        $("input:radio[name='snsr-radio-btn']").on('change', function () { fn_msl_getDataLogFiltered(1); });
+
+        fn_msl_getDataLogFiltered(1);
+    });
   }
 
-  function fn_getDataLogFiltered(idx) {
+  function fn_msl_getDataLogFiltered(idx) {
     window.pageIndex = idx;
     $('.pagination').html('');
 
@@ -151,47 +158,45 @@
     );
 
     $.post(
-        $('#contextRoot').val() + '/mng/dataLogList2Ajax'
-      , {
-            'snsrid': $("input:radio[name='snsr-radio-btn']:checked").val()
-          , 'regdt': $('.store-log #regdt').val()
-          , 'type': $(".strlogtype-chkbox:checkbox:checked").map(function() { return this.id }).get().join(',')
-          , 'pageindex': window.pageIndex
-        }
-      , function(resu) {
-          if (resu['result']) {
-            if (resu['resultCnt'] > 0) {
-              $('.store-datalog-filtered-list').html('');
+      $('#contextRoot').val() + '/mng/dataLogList2Ajax',
+      {
+        snsrid: $("input:radio[name='snsr-radio-btn']:checked").val(),
+        regdt: $('.store-log #regdt').val(),
+        type: $(".strlogtype-chkbox:checkbox:checked").map(function () { return this.id }).get().join(','),
+        pageindex: window.pageIndex
+      },
+      function (resu) {
+        if (resu.result) {
+          if (resu.resultCnt > 0) {
+            $('.store-datalog-filtered-list').html('');
 
-              for (let i = 0; i < resu['resultList'].length; i++) {
-                let item = resu['resultList'][i];
+            for (let i = 0; i < resu.resultList.length; i++) {
+              let item = resu.resultList[i];
+              item.INDEX = i;
 
-                item['INDEX'] = i;
+              if (item.LCAUSE)
+                item.DATALOG = item.LCAUSE;
+              else
+                item.DATALOG = '전력: ' + item.SNSRWATT + 'kW | 전류: ' + item.SNSRAMPERE + 'mA | 누설전류: ' + item.SNSRIGO + 'mA';
 
-                if (item['LCAUSE'])
-                  item['DATALOG'] = item['LCAUSE'];
-                else
-                  item['DATALOG'] = '전력: ' + item['SNSRWATT'] + 'kW | 전류: ' + item['SNSRAMPERE'] + 'mA | 누설전류: ' + item['SNSRIGO'] + 'mA';
-
-                $('.store-datalog-filtered-list').append($.tmpl('datalog', item));
-              }
-
-              $('.pagination').html(fn_paginationHtml('mStoreLog', resu['pInfo']))
-            } else {
-              $('.store-datalog-filtered-list').html('데이터가 없습니다');
+              $('.store-datalog-filtered-list').append($.tmpl('datalog', item));
             }
+
+            $('.pagination').html(fn_paginationHtml('mStoreLog', resu['pInfo']))
           } else {
-            alert('목록 조회 도중 오류가 발생했습니다.')
+            $('.store-datalog-filtered-list').html('데이터가 없습니다');
           }
+        } else {
+          alert('목록 조회 도중 오류가 발생했습니다.')
         }
-    );
+    });
   }
 
   function fn_linkPage(flag, idx) {
     if (flag == 'mStoreLog')
-      fn_getDataLogFiltered(idx)
+      fn_msl_getDataLogFiltered(idx)
   }
 
-  function fn_refreshStoreInfo() {}
+  function fn_msl_refreshStoreInfo() {}
   </script>
 </div><!-- /.sub-cont w-100 -->

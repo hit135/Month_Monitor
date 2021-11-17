@@ -14,20 +14,16 @@
         <div id="chart" style="width:100%; height:400px;"></div>
         <div class="loading-chart position-absolute w-100 h-100 bg-white" style="left:0; top:0; text-align: center;">
           <button class="btn btn-info waves-effect waves-themed align-self-center" type="button" disabled="" style="margin-top: 100px;">
-            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-            Loading...
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Loading...
           </button>
         </div><!-- /.loading-chart -->
       </div><!-- /.col-12 position-relative -->
     </div><!-- /.row -->
-
     <div class="row pl-2 mt-3">
-      <div class="col-md-3 col-6 align-middle">
-        <div class="w-100">
-          <div class="store-chart-sensor-list" id="snsrid"></div>
-        </div>
+      <div class="col-md-3 col-6 align-middle w-100">
+        <div class="store-chart-sensor-list" id="snsrid"></div>
       </div><!-- /.col-md-3 -->
-      <div class="col-md-4 col-6 align-middle">
+      <div class="col-md-4 col-6 align-middle pr-0">
         <div class="form-group custom-control-inline">
           <select class="form-control" id="termtype">
             <option value="d" selected="selected">일간</option>
@@ -35,7 +31,7 @@
           </select><!-- /#termtype -->
         </div><!-- /.form-group -->
         <div class="form-group custom-control-inline">
-          <input class="form-control" id="regdt" type="date"/>
+          <input class="form-control" id="regdt" type="date" />
         </div><!-- /.form-group -->
         <div class="form-group custom-control-inline">
           <select class="form-control" id="charttype">
@@ -52,7 +48,7 @@
           </select><!-- /#datatype -->
         </div><!-- /.form-group -->
       </div><!-- /.col-md-4 col-6 align-middle -->
-      <div class="col-md-4 col-10">
+      <div class="col-md-4 col-10 pl-0">
         <div class="row">
           <div class="col-6" style="color: #d3372d;"><input type="checkbox" name="dataname" value="IGO" /> 누설전류 총합(IGO)</div>
           <div class="col-6" style="color: #518d45;"><input type="checkbox" name="dataname" value="IGR" /> 저항성 누설전류(IGR)</div>
@@ -67,391 +63,378 @@
         </div><!-- /.row -->
       </div><!-- /.col-md-4 col-10 -->
       <div class="col-md-1 col-2">
-        <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_getStoreSensorData();">조회</button>
+        <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_msc_getStoreSensorData();">조회</button>
       </div><!-- /.col-md-1 col-2 -->
     </div><!-- /.row pl-2 mt-3 -->
   </div><!-- /.panel-content p-2 -->
 
   <script type="text/javascript">
-    var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
+  var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
 
-    $(function() {
-      fn_initStoreChart();
+  $(function() {
+    fn_msc_initStoreChart();
 
-      $('#termtype').on('change', function(d) {
-        if (this.value == 'm') {
-          $('#regdt').prop('type', 'month');
-          $('#regdt').val(fn_dateToString(new Date()).slice(0, 7));
-        } else {
-          $('#regdt').prop('type', 'date');
-          $('#regdt').val(fn_dateToString(new Date()).slice(0, 10));
-        }
+    $('#termtype').on('change', function(d) {
+      if (this.value == 'm') {
+        $('#regdt').prop('type', 'month');
+        $('#regdt').val(fn_mlt_dateToString(new Date()).slice(0, 7));
+      } else {
+        $('#regdt').prop('type', 'date');
+        $('#regdt').val(fn_mlt_dateToString(new Date()).slice(0, 10));
+      }
 
-        fn_getStoreSensorData();
-      });
-
-      $('#charttype').on('change', function() { fn_getStoreSensorData(); });
-      $('#datatype').on('change', function() { fn_getStoreSensorData(); });
-      $('#regdt').on('change', function () { fn_getStoreSensorData(); });
-
-      $('.store-chart-sensor-list').on('change', 'input', function() { fn_getStoreSensorData(); });
-      $('[name=dataname]').on('click', fn_setChart);
+      fn_msc_getStoreSensorData();
     });
 
-    function fn_initStoreChart() {
-      window.chart1 = null;
-      window.datadt = null;
-      window.dataset = null;
-      window.val = null;
+    $('#charttype').on('change', function() { fn_msc_getStoreSensorData(); });
+    $('#datatype').on('change', function() { fn_msc_getStoreSensorData(); });
+    $('#regdt').on('change', function () { fn_msc_getStoreSensorData(); });
 
-      $.template(
-        'store-chart-sensor',
-        '<p class="{{html STATE}}">' +
-          '<input type="radio" name="store-chart-sensor" value="{{html SNSRID}}" /> {{html SNSRNICK}}' +
-          '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span><br/>{{html SNSRID}}' +
-        '</p>'
-      );
+    $('.store-chart-sensor-list').on('change', 'input', function() { fn_msc_getStoreSensorData(); });
+    $('[name=dataname]').on('click', fn_msc_setChart);
+  });
 
-      if ($('#prm_almtype').val()) {
-        $('[name=dataname][value="' + $('#prm_almtype').val() + '"]').prop('checked', true);
-      } else {
-        $('[name=dataname][value="IGO"]').prop('checked', true);
-        $('[name=dataname][value="IGR"]').prop('checked', true);
-        $('[name=dataname][value="IGC"]').prop('checked', true);
-      }
+  function fn_msc_initStoreChart() {
+    window.chart1 = null;
+    window.datadt = null;
+    window.dataset = null;
+    window.val = null;
 
-      $('#regdt').val(fn_dateToString(new Date()).slice(0, 10));
-      fn_getStoreSensor();
+    $.template(
+      'store-chart-sensor',
+      '<p class="{{html STATE}}">' +
+        '<input type="radio" name="store-chart-sensor" value="{{html SNSRID}}" /> {{html SNSRNICK}}' +
+        '<span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span><br/>{{html SNSRID}}' +
+      '</p>'
+    );
+
+    if ($('#prm_almtype').val()) {
+      $('[name=dataname][value="' + $('#prm_almtype').val() + '"]').prop('checked', true);
+    } else {
+      $('[name=dataname][value="IGO"]').prop('checked', true);
+      $('[name=dataname][value="IGR"]').prop('checked', true);
+      $('[name=dataname][value="IGC"]').prop('checked', true);
     }
 
-    function fn_refreshStoreInfo() {}
+    $('#regdt').val(fn_mlt_dateToString(new Date()).slice(0, 10));
+    fn_msc_getStoreSensor();
+  }
 
-    function fn_getStoreSensor() {
-      $.post(
-          $('#contextRoot').val() + '/mng/areaSensorListAjax'
-        , { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() }
-        , function(d) {
-            $('.store-chart-sensor-list').html('');
+  function fn_msc_refreshStoreInfo() {}
 
-            for (let i = 0; i < d.length; i++) {
-              d[i].CNT = 0;
+  function fn_msc_getStoreSensor() {
+    $.post(
+      $('#contextRoot').val() + '/mng/areaSensorListAjax',
+      { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
+      function(d) {
+        $('.store-chart-sensor-list').html('');
 
-              if (d[i].DANGER > 0) {
-                d[i].STATE = 'danger';
-                d[i].CNT = d[i].DANGER;
-                d[i].CNT2 = d[i].WARN;
-              } else if (d[i].WARN > 0) {
-                d[i].STATE = 'warn';
-                d[i].CNT = d[i].WARN;
-              } else if (d[i].CON == 0) {
-                d[i].STATE = 'discon';
-              }
+        for (let i = 0; i < d.length; i++) {
+          d[i].CNT = 0;
 
-              $('.store-chart-sensor-list').append($.tmpl('store-chart-sensor', d[i]));
-            }
-
-            let snsrid = $('#prm_snsrid').val();
-            if (snsrid)
-              $('.store-chart-sensor-list input[value="' + snsrid + '"]').prop('checked', true);
-            else
-              $($('.store-chart-sensor-list input')[0]).prop('checked', true);
-
-            let now = new Date();
-            if ($('#prm_regdate').val()) {
-              now = new Date($('#prm_regdate').val());
-              $('#regdt').val($('#prm_regdate').val());
-            }
-
-            now.setDate(now.getDate());
-            fn_getStoreSensorData('d', fn_dateToString(now).slice(0, 10), 1);
+          if (d[i].DANGER > 0) {
+            d[i].STATE = 'danger';
+            d[i].CNT = d[i].DANGER;
+            d[i].CNT2 = d[i].WARN;
+          } else if (d[i].WARN > 0) {
+            d[i].STATE = 'warn';
+            d[i].CNT = d[i].WARN;
+          } else if (d[i].CON == 0) {
+            d[i].STATE = 'discon';
           }
-      );
-    }
 
-    function fn_initDataset() {
-      let dns = $('[name=dataname]');
-
-      window.val = {};
-      window.datadt = { min: null, max: null };
-      window.dataset = {};
-
-      for (let i = 0; i < dns.length; i++) {
-        window.val[dns[i].value] = { min: null, max: null };
-        window.dataset[dns[i].value] = [];
-      }
-    }
-
-    function fn_updateDataset(d) {
-      let ret = false; // 데이터 갱신 여부
-      let dns = $('[name=dataname]');
-
-      let datatype_nulldata = {
-          real: 1000 * 60 * 60 * 2
-        , h: 1000 * 60 * 60 * 2
-        , d: 1000 * 60 * 60 * 24 * 2
-        , m: 1000 * 60 * 60 * 24 * 60
-      };
-
-      let nulldata = datatype_nulldata[$('#datatype option:selected').val()];
-
-      for (let i = 0; i < d.length; i++) {
-        let curdt = new Date(d[i].REGDT);
-
-        for (let j = 0; j < dns.length; j++) {
-          if (window.dataset[dns[j].value].length < 1) {
-            // dataset 비어 있을 때
-            window.datadt.min = curdt;
-            window.datadt.max = curdt;
-
-            window.val[dns[j].value].min = d[i][dns[j].value];
-            window.val[dns[j].value].max = d[i][dns[j].value];
-
-            window.dataset[dns[j].value].push([d[i].REGDT, d[i][dns[j].value]]);
-
-            ret = true;
-          } else {
-            if (window.datadt.min > curdt) {
-              // 이전 데이터가 들어온경우
-              // 이전 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
-              if ((window.datadt.min.getTime() - curdt.getTime()) > nulldata) 
-                window.dataset[dns[j].value].unshift([d[i].REGDT + 1, null]);
-
-              window.dataset[dns[j].value].unshift([d[i].REGDT, d[i][dns[j].value]]);
-              ret = true;
-            } else if (window.datadt.max < curdt) {
-              // 이후 데이터가 들어온경우
-              // 이후 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
-              if ((curdt.getTime() - window.datadt.max.getTime()) > nulldata) 
-                window.dataset[dns[j].value].push([d[i].REGDT - 1, null]);
-
-              window.dataset[dns[j].value].push([d[i].REGDT, d[i][dns[j].value]]);
-              ret = true;
-            }
-
-            // 최소, 최대값 수정 (차트에서 최소, 최대값 필요)
-            if (window.val[dns[j].value].min > d[i][dns[j].value]) 
-              window.val[dns[j].value].min = d[i][dns[j].value];
-
-            if (window.val[dns[j].value].max < d[i][dns[j].value]) 
-              window.val[dns[j].value].max = d[i][dns[j].value];
-          }
+          $('.store-chart-sensor-list').append($.tmpl('store-chart-sensor', d[i]));
         }
 
-        // 데이터 날짜 최소, 최대값 수정
-        if (window.datadt.min > curdt) window.datadt.min = curdt;
-        if (window.datadt.max < curdt) window.datadt.max = curdt;
+        let snsrid = $('#prm_snsrid').val();
+        if (snsrid)
+          $('.store-chart-sensor-list input[value="' + snsrid + '"]').prop('checked', true);
+        else
+          $($('.store-chart-sensor-list input')[0]).prop('checked', true);
+
+        let now = new Date();
+        if ($('#prm_regdate').val()) {
+          now = new Date($('#prm_regdate').val());
+          $('#regdt').val($('#prm_regdate').val());
+        }
+
+        now.setDate(now.getDate());
+        fn_msc_getStoreSensorData('d', fn_mlt_dateToString(now).slice(0, 10), 1);
+    });
+  }
+
+  function fn_msc_initDataset() {
+    let dns = $('[name=dataname]');
+
+    window.val = {};
+    window.datadt = { min: null, max: null };
+    window.dataset = {};
+
+    for (let i = 0; i < dns.length; i++) {
+      window.val[dns[i].value] = { min: null, max: null };
+      window.dataset[dns[i].value] = [];
+    }
+  }
+
+  function fn_msc_updateDataset(d) {
+    let ret = false; // 데이터 갱신 여부
+    let dns = $('[name=dataname]');
+
+    let datatype_nulldata = { real: 1000 * 60 * 60 * 2, h: 1000 * 60 * 60 * 2, d: 1000 * 60 * 60 * 24 * 2, m: 1000 * 60 * 60 * 24 * 60 };
+    let nulldata = datatype_nulldata[$('#datatype option:selected').val()];
+
+    for (let i = 0; i < d.length; i++) {
+      let curdt = new Date(d[i].REGDT);
+
+      for (let j = 0; j < dns.length; j++) {
+        if (window.dataset[dns[j].value].length < 1) {
+          // dataset 비어 있을 때
+          window.datadt.min = curdt;
+          window.datadt.max = curdt;
+
+          window.val[dns[j].value].min = d[i][dns[j].value];
+          window.val[dns[j].value].max = d[i][dns[j].value];
+
+          window.dataset[dns[j].value].push([d[i].REGDT, d[i][dns[j].value]]);
+
+          ret = true;
+        } else {
+          if (window.datadt.min > curdt) {
+            // 이전 데이터가 들어온경우
+            // 이전 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
+            if ((window.datadt.min.getTime() - curdt.getTime()) > nulldata)
+              window.dataset[dns[j].value].unshift([d[i].REGDT + 1, null]);
+
+            window.dataset[dns[j].value].unshift([d[i].REGDT, d[i][dns[j].value]]);
+            ret = true;
+          } else if (window.datadt.max < curdt) {
+            // 이후 데이터가 들어온경우
+            // 이후 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
+            if ((curdt.getTime() - window.datadt.max.getTime()) > nulldata)
+              window.dataset[dns[j].value].push([d[i].REGDT - 1, null]);
+
+            window.dataset[dns[j].value].push([d[i].REGDT, d[i][dns[j].value]]);
+            ret = true;
+          }
+
+          // 최소, 최대값 수정 (차트에서 최소, 최대값 필요)
+          if (window.val[dns[j].value].min > d[i][dns[j].value])
+            window.val[dns[j].value].min = d[i][dns[j].value];
+
+          if (window.val[dns[j].value].max < d[i][dns[j].value])
+            window.val[dns[j].value].max = d[i][dns[j].value];
+      }}
+
+      // 데이터 날짜 최소, 최대값 수정
+      if (window.datadt.min > curdt) window.datadt.min = curdt;
+      if (window.datadt.max < curdt) window.datadt.max = curdt;
+    }
+
+    // 차트 24시간 보이기
+    if ($('#termtype option:selected').val()=='d') {
+      if (new Date(window.datadt.min).getHours() > 0)
+        for (let i = 0; i < dns.length; i++)
+          window.dataset[dns[i].value].unshift([new Date($('#regdt').val() + 'T00:00:00').getTime(), null]);
+
+      if (new Date(window.datadt.max).getHours() < 23)
+        for (let i = 0; i < dns.length; i++)
+          window.dataset[dns[i].value].push([new Date($('#regdt').val() + 'T23:59:59').getTime(), null]);
+    }
+
+    return ret;
+  }
+
+  function fn_msc_getStoreSensorData(termtype, regdt, dtsize, order, isinit) {
+    fn_msc_onLoading();
+
+    if ($('.chart-title').length > 0)
+      $('.chart-title').text($('.radio-' + $('[name=snsrid]:checked').val()).text());
+
+    var prm = {
+      strcode: $('#prm_strcode').val(),
+      datatype: $('#datatype option:selected').val(),
+      termtype: $('#termtype option:selected').val(),
+      snsrid: $('[name=store-chart-sensor]:checked').val(),
+      regdt: $('#regdt').val()
+    };
+
+    if (termtype) prm.termtype = termtype;
+    if (regdt) prm.regdt = regdt;
+    if (dtsize) prm.dtsize = dtsize;
+    if (order) prm.order = order;
+
+    $.post(contextPath + '/mng/listStoreSensorData', prm, function(d) {
+      if (d && d.length > 0) {
+        if (!isinit) fn_msc_initDataset();
+        if (fn_msc_updateDataset(d)) fn_msc_setChart();
+      } else {
+        if (!order)
+          alert('no data');
+
+        console.log('no data');
       }
 
-      // 차트 24시간 보이기
-      if ($('#termtype option:selected').val()=='d') {
-        if (new Date(window.datadt.min).getHours() > 0) 
-          for (let i = 0; i < dns.length; i++) 
-            window.dataset[dns[i].value].unshift([new Date($('#regdt').val() + 'T00:00:00').getTime(), null]);
+      fn_msc_offLoading();
+    });
+  }
 
-        if (new Date(window.datadt.max).getHours() < 23) 
-          for (let i = 0; i < dns.length; i++) 
-            window.dataset[dns[i].value].push([new Date($('#regdt').val() + 'T23:59:59').getTime(), null]);
-      }
+  function fn_msc_setAnnotations() {
+    let a1 = null, a2 = null;
+    let ret = { yaxis: [] };
+
+    if ($('[name=dataname]:checked').length > 1)
+      return ret;
+
+    let dataname = $('[name=dataname]:checked').val();
+
+    if (dataname == 'AMPERE') { a1 = 20, a2 = 26; }
+    if (dataname == 'IGO') { a1 = 15, a2 = 18; }
+    if (dataname == 'IGR') { a1 = 3, a2 = 5; }
+
+    if (a1) {
+      ret.yaxis.push({
+        y: a1, y2: a2, borderColor: '#ffa454', fillColor: '#ffa454', opacity: 0.3,
+        label: { style: { color: '#ffa454' }, text: '주의', textAnchor: 'start', position: 'left', offsetY: 50 }
+      });
+    }
+
+    if (a2) {
+      ret.yaxis.push({
+        y: a2, y2: 65, borderColor: '#ff6272', fillColor: '#ff6272', opacity: 0.3,
+        label: { style: { color: '#ff6272' }, text: '경고', textAnchor: 'start', position: 'left', offsetY: 50 }
+      });
 
       return ret;
     }
+  }
 
-    function fn_getStoreSensorData(termtype, regdt, dtsize, order, isinit) {
-      fn_onLoading();
+  function fn_msc_onLoading() {
+    if (!window.loadingcnt)
+      window.loadingcnt = 0;
 
-      if ($('.chart-title').length > 0)
-        $('.chart-title').text($('.radio-' + $('[name=snsrid]:checked').val()).text());
+    window.loadingcnt++;
 
-      var prm = {
-          strcode: $('#prm_strcode').val()
-        , datatype: $('#datatype option:selected').val()
-        , termtype: $('#termtype option:selected').val()
-        , snsrid: $('[name=store-chart-sensor]:checked').val()
-        , regdt: $('#regdt').val()
-      };
+    $('#chart').css('visibility', 'hidden');
+    $('.loading-chart').show();
+  }
 
-      if (termtype) prm.termtype = termtype;
-      if (regdt)    prm.regdt = regdt;
-      if (dtsize)   prm.dtsize = dtsize;
-      if (order)    prm.order = order;
+  function fn_msc_offLoading() {
+    window.loadingcnt--;
 
-      $.post(contextPath + '/mng/listStoreSensorData', prm, function(d) {
-        if (d && d.length > 0) {
-          if (!isinit)
-            fn_initDataset();
+    if (window.loadingcnt <= 0) {
+      window.loadingcnt = 0;
 
-          if (fn_updateDataset(d))
-            fn_setChart();
-        } else {
-          if (!order)
-            alert('no data');
-
-          console.log('no data');
-        }
-
-        fn_offLoading();
-      });
+      $('#chart').css('visibility', 'visible');
+      $('.loading-chart').hide();
     }
+  }
 
-    function fn_setAnnotations() {
-      let a1 = null, a2 = null;
-      let ret = { yaxis: [] };
+  function fn_msc_getMore(order) {
+    let dt = null;
+    let termtype = $('#termtype option:selected').val();
 
-      if ($('[name=dataname]:checked').length > 1) 
-        return ret;
+    if (order == 'desc') {
+      dt = new Date(window.datadt.min.getTime());
 
-      let dataname = $('[name=dataname]:checked').val();
-
-      if (dataname == 'AMPERE') { a1 = 20, a2 = 26; }
-      if (dataname == 'IGO') { a1 = 15, a2 = 18; }
-      if (dataname == 'IGR') { a1 = 3, a2 = 5; }
-
-      if (a1) {
-        ret.yaxis.push({
-            y: a1, y2: a2, borderColor: '#ffa454', fillColor: '#ffa454', opacity: 0.3
-          , label: { style: { color: '#ffa454' }, text: '주의', textAnchor: 'start', position: 'left', offsetY: 50 }
-        });
-      }
-
-      if (a2) {
-        ret.yaxis.push({
-            y: a2, y2: 65, borderColor: '#ff6272', fillColor: '#ff6272', opacity: 0.3
-          , label: {style: {color: '#ff6272'}, text: '경고', textAnchor: 'start', position: 'left', offsetY: 50 }
-        });
-
-        return ret;
-      }
-    }
-
-    function fn_onLoading() {
-      if (!window.loadingcnt)
-        window.loadingcnt = 0;
-
-      window.loadingcnt++;
-
-      $('#chart').css('visibility', 'hidden');
-      $('.loading-chart').show();
-    }
-
-    function fn_offLoading() {
-      window.loadingcnt--;
-
-      if (window.loadingcnt <= 0) {
-        window.loadingcnt = 0;
-
-        $('#chart').css('visibility', 'visible');
-        $('.loading-chart').hide();
-      }
-    }
-
-    function fn_getMore(order) {
-      let dt = null;
-      let termtype = $('#termtype option:selected').val();
-
-      if (order == 'desc') {
-        dt = new Date(window.datadt.min.getTime());
-
-        if (termtype == 'd')
-          dt.setDate(dt.getDate() - 1);
-        else
-          dt.setMonth(dt.getMonth() - 1);
-      } else {
-        dt = new Date(window.datadt.max.getTime());
-
-        if (termtype == 'd')
-          dt.setDate(dt.getDate() + 1);
-        else
-          dt.setMonth(dt.getMonth() + 1);
-      }
-
-      let regdt = fn_dateToString(dt).slice(0, 10);
-
-      if (termtype == 'm')
-        regdt = regdt.slice(0, 7);
-
-      fn_getStoreSensorData(termtype, regdt, 1, order, true);
-    }
-
-    function fn_setChart() {
-      let opt = {
-          series: []
-        , chart: {
-              height: 400
-            , type: $('#charttype option:selected').val()
-            , id: 'chart'
-            , animations: { enabled: false }
-            , events: {
-                zoomed: function(a, b) {
-                  if (window.datadt.min > new Date(b.xaxis.min)) fn_getMore("desc");
-                  if (window.datadt.max < new Date(b.xaxis.max)) fn_getMore("asc");
-                }
-              }
-          }
-        , colors: []
-        , stroke: { width: 3 }
-        , dataLabels: { enabled: false }
-        , annotations: fn_setAnnotations()
-        , tooltip: {
-              enabled: true, marker: { show: true }, fixed: { enabled: true, position: 'topLeft' }
-            , x: { format: 'yyyy년 MM월 dd일 HH:mm:ss' }
-            , y: { formatter: function (val) { return (val) ? val.toFixed(2) : null; }}
-          }
-        , xaxis: {
-              type: 'datetime'
-            , lines: { show: true }
-            , tooltip: { enabled: true }
-            , labels: { datetimeUTC: false, datetimeFormatter: { year: 'yyyy년', month: 'yyyy년 MM월', day: 'MM월 dd일', hour: 'HH:mm' } }
-          }
-        , yaxis: {
-              lines: { show: true }, tooltip: { enabled: true }, min: null, max: null
-            , labels: { formatter: function(val) { return (val) ? val.toFixed(2) : null; }}
-          }
-      };
-
-      let $dns = $('[name=dataname]:checked');
-      let series = [];
-
-      let colorset = {
-          IGO: '#d3372d', IGR: '#518d45', IGC: '#4475e0', KWH: '#ff6272'
-        , WATT: '#ff8040', VOLT: '#800000', AMPERE: '#0080ff', HZ: '#8000ff', PF: '#800080', REG: '#ff0080'
-      };
-
-      for (let i = 0; i < $dns.length; i++) {
-        let dns = $dns[i].value;
-        series.push({ name: $($dns[i]).parent('div').text().trim(), data: window.dataset[dns] });
-        opt.colors.push(colorset[dns]);
-
-        let min = window.val[dns].min * 0.95;
-        let max = window.val[dns].max * 1.4;
-
-        if (opt.yaxis.min == null || opt.yaxis.min > min) opt.yaxis.min = min;
-        if (opt.yaxis.max == null || opt.yaxis.max < max) opt.yaxis.max = max;
-      }
-
-      if (window.dataset['IGO'].length < 100)
-        opt.markers = { size: 1, strokeWidth: 0, hover: { size: 5 } };
+      if (termtype == 'd')
+        dt.setDate(dt.getDate() - 1);
       else
-        opt.markers = { size: 0, hover: { size: 0 } };
+        dt.setMonth(dt.getMonth() - 1);
+    } else {
+      dt = new Date(window.datadt.max.getTime());
 
-      if (series.length > 0) {
-        $('#chart').css('visibility', 'visible');
-
-        if (window.chart1) {
-          opt.chart.type = $('#charttype option:selected').val();
-          opt.annotations = fn_setAnnotations();
-
-          window.chart1.updateOptions(opt);
-          window.chart1.updateSeries(series);
-        } else {
-          opt.series = series;
-          $('#chart').html('');
-
-          window.chart1 = new ApexCharts(document.querySelector("#chart"), opt);
-          window.chart1.render().then(function() {});
-        }
-      } else {
-        $('#chart').css('visibility', 'hidden');
-      }
+      if (termtype == 'd')
+        dt.setDate(dt.getDate() + 1);
+      else
+        dt.setMonth(dt.getMonth() + 1);
     }
+
+    let regdt = fn_mlt_dateToString(dt).slice(0, 10);
+
+    if (termtype == 'm')
+      regdt = regdt.slice(0, 7);
+
+    fn_msc_getStoreSensorData(termtype, regdt, 1, order, true);
+  }
+
+  function fn_msc_setChart() {
+    let opt = {
+      series: [],
+      chart: {
+        height: 400,
+        type: $('#charttype option:selected').val(),
+        id: 'chart',
+        animations: { enabled: false },
+        events: {
+          zoomed: function(a, b) {
+            if (window.datadt.min > new Date(b.xaxis.min)) fn_msc_getMore("desc");
+            if (window.datadt.max < new Date(b.xaxis.max)) fn_msc_getMore("asc");
+        }}
+      },
+      colors: [],
+      stroke: { width: 3 },
+      dataLabels: { enabled: false },
+      annotations: fn_msc_setAnnotations(),
+      tooltip: {
+        enabled: true, marker: { show: true }, fixed: { enabled: true, position: 'topLeft' },
+        x: { format: 'yyyy년 MM월 dd일 HH:mm:ss' },
+        y: { formatter: function (val) { return (val) ? val.toFixed(2) : null; } }
+      },
+      xaxis: {
+        type: 'datetime',
+        lines: { show: true },
+        tooltip: { enabled: true },
+        labels: { datetimeUTC: false, datetimeFormatter: { year: 'yyyy년', month: 'yyyy년 MM월', day: 'MM월 dd일', hour: 'HH:mm' } }
+      },
+      yaxis: {
+        lines: { show: true }, tooltip: { enabled: true }, min: null, max: null,
+        labels: { formatter: function(val) { return (val) ? val.toFixed(2) : null; } }
+      }
+    };
+
+    let $dns = $('[name=dataname]:checked');
+    let series = [];
+
+    let colorset = {
+      IGO: '#d3372d', IGR: '#518d45', IGC: '#4475e0', KWH: '#ff6272', WATT: '#ff8040', VOLT: '#800000', AMPERE: '#0080ff', HZ: '#8000ff', PF: '#800080', REG: '#ff0080'
+    };
+
+    for (let i = 0; i < $dns.length; i++) {
+      let dns = $dns[i].value;
+      series.push({ name: $($dns[i]).parent('div').text().trim(), data: window.dataset[dns] });
+      opt.colors.push(colorset[dns]);
+
+      let min = window.val[dns].min * 0.95;
+      let max = window.val[dns].max * 1.4;
+
+      if (opt.yaxis.min == null || opt.yaxis.min > min) opt.yaxis.min = min;
+      if (opt.yaxis.max == null || opt.yaxis.max < max) opt.yaxis.max = max;
+    }
+
+    if (window.dataset['IGO'].length < 100)
+      opt.markers = { size: 1, strokeWidth: 0, hover: { size: 5 } };
+    else
+      opt.markers = { size: 0, hover: { size: 0 } };
+
+    if (series.length > 0) {
+      $('#chart').css('visibility', 'visible');
+
+      if (window.chart1) {
+        opt.chart.type = $('#charttype option:selected').val();
+        opt.annotations = fn_msc_setAnnotations();
+
+        window.chart1.updateOptions(opt);
+        window.chart1.updateSeries(series);
+      } else {
+        opt.series = series;
+        $('#chart').html('');
+
+        window.chart1 = new ApexCharts(document.querySelector("#chart"), opt);
+        window.chart1.render().then(function() {});
+      }
+    } else {
+      $('#chart').css('visibility', 'hidden');
+    }
+  }
   </script>
 </div>

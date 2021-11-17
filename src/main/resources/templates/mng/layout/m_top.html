@@ -83,56 +83,56 @@
 </div>
 
 <script type="text/javascript">
-  $(function() {
-    fn_initTop();
+$(function() {
+  fn_mlt_initTop();
+});
+
+function fn_mlt_initTop() {
+  fn_mlt_getSensorCount();
+
+  $.template(
+    'top-search-result',
+    '<p data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}">{{html STRNAME}} [{{html AREANAME}}]</p>'
+  );
+
+  $('.top-search-text').on('keyup', fn_mlt_searchStore);
+  $('.top-search button').on('click', fn_mlt_searchStore);
+
+  $('.top-search-result').on('click', 'p', function() {
+    fn_mm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
+    $('.top-search-result').html('');
   });
 
-  function fn_initTop() {
-    fn_getSensorCount();
+  setInterval(function() {
+    let w = ['일', '월', '화', '수', '목', '금', '토'];
+    let now_str = fn_mlt_dateToString(new Date());
 
-    $.template(
-      'top-search-result',
-      '<p data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}">{{html STRNAME}} [{{html AREANAME}}]</p>'
-    );
+    $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
+    $('.top-time').text(now_str.substring(11));
+  }, 1000);
+}
 
-    $('.top-search-text').on('keyup', fn_searchStore);
-    $('.top-search button').on('click', fn_searchStore);
+function fn_mlt_refreshTop() {
+  fn_mlt_getSensorCount();
+}
 
-    $('.top-search-result').on('click', 'p', function() {
-      fn_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
-      $('.top-search-result').html('');
-    });
+function fn_mlt_getSensorCount() {
+  $.post($('#contextRoot').val() + '/mng/sensorCountAjax', {}, function(d) {
+    for (let i = 0; i < d.length; i++) {
+      $('.COUNT-' + d[i].TERM + d[i].TYPE).text(d[i].CNT);
+    }
+  });
+}
 
-    setInterval(function() {
-      let w = ['일', '월', '화', '수', '목', '금', '토'];
-      let now_str = fn_dateToString(new Date());
+function fn_mlt_dateToString(d) {
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
+    ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+}
 
-      $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
-      $('.top-time').text(now_str.substring(11));
-    }, 1000);
-  }
-
-  function fn_refreshTop() {
-    fn_getSensorCount();
-  }
-
-  function fn_getSensorCount() {
-    $.post($('#contextRoot').val() + '/mng/sensorCountAjax', {}, function(d) {
-      for (let i = 0; i < d.length; i++) {
-        $('.COUNT-' + d[i].TERM + d[i].TYPE).text(d[i].CNT);
-      }
-    });
-  }
-
-  function fn_dateToString(d) {
-    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
-      ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
-  }
-
-  function fn_searchStore() {
-    $.post($('#contextRoot').val() + '/mng/storeSearchAjax', { search: $('.top-search-text').val() }, function(d) {
-      $('.top-search-result').html('');
-      $('.top-search-result').append($.tmpl('top-search-result', d));
-    });
-  }
+function fn_mlt_searchStore() {
+  $.post($('#contextRoot').val() + '/mng/storeSearchAjax', { search: $('.top-search-text').val() }, function(d) {
+    $('.top-search-result').html('');
+    $('.top-search-result').append($.tmpl('top-search-result', d));
+  });
+}
 </script>

@@ -17,10 +17,16 @@
           </b><!-- /.center-main-area-tab -->
         </b><!-- /.row -->
       </h2><!-- /.ui-sortable-handle -->
-      <div class="panel-saving mr-2" style="display: none;"><i class="fal fa-spinner-third fa-spin-4x fs-xl"></i></div>
+      <div class="panel-saving mr-2" style="display: none;">
+        <i class="fal fa-spinner-third fa-spin-4x fs-xl"></i>
+      </div><!-- /.panel-saving mr-2 -->
       <div class="panel-toolbar" role="menu">
-        <a href="#" class="btn btn-panel js-panel-collapse" th:data-id="${prm_panel_index}"><i class="fal fa-arrows-v"></i></a>
-        <a href="#" class="btn btn-panel js-panel-fullscreen" th:data-id="${prm_panel_index}"><i class="fal fa-expand-wide"></i></a>
+        <a href="#" class="btn btn-panel js-panel-collapse" th:data-id="${prm_panel_index}">
+          <i class="fal fa-arrows-v"></i>
+        </a>
+        <a href="#" class="btn btn-panel js-panel-fullscreen" th:data-id="${prm_panel_index}">
+          <i class="fal fa-expand-wide"></i>
+        </a>
       </div><!-- /.panel-toolbar -->
     </div><!-- /.panel-hdr -->
     <div class="panel-container collapse" role="content" th:data-id="${prm_panel_index}">
@@ -30,27 +36,23 @@
       <div class="center-main-page-chart on">
         <div class="row">
           <div class="col-md-6 col-12">
-            <div class="center-main-data-chart" style="height:250px;"></div>
-          </div>
+            <div class="center-main-data-chart" style="height: 250px;"></div>
+          </div><!-- /.col-md-6 col-12 -->
           <div class="col-md-6 col-12">
-            <div class="center-main-log-chart" style="height:250px;"></div>
-          </div>
-        </div>
+            <div class="center-main-log-chart" style="height: 250px;"></div>
+          </div><!-- /.col-md-6 col-12 -->
+        </div><!-- /.row -->
         <div class="row">
           <div class="col-md-6 col-12">
             <div class="center-main-data-chart-week"></div>
-          </div>
+          </div><!-- /.col-md-6 col-12 -->
           <div class="col-md-6 col-12">
             <div class="center-main-log-chart-week"></div>
-          </div>
-        </div>
+          </div><!-- /.col-md-6 col-12 -->
+        </div><!-- /.row -->
       </div><!-- /.center-main-page-chart -->
       <div class="center-main-page-map" th:data-id="${prm_panel_index}">
-        <div class="row">
-          <div class="col-md-12 col-12">
-            <div class="center-main-data-chart" style="height:800px;"></div>
-          </div>
-        </div>
+        <div class="center-main-data-chart" style="height: 800px;"></div>
       </div><!-- /.center-main-page-map -->
     </div><!-- /.panel-container -->
   </div><!-- /.panel panel-sortable -->
