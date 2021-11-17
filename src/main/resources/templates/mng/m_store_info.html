@@ -294,7 +294,7 @@
               alert('점검 등록 되었습니다.');
 
               fn_msi_getStoreInfoSensorList();
-              fn_m_getCheckSensorList();
+              fn_mll_getCheckSensorList();
             } else {
               alert('점검 등록을 실패하였습니다.');
             }
@@ -312,7 +312,7 @@
               alert('점검 완료 되었습니다.');
 
               fn_msi_getStoreInfoSensorList();
-              fn_m_getCheckSensorList();
+              fn_mll_getCheckSensorList();
             } else {
               alert('점검 완료를 실패하였습니다.');
             }
@@ -321,9 +321,6 @@
     });
 
     fn_msi_getStoreInfo();
-    fn_msi_getSensorList();
-    fn_msi_getListStoreImg();
-
     fn_msi_getStoreInfoSensorList();
   }
 
@@ -334,8 +331,7 @@
 
   function fn_msi_refreshStoreInfo() {
     fn_msi_getDataLog();
-    fn_msi_getLog3DaysStat();
-    fn_msi_getLogWeekStat();
+    fn_msi_getLogStat();
   }
 
   // function fn_msi_checkDataLog() {
@@ -361,86 +357,77 @@
   //     $('.store-datalog-list p.WARN').show();
   // }
 
-  // 상점 기본 정보
-  function fn_msi_getStoreInfo() {
-    $.post(
-      $('#contextRoot').val() + '/mng/storeInfoAjax',
-      { snsrid: $('#prm_snsrid').val() },
-      function (d) {
-        $('.store-meta .store-name-cont').html(d[0].STRNAME);
-        $('.store-meta .store-addr-cont').html(d[0].STRADDR);
-        $('.store-meta .store-tel-cont').html(d[0].STRTEL);
-        $('.store-meta .store-owntel-cont').html(d[0].STROWNTEL);
-    });
-  }
-
   var map = null;
   var marker = [];
 
-  // 상점 지도
-  function fn_msi_getSensorList() {
+  // 상점 정보
+  function fn_msi_getStoreInfo() {
     $.post(
-      $('#contextRoot').val() + '/mng/listSensorAjax',
+      $('#contextRoot').val() + '/mng/storeInfoAjax',
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
       function (d) {
-        let markImg = {
-          NORMAL: ['/fs/img/map/normal.png', '<span class="badge badge-success badge-pill">&nbsp;</span>'],
-          DISCON: ['/fs/img/map/disconnection.png', '<span class="badge badge-secondary badge-pill">&nbsp;</span>'],
-          WARNING: ['/fs/img/map/danger.png', '<span class="badge badge-danger badge-pill">&nbsp;</span>'],
-          CAUTION: ['/fs/img/map/warning.png', '<span class="badge badge-warning badge-pill">&nbsp;</span>'],
-          SELECT: ['/fs/img/map/select.png', '<span class="badge badge-success badge-pill">&nbsp;</span>']
-        };
+        // 상점 신상 기본 정보
+        if (d.store) {
+          $('.store-meta .store-name-cont').html(d.store.STRNAME);
+          $('.store-meta .store-addr-cont').html(d.store.STRADDR);
+          $('.store-meta .store-tel-cont').html(d.store.STRTEL);
+          $('.store-meta .store-owntel-cont').html(d.store.STROWNTEL);
+        }
 
-        let markZindex = { NORMAL: 1, DISCON: 0, WARNING: 3, CAUTION: 2 };
+        // 상점 지도 정보
+        if (d.sensor) {
+          let markImg = {
+            NORMAL: ['/fs/img/map/normal.png', '<span class="badge badge-success badge-pill">&nbsp;</span>'],
+            DISCON: ['/fs/img/map/disconnection.png', '<span class="badge badge-secondary badge-pill">&nbsp;</span>'],
+            WARNING: ['/fs/img/map/danger.png', '<span class="badge badge-danger badge-pill">&nbsp;</span>'],
+            CAUTION: ['/fs/img/map/warning.png', '<span class="badge badge-warning badge-pill">&nbsp;</span>'],
+            SELECT: ['/fs/img/map/select.png', '<span class="badge badge-success badge-pill">&nbsp;</span>']
+          };
 
-        if (map == null)
-          map = new naver.maps.Map($('.store-map')[0], { center: new naver.maps.LatLng(33.450701, 126.570667), zoom: 17 });
+          let markZindex = { NORMAL: 1, DISCON: 0, WARNING: 3, CAUTION: 2 };
 
-        for (let i = 0; i < marker.length; i++)
-          marker[i].setMap(null);
+          if (map == null)
+            map = new naver.maps.Map($('.store-map')[0], { center: new naver.maps.LatLng(33.450701, 126.570667), zoom: 17 });
 
-        $('.store-sensor-cont').html('');
+          for (let i = 0; i < marker.length; i++)
+            marker[i].setMap(null);
 
-        if (d.length > 0) {
-          for (let i = 0; i < d.length; i++) {
-            //var lot = d[i].SNSRMGPS.split(',');
-            //var pos = new naver.maps.LatLng(lot[0], lot[1]);
-            let pos = new naver.maps.LatLng(d[i].STRPOSLAT, d[i].STRPOSLON);
-            if (i == 0)
-              map.setCenter(pos);
+          $('.store-sensor-cont').html('');
 
-            marker.push(new naver.maps.Marker({
-              map: map, title: d[i].SNSRNICK, position: pos, zIndex: markZindex[d[i].STATE],
-              icon: {
-                url: $('#contextRoot').val() + markImg[d[i].STATE][0],
-                size: new naver.maps.Size(26, 35),
-                scaledSize: new naver.maps.Size(26, 35),
-                origin: new naver.maps.Point(0, 0),
-                anchor: new naver.maps.Point(13, 35)
-              }
-            }));
+          if (d.sensor.length > 0) {
+            for (let i = 0; i < d.sensor.length; i++) {
+              //var lot = d[i].SNSRMGPS.split(',');
+              //var pos = new naver.maps.LatLng(lot[0], lot[1]);
+              let pos = new naver.maps.LatLng(d.sensor[i].STRPOSLAT, d.sensor[i].STRPOSLON);
+              if (i == 0)
+                map.setCenter(pos);
 
-            //$('.store-sensor-cont').append('<p>' + markImg[d[i].STATE][1] + ' ' + d[i].PANELNAME + ' >' + d[i].SNSRNICK + ' (' + d[i].SNSRID + ')</p>');
-      }}}
-    );
-  }
+              marker.push(new naver.maps.Marker({
+                map: map, title: d.sensor[i].SNSRNICK, position: pos, zIndex: markZindex[d.sensor[i].STATE],
+                icon: {
+                  url: $('#contextRoot').val() + markImg[d.sensor[i].STATE][0],
+                  size: new naver.maps.Size(26, 35),
+                  scaledSize: new naver.maps.Size(26, 35),
+                  origin: new naver.maps.Point(0, 0),
+                  anchor: new naver.maps.Point(13, 35)
+                }
+              }));
 
-  // 상점 이미지
-  function fn_msi_getListStoreImg() {
-    $.post(
-      $('#contextRoot').val() + '/mng/storeImgAjax',
-      { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
-      function (d) {
-        if (d.length) {
+              //$('.store-sensor-cont').append('<p>' + markImg[d[i].STATE][1] + ' ' + d[i].PANELNAME + ' >' + d[i].SNSRNICK + ' (' + d[i].SNSRID + ')</p>');
+          }}
+        }
+
+        // 상점 이미지
+        if (d.img.length) {
           $('.carousel-indicators').html('');
           $('.carousel-inner').html('');
 
-          for (let i = 0; i < d.length; i++) {
+          for (let i = 0; i < d.img.length; i++) {
             $('.carousel-indicators').append('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>');
 
             $('.carousel-inner').append(
               '<div class="carousel-item bg-secondary" style="height: 200px;">' +
-                '<img class="d-block h-100 m-auto" src="http://1.223.40.19:30080/' + d[i].IMGPATH + d[i].IMGNAME + '" alt="' + d[i].ORINAME + '" data-holder-rendered="true">' +
+              '<img class="d-block h-100 m-auto" src="http://1.223.40.19:30080/' + d.img[i].IMGPATH + d.img[i].IMGNAME + '" alt="' + d.img[i].ORINAME + '" data-holder-rendered="true">' +
               '</div>'
             );
 
@@ -513,6 +500,7 @@
                   $('#contextRoot').val() + '/mng/sensorUsekwhMonthAjax',
                   { snsrid: $("input:radio[name='snsr-radio-btn']:checked").val(), regdt: $('.store-info #regdt').val() },
                   function (d) {
+                    console.log(d);
                     $('.store-datalog-meta .monkwh td span').text(d[0].USEKWH);
                 });
               }
@@ -553,110 +541,56 @@
   }
 
   // 3일간 경보
-  function fn_msi_getLog3DaysStat() {
+  function fn_msi_getLogStat() {
     $.post(
-      $('#contextRoot').val() + '/mng/log3DaysStatAjax',
+      $('#contextRoot').val() + '/mng/logStatAjax',
       { strcode: $('#prm_strcode').val(), areacode: $('#prm_areacode').val(), snsrid: $("input:radio[name='snsr-radio-btn']:checked").val() },
       function (d) {
-        let max = -1;
+        if (d.threedays) {
+          let max = -1;
 
-        for (let i = 0; i < d.length; i++) {
-          if (max < d[i].DANGER) max = d[i].DANGER;
-          if (max < d[i].WARN) max = d[i].WARN;
-        }
-
-        for (let i = 0; i < d.length; i++) {
-          $(".store-log-3days-stat-day" + i).text(d[i].DATETIME);
-
-          if (max == 0) {
-            $(".store-log-3days-stat-d" + i + " .danger-this").css("paddingTop", '0px');
-            $(".store-log-3days-stat-d" + i + " .danger-this b").text('0');
-            $(".store-log-3days-stat-w" + i + " .warn-this").css("paddingTop", '0px');
-            $(".store-log-3days-stat-w" + i + " .warn-this b").text('0');
-          } else {
-            $(".store-log-3days-stat-d" + i + " .danger-this").css("paddingTop", 70 * d[i].DANGER / max + 'px');
-            $(".store-log-3days-stat-d" + i + " .danger-this b").text(d[i].DANGER);
-            $(".store-log-3days-stat-w" + i + " .warn-this").css("paddingTop", 70 * d[i].WARN / max + 'px');
-            $(".store-log-3days-stat-w" + i + " .warn-this b").text(d[i].WARN);
+          for (let i = 0; i < d.threedays.length; i++) {
+            if (max < d.threedays[i].DANGER) max = d.threedays[i].DANGER;
+            if (max < d.threedays[i].WARN) max = d.threedays[i].WARN;
           }
-        }
-    });
-  }
 
-  // 일주일 경보
-  function fn_msi_getLogWeekStat() {
-    $.post(
-      $('#contextRoot').val() + '/mng/logWeekStatAjax',
-      { strcode: $('#prm_strcode').val(), areacode: $('#prm_areacode').val(), snsrid: $("input:radio[name='snsr-radio-btn']:checked").val() },
-      function (d) {
-        // let temp = [];
-        //
-        // for (let i = 0; i < d.length; i++) {
-        //   if (d[i]['WEEK'] == 1) {
-        //     temp = d.slice(i);
-        //     break;
-        //   }
-        // }
-        //
-        // let dmax = Math.max.apply(null, temp.map(function (o) { return o.DANGER; } ));
-        // let wmax = Math.max.apply(null, temp.map(function (o) { return o.WARN; } ));
-        // let a = 'prev';
-        //
-        // for (let i = 0; i < temp.length; i++) {
-        //   let danger_bar = $('.store-log-week-stat td.w' + temp[i]['WEEK'] + ' .danger-' + a);
-        //   danger_bar.css('padding-top', 70 * temp[i]['DANGER'] / dmax + 'px');
-        //   danger_bar.text(temp[i]['DANGER']);
-        //   danger_bar.attr('data-regdate', temp[i]['SDATE']);
-        //   danger_bar.attr('data-checktype', 'danger');
-        //
-        //   let warn_bar = $('.store-log-week-stat td.w' + temp[i]['WEEK'] + ' .warn-' + a);
-        //   warn_bar.css('padding-top', 70 * temp[i]['WARN'] / wmax + 'px');
-        //   warn_bar.text(temp[i]['WARN']);
-        //   warn_bar.attr('data-regdate', temp[i]['SDATE']);
-        //   warn_bar.attr('data-checktype', 'warn');
-        //
-        //   if (temp[i]['WEEK'] == 7)
-        //     a = 'this';
-        // }
-        //
-        // let this_week = temp[temp.length - 1].WEEK;
-        // $('.store-log-week-stat td').css('background', 'transparents');
-        // $('.store-log-week-stat td.w' + this_week).css('background', '#e7f0f8');
-        //
-        // $('.store-log-week-stat td.w' + this_week + ' .danger-this').addClass('progress-bar-striped');
-        // $('.store-log-week-stat td.w' + this_week + ' .danger-this').addClass('progress-bar-animated');
-        // $('.store-log-week-stat td.w' + this_week + ' .warn-this').addClass('progress-bar-striped');
-        // $('.store-log-week-stat td.w' + this_week + ' .warn-this').addClass('progress-bar-animated');
-        //
-        // $('.store-log-week-stat td .danger-this').show();
-        // $('.store-log-week-stat td .warn-this').show();
-        //
-        // for (let i = this_week + 1; i < 8; i++) {
-        //   $('.store-log-week-stat td.w' + i + ' .danger-this').hide();
-        //   $('.store-log-week-stat td.w' + i + ' .warn-this').hide();
-        // }
-        let max = -1;
+          for (let i = 0; i < d.threedays.length; i++) {
+            $(".store-log-3days-stat-day" + i).text(d.threedays[i].DATETIME);
 
-        for (let i = 0; i < d.length; i++) {
-          if (max < d[i].DANGER) max = d[i].DANGER;
-          if (max < d[i].WARN) max = d[i].WARN;
-        }
+            if (max == 0) {
+              $(".store-log-3days-stat-d" + i + " .danger-this").css("paddingTop", '0px');
+              $(".store-log-3days-stat-d" + i + " .danger-this b").text('0');
+              $(".store-log-3days-stat-w" + i + " .warn-this").css("paddingTop", '0px');
+              $(".store-log-3days-stat-w" + i + " .warn-this b").text('0');
+            } else {
+              $(".store-log-3days-stat-d" + i + " .danger-this").css("paddingTop", 70 * d.threedays[i].DANGER / max + 'px');
+              $(".store-log-3days-stat-d" + i + " .danger-this b").text(d.threedays[i].DANGER);
+              $(".store-log-3days-stat-w" + i + " .warn-this").css("paddingTop", 70 * d.threedays[i].WARN / max + 'px');
+              $(".store-log-3days-stat-w" + i + " .warn-this b").text(d.threedays[i].WARN);
+        }}}
 
-        for (let i = 0; i < d.length; i++) {
-          $(".store-log-week-stat-day" + i).text(d[i].DATETIME);
+        if (d.week) {
+          let max = -1;
 
-          if (max == 0) {
-            $(".store-log-week-stat-d" + i + " .danger-this").css("paddingTop", '0px');
-            $(".store-log-week-stat-d" + i + " .danger-this b").text('0');
-            $(".store-log-week-stat-w" + i + " .warn-this").css("paddingTop", '0px');
-            $(".store-log-week-stat-w" + i + " .warn-this b").text('0');
-          } else {
-            $(".store-log-week-stat-d" + i + " .danger-this").css("paddingTop", 70 * d[i].DANGER / max + 'px');
-            $(".store-log-week-stat-d" + i + " .danger-this b").html(d[i].DANGER);
-            $(".store-log-week-stat-w" + i + " .warn-this").css("paddingTop", 70 * d[i].WARN / max + 'px');
-            $(".store-log-week-stat-w" + i + " .warn-this b").html(d[i].WARN);
+          for (let i = 0; i < d.week.length; i++) {
+            if (max < d.week[i].DANGER) max = d.week[i].DANGER;
+            if (max < d.week[i].WARN) max = d.week[i].WARN;
           }
-        }
+
+          for (let i = 0; i < d.week.length; i++) {
+            $(".store-log-week-stat-day" + i).text(d.week[i].DATETIME);
+
+            if (max == 0) {
+              $(".store-log-week-stat-d" + i + " .danger-this").css("paddingTop", '0px');
+              $(".store-log-week-stat-d" + i + " .danger-this b").text('0');
+              $(".store-log-week-stat-w" + i + " .warn-this").css("paddingTop", '0px');
+              $(".store-log-week-stat-w" + i + " .warn-this b").text('0');
+            } else {
+              $(".store-log-week-stat-d" + i + " .danger-this").css("paddingTop", 70 * d.week[i].DANGER / max + 'px');
+              $(".store-log-week-stat-d" + i + " .danger-this b").html(d.week[i].DANGER);
+              $(".store-log-week-stat-w" + i + " .warn-this").css("paddingTop", 70 * d.week[i].WARN / max + 'px');
+              $(".store-log-week-stat-w" + i + " .warn-this b").html(d.week[i].WARN);
+        }}}
     });
   }
   </script>

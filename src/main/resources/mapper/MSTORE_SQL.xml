@@ -31,6 +31,16 @@
 
     <select id="SELECT_STORE_INFO" parameterType="map" resultType="map">
         SELECT
+            AREACODE, STRCODE, STRNAME, STRADDR, STRTEL, STROWNTEL, STRPOSLAT, STRPOSLON
+        FROM
+            F_STORE
+        WHERE
+            AREACODE = #{areacode}
+            AND STRCODE = #{strcode}
+    </select>
+
+    <select id="LIST_STORE_INFO" parameterType="map" resultType="map">
+        SELECT
             A.AREACODE, A.STRCODE, A.STRNAME, A.STRADDR, A.STRTEL, A.STROWNTEL, A.STRPOSLAT, A.STRPOSLON
         FROM
             F_STORE A
@@ -59,6 +69,7 @@
             3 DESC, A.SNSRID
     </select>
 
+    <!--
     <select id="SELECT_LIST_STORE_SENSOR" parameterType="map" resultType="map">
         SELECT
             C.AREACODE, C.AREANAME, C2.AREACODE, C2.AREANAME, B.STRCODE, B.STRNAME
@@ -120,6 +131,7 @@
         ORDER BY
             D.STATE DESC, D.DATACNT DESC, A.PANELNAME, B.STRNAME, A.SNSRNICK
     </select>
+    -->
 
     <select id="SELECT_STORE_SENSOR_DATA" parameterType="map" resultType="map">
         SELECT
@@ -201,8 +213,8 @@
                     ) D
                         ON A.SNSRID = D.SNSRID
         WHERE
-            B.STRCODE = #{strcode}
-            AND B.AREACODE = #{areacode}
+            B.AREACODE = #{areacode}
+            AND B.STRCODE = #{strcode}
         ORDER BY
             6 DESC, D.DATACNT DESC, A.PANELNAME, A.SNSRNICK
     </select>

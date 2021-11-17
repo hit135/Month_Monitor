@@ -27,9 +27,10 @@ import java.util.Map;
 @Repository
 public interface MStoreRepo {
     HashMap<String, Object> SELECT_EVENT_TABLE_INFO(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_STORE_INFO(Map<String, Object> param) throws Exception;
+    HashMap<String, Object> SELECT_STORE_INFO(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_STORE_INFO(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_SENSOR_INFO(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> SELECT_LIST_STORE_SENSOR(Map<String, Object> param) throws Exception;
+    // List<HashMap<String, Object>> SELECT_LIST_STORE_SENSOR(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_STORE_SENSOR_DATA(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_LIST_SENSOR(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> SELECT_STORE_IMG(Map<String, Object> param) throws Exception;
