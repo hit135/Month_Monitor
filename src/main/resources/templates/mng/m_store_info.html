@@ -367,11 +367,42 @@
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
       function (d) {
         // 상점 신상 기본 정보
+        console.log(d.store);
+
         if (d.store) {
           $('.store-meta .store-name-cont').html(d.store.STRNAME);
           $('.store-meta .store-addr-cont').html(d.store.STRADDR);
           $('.store-meta .store-tel-cont').html(d.store.STRTEL);
           $('.store-meta .store-owntel-cont').html(d.store.STROWNTEL);
+
+          if (d.store.SEQ) {
+            let seq = d.store.SEQ.split(",");
+            let imgPath = d.store.IMGPATH.split(",");
+            let imgName = d.store.IMGNAME.split(",");
+            let oriName = d.store.ORINAME.split(",");
+
+            $('.carousel-indicators').html('');
+            $('.carousel-inner').html('');
+
+            for (let i = 0; i < seq.length; i++) {
+              $('.carousel-indicators').append('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>');
+
+              $('.carousel-inner').append(
+                '<div class="carousel-item bg-secondary" style="height: 200px;">' +
+                '<img class="d-block h-100 m-auto" src="http://1.223.40.19:30080/' + imgPath[i] + imgName[i] + '" alt="' + oriName[i] + '" data-holder-rendered="true">' +
+                '</div>'
+              );
+
+              if (i == 0)
+                $('.carousel-indicators li, .carousel-inner div').addClass('active');
+            }
+
+            $('.store-img').removeClass('d-none');
+          } else {
+            $('.carousel-indicators').html('');
+            $('.carousel-inner').html('');
+            $('.store-img').addClass('d-none');
+          }
         }
 
         // 상점 지도 정보
@@ -415,31 +446,6 @@
 
               //$('.store-sensor-cont').append('<p>' + markImg[d[i].STATE][1] + ' ' + d[i].PANELNAME + ' >' + d[i].SNSRNICK + ' (' + d[i].SNSRID + ')</p>');
           }}
-        }
-
-        // 상점 이미지
-        if (d.img.length) {
-          $('.carousel-indicators').html('');
-          $('.carousel-inner').html('');
-
-          for (let i = 0; i < d.img.length; i++) {
-            $('.carousel-indicators').append('<li data-target="#carouselExampleIndicators" data-slide-to="' + i + '"></li>');
-
-            $('.carousel-inner').append(
-              '<div class="carousel-item bg-secondary" style="height: 200px;">' +
-              '<img class="d-block h-100 m-auto" src="http://1.223.40.19:30080/' + d.img[i].IMGPATH + d.img[i].IMGNAME + '" alt="' + d.img[i].ORINAME + '" data-holder-rendered="true">' +
-              '</div>'
-            );
-
-            if (i == 0)
-              $('.carousel-indicators li, .carousel-inner div').addClass('active');
-          }
-
-          $('.store-img').removeClass('d-none');
-        } else {
-          $('.carousel-indicators').html('');
-          $('.carousel-inner').html('');
-          $('.store-img').addClass('d-none');
         }
     });
   }

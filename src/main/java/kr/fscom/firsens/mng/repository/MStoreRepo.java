@@ -34,7 +34,6 @@ public interface MStoreRepo {
     // List<HashMap<String, Object>> SELECT_MST_LIST_MST_STORE_SENSOR(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> LIST_MST_STORE_SENSOR_DATA(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> LIST_MST_SENSOR_STATE(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> LIST_MST_STORE_IMG(Map<String, Object> param) throws Exception;
 
     List<HashMap<String, Object>> LIST_MST_DATA_LOG_TARGET(Map<String, Object> param) throws Exception;
     int CNT_DATA_LOG_TOTAL(Map<String, Object> param) throws Exception;
@@ -45,7 +44,7 @@ public interface MStoreRepo {
     List<HashMap<String, Object>> LIST_MST_LOG_3DAYS_STAT(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> LIST_MST_LOG_WEEK_STAT(Map<String, Object> param) throws Exception;
     float SELECT_MST_SENSOR_USEKWH_MONTH(Map<String, Object> param) throws Exception;
-    void INSERT_SENSOR_CHECK(Map<String, Object> param) throws Exception;
-    void UPDATE_SENSOR_CHECK(Map<String, Object> param) throws Exception;
+    void INSERT_MST_SENSOR_CHECK(Map<String, Object> param) throws Exception;
+    void UPDATE_MST_SENSOR_CHECK(Map<String, Object> param) throws Exception;
 
 }

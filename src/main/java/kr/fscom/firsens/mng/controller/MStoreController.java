@@ -108,7 +108,6 @@ public class MStoreController {
             prm.put("strcode", req.getParameter("strcode"));
 
             rtn.put("store", storeRepo.SELECT_MST_STORE_INFO(prm));
-            rtn.put("img", storeRepo.LIST_MST_STORE_IMG(prm));
             rtn.put("sensor", storeRepo.LIST_MST_SENSOR_STATE(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
@@ -444,7 +443,7 @@ public class MStoreController {
 
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
-            storeRepo.INSERT_SENSOR_CHECK(prm);
+            storeRepo.INSERT_MST_SENSOR_CHECK(prm);
             return "success";
         } catch (Exception e) {
             LOG.debug(e.getMessage());
@@ -468,7 +467,7 @@ public class MStoreController {
 
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
-            storeRepo.UPDATE_SENSOR_CHECK(prm);
+            storeRepo.UPDATE_MST_SENSOR_CHECK(prm);
             return "success";
         } catch (Exception e) {
             LOG.debug(e.getMessage());

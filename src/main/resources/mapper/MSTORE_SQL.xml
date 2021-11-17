@@ -31,12 +31,30 @@
 
     <select id="SELECT_MST_STORE_INFO" parameterType="map" resultType="map">
         SELECT
-            AREACODE, STRCODE, STRNAME, STRADDR, STRTEL, STROWNTEL, STRPOSLAT, STRPOSLON
+            A.AREACODE,
+            A.STRCODE,
+            A.STRNAME,
+            A.STRADDR,
+            A.STRTEL,
+            A.STROWNTEL,
+            A.STRPOSLAT,
+            A.STRPOSLON,
+            GROUP_CONCAT(B.SEQ ORDER BY B.SEQ) AS SEQ,
+            GROUP_CONCAT(B.STRCODE ORDER BY B.SEQ) AS STRCODE,
+            GROUP_CONCAT(B.IMGNAME ORDER BY B.SEQ) AS IMGNAME,
+            GROUP_CONCAT(B.IMGPATH ORDER BY B.SEQ) AS IMGPATH,
+            GROUP_CONCAT(B.IMGSIZE ORDER BY B.SEQ) AS IMGSIZE,
+            GROUP_CONCAT(B.IMGNUM ORDER BY B.SEQ) AS IMGNUM,
+            GROUP_CONCAT(B.ORINAME ORDER BY B.SEQ) AS ORINAME,
+            GROUP_CONCAT(DATE_FORMAT(B.REGDATE, '%Y-%m-%d %H:%i:%s') ORDER BY B.SEQ) AS REGDATE
         FROM
-            F_STORE
+            F_STORE A
+                LEFT JOIN (SELECT * FROM F_AREA_IMG WHERE IMGLEVEL = 'store') B
+                    ON A.AREACODE = B.AREACODE
+                    AND A.STRCODE = B.STRCODE
         WHERE
-            AREACODE = #{areacode}
-            AND STRCODE = #{strcode}
+            A.AREACODE = #{areacode}
+            AND A.STRCODE = #{strcode}
     </select>
 
     <select id="LIST_MST_STORE_INFO" parameterType="map" resultType="map">
@@ -217,26 +235,6 @@
             AND B.STRCODE = #{strcode}
         ORDER BY
             6 DESC, D.DATACNT DESC, A.PANELNAME, A.SNSRNICK
-    </select>
-
-    <select id="LIST_MST_STORE_IMG" parameterType="map" resultType="map">
-        SELECT
-            SEQ
-            , STRCODE
-            , IMGNAME
-            , IMGPATH
-            , IMGSIZE
-            , IMGNUM
-            , ORINAME
-            , REGDATE
-        FROM
-            F_AREA_IMG
-        WHERE
-            IMGLEVEL = 'store'
-            AND AREACODE = #{areacode}
-            AND STRCODE = #{strcode}
-        ORDER BY
-            SEQ DESC
     </select>
 
     <select id="LIST_MST_DATA_LOG_TARGET" parameterType="map" resultType="map">
@@ -516,7 +514,7 @@
             AND SNSRID = #{snsrid}
     </select>
 
-    <select id="SELECT_MST_LOG_3DAYS_STAT" parameterType="map" resultType="map">
+    <select id="LIST_MST_LOG_3DAYS_STAT" parameterType="map" resultType="map">
         SELECT
             DATE_FORMAT(A.DATETIME, '%m-%d') AS DATETIME
             , COALESCE(B.DANGER, 0) AS DANGER
@@ -545,42 +543,7 @@
             DATETIME
     </select>
 
-    <select id="SELECT_MST_LOG_WEEK_STAT" parameterType="map" resultType="map">
-<!--        SELECT A.SDATE-->
-<!--             , DAYOFWEEK(A.SDATE)                       AS WEEK-->
-<!--             , IFNULL(IFNULL(C.DANGER, B.DANGER), 0)    AS DANGER-->
-<!--             , IFNULL(IFNULL(C.WARN, B.WARN), 0)        AS WARN-->
-<!--          FROM ( SELECT DATE(NOW() - INTERVAL (A.A) DAY) AS SDATE-->
-<!--                   FROM ( SELECT 0 AS A UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4-->
-<!--                           UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9-->
-<!--                           UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 ) AS A ) A-->
-<!--                            LEFT JOIN ( SELECT SDATE-->
-<!--                                             , SUM(IGR2ND + IGO2ND + OC2ND) AS DANGER-->
-<!--                                             , SUM(IGR1ST + IGO1ST + OC1ST) AS WARN-->
-<!--                                          FROM F_ELEC_SENSOR_STAT-->
-<!--                                         WHERE AREACODE = #{areacode}-->
-<!--                                           AND STRCODE = #{strcode}-->
-<!--                                           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">-->
-<!--                                           AND SNSRID = #{snsrid}-->
-<!--                                           </if>-->
-<!--                                           AND SDATE > DATE(NOW() - INTERVAL -13 DAY)-->
-<!--                                         GROUP BY AREACODE, STRCODE ) B-->
-<!--                                ON A.SDATE = B.SDATE-->
-<!--                            LEFT JOIN ( SELECT DATE(A.REGDATE)                                                                      AS SDATE-->
-<!--                                             , SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGER-->
-<!--                                             , SUM(CASE WHEN INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARN-->
-<!--                                          FROM F_SENSOR_LOG A-->
-<!--                                                LEFT JOIN F_SENSOR_INFO B-->
-<!--                                                    ON A.SNSRID = B.SNSRID-->
-<!--                                         WHERE B.AREACODE = #{areacode}-->
-<!--                                           AND B.STRCODE = #{strcode}-->
-<!--                                           <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">-->
-<!--                                           AND B.SNSRID = #{snsrid}-->
-<!--                                           </if>-->
-<!--                                           AND A.REGDATE > NOW() - INTERVAL 13 DAY-->
-<!--                                         GROUP BY 1 ) C-->
-<!--                                ON A.SDATE = C.SDATE-->
-<!--         ORDER BY A.SDATE ASC-->
+    <select id="LIST_MST_LOG_WEEK_STAT" parameterType="map" resultType="map">
         SELECT
             DATE_FORMAT(A.DATETIME, '%m-%d') AS DATETIME
             , COALESCE(B.DANGER, 0) AS DANGER
@@ -609,12 +572,12 @@
             DATETIME
     </select>
 
-    <insert id="INSERT_SENSOR_CHECK" parameterType="map">
+    <insert id="INSERT_MST_SENSOR_CHECK" parameterType="map">
         INSERT INTO F_SENSOR_CHECK (CHECKSEQ, SNSRID, REGDATE, CHECKSTAT)
         VALUES (NULL, #{snsrid}, NOW(), 'ING')
     </insert>
 
-    <update id="UPDATE_SENSOR_CHECK" parameterType="map">
+    <update id="UPDATE_MST_SENSOR_CHECK" parameterType="map">
         UPDATE
             F_SENSOR_CHECK
         SET
