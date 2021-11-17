@@ -374,8 +374,7 @@ function fn_mm_initMainAreaList() {
       }}}
 
       fn_mm_loadMainAreaList();
-    }
-  );
+  });
 }
 
 function fn_mm_toggleCenterCont() {
@@ -423,24 +422,25 @@ function fn_mm_setMainArea(i, id) {
   $('#' + panel_id + ' .center-main-area-count-discon').text(window.area[window.areaIndex[i]].DISCON);
 
   if (typeof id === 'undefined') {
-    if ($('#' + panel_id).hasClass('panel-fullscreen') || $('#' + panel_id + ' .panel-container').hasClass('show')) {
-      $.post($('#contextRoot').val() + '/mng/mainAreaDataChartAjax', { areacode: i }, function (data) {
-        fn_mm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
-      });
-
-      $.post($('#contextRoot').val() + '/mng/mainAreaLogChartAjax', { areacode: i }, function (data) {
-        fn_mm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
+    if ($('#' + panel_id).hasClass('panel-fullscreen')
+        || $('#' + panel_id + ' .panel-container').hasClass('show')) {
+      $.post(
+        $('#contextRoot').val() + '/mng/mainAreaDataAndLogChartAjax',
+        { areacode: i },
+        function (resu) {
+          fn_mm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
+          fn_mm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
       });
     }
   } else {
     if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
         || $('#' + panel_id + ' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
-      $.post($('#contextRoot').val() + '/mng/mainAreaDataChartAjax', { areacode: i }, function (data) {
-        fn_mm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
-      });
-
-      $.post($('#contextRoot').val() + '/mng/mainAreaLogChartAjax', { areacode: i }, function (data) {
-        fn_mm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
+      $.post(
+        $('#contextRoot').val() + '/mng/mainAreaDataAndLogChartAjax',
+        { areacode: i },
+        function (resu) {
+          fn_mm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
+          fn_mm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
       });
   }}
 }
@@ -499,7 +499,6 @@ function fn_mm_setChart(title, target, data, colors) {
   }
 }
 
-
 function fn_mm_getMainAreaWeek() {
   window.week_category = ['일', '월', '화', '수', '목', '금', '토'];
   let show_panel = $('.center-main-cont .panel-fullscreen .panel-container');
@@ -507,12 +506,12 @@ function fn_mm_getMainAreaWeek() {
   for (let i = 0; i < show_panel.length; i++) {
     let idx = $(show_panel[i]).attr('data-id').replace('panel-','');
 
-    $.post($('#contextRoot').val() + '/mng/mainAreaDataChartWeekAjax', { areacode: idx }, function (data) {
-      fn_mm_setChartWeek('전력사용량 현황', '#panel-' + idx + ' .center-main-data-chart-week', data, ['#99ccff','#003399']);
-    });
-
-    $.post($('#contextRoot').val() + '/mng/mainAreaLogChartWeekAjax', { areacode: idx }, function (data) {
-      fn_mm_setChartWeek('경보 발생 현황', '#panel-' + idx + ' .center-main-log-chart-week', data, ['#ff9966','#cc3300']);
+    $.post(
+      $('#contextRoot').val() + '/mng/mainAreaDataAndLogChartWeekAjax',
+      { areacode: idx },
+      function (resu) {
+        fn_mm_setChartWeek('경보 발생 현황', '#panel-' + idx + ' .center-main-log-chart-week', resu.log, ['#ff9966','#cc3300']);
+        fn_mm_setChartWeek('전력사용량 현황', '#panel-' + idx + ' .center-main-data-chart-week', resu.data, ['#99ccff','#003399']);
     });
   }
 }

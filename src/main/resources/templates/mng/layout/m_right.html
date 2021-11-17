@@ -16,7 +16,7 @@
 </div><!-- /.row -->
 
 <script type="text/javascript">
-$(function() {
+$(function () {
   fn_mlr_initRight();
 });
 
@@ -28,7 +28,7 @@ function fn_mlr_initRight() {
     '</p>'
   );
 
-  $('.list-sensor').on('click', 'p', function() {
+  $('.list-sensor').on('click', 'p', function () {
     fn_mm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
   });
 
@@ -40,15 +40,18 @@ function fn_mlr_refreshRight() {
 }
 
 function fn_mlr_getRightSensorList() {
-  $.post($('#contextRoot').val() + '/mng/sensorListAjax', {}, function(d) {
-    $('.list-sensor').html('');
+  $.post(
+    $('#contextRoot').val() + '/mng/sensorListAjax',
+    {},
+    function (d) {
+      $('.list-sensor').html('');
 
-    for (let i = 0; i < d.length; i++)
-      $('.sensors-' + d[i].STATE + ' .list-sensor').append($.tmpl('right-sensor', d[i]));
+      for (let i = 0; i < d.length; i++)
+        $('.sensors-' + d[i].STATE + ' .list-sensor').append($.tmpl('right-sensor', d[i]));
 
-    $('.sensors-DANGER .cnt').text('(' + $('.sensors-DANGER .list-sensor p').length + ')');
-    $('.sensors-WARN .cnt').text('(' + $('.sensors-WARN .list-sensor p').length + ')');
-    $('.sensors-BROKEN .cnt').text('(' + $('.sensors-BROKEN .list-sensor p').length + ')');
+      $('.sensors-DANGER .cnt').text('(' + $('.sensors-DANGER .list-sensor p').length + ')');
+      $('.sensors-WARN .cnt').text('(' + $('.sensors-WARN .list-sensor p').length + ')');
+      $('.sensors-BROKEN .cnt').text('(' + $('.sensors-BROKEN .list-sensor p').length + ')');
   });
 }
 </script>

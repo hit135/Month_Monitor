@@ -11,12 +11,12 @@
     <div class="sensors-CHECK" style="border: 1px solid #6c757d; margin: 15px;">
       <h3 class="bg-secondary"><i class="fal fa-sensor-alert"></i> 점검 <span class="cnt"></span></h3>
       <div class="left-list-sensor"></div>
-    </div>
+    </div><!-- /.sensors-CHECK -->
   </div><!-- /.col-12 -->
 </div><!-- /.row -->
 
 <script type="text/javascript">
-$(function() {
+$(function () {
   fn_mll_initLeft();
 });
 
@@ -35,13 +35,14 @@ function fn_mll_initLeft() {
     '</p>'
   );
 
-  $('.left').on('click', '.area-lv2', function() {
+  $('.left').on('click', '.area-lv2', function () {
     $('.left .area-lv2.on').removeClass('on');
     $(this).addClass('on');
+
     fn_mm_clickAreaLv2($(this).attr('data-code'));
   });
 
-  $('.left-list-sensor').on('click','p',function() {
+  $('.left-list-sensor').on('click', 'p', function () {
     fn_mm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
   });
 
@@ -57,14 +58,17 @@ function fn_mll_refreshLeft() {
 function fn_mll_getAreaList() {
   window.left_area_lv2_on_code = $('.left .area-lv2.on').attr('data-code');
 
-  $.post($('#contextRoot').val() + '/mng/areaListAjax', {}, function(d) {
-    $('.list-area').html('');
+  $.post(
+    $('#contextRoot').val() + '/mng/areaListAjax',
+    {},
+    function (d) {
+      $('.list-area').html('');
 
-    for (let i = 0; i < d.length; i++)
-      if (d[i].LEVEL == 1)
-        $('.list-area').append($.tmpl('left-area', d[i]));
-       else
-        $('.list-area p[data-code="' + d[i].UPCODE + '"]').after($.tmpl('left-area', d[i]));
+      for (let i = 0; i < d.length; i++)
+        if (d[i].LEVEL == 1)
+          $('.list-area').append($.tmpl('left-area', d[i]));
+        else
+          $('.list-area p[data-code="' + d[i].UPCODE + '"]').after($.tmpl('left-area', d[i]));
   });
 }
 
@@ -72,7 +76,7 @@ function fn_mll_getCheckSensorList() {
   $.post(
     $('#contextRoot').val() + '/mng/checkSensorListAjax',
     {},
-    function(d) {
+    function (d) {
       $('.left-list-sensor').html('');
 
       for (let i = 0; i < d.length; i++)

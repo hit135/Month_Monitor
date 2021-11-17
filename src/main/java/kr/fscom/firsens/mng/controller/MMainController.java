@@ -285,6 +285,7 @@ public class MMainController {
      * @Method 설명 : 시장별 어제와 오늘 데이터 추이
      * @return List<HashMap<String, Object>>
      */
+    /*
     @RequestMapping(value = "/mainAreaDataChartAjax")
     @ResponseBody
     public List<HashMap<String, Object>> mainAreaDataChartAjax(HttpServletRequest req) throws Exception {
@@ -301,6 +302,7 @@ public class MMainController {
 
         return null;
     }
+    */
 
     /**
      * @Method Name : mainAreaLogChartAjax
@@ -310,6 +312,7 @@ public class MMainController {
      * @Method 설명 : 시장별 어제와 오늘 경보 발생 추이
      * @return List<HashMap<String, Object>>
      */
+    /*
     @RequestMapping(value = "/mainAreaLogChartAjax")
     @ResponseBody
     public List<HashMap<String, Object>> mainAreaLogChartAjax(HttpServletRequest req) throws Exception {
@@ -326,6 +329,61 @@ public class MMainController {
 
         return null;
     }
+    */
+
+    /**
+     * @Method Name : mainAreaDataChartAjax
+     * @작성일 : 2021-07-29
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장별 어제와 오늘 데이터 추이
+     * @return List<HashMap<String, Object>>
+     */
+    /*
+    @RequestMapping(value = "/mainAreaDataChartAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> mainAreaDataChartAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
+
+            return mainRepo.SELECT_MAIN_AREA_DATA_CHART(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+    */
+
+    /**
+     * @Method Name : mainAreaDataAndLogChartAjax
+     * @작성일 : 2021-11-17
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 시장별 어제와 오늘 데이터 및 경보 발생 추이
+     * @return HashMap<String, Object>
+     */
+    @RequestMapping(value = "/mainAreaDataAndLogChartAjax")
+    @ResponseBody
+    public HashMap<String, Object> mainAreaDataAndLogChartAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+
+        try {
+            HashMap<String, Object> prm = new HashMap<>();
+            prm.put("areacode", req.getParameter("areacode"));
+            prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
+
+            rtn.put("log", mainRepo.SELECT_MAIN_AREA_LOG_CHART(prm));
+            rtn.put("data", mainRepo.SELECT_MAIN_AREA_DATA_CHART(prm));
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return rtn;
+    }
 
     /**
      * @Method Name : mainAreaDataChartWeekAjax
@@ -335,6 +393,7 @@ public class MMainController {
      * @Method 설명 : 시장별 주간 데이터 추이
      * @return List<HashMap<String, Object>>
      */
+    /*
     @RequestMapping(value = "/mainAreaDataChartWeekAjax")
     @ResponseBody
     public List<HashMap<String, Object>> mainAreaDataChartWeekAjax(HttpServletRequest req) throws Exception {
@@ -349,6 +408,7 @@ public class MMainController {
 
         return null;
     }
+    */
 
     /**
      * @Method Name : mainAreaLogChartWeekAjax
@@ -358,6 +418,7 @@ public class MMainController {
      * @Method 설명 : 시장별 주간 이벤트 경보 발생 추이
      * @return List<HashMap<String, Object>>
      */
+    /*
     @RequestMapping(value = "/mainAreaLogChartWeekAjax")
     @ResponseBody
     public List<HashMap<String,Object>> mainAreaLogChartWeekAjax(HttpServletRequest req) throws Exception {
@@ -371,6 +432,33 @@ public class MMainController {
         }
 
         return null;
+    }
+    */
+
+    /**
+     * @Method Name : mainAreaDataAndLogChartWeekAjax
+     * @작성일 : 2021-11-17
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 시장별 주간 데이터 및 이벤트 경보 발생 추이
+     * @return HashMap<String, Object>
+     */
+    @RequestMapping(value = "/mainAreaDataAndLogChartWeekAjax")
+    @ResponseBody
+    public HashMap<String,Object> mainAreaDataAndLogChartWeekAjax(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+
+        try {
+            HashMap<String, Object> prm = new HashMap<>();
+            prm.put("areacode", req.getParameter("areacode"));
+
+            rtn.put("log", mainRepo.SELECT_MAIN_AREA_LOG_CHART_WEEK(prm));
+            rtn.put("data", mainRepo.SELECT_MAIN_AREA_DATA_CHART_WEEK(prm));
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return rtn;
     }
 
     /**
