@@ -27,35 +27,43 @@ import java.util.List;
  * @see <pre>
  * << 개정이력(Modification Information) >>
  *
- *   수정일                수정자            수정내용
+ *   수정일        수정자     수정내용
  *   -----------   --------   ---------------------------
- *   2021-07-06   jjm       최초 생성
+ *   2021-07-06    jjm        최초 생성
  *
  * </pre>
  * @since : 2021-07-06
  */
+
 @RestController
 @RequestMapping("/mng")
 public class MMainController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MMainController.class);
     private final MMainRepo mainRepo;
-
-    @Value("${globals.naver.clientId}")
-    private String naverClientId;
-
+    
     @Autowired
     public MMainController(MMainRepo repo) {
         this.mainRepo = repo;
     }
 
+    @Value("${globals.naver.clientId}")
+    private String naverClientId;
+    
+    /**
+     * @Method Name : main
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 메인 화면 이동
+     * @return ModelAndView
+     */
     @RequestMapping(value = "/main")
     public ModelAndView main(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_main");
 
         try {
-            String naverMap = "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization";
-            mav.addObject("naverMap", naverMap);
+            mav.addObject("naverMap", "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization");
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -63,6 +71,14 @@ public class MMainController {
         return mav;
     }
 
+    /**
+     * @Method Name : mainArea
+     * @작성일 : 2021-07-29
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장별 동적 화면
+     * @return ModelAndView
+     */
     @RequestMapping(value = "/mainArea")
     public ModelAndView mainArea(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/m_main_area");
@@ -80,9 +96,17 @@ public class MMainController {
         return mav;
     }
 
+    /**
+     * @Method Name : sensorCountAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 오늘 센서 현황 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/sensorCountAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> sensorCountAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> sensorCountAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -94,9 +118,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : areaListAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 구별, 시장별 센서 현황 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/areaListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> areaListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> areaListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -108,9 +140,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : sensorListAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상태이상 센서 목록 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/sensorListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> sensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> sensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -122,9 +162,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : areaSensorCountAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장별 센서 현황 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/areaSensorCountAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> areaSensorCountAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> areaSensorCountAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -137,9 +185,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : areaStoreListAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장 내 상점별 센서 현황 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/areaStoreListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> areaStoreListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> areaStoreListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -152,6 +208,14 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : areaSensorListAjax
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장-상점 내 센서 현황 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/areaSensorListAjax")
     @ResponseBody
     public List<HashMap<String,Object>> areaSensorListAjax(HttpServletRequest req) throws Exception {
@@ -168,9 +232,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : storeSearchAjax
+     * @작성일 : 2021-07-15
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상점 검색 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/storeSearchAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> storeSearchAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> storeSearchAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -183,9 +255,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : checkSensorListAjax
+     * @작성일 : 2021-07-15
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 점검내역 조회
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/checkSensorListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> checkSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> checkSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -197,9 +277,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : mainAreaDataChartAjax
+     * @작성일 : 2021-07-29
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장별 어제와 오늘 데이터 추이
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/mainAreaDataChartAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaDataChartAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mainAreaDataChartAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -214,9 +302,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : mainAreaLogChartAjax
+     * @작성일 : 2021-07-29
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장별 어제와 오늘 경보 발생 추이
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/mainAreaLogChartAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaLogChartAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mainAreaLogChartAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -231,9 +327,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : mainAreaDataChartWeekAjax
+     * @작성일 : 2021-07-29
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장별 주간 데이터 추이
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/mainAreaDataChartWeekAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaDataChartWeekAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mainAreaDataChartWeekAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -246,6 +350,14 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : mainAreaLogChartWeekAjax
+     * @작성일 : 2021-07-29
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장별 주간 이벤트 경보 발생 추이
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/mainAreaLogChartWeekAjax")
     @ResponseBody
     public List<HashMap<String,Object>> mainAreaLogChartWeekAjax(HttpServletRequest req) throws Exception {
@@ -261,9 +373,17 @@ public class MMainController {
         return null;
     }
 
+    /**
+     * @Method Name : mainAreaMapSensorListAjax
+     * @작성일 : 2021-07-29
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 시장별 지도 정보
+     * @return List<HashMap<String, Object>>
+     */
     @RequestMapping(value = "/mainAreaMapSensorListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaMapSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mainAreaMapSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {

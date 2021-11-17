@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
 <th:block th:replace="mng/layout/m_head"></th:block>
 <link rel="stylesheet" th:href="@{/fs/css/custom.css}" />
@@ -8,9 +9,12 @@
 <body class="mod-bg-1 mod-nav-link">
 <div class="top">
   <th:block th:replace="mng/layout/m_top"></th:block>
-</div>
+</div><!-- /.top -->
+
 <div class="row">
-  <div class="left col-md-2 mt-md-n7 col-12 mt-0"><th:block th:replace="mng/layout/m_left"></th:block></div>
+  <div class="left col-md-2 mt-md-n7 col-12 mt-0">
+    <th:block th:replace="mng/layout/m_left"></th:block>
+  </div>
   <div class="center col-md-8 col-12">
     <div id="center-main-cont" class="center-main-cont">
       <div class="row">
@@ -25,17 +29,13 @@
           경고<span class="danger" style="color: #e082ae;"></span> |
           주의<span class="warn" style="color: #dbc969;"></span> |
           끊김<span class="discon" style="color: #dddddd;"></span>
-        </div>
+        </div><!-- /.area-stat col-8 -->
       </div><!-- /.row -->
       <div class="row">
         <div class="center-left col-md-3 col-12">
-          <div class="row">
-            <div class="col-12">
-              <div class="center-left-sensor-list"></div>
-            </div>
-          </div><!-- /.row -->
+          <div class="center-left-sensor-list"></div>
         </div><!-- /.col-md-3 -->
-        <div class="col-md-9 center-cont col-12">
+        <div class="center-cont col-md-9 col-12">
           <div class="row center-cont-top">
             <div class="store-name col-4"></div>
             <div class="cont-btn col-8">
@@ -43,8 +43,8 @@
               <span class="center-cont-top-btn" data-page="Log">경보이력</span>
               <span class="center-cont-top-btn" data-page="Chart">분석차트</span>
               <span class="center-main-btn">Main Page</span>
-            </div>
-          </div>
+            </div><!-- /.col-8 -->
+          </div><!-- /.row -->
           <div class="row center-cont-page"></div>
         </div><!-- /.col-md-9 -->
       </div><!-- /.row -->
@@ -53,61 +53,61 @@
   <div class="right col-md-2 mt-md-n7 col-12 mt-0">
     <th:block th:replace="mng/layout/m_right"></th:block>
   </div>
-
-  <div class="modal fade default-example-modal-left-sm" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-left modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title h4">Firsens 관리자 메뉴</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true"><i class="fal fa-times"></i></span>
-          </button>
-        </div><!-- /.modal-header -->
-        <div class="modal-body">
-          <nav id="js-primary-nav" class="primary-nav" role="navigation">
-            <ul id="js-nav-menu" class="nav-menu">
-              <li>
-                <a href="javascript:movePageAdm('area')">
-                  <i class="fal fa-home"></i><span class="nav-link-text" data-i18n="nav.application_intel">구역관리</span>
-                </a>
-                <a href="javascript:movePageAdm('mem')">
-                  <i class="fal fa-user"></i><span class="nav-link-text" data-i18n="nav.application_intel">회원관리</span>
-                </a>
-                <a href="javascript:movePageAdm('str')">
-                  <i class="fal fa-store"></i><span class="nav-link-text" data-i18n="nav.application_intel">상점관리</span>
-                </a>
-                <a href="javascript:movePageAdm('snsr')">
-                  <i class="fal fa-siren"></i><span class="nav-link-text" data-i18n="nav.application_intel">센서관리</span>
-                </a>
-                <a href="javascript:movePageAdm('inspr')">
-                  <i class="fal fa-user"></i><span class="nav-link-text" data-i18n="nav.application_intel">점검자관리</span>
-                </a>
-                <a href="javascript:movePageAdm('insp')">
-                  <i class="fal fa-list"></i><span class="nav-link-text" data-i18n="nav.application_intel">점검관리</span>
-                </a>
-                <a href="javascript:movePageAdm('push')">
-                  <i class="fal fa-bell"></i><span class="nav-link-text" data-i18n="nav.application_intel">발송이력</span>
-                </a>
-                <a href="javascript:movePageAdm('stat')">
-                  <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">보고서</span>
-                </a>
-                <a href="javascript:void(0);" onclick="fn_logout()">
-                  <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">로그아웃</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div><!-- /.modal-body -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal-dialog -->
 </div><!-- /.row -->
 <div class="bottom">
   <th:block th:replace="mng/layout/m_bottom"></th:block>
 </div>
+
+<div class="modal fade default-example-modal-left-sm" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-left modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4">Firsens 관리자 메뉴</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fal fa-times"></i></span>
+        </button>
+      </div><!-- /.modal-header -->
+      <div class="modal-body">
+        <nav id="js-primary-nav" class="primary-nav" role="navigation">
+          <ul id="js-nav-menu" class="nav-menu">
+            <li>
+              <a href="javascript:movePageAdm('area')">
+                <i class="fal fa-home"></i><span class="nav-link-text" data-i18n="nav.application_intel">구역관리</span>
+              </a>
+              <a href="javascript:movePageAdm('mem')">
+                <i class="fal fa-user"></i><span class="nav-link-text" data-i18n="nav.application_intel">회원관리</span>
+              </a>
+              <a href="javascript:movePageAdm('str')">
+                <i class="fal fa-store"></i><span class="nav-link-text" data-i18n="nav.application_intel">상점관리</span>
+              </a>
+              <a href="javascript:movePageAdm('snsr')">
+                <i class="fal fa-siren"></i><span class="nav-link-text" data-i18n="nav.application_intel">센서관리</span>
+              </a>
+              <a href="javascript:movePageAdm('inspr')">
+                <i class="fal fa-user"></i><span class="nav-link-text" data-i18n="nav.application_intel">점검자관리</span>
+              </a>
+              <a href="javascript:movePageAdm('insp')">
+                <i class="fal fa-list"></i><span class="nav-link-text" data-i18n="nav.application_intel">점검관리</span>
+              </a>
+              <a href="javascript:movePageAdm('push')">
+                <i class="fal fa-bell"></i><span class="nav-link-text" data-i18n="nav.application_intel">발송이력</span>
+              </a>
+              <a href="javascript:movePageAdm('stat')">
+                <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">보고서</span>
+              </a>
+              <a href="javascript:void(0);" onclick="fn_logout()">
+                <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">로그아웃</span>
+              </a>
+            </li>
+          </ul><!-- /#js-nav-menu -->
+        </nav><!-- /#js-primary-nav -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal-dialog -->
 
 <script th:src="@{/fs/js/polyfill.min.js}"></script>
 <script th:src="@{/fs/js/apexcharts.js}"></script>
@@ -115,166 +115,170 @@
 <script type="text/javascript" th:src="${naverMap}"></script>
 
 <script type="text/javascript">
-  $(function() {
-    fn_init();
+$(function () {
+  fn_init();
+});
+
+function fn_init() {
+  $.template(
+    'center-left-store',
+    '<p class="{{html STATE}}" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-strname="{{html STRNAME}}">' +
+      '({{html SNSRCOUNT}}) {{html STRNAME}} <span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span>' +
+    '</p>'
+  );
+
+  fn_initMainAreaList();
+
+  $('.center-left-sensor-list').on('click', 'p', function () {
+    $('.center-left-sensor-list p.on').removeClass('on');
+    $(this).addClass('on');
+
+    $('.center-cont-top .store-name').text($(this).attr('data-strname'));
+    fn_clickContPage();
   });
 
-  function fn_init() {
-    $.template(
-      'center-left-store',
-      '<p class="{{html STATE}}" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-strname="{{html STRNAME}}">' +
-        '({{html SNSRCOUNT}}) {{html STRNAME}} <span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span>' +
-      '</p>'
-    );
+  $('.center-cont-top').on('click', '.center-cont-top-btn', function () {
+    $('.center-cont-top-btn.on').removeClass('on');
+    $(this).addClass('on');
 
-    fn_initMainAreaList();
+    fn_clickContPage();
+  });
 
-    $('.center-left-sensor-list').on('click', 'p', function() {
-      $('.center-left-sensor-list p.on').removeClass('on');
+  $('.center-cont-page').on('click', '.btn-chart', function () {
+    $('.center-cont-top-btn.on').removeClass('on');
+    $('.center-cont-top-btn[data-page="Chart"]').addClass('on');
+
+    fn_clickContPage({
+      areacode: $('#prm_areacode').val(),
+      strcode: $('#prm_strcode').val(),
+      snsrid: $(this).attr('data-snsrid'),
+      regdate: $(this).attr('data-regdate'),
+      almtype: $(this).attr('data-almtype')
+    });
+  });
+
+  $('.center-cont-page').on('click', '.btn-datalog', function () {
+    $('.center-cont-top-btn.on').removeClass('on');
+    $('.center-cont-top-btn[data-page="Log"]').addClass('on');
+
+    fn_clickContPage({
+      areacode: $('#prm_areacode').val(),
+      strcode: $('#prm_strcode').val(),
+      snsrid: $(this).attr('data-snsrid'),
+      regdate: $(this).attr('data-regdate'),
+      checktype: $(this).attr('data-checktype')
+    });
+  });
+
+  $('.center-main-btn').on('click', function () {
+    window.center_name = 'main';
+    fn_toggleCenterCont();
+  });
+
+  $('.center-main-cont').on('click', '.js-panel-collapse', function () {
+    let id = '#' + $(this).attr('data-id');
+
+    if ($(this).hasClass('on')) {
+      $(this).removeClass('on');
+      $(id + ' .panel-container').removeClass('show');
+    } else {
       $(this).addClass('on');
+      $(id + ' .panel-container').addClass('show');
 
-      $('.center-cont-top .store-name').text($(this).attr('data-strname'));
-      fn_clickContPage();
-    });
+      fn_updateMainAreaList(id);
+    }
+  });
 
-    $('.center-cont-top').on('click', '.center-cont-top-btn', function() {
-      $('.center-cont-top-btn.on').removeClass('on');
+  $('.center-main-cont').on('click', '.js-panel-fullscreen', function () {
+    let id = '#' + $(this).attr('data-id');
+
+    if ($(this).hasClass('on')) {
+      $(this).removeClass('on');
+      $(id).removeClass('panel-fullscreen');
+    } else {
       $(this).addClass('on');
+      $(id).addClass('panel-fullscreen');
 
-      fn_clickContPage();
-    });
-
-    $('.center-cont-page').on('click', '.btn-chart', function() {
-      $('.center-cont-top-btn.on').removeClass('on');
-      $('.center-cont-top-btn[data-page="Chart"]').addClass('on');
-
-      fn_clickContPage({
-         areacode: $('#prm_areacode').val()
-       , strcode: $('#prm_strcode').val()
-       , snsrid: $(this).attr('data-snsrid')
-       , regdate: $(this).attr('data-regdate')
-       , almtype: $(this).attr('data-almtype')
-      });
-    });
-
-    $('.center-cont-page').on('click', '.btn-datalog', function() {
-      $('.center-cont-top-btn.on').removeClass('on');
-      $('.center-cont-top-btn[data-page="Log"]').addClass('on');
-
-      fn_clickContPage({
-         areacode: $('#prm_areacode').val()
-       , strcode: $('#prm_strcode').val()
-       , snsrid: $(this).attr('data-snsrid')
-       , regdate: $(this).attr('data-regdate')
-       , checktype: $(this).attr('data-checktype')
-      });
-    });
-
-    $('.center-main-btn').on('click', function() {
-      window.center_name = 'main';
-      fn_toggleCenterCont();
-    });
-
-    $('.center-main-cont').on('click', '.js-panel-collapse', function() {
-      let id = '#' + $(this).attr('data-id');
-
-      if ($(this).hasClass('on')) {
-        $(this).removeClass('on');
-        $(id + ' .panel-container').removeClass('show');
-      } else {
-        $(this).addClass('on');
-        $(id + ' .panel-container').addClass('show');
-
-        fn_updateMainAreaList(id);
-      }
-    });
-
-    $('.center-main-cont').on('click', '.js-panel-fullscreen', function() {
-      let id = '#' + $(this).attr('data-id');
-
-      if ($(this).hasClass('on')) {
-        $(this).removeClass('on');
-        $(id).removeClass('panel-fullscreen');
-      } else {
-        $(this).addClass('on');
-        $(id).addClass('panel-fullscreen');
-
-        fn_updateMainAreaList();
-        fn_getMainAreaWeek();
-      }
-    });
-
-    $('.center-main-cont').on('click', '.center-main-cont-top-btn', function() {
-      $('.panel.panel-fullscreen .center-main-cont-top-btn.on').removeClass('on');
-      $(this).addClass('on');
-
-      fn_tapCenterMainPage();
-    });
-  }
-
-  let refreshTime = window.setInterval(function() {
-    let date = new Date();
-    let mins = date.getMinutes();
-
-    if (mins === 2 || mins === 12 || mins === 22 || mins === 32 || mins === 42 || mins === 52)
-      fn_refresh();
-  }, 60 * 1000);
-
-  function fn_refresh() {
-    fn_refreshTop();
-    fn_refreshLeft();
-    fn_refreshRight();
-
-    if (window.center_name == 'main') {
       fn_updateMainAreaList();
       fn_getMainAreaWeek();
-    } else {
-      fn_refreshStoreInfo();
-      setTimeout(function() { fn_onAreaLv2(window.left_area_lv2_on_code); }, 800);
     }
+  });
+
+  $('.center-main-cont').on('click', '.center-main-cont-top-btn', function () {
+    $('.panel.panel-fullscreen .center-main-cont-top-btn.on').removeClass('on');
+    $(this).addClass('on');
+
+    fn_tapCenterMainPage();
+  });
+}
+
+let refreshTime = window.setInterval(function () {
+  if (new Date().getMinutes() % 10 === 2)
+    fn_refresh();
+}, 60 * 1000);
+
+function fn_refresh() {
+  fn_refreshTop();
+  fn_refreshLeft();
+  fn_refreshRight();
+
+  if (window.center_name == 'main') {
+    fn_updateMainAreaList();
+    fn_getMainAreaWeek();
+  } else {
+    fn_refreshStoreInfo();
+    setTimeout(function () { fn_onAreaLv2(window.left_area_lv2_on_code); }, 800);
   }
+}
 
-  function fn_clickAreaLv2(code) {
-    window.center_name = 'store';
+function fn_clickAreaLv2(code) {
+  window.center_name = 'store';
 
-    fn_toggleCenterCont();
+  fn_toggleCenterCont();
+  fn_getAreaSensorCount(code);
+  fn_getAreaStoreList(code);
+}
+
+function fn_onAreaLv2(code, strcode, snsrid) {
+  if (code) {
+    $('.left .area-lv2').removeClass('on');
+    $('.left .area-lv2[data-code="' + code + '"]').addClass('on');
+
     fn_getAreaSensorCount(code);
-    fn_getAreaStoreList(code);
+    fn_getAreaStoreList(code, strcode, snsrid);
   }
+}
 
-  function fn_onAreaLv2(code, strcode, snsrid) {
-    if (code) {
-      $('.left .area-lv2').removeClass('on');
-      $('.left .area-lv2[data-code="' + code + '"]').addClass('on');
+function fn_clickRightSensor(code, strcode, snsrid) {
+  window.center_name = 'store';
 
-      fn_getAreaSensorCount(code);
-      fn_getAreaStoreList(code, strcode, snsrid);
-    }
-  }
+  fn_toggleCenterCont();
+  fn_onAreaLv2(code, strcode, snsrid);
+}
 
-  function fn_clickRightSensor(code, strcode, snsrid) {
-    window.center_name = 'store';
-
-    fn_toggleCenterCont();
-    fn_onAreaLv2(code, strcode, snsrid);
-  }
-
-  function fn_getAreaSensorCount(code) {
-    $.post($('#contextRoot').val() + '/mng/areaSensorCountAjax', { areacode: code }, function(d) {
+function fn_getAreaSensorCount(code) {
+  $.post(
+    $('#contextRoot').val() + '/mng/areaSensorCountAjax',
+    { areacode: code },
+    function (d) {
       $('.center .area-name').text(d[0].AREANAME);
+
       $('.center .area-stat .total').text(d[0].TOTAL);
       $('.center .area-stat .danger').text(d[0].DANGER);
       $('.center .area-stat .warn').text(d[0].WARN);
       $('.center .area-stat .discon').text(d[0].DISCON);
-    });
-  }
+  });
+}
 
-  function fn_getAreaStoreList(code, strcode, snsrid) {
-    let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
-    if (strcode) 
-      on_strcode = strcode;
+function fn_getAreaStoreList(code, strcode, snsrid) {
+  let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
+  if (strcode)
+    on_strcode = strcode;
 
-    $.post($('#contextRoot').val() + '/mng/areaStoreListAjax', { areacode: code }, function(d) {
+  $.post(
+    $('#contextRoot').val() + '/mng/areaStoreListAjax',
+    { areacode: code },
+    function (d) {
       $('.center-left-sensor-list').html('');
 
       for (let i = 0; i < d.length; i++) {
@@ -295,46 +299,44 @@
       }
 
       let on_obj = $('.center-left-sensor-list p[data-strcode="' + on_strcode + '"]')[0];
-      if (!on_obj) 
+      if (!on_obj)
         on_obj = $('.center-left-sensor-list p')[0];
 
       $(on_obj).addClass('on');
       $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
 
-      if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode')) 
-        if (snsrid) 
-          fn_clickContPage({ snsrid: snsrid });
-        else 
-          fn_clickContPage();
-    });
-  }
+      if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode'))
+        fn_clickContPage(snsrid ? { snsrid: snsrid } : null);
+  });
+}
 
-  function fn_clickContPage(p) {
-    let prm = {};
-    prm.areacode = $('.center-left-sensor-list p.on').attr('data-areacode');
-    prm.strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
+function fn_clickContPage(p) {
+  let prm = (p) ?
+    p : { areacode: $('.center-left-sensor-list p.on').attr('data-areacode'),
+          strcode: $('.center-left-sensor-list p.on').attr('data-strcode') };
 
-    if (p)
-      prm = p;
-
-    let page = $('.center-cont-top-btn.on').attr('data-page');
-
-    $.post($('#contextRoot').val() + '/mng/store' + page, prm, function(d) {
+  $.post(
+    $('#contextRoot').val() + '/mng/store' + $('.center-cont-top-btn.on').attr('data-page'),
+    prm,
+    function (d) {
       let $temp = $('<div>');
       $temp.html(d);
 
       $('.center-cont-page').html($temp.find('.sub-cont'));
-    });
-  }
+  });
+}
 
-  function fn_initMainAreaList() {
-    window.min_category = [];
+function fn_initMainAreaList() {
+  window.min_category = [];
 
-    for (let i = 0; i < 24; i++) 
-      for (let j = 0; j < 6; j++) 
-        window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
+  for (let i = 0; i < 24; i++)
+    for (let j = 0; j < 6; j++)
+      window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
 
-    $.post($('#contextRoot').val() + '/mng/areaListAjax', {}, function(d) {
+  $.post(
+    $('#contextRoot').val() + '/mng/areaListAjax',
+    {},
+    function (d) {
       $('.center-main-cont .sortable-grid').html('');
 
       if (d) {
@@ -348,322 +350,316 @@
             window.areaIndex[d[i].CODE] = i;
 
             $.post(
-                $('#contextRoot').val() + '/mng/mainArea'
-              , { panel_index: 'panel-' + d[i].CODE, areacode: d[i].CODE }
-              , function(cont) {
-                  let $temp = $('<div>');
-                  $temp.html(cont);
+              $('#contextRoot').val() + '/mng/mainArea',
+              { panel_index: 'panel-' + d[i].CODE, areacode: d[i].CODE },
+              function (cont) {
+                let $temp = $('<div>');
+                $temp.html(cont);
 
-                  $('.center-main-cont .sortable-grid').append($temp.find('.sub-cont').html());
+                $('.center-main-cont .sortable-grid').append($temp.find('.sub-cont').html());
 
-                  if (window.lv1cnt == $('.center-main-cont .panel').length) {
-                    $('#center-main-cont').smartPanel({ localStorage: true });
+                if (window.lv1cnt == $('.center-main-cont .panel').length) {
+                  $('#center-main-cont').smartPanel({ localStorage: true });
 
-                    $($('.center-main-cont .js-panel-collapse')[0]).addClass("on");
-                    $($('.center-main-cont .panel-container')[0]).addClass('show');
-                    $($('.center-main-cont .js-panel-collapse')[1]).addClass("on");
-                    $($('.center-main-cont .panel-container')[1]).addClass('show');
-                  }
-
-                  window.center_name = 'main';
-                  fn_toggleCenterCont();
+                  $($('.center-main-cont .js-panel-collapse')[0]).addClass("on");
+                  $($('.center-main-cont .panel-container')[0]).addClass('show');
+                  $($('.center-main-cont .js-panel-collapse')[1]).addClass("on");
+                  $($('.center-main-cont .panel-container')[1]).addClass('show');
                 }
+
+                window.center_name = 'main';
+                fn_toggleCenterCont();
+              }
             );
       }}}
 
       fn_loadMainAreaList();
-    });
-  }
-
-  function fn_toggleCenterCont() {
-    if (window.center_name == 'main') {
-      $('.center-main-cont').show();
-      $('.center-store-cont').hide();
-    } else {
-      $('.center-main-cont').hide();
-      $('.center-store-cont').show();
     }
-  }
+  );
+}
 
-  function fn_loadMainAreaList() {
-    fn_updateMainAreaList();
+function fn_toggleCenterCont() {
+  if (window.center_name == 'main') {
+    $('.center-main-cont').show();
+    $('.center-store-cont').hide();
+  } else {
+    $('.center-main-cont').hide();
+    $('.center-store-cont').show();
   }
+}
 
-  function fn_updateMainAreaList(id) {
-    $.post($('#contextRoot').val() + '/mng/areaListAjax', {}, function(d) {
+function fn_loadMainAreaList() {
+  fn_updateMainAreaList();
+}
+
+function fn_updateMainAreaList(id) {
+  $.post(
+    $('#contextRoot').val() + '/mng/areaListAjax',
+    {},
+    function (d) {
       if (d) {
         window.area = d;
         window.areaIndex = {};
 
-        for (let i = d.length - 1; i >= 0; i--) 
-          if (d[i].LEVEL != 1) 
+        for (let i = d.length - 1; i >= 0; i--)
+          if (d[i].LEVEL != 1)
             window.areaIndex[d[i].CODE] = i;
 
         let show_panel = $('.center-main-cont .panel-container');
 
-        for (let i = 0; i < show_panel.length; i++) 
+        for (let i = 0; i < show_panel.length; i++)
           fn_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
-      }
+  }});
+}
+
+function fn_setMainArea(i, id) {
+  let panel_id = 'panel-' + i;
+
+  $('#' + panel_id + ' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
+  $('#' + panel_id + ' .center-main-area-count-store').text(window.area[window.areaIndex[i]].STORE);
+  $('#' + panel_id + ' .center-main-area-count-sensor').text(window.area[window.areaIndex[i]].SENSOR);
+  $('#' + panel_id + ' .center-main-area-count-danger').text(window.area[window.areaIndex[i]].DANGER);
+  $('#' + panel_id + ' .center-main-area-count-warn').text(window.area[window.areaIndex[i]].WARN);
+  $('#' + panel_id + ' .center-main-area-count-discon').text(window.area[window.areaIndex[i]].DISCON);
+
+  if (typeof id === 'undefined') {
+    if ($('#' + panel_id).hasClass('panel-fullscreen') || $('#' + panel_id + ' .panel-container').hasClass('show')) {
+      $.post($('#contextRoot').val() + '/mng/mainAreaDataChartAjax', { areacode: i }, function (data) {
+        fn_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
+      });
+
+      $.post($('#contextRoot').val() + '/mng/mainAreaLogChartAjax', { areacode: i }, function (data) {
+        fn_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
+      });
+    }
+  } else {
+    if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
+        || $('#' + panel_id + ' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
+      $.post($('#contextRoot').val() + '/mng/mainAreaDataChartAjax', { areacode: i }, function (data) {
+        fn_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
+      });
+
+      $.post($('#contextRoot').val() + '/mng/mainAreaLogChartAjax', { areacode: i }, function (data) {
+        fn_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
+      });
+  }}
+}
+
+function fn_setChart(title, target, data, colors) {
+  let opt = {
+    series: [],
+    chart: { height: 250, type: 'line', id: target, animations: { enabled: false } },
+    title: { text: title, align: 'left' },
+    colors: colors,
+    stroke: { width: 2 },
+    dataLabels: { enabled: false },
+    tooltip: {
+      enabled: true,
+      marker: { show: true },
+      fixed: { enabled: true, position: 'topLeft' },
+      y: { formatter: function (val) { return (val) ? val.toFixed(0) : null; } }
+    },
+    xaxis: { categories: window.min_category, tickAmount: 11, labels: { rotate: 0 } },
+    yaxis: {
+      lines: { show: true },
+      tooltip: { enabled: true },
+      labels: { formatter: function (val) { return (val) ? val.toFixed(0) : null; } }
+    },
+    legend: { position: 'top' }
+  };
+
+  let series = [{ name: '어제', data: [] }, { name:'오늘', data: [] }];
+  let j = 0;
+  let now_time = fn_dateToString(new Date()).slice(11, 15) + '0';
+
+  for (let i = 0; i < window.min_category.length; i++)
+    if (j < data.length && data[j].TYPE == '1' && data[j].RCVTIME == window.min_category[i])
+      series[0].data.push(data[j++].CNT);
+    else if (window.min_category[i])
+      series[0].data.push(0);
+
+  for (let i = 0; i < window.min_category.length; i++)
+    if (j < data.length - 1 && data[j].RCVTIME == window.min_category[i])
+      series[1].data.push(data[j++].CNT);
+    else if (window.min_category[i] < now_time)
+      series[1].data.push(0);
+
+  opt.markers = { size: 0, hover: { size: 0 } };
+
+  let target_id = target.replace(/ /g,'-');
+  if (window['chart-' + target_id]) {
+    window['chart-' + target_id].updateOptions(opt);
+    window['chart-' + target_id].updateSeries(series);
+  } else {
+    opt.series = series;
+    $(target).html('');
+
+    window['chart-' + target_id] = new ApexCharts(document.querySelector(target), opt);
+    window['chart-' + target_id].render().then(function () {});
+  }
+}
+
+
+function fn_getMainAreaWeek() {
+  window.week_category = ['일', '월', '화', '수', '목', '금', '토'];
+  let show_panel = $('.center-main-cont .panel-fullscreen .panel-container');
+
+  for (let i = 0; i < show_panel.length; i++) {
+    let idx = $(show_panel[i]).attr('data-id').replace('panel-','');
+
+    $.post($('#contextRoot').val() + '/mng/mainAreaDataChartWeekAjax', { areacode: idx }, function (data) {
+      fn_setChartWeek('전력사용량 현황', '#panel-' + idx + ' .center-main-data-chart-week', data, ['#99ccff','#003399']);
+    });
+
+    $.post($('#contextRoot').val() + '/mng/mainAreaLogChartWeekAjax', { areacode: idx }, function (data) {
+      fn_setChartWeek('경보 발생 현황', '#panel-' + idx + ' .center-main-log-chart-week', data, ['#ff9966','#cc3300']);
     });
   }
+}
 
-  function fn_setMainArea(i, id) {
-    let panel_id = 'panel-' + i;
+function fn_setChartWeek(title, target, data, colors) {
+  let opt = {
+    series: [],
+    chart: { height: 250, type: 'bar', id: target, animations: { enabled: false } },
+    title: { text: title, align: 'left' },
+    colors: colors,
+    annotations: {
+      points: [{
+        x: window.week_category[new Date().getDay()],
+        seriesIndex: 1,
+        label: { borderColor: '#775DD0', textAnchor: 'start', offsetY:-15, offsetX: 10, style: { color: '#ddd', background: '#775DD0' }, text: '오늘' },
+        marker: { size: 0 }
+      }]
+    },
+    plotOptions: { bar: { horizontal: false, borderRadius: 10, dataLabels: { position: 'bottom' } } },
+    dataLabels: {
+      enabled: true,
+      style: { colors: ['#fff'] },
+      dropShadow: { enabled: true },
+      formatter: function (val) { return (val) ? val.toFixed(0) : 0; }
+    },
+    tooltip: {
+      enabled: true,
+      marker: { show: true },
+      fixed: { enabled: true, position: 'topLeft' },
+      y: { formatter: function (val) { return (val) ? val.toFixed(0) : 0; } }
+    },
+    xaxis: { categories: window.week_category, tickAmount: 11, labels: { rotate: 0 } },
+    yaxis: {
+      lines: { show: true },
+      tooltip: { enabled: true },
+      labels: { formatter: function (val) { return (val) ? val.toFixed(0) : 0; } }
+    },
+    legend: { position: 'top' }
+  };
 
-    $('#' + panel_id + ' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
-    $('#' + panel_id + ' .center-main-area-count-store').text(window.area[window.areaIndex[i]].STORE);
-    $('#' + panel_id + ' .center-main-area-count-sensor').text(window.area[window.areaIndex[i]].SENSOR);
-    $('#' + panel_id + ' .center-main-area-count-danger').text(window.area[window.areaIndex[i]].DANGER);
-    $('#' + panel_id + ' .center-main-area-count-warn').text(window.area[window.areaIndex[i]].WARN);
-    $('#' + panel_id + ' .center-main-area-count-discon').text(window.area[window.areaIndex[i]].DISCON);
+  let series = [{ name: '저번주', data: [] }, { name: '이번주', data: [] }];
+  let j = 0;
 
-    if (typeof id === 'undefined') {
-      if ($('#' + panel_id).hasClass('panel-fullscreen') || $('#' + panel_id + ' .panel-container').hasClass('show')) {
-        $.post($('#contextRoot').val() + '/mng/mainAreaDataChartAjax', { areacode: i }, function(data) {
-          fn_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
-        });
+  for (let i = 0; i < window.week_category.length; i++)
+    if (j < data.length && (i + 1) == data[j].WEEK)
+      series[0].data.push(data[j++].CNT);
+    else
+      series[0].data.push(0);
 
-        $.post($('#contextRoot').val() + '/mng/mainAreaLogChartAjax', { areacode: i }, function(data) {
-          fn_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
-        });
-      }
-    } else {
-      if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
-          || $('#' + panel_id + ' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
-        $.post($('#contextRoot').val() + '/mng/mainAreaDataChartAjax', { areacode: i }, function(data) {
-          fn_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', data, ['#99ccff','#003399']);
-        });
+  for (let i = 0; i < window.week_category.length; i++)
+    if (j < data.length && (i + 1) == data[j].WEEK)
+      series[1].data.push(data[j++].CNT);
+    else
+      series[1].data.push(0);
 
-        $.post($('#contextRoot').val() + '/mng/mainAreaLogChartAjax', { areacode:i }, function(data) {
-          fn_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', data, ['#ff9966','#cc3300']);
-        });
-    }}
+  opt.markers = { size: 0, hover: { size: 0 } };
+
+  let target_id = target.replace(/ /g,'-');
+  if (window['chart-' + target_id]) {
+    // window['chart-'+target_id].updateOptions(opt);
+    window['chart-' + target_id].updateSeries(series);
+  } else {
+    opt.series = series;
+    $(target).html('');
+
+    window['chart-' + target_id] = new ApexCharts(document.querySelector(target), opt);
+    window['chart-' + target_id].render().then(function () {});
+  }
+}
+
+function fn_tapCenterMainPage() {
+  let page_name = $('.panel.panel-fullscreen .center-main-cont-top-btn.on').attr('data-page');
+  $('.panel.panel-fullscreen [class^=center-main-page]').removeClass('on');
+  $('.panel.panel-fullscreen .center-main-page-' + page_name).addClass('on');
+
+  if (page_name == 'chart') {
+    fn_updateMainAreaList();
+    fn_getMainAreaWeek();
   }
 
-  function fn_setChart(title, target, data, colors) {
-    let opt = {
-        series: []
-      , chart: { height: 250, type: 'line', id: target, animations: { enabled: false } }
-      , title: { text: title, align: 'left' }
-      , colors: colors
-      , stroke: { width: 2 }
-      , dataLabels: { enabled: false }
-      , tooltip: {
-            enabled: true
-          , marker: { show: true }
-          , fixed: { enabled: true, position: 'topLeft' }
-          , y: { formatter: function(val) { return (val) ? val.toFixed(0) : null; }}
+  if (page_name == 'map') {
+    fn_getMainAreaMap();
+  }
+}
+
+function fn_getMainAreaMap() {
+  let show_panel = $('.center-main-cont .panel-fullscreen .panel-container .center-main-page-map.on');
+
+  for (let i = 0; i < show_panel.length; i++) {
+    let idx = $(show_panel[i]).attr('data-id').replace('panel-','');
+
+    $.post($('#contextRoot').val() + '/mng/mainAreaMapSensorListAjax', { areacode: idx }, function (data) {
+      fn_setMapMarker('#panel-' + idx + ' .center-main-page-map', data);
+    });
+  }
+}
+
+function fn_setMapMarker(target, data) {
+  let target_id = target.replace(/ /g,'-');
+
+  let mark = {
+    normal: ['/fs/img/map/normal.png', 1],
+    discon: ['/fs/img/map/disconnection.png', 0],
+    danger: ['/fs/img/map/danger.png', 3],
+    warning: ['/fs/img/map/warning.png', 2],
+    select: ['/fs/img/map/select.png', 4]
+  };
+
+  if (!window['map-' + target_id]) {
+    window['map-' + target_id] = new naver.maps.Map($(target)[0], { center: new naver.maps.LatLng(33.450701, 126.570667), zoom: 19 });
+    window['map-' + target_id].marker = [];
+  }
+
+  for (let i = 0; i < window['map-' + target_id].marker.length; i++)
+    window['map-' + target_id].marker[i].setMap(null);
+
+  if (data.length > 0) {
+    for (let i = 0; i < data.length; i++) {
+      let pos = new naver.maps.LatLng(data[i].STRPOSLAT, data[i].STRPOSLON);
+
+      if (i == 0)
+        window['map-' + target_id].setCenter(pos);
+
+      window['map-' + target_id].marker.push(new naver.maps.Marker({
+        map: window['map-' + target_id],
+        title: data[i].STRNAME + ' > ' + data[i].SNSRNICK,
+        position: pos,
+        zIndex: mark[data[i].STATE][1],
+        icon: {
+          url: $('#contextRoot').val() + mark[data[i].STATE][0],
+          size: new naver.maps.Size(26, 35),
+          scaledSize: new naver.maps.Size(26, 35),
+          origin: new naver.maps.Point(0, 0),
+          anchor: new naver.maps.Point(13, 35)
         }
-      , xaxis: { categories: window.min_category, tickAmount: 11, labels: { rotate: 0 } }
-      , yaxis: {
-            lines: { show: true }
-          , tooltip: { enabled: true }
-          , labels: { formatter: function(val) { return (val) ? val.toFixed(0) : null; }}
-        }
-      , legend: { position: 'top' }
-    };
+      }));
+  }}
+}
 
-    let series = [{ name: '어제', data: [] }, { name:'오늘', data: [] }];
-    let j = 0;
-    let now_time = fn_dateToString(new Date()).slice(11, 15) + '0';
+function movePageAdm(type) {
+  location.href = ((location.hostname === "localhost") ? "http://localhost:3000/#/" : "http://1.223.40.19:30081/adm#/") + type;
+  // http://1.223.40.19:30081/adm#/area
+}
 
-    for (let i = 0; i < window.min_category.length; i++) 
-      if (j < data.length && data[j].TYPE == '1' && data[j].RCVTIME == window.min_category[i]) 
-        series[0].data.push(data[j++].CNT);
-      else if (window.min_category[i]) 
-        series[0].data.push(0);
-
-    for (let i = 0; i < window.min_category.length; i++) 
-      if (j < data.length - 1 && data[j].RCVTIME == window.min_category[i]) 
-        series[1].data.push(data[j++].CNT);
-      else if (window.min_category[i] < now_time) 
-        series[1].data.push(0);
-
-    opt.markers = { size: 0, hover: { size: 0 } };
-
-    let target_id = target.replace(/ /g,'-');
-    if (window['chart-' + target_id]) {
-      window['chart-' + target_id].updateOptions(opt);
-      window['chart-' + target_id].updateSeries(series);
-    } else {
-      opt.series = series;
-      $(target).html('');
-
-      window['chart-' + target_id] = new ApexCharts(document.querySelector(target), opt);
-      window['chart-' + target_id].render().then(function() {});
-    }
-  }
-
-  function fn_getMainAreaWeek() {
-    window.week_category = ['일', '월', '화', '수', '목', '금', '토'];
-    let show_panel = $('.center-main-cont .panel-fullscreen .panel-container');
-
-    for (let i = 0; i < show_panel.length; i++) {
-      let idx = $(show_panel[i]).attr('data-id').replace('panel-','');
-
-      $.post($('#contextRoot').val() + '/mng/mainAreaDataChartWeekAjax', { areacode: idx }, function(data) {
-        fn_setChartWeek('전력사용량 현황', '#panel-' + idx + ' .center-main-data-chart-week', data, ['#99ccff','#003399']);
-      });
-
-      $.post($('#contextRoot').val() + '/mng/mainAreaLogChartWeekAjax', { areacode: idx }, function(data) {
-        fn_setChartWeek('경보 발생 현황', '#panel-' + idx + ' .center-main-log-chart-week', data, ['#ff9966','#cc3300']);
-      });
-    }
-  }
-
-  function fn_setChartWeek(title, target, data, colors) {
-    let opt = {
-        series: []
-      , chart: { height: 250, type: 'bar', id: target, animations: { enabled: false } }
-      , title: { text: title, align: 'left' }
-      , colors: colors
-      , annotations: {
-          points: [{
-              x: window.week_category[new Date().getDay()]
-            , seriesIndex: 1
-            , label: {
-                borderColor: '#775DD0', textAnchor: 'start', offsetY:-15, offsetX: 10, style: { color: '#ddd', background: '#775DD0' }, text: '오늘'
-              }
-            , marker: { size: 0 }
-          }]
-        }
-      , plotOptions: { bar: { horizontal: false, borderRadius: 10, dataLabels: { position: 'bottom' } } }
-      , dataLabels: {
-            enabled: true
-          , style: { colors:['#fff'] }
-          , dropShadow: { enabled: true }
-          , formatter: function(val) { return (val) ? val.toFixed(0) : 0; }
-        }
-      , tooltip: {
-            enabled: true
-          , marker: { show: true }
-          , fixed: { enabled: true, position: 'topLeft' }
-          , y: { formatter: function(val) { return (val) ? val.toFixed(0) : 0; }}
-        }
-      , xaxis: { categories: window.week_category, tickAmount: 11, labels: { rotate: 0 } }
-      , yaxis: {
-            lines: { show: true }
-          , tooltip: { enabled: true }
-          , labels: { formatter: function (val) { return (val) ? val.toFixed(0) : 0; }}
-        }
-      , legend: { position: 'top' }
-    };
-
-    let series = [{ name: '저번주', data: [] }, { name: '이번주', data: [] }];
-    let j = 0;
-
-    for (let i = 0; i < window.week_category.length; i++) 
-      if (j < data.length && (i + 1) == data[j].WEEK) 
-        series[0].data.push(data[j++].CNT);
-      else 
-        series[0].data.push(0);
-
-    for (let i = 0; i < window.week_category.length; i++) 
-      if (j < data.length && (i + 1) == data[j].WEEK) 
-        series[1].data.push(data[j++].CNT);
-      else 
-        series[1].data.push(0);
-
-    opt.markers = { size: 0, hover: { size: 0 } };
-
-    let target_id = target.replace(/ /g,'-');
-    if (window['chart-' + target_id]) {
-      //window['chart-'+target_id].updateOptions(opt);
-      window['chart-' + target_id].updateSeries(series);
-    } else {
-      opt.series = series;
-      $(target).html('');
-
-      window['chart-' + target_id] = new ApexCharts(document.querySelector(target), opt);
-      window['chart-' + target_id].render().then(function() {});
-    }
-  }
-
-  function fn_tapCenterMainPage() {
-    let page_name = $('.panel.panel-fullscreen .center-main-cont-top-btn.on').attr('data-page');
-    $('.panel.panel-fullscreen [class^=center-main-page]').removeClass('on');
-    $('.panel.panel-fullscreen .center-main-page-' + page_name).addClass('on');
-
-    if (page_name == 'chart') {
-      fn_updateMainAreaList();
-      fn_getMainAreaWeek();
-    }
-
-    if (page_name == 'map') {
-      fn_getMainAreaMap();
-    }
-  }
-
-  function fn_getMainAreaMap() {
-    let show_panel = $('.center-main-cont .panel-fullscreen .panel-container .center-main-page-map.on');
-
-    for (let i = 0; i < show_panel.length; i++) {
-      let idx = $(show_panel[i]).attr('data-id').replace('panel-','');
-
-      $.post($('#contextRoot').val() + '/mng/mainAreaMapSensorListAjax', { areacode: idx }, function(data) {
-        fn_setMapMarker('#panel-' + idx + ' .center-main-page-map', data);
-      });
-    }
-  }
-
-  function fn_setMapMarker(target, data) {
-    let target_id = target.replace(/ /g,'-');
-
-    let mark = {
-        normal: ['/fs/img/map/normal.png', 1]
-      , discon: ['/fs/img/map/disconnection.png', 0]
-      , danger: ['/fs/img/map/danger.png', 3]
-      , warning: ['/fs/img/map/warning.png', 2]
-      , select: ['/fs/img/map/select.png', 4]
-    };
-
-    if (!window['map-' + target_id]) {
-      let options = { center: new naver.maps.LatLng(33.450701, 126.570667), zoom: 19 };
-      window['map-' + target_id] = new naver.maps.Map($(target)[0], options);
-      window['map-' + target_id].marker = [];
-    }
-
-    for (let i = 0; i < window['map-' + target_id].marker.length; i++) 
-      window['map-' + target_id].marker[i].setMap(null);
-
-    if (data.length > 0) {
-      for (let i = 0; i < data.length; i++) {
-        let pos = new naver.maps.LatLng(data[i].STRPOSLAT, data[i].STRPOSLON);
-
-        if (i == 0) 
-          window['map-' + target_id].setCenter(pos);
-
-        window['map-' + target_id].marker.push(new naver.maps.Marker({
-            map: window['map-' + target_id]
-          , title: data[i].STRNAME + ' > ' + data[i].SNSRNICK
-          , position: pos
-          , zIndex: mark[data[i].STATE][1]
-          , icon: {
-                url: $('#contextRoot').val()+mark[data[i].STATE][0]
-              , size: new naver.maps.Size(26, 35)
-              , scaledSize: new naver.maps.Size(26, 35)
-              , origin: new naver.maps.Point(0, 0)
-              , anchor: new naver.maps.Point(13, 35)
-          }
-        }));
-    }}
-  }
-
-  function movePageAdm(type) {
-    let path = "";
-
-    if (location.hostname === "localhost") 
-      path = "http://localhost:3000/#/";
-    else                                   
-      path = "http://1.223.40.19:30081/adm#/";
-
-    location.href = path + type;
-    // http://1.223.40.19:30081/adm#/area
-  }
-
-  function fn_logout() {
-    location.href = $('#contextRoot').val() + '/mng/logout';
-  }
+function fn_logout() {
+  location.href = $('#contextRoot').val() + '/mng/logout';
+}
 </script>
 </body>
 </html>
