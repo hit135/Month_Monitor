@@ -1,7 +1,7 @@
-package kr.fscom.firsens.mng.controller;
+package kr.fscom.firsens.mng.challenge.controller;
 
 import kr.fscom.firsens.common.paging.PaginationInfo;
-import kr.fscom.firsens.mng.repository.MStoreRepo;
+import kr.fscom.firsens.mng.challenge.repository.MCStoreRepo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,21 +39,21 @@ import org.thymeleaf.util.StringUtils;
 
 @RestController
 @RequestMapping("/mng")
-public class MStoreController {
+public class MCStoreController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MStoreController.class);
-    private final MStoreRepo storeRepo;
+    private static final Logger LOG = LoggerFactory.getLogger(MCStoreController.class);
+    private final MCStoreRepo mcStoreRepo;
 
     @Autowired
-    public MStoreController(MStoreRepo repo) {
-        this.storeRepo = repo;
+    public MCStoreController(MCStoreRepo mcStoreRepo) {
+        this.mcStoreRepo = mcStoreRepo;
     }
 
     @Value("${globals.naver.clientId}")
     private String naverClientId;
     
     /**
-     * @Method Name : storeInfo
+     * @Method Name : mcstStoreInfo
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -61,8 +61,8 @@ public class MStoreController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/storeInfo")
-    public ModelAndView storeInfo(HttpServletRequest req) throws Exception {
-        ModelAndView mav = new ModelAndView("mng/m_store_info");
+    public ModelAndView mcstStoreInfo(HttpServletRequest req) throws Exception {
+        ModelAndView mav = new ModelAndView("mng/challenge/mc_store_info");
 
         try {
             String areacode = req.getParameter("areacode");
@@ -90,7 +90,7 @@ public class MStoreController {
     }
 
     /**
-     * @Method Name : storeInfo
+     * @Method Name : mcstStoreInfoAjax
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -99,7 +99,7 @@ public class MStoreController {
      */
     @RequestMapping(value = "/storeInfoAjax")
     @ResponseBody
-    public HashMap<String, Object> storeInfoAjax(HttpServletRequest req) throws Exception {
+    public HashMap<String, Object> mcstStoreInfoAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
@@ -107,8 +107,8 @@ public class MStoreController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
 
-            rtn.put("store", storeRepo.SELECT_MST_STORE_INFO(prm));
-            rtn.put("sensor", storeRepo.LIST_MST_SENSOR_STATE(prm));
+            rtn.put("store", mcStoreRepo.SELECT_MCST_STORE_INFO(prm));
+            rtn.put("sensor", mcStoreRepo.LIST_MCST_SENSOR_STATE(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -117,7 +117,7 @@ public class MStoreController {
     }
 
     /**
-     * @Method Name : storeLog
+     * @Method Name : mcstStoreLog
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -125,8 +125,8 @@ public class MStoreController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/storeLog")
-    public ModelAndView storeLog(HttpServletRequest req) throws Exception {
-        ModelAndView mav = new ModelAndView("mng/m_store_log");
+    public ModelAndView mcstStoreLog(HttpServletRequest req) throws Exception {
+        ModelAndView mav = new ModelAndView("mng/challenge/mc_store_log");
 
         try {
             String areacode = req.getParameter("areacode");
@@ -152,7 +152,7 @@ public class MStoreController {
     }
 
     /**
-     * @Method Name : storeChart
+     * @Method Name : mcstStoreChart
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -160,8 +160,8 @@ public class MStoreController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/storeChart")
-    public ModelAndView storeChart(HttpServletRequest req) throws Exception {
-        ModelAndView mav = new ModelAndView("mng/m_store_chart");
+    public ModelAndView mcstStoreChart(HttpServletRequest req) throws Exception {
+        ModelAndView mav = new ModelAndView("mng/challenge/mc_store_chart");
 
         try {
             String areacode = req.getParameter("areacode");
@@ -207,7 +207,7 @@ public class MStoreController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
 
-            return storeRepo.SELECT_MST_LIST_MST_STORE_SENSOR(prm);
+            return mcStoreRepo.SELECT_MCST_LIST_MCST_STORE_SENSOR(prm);
         } catch (Exception e) {
             System.out.print(e.getMessage());
             LOG.debug(e.getMessage());
@@ -218,7 +218,7 @@ public class MStoreController {
     */
 
     /**
-     * @Method Name : listStoreSensorData
+     * @Method Name : mcstListStoreSensorData
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -227,7 +227,7 @@ public class MStoreController {
      */
     @RequestMapping(value = "/listStoreSensorData")
     @ResponseBody
-    public List<HashMap<String, Object>> listStoreSensorData(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcstListStoreSensorData(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -249,7 +249,7 @@ public class MStoreController {
 
             prm.put("regdt", regdt);
 
-            HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
+            HashMap<String, Object> tbl_info = mcStoreRepo.SELECT_MCST_EVENT_TABLE_INFO(prm);
             prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
             prm.put("termtype", termtype);
             prm.put("datatype", datatype);
@@ -259,7 +259,7 @@ public class MStoreController {
             prm.put("snsrid", snsrid);
             prm.put("dtsize", dtsize);
 
-            return storeRepo.LIST_MST_STORE_SENSOR_DATA(prm);
+            return mcStoreRepo.LIST_MCST_STORE_SENSOR_DATA(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -268,7 +268,7 @@ public class MStoreController {
     }
 
     /**
-     * @Method Name : dataLogListAjax
+     * @Method Name : mcstDataLogListAjax
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -277,7 +277,7 @@ public class MStoreController {
      */
     @RequestMapping(value = "/dataLogListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> dataLogListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcstDataLogListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -288,7 +288,7 @@ public class MStoreController {
             if (!StringUtils.isEmpty(regdt)) {
                 prm.put("regdt", regdt);
 
-                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
+                HashMap<String, Object> tbl_info = mcStoreRepo.SELECT_MCST_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
                 prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
             }
@@ -298,7 +298,7 @@ public class MStoreController {
             prm.put("snsrid", req.getParameter("snsrid"));
             prm.put("regdt", req.getParameter("regdt"));
 
-            return storeRepo.LIST_MST_DATA_LOG(prm);
+            return mcStoreRepo.LIST_MCST_DATA_LOG(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -307,7 +307,7 @@ public class MStoreController {
     }
 
     /**
-     * @Method Name : logWeekStatAjax
+     * @Method Name : mcstSensorUsekwhMonthAjax
      * @작성일 : 2021-07-13
      * @작성자 : uhm
      * @변경이력 :
@@ -316,7 +316,7 @@ public class MStoreController {
      */
     @RequestMapping(value = "/sensorUsekwhMonthAjax")
     @ResponseBody
-    public float sensorUsekwhMonthAjax(HttpServletRequest req) throws Exception {
+    public float mcstSensorUsekwhMonthAjax(HttpServletRequest req) throws Exception {
         try {
             String regdt = req.getParameter("regdt");
             HashMap<String, Object> prm = new HashMap<>();
@@ -326,14 +326,14 @@ public class MStoreController {
             if (!StringUtils.isEmpty(regdt)) {
                 prm.put("regdt", regdt);
 
-                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
+                HashMap<String, Object> tbl_info = mcStoreRepo.SELECT_MCST_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
                 prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
             }
 
             prm.put("snsrid", req.getParameter("snsrid"));
 
-            return storeRepo.SELECT_MST_SENSOR_USEKWH_MONTH(prm);
+            return mcStoreRepo.SELECT_MCST_SENSOR_USEKWH_MONTH(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -342,7 +342,7 @@ public class MStoreController {
     }
 
     /**
-     * @Method Name : dataLogList2Ajax
+     * @Method Name : mcstDataLogList2Ajax
      * @작성일 : 2021-10-14
      * @작성자 : uhm
      * @변경이력 :
@@ -351,7 +351,7 @@ public class MStoreController {
      */
     @RequestMapping(value = "/dataLogList2Ajax", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @ResponseBody
-    public HashMap<String, Object> dataLogList2Ajax(HttpServletRequest req, @RequestParam HashMap<String, Object> paramMap) throws Exception {
+    public HashMap<String, Object> mcstDataLogList2Ajax(HttpServletRequest req, @RequestParam HashMap<String, Object> paramMap) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         boolean result = false;
@@ -372,20 +372,20 @@ public class MStoreController {
             pagingPrm.put("currentPageNo", Integer.parseInt((String) paramMap.get("pageindex")));
 
             if ("check-total".equals(paramMap.get("type"))) {
-                resultCnt = storeRepo.CNT_DATA_LOG_TOTAL(param);
+                resultCnt = mcStoreRepo.CNT_DATA_LOG_TOTAL(param);
                 if (resultCnt > 0) {
                     pagingPrm.put("totalRecordCount", resultCnt);
                     rtn.put("pInfo", new PaginationInfo().getPaginationInfo(pagingPrm));
 
-                    resultList = storeRepo.LIST_MST_DATA_LOG_TOTAL(param);
+                    resultList = mcStoreRepo.LIST_MCST_DATA_LOG_TOTAL(param);
                 }
             } else {
-                resultCnt = storeRepo.CNT_DATA_LOG_EVENT(param);
+                resultCnt = mcStoreRepo.CNT_DATA_LOG_EVENT(param);
                 if (resultCnt > 0) {
                     pagingPrm.put("totalRecordCount", resultCnt);
                     rtn.put("pInfo", new PaginationInfo().getPaginationInfo(pagingPrm));
 
-                    resultList = storeRepo.LIST_MST_DATA_LOG_EVENT(param);
+                    resultList = mcStoreRepo.LIST_MCST_DATA_LOG_EVENT(param);
                 }
             }
 
@@ -402,7 +402,7 @@ public class MStoreController {
     }
 
     /**
-     * @Method Name : logStatAjax
+     * @Method Name : mcstLog3daysAndWeekStatAjax
      * @작성일 : 2021-10-14
      * @작성자 : uhm
      * @변경이력 :
@@ -411,7 +411,7 @@ public class MStoreController {
      */
     @RequestMapping(value = "/logStatAjax")
     @ResponseBody
-    public HashMap<String, Object> log3daysAndWeekStatAjax(HttpServletRequest req) throws Exception {
+    public HashMap<String, Object> mcstLog3daysAndWeekStatAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
@@ -420,8 +420,8 @@ public class MStoreController {
             prm.put("strcode", req.getParameter("strcode"));
             prm.put("snsrid", req.getParameter("snsrid"));
 
-            rtn.put("threedays", storeRepo.LIST_MST_LOG_3DAYS_STAT(prm));
-            rtn.put("week", storeRepo.LIST_MST_LOG_WEEK_STAT(prm));
+            rtn.put("threedays", mcStoreRepo.LIST_MCST_LOG_3DAYS_STAT(prm));
+            rtn.put("week", mcStoreRepo.LIST_MCST_LOG_WEEK_STAT(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -430,7 +430,7 @@ public class MStoreController {
     }
 
     /**
-     * @Method Name : startCheckAjax
+     * @Method Name : mcstStartCheckAjax
      * @작성일 : 2021-07-15
      * @작성자 : jjm
      * @변경이력 :
@@ -439,12 +439,12 @@ public class MStoreController {
      */
     @RequestMapping(value = "/startCheckAjax")
     @ResponseBody
-    public String startCheckAjax(HttpServletRequest req) throws Exception {
+    public String mcstStartCheckAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
-            storeRepo.INSERT_MST_SENSOR_CHECK(prm);
+            mcStoreRepo.INSERT_MCST_SENSOR_CHECK(prm);
             return "success";
         } catch (Exception e) {
             LOG.debug(e.getMessage());
@@ -454,7 +454,7 @@ public class MStoreController {
     }
 
     /**
-     * @Method Name : endCheckAjax
+     * @Method Name : mcstEndCheckAjax
      * @작성일 : 2021-07-15
      * @작성자 : jjm
      * @변경이력 :
@@ -463,12 +463,12 @@ public class MStoreController {
      */
     @RequestMapping(value = "/endCheckAjax")
     @ResponseBody
-    public String endCheckAjax(HttpServletRequest req) throws Exception {
+    public String mcstEndCheckAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
-            storeRepo.UPDATE_MST_SENSOR_CHECK(prm);
+            mcStoreRepo.UPDATE_MCST_SENSOR_CHECK(prm);
             return "success";
         } catch (Exception e) {
             LOG.debug(e.getMessage());
@@ -486,7 +486,7 @@ public class MStoreController {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("snsrid", snsrid);
 
-            List<HashMap<String, Object>> store = storeRepo.LIST_MST_STORE_INFO(prm);
+            List<HashMap<String, Object>> store = mcStoreRepo.LIST_MCST_STORE_INFO(prm);
             ret[0] = (String) store.get(0).get("AREACODE");
             ret[1] = (String) store.get(0).get("STRCODE");
         } catch (Exception e) {
@@ -503,7 +503,7 @@ public class MStoreController {
             prm.put("areacode", areacode);
             prm.put("strcode", strcode);
 
-            List<HashMap<String, Object>> sensor = storeRepo.LIST_MST_SENSOR_EVT_CNT(prm);
+            List<HashMap<String, Object>> sensor = mcStoreRepo.LIST_MCST_SENSOR_EVT_CNT(prm);
             return (String) sensor.get(0).get("SNSRID");
         } catch (Exception e) {
             LOG.debug(e.getMessage());

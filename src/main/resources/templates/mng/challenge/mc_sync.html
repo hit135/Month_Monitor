@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
-<th:block th:replace="mng/layout/m_head"></th:block>
+<th:block th:replace="mng/challenge/layout/mc_head"></th:block>
 
 <style>
 .sync-data-cnt p { margin: 5px; border-bottom: 1px solid #ddd; }
@@ -42,10 +42,10 @@
 
 <script type="text/javascript">
   $(function() {
-    fn_msy_init();
+    fn_mcsy_init();
   });
 
-  function fn_msy_init() {
+  function fn_mcsy_init() {
     $.template(
       'data-cnt',
       '<p>' +
@@ -65,22 +65,22 @@
       '</p>'
     );
 
-    $('#regdt').on('change', fn_msy_getDataCntList);
+    $('#regdt').on('change', fn_mcsy_getDataCntList);
 
     $('.sync-data-cnt-list').on('click', '.btn-data-cnt', function () {
-      fn_msy_getSensorDataCntList($(this).attr('data-regdt'));
+      fn_mcsy_getSensorDataCntList($(this).attr('data-regdt'));
     });
 
     $('.sync-sensor-data-cnt-list').on('click', '.btn-sensor-data-cnt', function () {
-      fn_msy_requestSync($(this).attr('data-snsrid'), $(this).attr('data-regdt'));
+      fn_mcsy_requestSync($(this).attr('data-snsrid'), $(this).attr('data-regdt'));
     });
 
-    $('#regdt').val(fn_msy_dateToString(new Date()).slice(0, 7));
+    $('#regdt').val(fn_mcsy_dateToString(new Date()).slice(0, 7));
 
-    fn_msy_getDataCntList();
+    fn_mcsy_getDataCntList();
   }
 
-  function fn_msy_getDataCntList() {
+  function fn_mcsy_getDataCntList() {
     $.post($('#contextRoot').val() + '/mng/dataCntListAjax', { regdt: $('#regdt').val() }, function (d) {
       $('.sync-data-cnt-list').html('');
 
@@ -89,7 +89,7 @@
     });
   }
 
-  function fn_msy_getSensorDataCntList(regdt) {
+  function fn_mcsy_getSensorDataCntList(regdt) {
     $.post($('#contextRoot').val() + '/mng/sensorDataCntListAjax', { regdt: regdt }, function (d) {
       $('.sync-sensor-data-regdt').text('');
       $('.sync-sensor-data-cnt-list').html('');
@@ -105,21 +105,21 @@
     });
   }
 
-  function fn_msy_requestSync(snsrid, reqcont) {
+  function fn_mcsy_requestSync(snsrid, reqcont) {
     $.post(
       $('#contextRoot').val() + '/mng/requestSyncAjax',
       { snsrid: snsrid, reqcont: reqcont },
       function (d) {
         if (d == 'success') {
           alert('동기화를 요청했습니다.');
-          fn_msy_getSensorDataCntList(reqcont.replace('|', '-').replace('|', '-'));
+          fn_mcsy_getSensorDataCntList(reqcont.replace('|', '-').replace('|', '-'));
         } else {
           alert('동기화 요청이 실패하였습니다.');
         }
     });
   }
 
-  function fn_msy_dateToString(d) {
+  function fn_mcsy_dateToString(d) {
     return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
       ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
   }

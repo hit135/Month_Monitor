@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.fscom.firsens.mng.repository.MSyncRepo">
+<mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCSyncRepo">
 
-    <select id="LIST_MSY_DATA_CNT" parameterType="map" resultType="map">
+    <select id="LIST_MCSY_DATA_CNT" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             DATE(A.DATE) AS DATE
@@ -42,7 +42,7 @@
         ]]>
     </select>
 
-    <select id="LIST_MSY_SENSOR_DATA_CNT" parameterType="map" resultType="map">
+    <select id="LIST_MCSY_SENSOR_DATA_CNT" parameterType="map" resultType="map">
         SELECT
             C.AREACODE
             , C.AREANAME
@@ -115,7 +115,7 @@
             E.CHECKSTAT DESC, C.AREANAME, A.SNSRNICK
     </select>
 
-    <insert id="INSERT_MSY_SENSOR_CHECK" parameterType="map">
+    <insert id="INSERT_MCSY_SENSOR_CHECK" parameterType="map">
         INSERT INTO F_SENSOR_CHECK (CHECKSEQ, SNSRID, REGDATE, CHECKSTAT, REQCONT)
         VALUES (NULL, #{snsrid}, NOW(), 'SYNC', #{reqcont})
     </insert>

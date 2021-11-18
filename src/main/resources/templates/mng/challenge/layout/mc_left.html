@@ -17,10 +17,10 @@
 
 <script type="text/javascript">
 $(function () {
-  fn_mll_initLeft();
+  fn_mcll_initLeft();
 });
 
-function fn_mll_initLeft() {
+function fn_mcll_initLeft() {
   $.template(
     'left-area',
     '<p class="area-lv{{html LEVEL}}" data-code="{{html CODE}}">' +
@@ -39,23 +39,23 @@ function fn_mll_initLeft() {
     $('.left .area-lv2.on').removeClass('on');
     $(this).addClass('on');
 
-    fn_mm_clickAreaLv2($(this).attr('data-code'));
+    fn_mcm_clickAreaLv2($(this).attr('data-code'));
   });
 
   $('.left-list-sensor').on('click', 'p', function () {
-    fn_mm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
+    fn_mcm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
   });
 
-  fn_mll_getAreaList();
-  fn_mll_getCheckSensorList();
+  fn_mcll_getAreaList();
+  fn_mcll_getCheckSensorList();
 }
 
-function fn_mll_refreshLeft() {
-  fn_mll_getAreaList();
-  fn_mll_getCheckSensorList();
+function fn_mcll_refreshLeft() {
+  fn_mcll_getAreaList();
+  fn_mcll_getCheckSensorList();
 }
 
-function fn_mll_getAreaList() {
+function fn_mcll_getAreaList() {
   window.left_area_lv2_on_code = $('.left .area-lv2.on').attr('data-code');
 
   $.post(
@@ -72,7 +72,7 @@ function fn_mll_getAreaList() {
   });
 }
 
-function fn_mll_getCheckSensorList() {
+function fn_mcll_getCheckSensorList() {
   $.post(
     $('#contextRoot').val() + '/mng/checkSensorListAjax',
     {},

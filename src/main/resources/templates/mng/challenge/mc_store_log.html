@@ -47,7 +47,7 @@
           <div class="form-group custom-control-inline">
             <input class="form-control" id="regdt" type="date" />
           </div><!-- /#regdt -->
-          <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_mstl_getDataLogFiltered(1);">조회</button>
+          <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_mcstl_getDataLogFiltered(1);">조회</button>
         </div><!-- /.col-12 align-middle -->
       </div><!-- /.row p-2 -->
       <div class="store-datalog-filtered-list alert alert-info bg-white m-2"></div>
@@ -59,11 +59,11 @@
 
   <script type="text/javascript">
   $(function () {
-    fn_mstl_initStoreSetup();
-    fn_mstl_initStoreDataLog();
+    fn_mcstl_initStoreSetup();
+    fn_mcstl_initStoreDataLog();
   });
 
-  function fn_mstl_initStoreSetup() {
+  function fn_mcstl_initStoreSetup() {
     $.template(
       'store-log-sensor',
       '<p class="{{html STATE}} mb-0 pb-0">' +
@@ -81,12 +81,12 @@
       '</p>'
     );
 
-    // $('.store-log-sensor-list').on('click', 'input', fn_mstl_checkDataLogFiltered);
-    // $('.store-datalog-filtered-list').on('click', 'p', function () { fn_mstl_setDataLogMeta($(this).attr('data-index')); });
+    // $('.store-log-sensor-list').on('click', 'input', fn_mcstl_checkDataLogFiltered);
+    // $('.store-datalog-filtered-list').on('click', 'p', function () { fn_mcstl_setDataLogMeta($(this).attr('data-index')); });
 
     // $('.store-log #check-total').on('click', function () {
     //   $('#check-danger, #check-warn').prop('checked', !$(this).is(":checked"));
-    //   fn_mstl_getDataLogFiltered(1);
+    //   fn_mcstl_getDataLogFiltered(1);
     // });
 
     $('.store-log #check-danger, .store-log #check-warn').on('click', function () {
@@ -100,16 +100,16 @@
         $('#check-danger').prop('checked', true);
       }
 
-      fn_mstl_getDataLogFiltered(1);
+      fn_mcstl_getDataLogFiltered(1);
     });
 
-    $('.store-log #regdt').on('change', function () { fn_mstl_getDataLogFiltered(1); });
+    $('.store-log #regdt').on('change', function () { fn_mcstl_getDataLogFiltered(1); });
   }
 
-  function fn_mstl_initStoreDataLog() {
+  function fn_mcstl_initStoreDataLog() {
     let regdate = $('#prm_regdate').val();
     if (!regdate)
-      regdate = fn_mlt_dateToString(new Date()).slice(0, 10);
+      regdate = fn_mclt_dateToString(new Date()).slice(0, 10);
 
     $('.store-log #regdt').val(regdate);
 
@@ -118,10 +118,10 @@
     else
       $('#check-' + $("#prm_checktype").val()).prop('checked', true);
 
-    fn_mstl_getStoreLogSensorList();
+    fn_mcstl_getStoreLogSensorList();
   }
 
-  function fn_mstl_getStoreLogSensorList() {
+  function fn_mcstl_getStoreLogSensorList() {
     $.post(
       $('#contextRoot').val() + '/mng/areaSensorListAjax', 
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() }, 
@@ -140,13 +140,13 @@
         }
 
         $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
-        $("input:radio[name='snsr-radio-btn']").on('change', function () { fn_mstl_getDataLogFiltered(1); });
+        $("input:radio[name='snsr-radio-btn']").on('change', function () { fn_mcstl_getDataLogFiltered(1); });
 
-        fn_mstl_getDataLogFiltered(1);
+        fn_mcstl_getDataLogFiltered(1);
     });
   }
 
-  function fn_mstl_getDataLogFiltered(idx) {
+  function fn_mcstl_getDataLogFiltered(idx) {
     window.pageIndex = idx;
     $('.pagination').html('');
 
@@ -194,9 +194,9 @@
 
   function fn_linkPage(flag, idx) {
     if (flag == 'mStoreLog')
-      fn_mstl_getDataLogFiltered(idx)
+      fn_mcstl_getDataLogFiltered(idx)
   }
 
-  function fn_mstl_refreshStoreInfo() {}
+  function fn_mcstl_refreshStoreInfo() {}
   </script>
 </div><!-- /.sub-cont w-100 -->

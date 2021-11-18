@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.fscom.firsens.mng.repository.MMainRepo">
+<mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCMainRepo">
 
-    <select id="LIST_MM_SENSOR_CNT" parameterType="map" resultType="map">
+    <select id="LIST_MCM_SENSOR_CNT" parameterType="map" resultType="map">
         (SELECT
              'TODAY' AS TERM
              , 'TOTAL' AS TYPE
@@ -90,7 +90,7 @@
             TERM, TYPE
     </select>
 
-    <select id="LIST_MM_AREA" parameterType="map" resultType="map">
+    <select id="LIST_MCM_AREA" parameterType="map" resultType="map">
         <![CDATA[
         (SELECT
              1 AS LEVEL
@@ -209,7 +209,7 @@
         ]]>
     </select>
 
-    <select id="LIST_MM_SENSOR" parameterType="map" resultType="map">
+    <select id="LIST_MCM_SENSOR" parameterType="map" resultType="map">
         SELECT
             D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
         FROM
@@ -270,7 +270,7 @@
             A.STATE, A.CNT DESC
     </select>
 
-    <select id="LIST_MM_AREA_SENSOR_CNT" parameterType="map" resultType="map">
+    <select id="LIST_MCM_AREA_SENSOR_CNT" parameterType="map" resultType="map">
         SELECT
             A.AREACODE
             , A.AREANAME
@@ -335,7 +335,7 @@
             A.AREACODE = #{areacode}
     </select>
 
-    <select id="LIST_MM_AREA_STORE" parameterType="map" resultType="map">
+    <select id="LIST_MCM_AREA_STORE" parameterType="map" resultType="map">
         SELECT
             E.AREACODE
             , E.STRCODE
@@ -393,7 +393,7 @@
             4 DESC, 5 DESC, 6 DESC, E.STRNAME
     </select>
 
-    <select id="LIST_MM_AREA_SENSOR" parameterType="map" resultType="map">
+    <select id="LIST_MCM_AREA_SENSOR" parameterType="map" resultType="map">
         SELECT
             ROW_NUMBER() over (ORDER BY C.DANGER DESC, D.WARN DESC, G.CON DESC, A.SNSRID) AS ROWNUM
             , E.STRCODE
@@ -467,7 +467,7 @@
             C.DANGER DESC, D.WARN DESC, G.CON DESC, A.SNSRID
     </select>
 
-    <select id="LIST_MM_STORE_SEARCH" parameterType="map" resultType="map">
+    <select id="LIST_MCM_STORE_SEARCH" parameterType="map" resultType="map">
         SELECT
             A.AREACODE, B.AREANAME, A.STRCODE, A.STRNAME
         FROM
@@ -479,7 +479,7 @@
             A.STRNAME
     </select>
 
-    <select id="LIST_MM_CHECK_SENSOR" parameterType="map" resultType="map">
+    <select id="LIST_MCM_CHECK_SENSOR" parameterType="map" resultType="map">
         SELECT
             D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
         FROM
@@ -499,7 +499,7 @@
             A.STATE, A.CNT DESC
     </select>
 
-    <select id="LIST_MM_AREA_DATA_CHART" parameterType="map" resultType="map">
+    <select id="LIST_MCM_AREA_DATA_CHART" parameterType="map" resultType="map">
         SELECT
             '1' AS TYPE
             , CONCAT(SUBSTR(DATE_FORMAT(A.SNSRRCVTIME, '%H:%i'), 1, 4), '0') AS RCVTIME
@@ -537,7 +537,7 @@
             1, 2
     </select>
 
-    <select id="LIST_MM_AREA_LOG_CHART" parameterType="map" resultType="map">
+    <select id="LIST_MCM_AREA_LOG_CHART" parameterType="map" resultType="map">
         SELECT
             '1' AS TYPE
             , CONCAT(SUBSTR(DATE_FORMAT(A.REGDATE, '%H:%i'), 1, 4), '0') AS RCVTIME
@@ -577,7 +577,7 @@
            1, 2
     </select>
 
-    <select id="LIST_MM_AREA_DATA_CHART_WEEK" parameterType="map" resultType="map">
+    <select id="LIST_MCM_AREA_DATA_CHART_WEEK" parameterType="map" resultType="map">
         SELECT
             '1' AS DATETYPE
             , SDATE AS RCVTIME
@@ -631,7 +631,7 @@
            1, 2
     </select>
 
-    <select id="LIST_MM_AREA_LOG_CHART_WEEK" parameterType="map" resultType="map">
+    <select id="LIST_MCM_AREA_LOG_CHART_WEEK" parameterType="map" resultType="map">
         SELECT
             '1' AS TYPE
             , DATE(A.REGDATE) AS RCVTIME
@@ -692,7 +692,7 @@
             1, 2
     </select>
 
-    <select id="LIST_MM_AREA_MAP_SENSOR" parameterType="map" resultType="map">
+    <select id="LIST_MCM_AREA_MAP_SENSOR" parameterType="map" resultType="map">
         SELECT
             B.STRCODE
             , B.STRNAME

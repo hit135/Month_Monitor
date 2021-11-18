@@ -1,7 +1,7 @@
-package kr.fscom.firsens.mng.controller;
+package kr.fscom.firsens.mng.challenge.controller;
 
-import kr.fscom.firsens.mng.repository.MStoreRepo;
-import kr.fscom.firsens.mng.repository.MSyncRepo;
+import kr.fscom.firsens.mng.challenge.repository.MCStoreRepo;
+import kr.fscom.firsens.mng.challenge.repository.MCSyncRepo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,26 +38,27 @@ import org.thymeleaf.util.StringUtils;
 
 @RestController
 @RequestMapping("/mng")
-public class MSyncController {
+public class MCSyncController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MSyncController.class);
-    private final MStoreRepo storeRepo;
-    private final MSyncRepo syncRepo;
+    private static final Logger LOG = LoggerFactory.getLogger(MCSyncController.class);
+
+    private final MCStoreRepo mcStoreRepo;
+    private final MCSyncRepo mcSyncRepo;
 
     @Autowired
-    public MSyncController(MStoreRepo storerepo, MSyncRepo syncrepo) {
-        this.storeRepo = storerepo;
-        this.syncRepo = syncrepo;
+    public MCSyncController(MCStoreRepo mcStoreRepo, MCSyncRepo mcSyncRepo) {
+        this.mcStoreRepo = mcStoreRepo;
+        this.mcSyncRepo = mcSyncRepo;
     }
 
     @RequestMapping(value="/sync")
     public ModelAndView sync(HttpServletRequest req) {
-        return new ModelAndView("mng/m_sync");
+        return new ModelAndView("mng/challenge/mc_sync");
     }
 
     @RequestMapping(value="/dataCntListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> dataCntListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcsyDataCntListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -66,11 +67,11 @@ public class MSyncController {
             prm.put("regdt", regdt);
 
             if (!StringUtils.isEmpty(regdt)) {
-                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
+                HashMap<String, Object> tbl_info = mcStoreRepo.SELECT_MCST_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
             }
 
-            return syncRepo.LIST_MSY_DATA_CNT(prm);
+            return mcSyncRepo.LIST_MCSY_DATA_CNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -80,7 +81,7 @@ public class MSyncController {
 
     @RequestMapping(value="/sensorDataCntListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> sensorDataCntListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcsySensorDataCntListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -89,11 +90,11 @@ public class MSyncController {
             prm.put("regdt", regdt);
 
             if (!StringUtils.isEmpty(regdt)) {
-                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
+                HashMap<String, Object> tbl_info = mcStoreRepo.SELECT_MCST_EVENT_TABLE_INFO(prm);
                 prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
             }
 
-            return syncRepo.LIST_MSY_SENSOR_DATA_CNT(prm);
+            return mcSyncRepo.LIST_MCSY_SENSOR_DATA_CNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -103,13 +104,14 @@ public class MSyncController {
 
     @RequestMapping(value = "/requestSyncAjax")
     @ResponseBody
-    public String requestSyncAjax(HttpServletRequest req) throws Exception {
+    public String mcsyRequestSyncAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("snsrid", req.getParameter("snsrid"));
             prm.put("reqcont", req.getParameter("reqcont"));
-            syncRepo.INSERT_MSY_SENSOR_CHECK(prm);
+            mcSyncRepo.INSERT_MCSY_SENSOR_CHECK(prm);
+
             return "success";
         } catch (Exception e) {
             LOG.debug(e.getMessage());

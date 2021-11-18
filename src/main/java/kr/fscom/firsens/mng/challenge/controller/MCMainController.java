@@ -1,6 +1,6 @@
-package kr.fscom.firsens.mng.controller;
+package kr.fscom.firsens.mng.challenge.controller;
 
-import kr.fscom.firsens.mng.repository.MMainRepo;
+import kr.fscom.firsens.mng.challenge.repository.MCMainRepo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,21 +39,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/mng")
-public class MMainController {
+public class MCMainController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MMainController.class);
-    private final MMainRepo mainRepo;
+    private static final Logger LOG = LoggerFactory.getLogger(MCMainController.class);
+    private final MCMainRepo mcMainRepo;
     
     @Autowired
-    public MMainController(MMainRepo repo) {
-        this.mainRepo = repo;
+    public MCMainController(MCMainRepo mcMainRepo) {
+        this.mcMainRepo = mcMainRepo;
     }
 
     @Value("${globals.naver.clientId}")
     private String naverClientId;
     
     /**
-     * @Method Name : main
+     * @Method Name : mcmMain
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -61,8 +61,8 @@ public class MMainController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/main")
-    public ModelAndView main(HttpServletRequest req) throws Exception {
-        ModelAndView mav = new ModelAndView("mng/m_main");
+    public ModelAndView mcmMain(HttpServletRequest req) throws Exception {
+        ModelAndView mav = new ModelAndView("mng/challenge/mc_main");
 
         try {
             mav.addObject("naverMap", "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization");
@@ -74,7 +74,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : mainArea
+     * @Method Name : mcmArea
      * @작성일 : 2021-07-29
      * @작성자 : jjm
      * @변경이력 :
@@ -82,8 +82,8 @@ public class MMainController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/mainArea")
-    public ModelAndView mainArea(HttpServletRequest req) throws Exception {
-        ModelAndView mav = new ModelAndView("mng/m_main_area");
+    public ModelAndView mcmArea(HttpServletRequest req) throws Exception {
+        ModelAndView mav = new ModelAndView("mng/challenge/mc_main_area");
 
         try {
             mav.addObject("prm_panel_index", req.getParameter("panel_index"));
@@ -96,7 +96,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : sensorCountAjax
+     * @Method Name : mcmSensorCountAjax
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -105,11 +105,11 @@ public class MMainController {
      */
     @RequestMapping(value = "/sensorCountAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> sensorCountAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmSensorCountAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mainRepo.LIST_MM_SENSOR_CNT(prm);
+            return mcMainRepo.LIST_MCM_SENSOR_CNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -118,7 +118,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : areaListAjax
+     * @Method Name : mcmAreaListAjax
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -127,11 +127,11 @@ public class MMainController {
      */
     @RequestMapping(value = "/areaListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> areaListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmAreaListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mainRepo.LIST_MM_AREA(prm);
+            return mcMainRepo.LIST_MCM_AREA(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -140,7 +140,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : sensorListAjax
+     * @Method Name : mcmSensorListAjax
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -149,11 +149,11 @@ public class MMainController {
      */
     @RequestMapping(value = "/sensorListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> sensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mainRepo.LIST_MM_SENSOR(prm);
+            return mcMainRepo.LIST_MCM_SENSOR(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -162,7 +162,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : areaSensorCountAjax
+     * @Method Name : mcmAreaSensorCountAjax
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -171,12 +171,12 @@ public class MMainController {
      */
     @RequestMapping(value = "/areaSensorCountAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> areaSensorCountAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmAreaSensorCountAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.LIST_MM_AREA_SENSOR_CNT(prm);
+            return mcMainRepo.LIST_MCM_AREA_SENSOR_CNT(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -185,7 +185,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : areaStoreListAjax
+     * @Method Name : mcmAreaStoreListAjax
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -194,12 +194,12 @@ public class MMainController {
      */
     @RequestMapping(value = "/areaStoreListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> areaStoreListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmAreaStoreListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.LIST_MM_AREA_STORE(prm);
+            return mcMainRepo.LIST_MCM_AREA_STORE(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -208,7 +208,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : areaSensorListAjax
+     * @Method Name : mcmAreaSensorListAjax
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -217,14 +217,14 @@ public class MMainController {
      */
     @RequestMapping(value = "/areaSensorListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> areaSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String,Object>> mcmAreaSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
 
-            return mainRepo.LIST_MM_AREA_SENSOR(prm);
+            return mcMainRepo.LIST_MCM_AREA_SENSOR(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -233,7 +233,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : storeSearchAjax
+     * @Method Name : mcmStoreSearchAjax
      * @작성일 : 2021-07-15
      * @작성자 : jjm
      * @변경이력 :
@@ -242,12 +242,12 @@ public class MMainController {
      */
     @RequestMapping(value = "/storeSearchAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> storeSearchAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmStoreSearchAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("search", req.getParameter("search"));
-            return mainRepo.LIST_MM_STORE_SEARCH(prm);
+            return mcMainRepo.LIST_MCM_STORE_SEARCH(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -256,7 +256,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : checkSensorListAjax
+     * @Method Name : mcmCheckSensorListAjax
      * @작성일 : 2021-07-15
      * @작성자 : jjm
      * @변경이력 :
@@ -265,11 +265,11 @@ public class MMainController {
      */
     @RequestMapping(value = "/checkSensorListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> checkSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmCheckSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mainRepo.LIST_MM_CHECK_SENSOR(prm);
+            return mcMainRepo.LIST_MCM_CHECK_SENSOR(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -295,7 +295,7 @@ public class MMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
 
-            return mainRepo.LIST_MM_AREA_DATA_CHART(prm);
+            return mcMainRepo.LIST_MCM_AREA_DATA_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -322,7 +322,7 @@ public class MMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
 
-            return mainRepo.LIST_MM_AREA_LOG_CHART(prm);
+            return mcMainRepo.LIST_MCM_AREA_LOG_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -349,7 +349,7 @@ public class MMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
 
-            return mainRepo.LIST_MM_AREA_DATA_CHART(prm);
+            return mcMainRepo.LIST_MCM_AREA_DATA_CHART(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -359,7 +359,7 @@ public class MMainController {
     */
 
     /**
-     * @Method Name : mainAreaDataAndLogChartAjax
+     * @Method Name : mcmAreaDataAndLogChartAjax
      * @작성일 : 2021-11-17
      * @작성자 : uhm
      * @변경이력 :
@@ -368,7 +368,7 @@ public class MMainController {
      */
     @RequestMapping(value = "/mainAreaDataAndLogChartAjax")
     @ResponseBody
-    public HashMap<String, Object> mainAreaDataAndLogChartAjax(HttpServletRequest req) throws Exception {
+    public HashMap<String, Object> mcmAreaDataAndLogChartAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
@@ -376,8 +376,8 @@ public class MMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
 
-            rtn.put("log", mainRepo.LIST_MM_AREA_LOG_CHART(prm));
-            rtn.put("data", mainRepo.LIST_MM_AREA_DATA_CHART(prm));
+            rtn.put("log", mcMainRepo.LIST_MCM_AREA_LOG_CHART(prm));
+            rtn.put("data", mcMainRepo.LIST_MCM_AREA_DATA_CHART(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -401,7 +401,7 @@ public class MMainController {
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.LIST_MM_AREA_DATA_CHART_WEEK(prm);
+            return mcMainRepo.LIST_MCM_AREA_DATA_CHART_WEEK(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -426,7 +426,7 @@ public class MMainController {
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.LIST_MM_AREA_LOG_CHART_WEEK(prm);
+            return mcMainRepo.LIST_MCM_AREA_LOG_CHART_WEEK(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -436,7 +436,7 @@ public class MMainController {
     */
 
     /**
-     * @Method Name : mainAreaDataAndLogChartWeekAjax
+     * @Method Name : mcmAreaDataAndLogChartWeekAjax
      * @작성일 : 2021-11-17
      * @작성자 : uhm
      * @변경이력 :
@@ -445,15 +445,15 @@ public class MMainController {
      */
     @RequestMapping(value = "/mainAreaDataAndLogChartWeekAjax")
     @ResponseBody
-    public HashMap<String,Object> mainAreaDataAndLogChartWeekAjax(HttpServletRequest req) throws Exception {
+    public HashMap<String,Object> mcmAreaDataAndLogChartWeekAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("areacode", req.getParameter("areacode"));
 
-            rtn.put("log", mainRepo.LIST_MM_AREA_LOG_CHART_WEEK(prm));
-            rtn.put("data", mainRepo.LIST_MM_AREA_DATA_CHART_WEEK(prm));
+            rtn.put("log", mcMainRepo.LIST_MCM_AREA_LOG_CHART_WEEK(prm));
+            rtn.put("data", mcMainRepo.LIST_MCM_AREA_DATA_CHART_WEEK(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -462,7 +462,7 @@ public class MMainController {
     }
 
     /**
-     * @Method Name : mainAreaMapSensorListAjax
+     * @Method Name : mcmAreaMapSensorListAjax
      * @작성일 : 2021-07-29
      * @작성자 : jjm
      * @변경이력 :
@@ -471,12 +471,12 @@ public class MMainController {
      */
     @RequestMapping(value = "/mainAreaMapSensorListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mainAreaMapSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmAreaMapSensorListAjax(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mainRepo.LIST_MM_AREA_MAP_SENSOR(prm);
+            return mcMainRepo.LIST_MCM_AREA_MAP_SENSOR(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

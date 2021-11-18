@@ -1,8 +1,9 @@
-package kr.fscom.firsens.mng.controller;
+package kr.fscom.firsens.mng.challenge.controller;
 
 import kr.fscom.firsens.common.keycrypt.KeyEncrypt;
 import kr.fscom.firsens.common.keycrypt.RSA;
-import kr.fscom.firsens.mng.repository.MLoginRepo;
+
+import kr.fscom.firsens.mng.challenge.repository.MCLoginRepo;
 
 import kr.fscom.firsens.common.cookie.CommonCookie;
 import kr.fscom.firsens.common.jwt.JjwtService;
@@ -11,12 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import java.security.PrivateKey;
 
 import java.util.HashMap;
@@ -28,7 +31,7 @@ import java.util.stream.Collectors;
  *
  * @author : uhm
  * @version 1.0
- * @FileName : MLoginController
+ * @FileName : MCLoginController
  * @see <pre>
  * << 개정이력(Modification Information) >>
  *
@@ -42,36 +45,36 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/mng")
-public class MLoginController {
+public class MCLoginController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MLoginController.class);
-    private final MLoginRepo mLoginRepo;
+    private static final Logger LOG = LoggerFactory.getLogger(MCLoginController.class);
+    private final MCLoginRepo mcLoginRepo;
 
     CommonCookie commonCookie = new CommonCookie();
 
     @Autowired
-    public MLoginController(MLoginRepo mLoginRepo) {
-        this.mLoginRepo = mLoginRepo;
+    public MCLoginController(MCLoginRepo mcLoginRepo) {
+        this.mcLoginRepo = mcLoginRepo;
     }
 
     @Autowired
     private JjwtService jjwtService;
 
     /**
-     * @Method Name : mngPage
+     * @Method Name : mcLoginPage
      * @작성일 : 2021-04-06
      * @작성자 : uhm
      * @변경이력 :
-     * @Method 설명 : 로그인 화면 이동
+     * @Method 설명 : 챌린지 로그인 화면 이동
      * @return ModelAndView
      */
     @GetMapping("/loginPage")
-    public ModelAndView mngPage() throws Exception {
-        return new ModelAndView("mng/m_login");
+    public ModelAndView mcLoginPage() throws Exception {
+        return new ModelAndView("mng/challenge/mc_login");
     }
 
     /**
-     * @Method Name : mngSelectRsaKey
+     * @Method Name : mcSelectRsaKey
      * @작성일 : 2021-04-06
      * @작성자 : uhm
      * @변경이력 :
@@ -80,7 +83,7 @@ public class MLoginController {
      */
     @PostMapping("/selectRsaKeyAjax")
     @ResponseBody
-    public HashMap<String, Object> mngSelectRsaKey(HttpSession session) throws Exception {
+    public HashMap<String, Object> mcSelectRsaKey(HttpSession session) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         boolean result = false;
 
@@ -102,7 +105,7 @@ public class MLoginController {
     }
 
     /**
-     * @Method Name : mngLogin
+     * @Method Name : mcLogin
      * @작성일 : 2021-04-05
      * @작성자 : uhm
      * @변경이력 :
@@ -111,7 +114,7 @@ public class MLoginController {
      */
     @PostMapping("/loginAjax")
     @ResponseBody
-    public HashMap<String, Object> mngLogin(
+    public HashMap<String, Object> mcLogin(
             @RequestBody HashMap<String, Object> paramMap, HttpSession session, HttpServletResponse resp) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         boolean result = false;
@@ -124,10 +127,10 @@ public class MLoginController {
             session.removeAttribute("__rsaPrivateKey__");
 
             HashMap<String, Object> loginResult =
-                mLoginRepo.SELECT_SYS_LOGIN(new HashMap<String, Object>() {{ put("userId", userId); put("memPwd", sha256MemPwd); }});
+                mcLoginRepo.SELECT_MCL_LOGIN(new HashMap<String, Object>() {{ put("userId", userId); put("memPwd", sha256MemPwd); }});
 
             if (loginResult != null) {
-                int upd = mLoginRepo.UPDATE_SYS_MEMRSNTDATE(new HashMap<String, Object>() {{ put("userId", userId); }});
+                int upd = mcLoginRepo.UPDATE_MCL_MEMRSNTDATE(new HashMap<String, Object>() {{ put("userId", userId); }});
 
                 Map<String, String> cookieMap = new HashMap<String, String>() {{
                     put("userId", userId);
@@ -152,7 +155,7 @@ public class MLoginController {
     }
 
     /**
-     * @Method Name : mngLogout
+     * @Method Name : mcLogout
      * @작성일 : 2021-04-07
      * @작성자 : uhm
      * @변경이력 :
@@ -160,10 +163,9 @@ public class MLoginController {
      * @return ModelAndView
      */
     @GetMapping("/logout")
-    public ModelAndView mngLogout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public ModelAndView mcLogout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         commonCookie.deleteAllLoginCookie(req, resp, "firssChalMNGLogin");
         return new ModelAndView("redirect:/mng/main");
     }
-
 
 }

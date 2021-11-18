@@ -76,39 +76,39 @@
 
 <script type="text/javascript">
 $(function () {
-  fn_mlt_initTop();
+  fn_mclt_initTop();
 });
 
-function fn_mlt_initTop() {
-  fn_mlt_getSensorCount();
+function fn_mclt_initTop() {
+  fn_mclt_getSensorCount();
 
   $.template(
     'top-search-result',
     '<p data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}">{{html STRNAME}} [{{html AREANAME}}]</p>'
   );
 
-  $('.top-search-text').on('keyup', fn_mlt_searchStore);
-  $('.top-search button').on('click', fn_mlt_searchStore);
+  $('.top-search-text').on('keyup', fn_mclt_searchStore);
+  $('.top-search button').on('click', fn_mclt_searchStore);
 
   $('.top-search-result').on('click', 'p', function () {
-    fn_mm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
+    fn_mcm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
     $('.top-search-result').html('');
   });
 
   setInterval(function () {
     let w = ['일', '월', '화', '수', '목', '금', '토'];
-    let now_str = fn_mlt_dateToString(new Date());
+    let now_str = fn_mclt_dateToString(new Date());
 
     $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
     $('.top-time').text(now_str.substring(11));
   }, 1000);
 }
 
-function fn_mlt_refreshTop() {
-  fn_mlt_getSensorCount();
+function fn_mclt_refreshTop() {
+  fn_mclt_getSensorCount();
 }
 
-function fn_mlt_getSensorCount() {
+function fn_mclt_getSensorCount() {
   $.post(
     $('#contextRoot').val() + '/mng/sensorCountAjax',
     {},
@@ -118,12 +118,12 @@ function fn_mlt_getSensorCount() {
   });
 }
 
-function fn_mlt_dateToString(d) {
+function fn_mclt_dateToString(d) {
   return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
     ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
 }
 
-function fn_mlt_searchStore() {
+function fn_mclt_searchStore() {
   $.post(
     $('#contextRoot').val() + '/mng/storeSearchAjax',
     { search: $('.top-search-text').val() },

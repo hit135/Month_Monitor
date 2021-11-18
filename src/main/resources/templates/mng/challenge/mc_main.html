@@ -2,18 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
-<th:block th:replace="mng/layout/m_head"></th:block>
+<th:block th:replace="mng/challenge/layout/mc_head"></th:block>
 <link rel="stylesheet" th:href="@{/fs/css/custom.css}" />
 </head>
 
 <body class="mod-bg-1 mod-nav-link">
 <div class="top">
-  <th:block th:replace="mng/layout/m_top"></th:block>
+  <th:block th:replace="mng/challenge/layout/mc_top"></th:block>
 </div><!-- /.top -->
 
 <div class="row">
   <div class="left col-md-2 mt-md-n7 col-12 mt-0">
-    <th:block th:replace="mng/layout/m_left"></th:block>
+    <th:block th:replace="mng/challenge/layout/mc_left"></th:block>
   </div>
   <div class="center col-md-8 col-12">
     <div id="center-main-cont" class="center-main-cont">
@@ -51,11 +51,11 @@
     </div><!-- /.center-store-cont -->
   </div><!-- /.center -->
   <div class="right col-md-2 mt-md-n7 col-12 mt-0">
-    <th:block th:replace="mng/layout/m_right"></th:block>
+    <th:block th:replace="mng/challenge/layout/mc_right"></th:block>
   </div>
 </div><!-- /.row -->
 <div class="bottom">
-  <th:block th:replace="mng/layout/m_bottom"></th:block>
+  <th:block th:replace="mng/challenge/layout/mc_bottom"></th:block>
 </div>
 
 <div class="modal fade default-example-modal-left-sm" tabindex="-1" role="dialog" aria-hidden="true">
@@ -71,31 +71,31 @@
         <nav id="js-primary-nav" class="primary-nav" role="navigation">
           <ul id="js-nav-menu" class="nav-menu">
             <li>
-              <a href="javascript:movePageAdm('area')">
+              <a href="javascript:fn_mcm_movePageAdm('area')">
                 <i class="fal fa-home"></i><span class="nav-link-text" data-i18n="nav.application_intel">구역관리</span>
               </a>
-              <a href="javascript:movePageAdm('mem')">
+              <a href="javascript:fn_mcm_movePageAdm('mem')">
                 <i class="fal fa-user"></i><span class="nav-link-text" data-i18n="nav.application_intel">회원관리</span>
               </a>
-              <a href="javascript:movePageAdm('str')">
+              <a href="javascript:fn_mcm_movePageAdm('str')">
                 <i class="fal fa-store"></i><span class="nav-link-text" data-i18n="nav.application_intel">상점관리</span>
               </a>
-              <a href="javascript:movePageAdm('snsr')">
+              <a href="javascript:fn_mcm_movePageAdm('snsr')">
                 <i class="fal fa-siren"></i><span class="nav-link-text" data-i18n="nav.application_intel">센서관리</span>
               </a>
-              <a href="javascript:movePageAdm('inspr')">
+              <a href="javascript:fn_mcm_movePageAdm('inspr')">
                 <i class="fal fa-user"></i><span class="nav-link-text" data-i18n="nav.application_intel">점검자관리</span>
               </a>
-              <a href="javascript:movePageAdm('insp')">
+              <a href="javascript:fn_mcm_movePageAdm('insp')">
                 <i class="fal fa-list"></i><span class="nav-link-text" data-i18n="nav.application_intel">점검관리</span>
               </a>
-              <a href="javascript:movePageAdm('push')">
+              <a href="javascript:fn_mcm_movePageAdm('push')">
                 <i class="fal fa-bell"></i><span class="nav-link-text" data-i18n="nav.application_intel">발송이력</span>
               </a>
-              <a href="javascript:movePageAdm('stat')">
+              <a href="javascript:fn_mcm_movePageAdm('stat')">
                 <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">보고서</span>
               </a>
-              <a href="javascript:void(0);" onclick="fn_mm_logout()">
+              <a href="javascript:void(0);" onclick="fn_mcm_logout()">
                 <i class="fal fa-chart-pie"></i><span class="nav-link-text" data-i18n="nav.application_intel">로그아웃</span>
               </a>
             </li>
@@ -116,10 +116,10 @@
 
 <script type="text/javascript">
 $(function () {
-  fn_mm_init();
+  fn_mcm_init();
 });
 
-function fn_mm_init() {
+function fn_mcm_init() {
   $.template(
     'center-left-store',
     '<p class="{{html STATE}}" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-strname="{{html STRNAME}}">' +
@@ -127,28 +127,28 @@ function fn_mm_init() {
     '</p>'
   );
 
-  fn_mm_initMainAreaList();
+  fn_mcm_initMainAreaList();
 
   $('.center-left-sensor-list').on('click', 'p', function () {
     $('.center-left-sensor-list p.on').removeClass('on');
     $(this).addClass('on');
 
     $('.center-cont-top .store-name').text($(this).attr('data-strname'));
-    fn_mm_clickContPage();
+    fn_mcm_clickContPage();
   });
 
   $('.center-cont-top').on('click', '.center-cont-top-btn', function () {
     $('.center-cont-top-btn.on').removeClass('on');
     $(this).addClass('on');
 
-    fn_mm_clickContPage();
+    fn_mcm_clickContPage();
   });
 
   $('.center-cont-page').on('click', '.btn-chart', function () {
     $('.center-cont-top-btn.on').removeClass('on');
     $('.center-cont-top-btn[data-page="Chart"]').addClass('on');
 
-    fn_mm_clickContPage({
+    fn_mcm_clickContPage({
       areacode: $('#prm_areacode').val(),
       strcode: $('#prm_strcode').val(),
       snsrid: $(this).attr('data-snsrid'),
@@ -161,7 +161,7 @@ function fn_mm_init() {
     $('.center-cont-top-btn.on').removeClass('on');
     $('.center-cont-top-btn[data-page="Log"]').addClass('on');
 
-    fn_mm_clickContPage({
+    fn_mcm_clickContPage({
       areacode: $('#prm_areacode').val(),
       strcode: $('#prm_strcode').val(),
       snsrid: $(this).attr('data-snsrid'),
@@ -172,7 +172,7 @@ function fn_mm_init() {
 
   $('.center-main-btn').on('click', function () {
     window.center_name = 'main';
-    fn_mm_toggleCenterCont();
+    fn_mcm_toggleCenterCont();
   });
 
   $('.center-main-cont').on('click', '.js-panel-collapse', function () {
@@ -185,7 +185,7 @@ function fn_mm_init() {
       $(this).addClass('on');
       $(id + ' .panel-container').addClass('show');
 
-      fn_mm_updateMainAreaList(id);
+      fn_mcm_updateMainAreaList(id);
     }
   });
 
@@ -199,8 +199,8 @@ function fn_mm_init() {
       $(this).addClass('on');
       $(id).addClass('panel-fullscreen');
 
-      fn_mm_updateMainAreaList();
-      fn_mm_getMainAreaWeek();
+      fn_mcm_updateMainAreaList();
+      fn_mcm_getMainAreaWeek();
     }
   });
 
@@ -208,55 +208,55 @@ function fn_mm_init() {
     $('.panel.panel-fullscreen .center-main-cont-top-btn.on').removeClass('on');
     $(this).addClass('on');
 
-    fn_mm_tapCenterMainPage();
+    fn_mcm_tapCenterMainPage();
   });
 }
 
 let refreshTime = window.setInterval(function () {
   if (new Date().getMinutes() % 10 === 2)
-    fn_mm_refresh();
+    fn_mcm_refresh();
 }, 60 * 1000);
 
-function fn_mm_refresh() {
-  fn_mlt_refreshTop();
-  fn_mll_refreshLeft();
-  fn_mlr_refreshRight();
+function fn_mcm_refresh() {
+  fn_mclt_refreshTop();
+  fn_mcll_refreshLeft();
+  fn_mclr_refreshRight();
 
   if (window.center_name == 'main') {
-    fn_mm_updateMainAreaList();
-    fn_mm_getMainAreaWeek();
+    fn_mcm_updateMainAreaList();
+    fn_mcm_getMainAreaWeek();
   } else {
-    fn_msti_refreshStoreInfo();
-    setTimeout(function () { fn_mm_onAreaLv2(window.left_area_lv2_on_code); }, 800);
+    fn_mcsti_refreshStoreInfo();
+    setTimeout(function () { fn_mcm_onAreaLv2(window.left_area_lv2_on_code); }, 800);
   }
 }
 
-function fn_mm_clickAreaLv2(code) {
+function fn_mcm_clickAreaLv2(code) {
   window.center_name = 'store';
 
-  fn_mm_toggleCenterCont();
-  fn_mm_getAreaSensorCount(code);
-  fn_mm_getAreaStoreList(code);
+  fn_mcm_toggleCenterCont();
+  fn_mcm_getAreaSensorCount(code);
+  fn_mcm_getAreaStoreList(code);
 }
 
-function fn_mm_onAreaLv2(code, strcode, snsrid) {
+function fn_mcm_onAreaLv2(code, strcode, snsrid) {
   if (code) {
     $('.left .area-lv2').removeClass('on');
     $('.left .area-lv2[data-code="' + code + '"]').addClass('on');
 
-    fn_mm_getAreaSensorCount(code);
-    fn_mm_getAreaStoreList(code, strcode, snsrid);
+    fn_mcm_getAreaSensorCount(code);
+    fn_mcm_getAreaStoreList(code, strcode, snsrid);
   }
 }
 
-function fn_mm_clickRightSensor(code, strcode, snsrid) {
+function fn_mcm_clickRightSensor(code, strcode, snsrid) {
   window.center_name = 'store';
 
-  fn_mm_toggleCenterCont();
-  fn_mm_onAreaLv2(code, strcode, snsrid);
+  fn_mcm_toggleCenterCont();
+  fn_mcm_onAreaLv2(code, strcode, snsrid);
 }
 
-function fn_mm_getAreaSensorCount(code) {
+function fn_mcm_getAreaSensorCount(code) {
   $.post(
     $('#contextRoot').val() + '/mng/areaSensorCountAjax',
     { areacode: code },
@@ -270,7 +270,7 @@ function fn_mm_getAreaSensorCount(code) {
   });
 }
 
-function fn_mm_getAreaStoreList(code, strcode, snsrid) {
+function fn_mcm_getAreaStoreList(code, strcode, snsrid) {
   let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
   if (strcode)
     on_strcode = strcode;
@@ -306,11 +306,11 @@ function fn_mm_getAreaStoreList(code, strcode, snsrid) {
       $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
 
       if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode'))
-        fn_mm_clickContPage(snsrid ? { snsrid: snsrid } : null);
+        fn_mcm_clickContPage(snsrid ? { snsrid: snsrid } : null);
   });
 }
 
-function fn_mm_clickContPage(p) {
+function fn_mcm_clickContPage(p) {
   let prm = (p) ?
     p : { areacode: $('.center-left-sensor-list p.on').attr('data-areacode'),
           strcode: $('.center-left-sensor-list p.on').attr('data-strcode') };
@@ -326,7 +326,7 @@ function fn_mm_clickContPage(p) {
   });
 }
 
-function fn_mm_initMainAreaList() {
+function fn_mcm_initMainAreaList() {
   window.min_category = [];
 
   for (let i = 0; i < 24; i++)
@@ -368,16 +368,16 @@ function fn_mm_initMainAreaList() {
                 }
 
                 window.center_name = 'main';
-                fn_mm_toggleCenterCont();
+                fn_mcm_toggleCenterCont();
               }
             );
       }}}
 
-      fn_mm_loadMainAreaList();
+      fn_mcm_loadMainAreaList();
   });
 }
 
-function fn_mm_toggleCenterCont() {
+function fn_mcm_toggleCenterCont() {
   if (window.center_name == 'main') {
     $('.center-main-cont').show();
     $('.center-store-cont').hide();
@@ -387,11 +387,11 @@ function fn_mm_toggleCenterCont() {
   }
 }
 
-function fn_mm_loadMainAreaList() {
-  fn_mm_updateMainAreaList();
+function fn_mcm_loadMainAreaList() {
+  fn_mcm_updateMainAreaList();
 }
 
-function fn_mm_updateMainAreaList(id) {
+function fn_mcm_updateMainAreaList(id) {
   $.post(
     $('#contextRoot').val() + '/mng/areaListAjax',
     {},
@@ -407,11 +407,11 @@ function fn_mm_updateMainAreaList(id) {
         let show_panel = $('.center-main-cont .panel-container');
 
         for (let i = 0; i < show_panel.length; i++)
-          fn_mm_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
+          fn_mcm_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
   }});
 }
 
-function fn_mm_setMainArea(i, id) {
+function fn_mcm_setMainArea(i, id) {
   let panel_id = 'panel-' + i;
 
   $('#' + panel_id + ' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
@@ -428,8 +428,8 @@ function fn_mm_setMainArea(i, id) {
         $('#contextRoot').val() + '/mng/mainAreaDataAndLogChartAjax',
         { areacode: i },
         function (resu) {
-          fn_mm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
-          fn_mm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
+          fn_mcm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
+          fn_mcm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
       });
     }
   } else {
@@ -439,13 +439,13 @@ function fn_mm_setMainArea(i, id) {
         $('#contextRoot').val() + '/mng/mainAreaDataAndLogChartAjax',
         { areacode: i },
         function (resu) {
-          fn_mm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
-          fn_mm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
+          fn_mcm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
+          fn_mcm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
       });
   }}
 }
 
-function fn_mm_setChart(title, target, data, colors) {
+function fn_mcm_setChart(title, target, data, colors) {
   let opt = {
     series: [],
     chart: { height: 250, type: 'line', id: target, animations: { enabled: false } },
@@ -470,7 +470,7 @@ function fn_mm_setChart(title, target, data, colors) {
 
   let series = [{ name: '어제', data: [] }, { name:'오늘', data: [] }];
   let j = 0;
-  let now_time = fn_mlt_dateToString(new Date()).slice(11, 15) + '0';
+  let now_time = fn_mclt_dateToString(new Date()).slice(11, 15) + '0';
 
   for (let i = 0; i < window.min_category.length; i++)
     if (j < data.length && data[j].TYPE == '1' && data[j].RCVTIME == window.min_category[i])
@@ -499,7 +499,7 @@ function fn_mm_setChart(title, target, data, colors) {
   }
 }
 
-function fn_mm_getMainAreaWeek() {
+function fn_mcm_getMainAreaWeek() {
   window.week_category = ['일', '월', '화', '수', '목', '금', '토'];
   let show_panel = $('.center-main-cont .panel-fullscreen .panel-container');
 
@@ -510,13 +510,13 @@ function fn_mm_getMainAreaWeek() {
       $('#contextRoot').val() + '/mng/mainAreaDataAndLogChartWeekAjax',
       { areacode: idx },
       function (resu) {
-        fn_mm_setChartWeek('경보 발생 현황', '#panel-' + idx + ' .center-main-log-chart-week', resu.log, ['#ff9966','#cc3300']);
-        fn_mm_setChartWeek('전력사용량 현황', '#panel-' + idx + ' .center-main-data-chart-week', resu.data, ['#99ccff','#003399']);
+        fn_mcm_setChartWeek('경보 발생 현황', '#panel-' + idx + ' .center-main-log-chart-week', resu.log, ['#ff9966','#cc3300']);
+        fn_mcm_setChartWeek('전력사용량 현황', '#panel-' + idx + ' .center-main-data-chart-week', resu.data, ['#99ccff','#003399']);
     });
   }
 }
 
-function fn_mm_setChartWeek(title, target, data, colors) {
+function fn_mcm_setChartWeek(title, target, data, colors) {
   let opt = {
     series: [],
     chart: { height: 250, type: 'bar', id: target, animations: { enabled: false } },
@@ -582,34 +582,34 @@ function fn_mm_setChartWeek(title, target, data, colors) {
   }
 }
 
-function fn_mm_tapCenterMainPage() {
+function fn_mcm_tapCenterMainPage() {
   let page_name = $('.panel.panel-fullscreen .center-main-cont-top-btn.on').attr('data-page');
   $('.panel.panel-fullscreen [class^=center-main-page]').removeClass('on');
   $('.panel.panel-fullscreen .center-main-page-' + page_name).addClass('on');
 
   if (page_name == 'chart') {
-    fn_mm_updateMainAreaList();
-    fn_mm_getMainAreaWeek();
+    fn_mcm_updateMainAreaList();
+    fn_mcm_getMainAreaWeek();
   }
 
   if (page_name == 'map') {
-    fn_mm_getMainAreaMap();
+    fn_mcm_getMainAreaMap();
   }
 }
 
-function fn_mm_getMainAreaMap() {
+function fn_mcm_getMainAreaMap() {
   let show_panel = $('.center-main-cont .panel-fullscreen .panel-container .center-main-page-map.on');
 
   for (let i = 0; i < show_panel.length; i++) {
     let idx = $(show_panel[i]).attr('data-id').replace('panel-','');
 
     $.post($('#contextRoot').val() + '/mng/mainAreaMapSensorListAjax', { areacode: idx }, function (data) {
-      fn_mm_setMapMarker('#panel-' + idx + ' .center-main-page-map', data);
+      fn_mcm_setMapMarker('#panel-' + idx + ' .center-main-page-map', data);
     });
   }
 }
 
-function fn_mm_setMapMarker(target, data) {
+function fn_mcm_setMapMarker(target, data) {
   let target_id = target.replace(/ /g,'-');
 
   let mark = {
@@ -651,12 +651,12 @@ function fn_mm_setMapMarker(target, data) {
   }}
 }
 
-function movePageAdm(type) {
+function fn_mcm_movePageAdm(type) {
   location.href = ((location.hostname === "localhost") ? "http://localhost:3000/#/" : "http://1.223.40.19:30081/adm#/") + type;
   // http://1.223.40.19:30081/adm#/area
 }
 
-function fn_mm_logout() {
+function fn_mcm_logout() {
   location.href = $('#contextRoot').val() + '/mng/logout';
 }
 </script>

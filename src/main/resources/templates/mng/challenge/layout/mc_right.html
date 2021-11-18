@@ -17,10 +17,10 @@
 
 <script type="text/javascript">
 $(function () {
-  fn_mlr_initRight();
+  fn_mclr_initRight();
 });
 
-function fn_mlr_initRight() {
+function fn_mclr_initRight() {
   $.template(
     'right-sensor',
     '<p class="right-sensor" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-code="{{html SNSRID}}">' +
@@ -29,17 +29,17 @@ function fn_mlr_initRight() {
   );
 
   $('.list-sensor').on('click', 'p', function () {
-    fn_mm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
+    fn_mcm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
   });
 
-  fn_mlr_getRightSensorList();
+  fn_mclr_getRightSensorList();
 }
 
-function fn_mlr_refreshRight() {
-  fn_mlr_getRightSensorList();
+function fn_mclr_refreshRight() {
+  fn_mclr_getRightSensorList();
 }
 
-function fn_mlr_getRightSensorList() {
+function fn_mclr_getRightSensorList() {
   $.post(
     $('#contextRoot').val() + '/mng/sensorListAjax',
     {},

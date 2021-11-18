@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.fscom.firsens.mng.repository.MLoginRepo">
+<mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCLoginRepo">
 
-    <select id="SELECT_SYS_LOGIN" parameterType="map" resultType="map">
+    <select id="SELECT_MCL_LOGIN" parameterType="map" resultType="map">
         SELECT
             USERID AS userId
             , MEMNAME AS memName
@@ -17,7 +17,7 @@
             AND MEMPWD = #{memPwd}
     </select>
 
-    <update id="UPDATE_SYS_MEMRSNTDATE" parameterType="map">
+    <update id="UPDATE_MCL_MEMRSNTDATE" parameterType="map">
         UPDATE F_MEMBER SET MEMRSNTDATE = NOW() WHERE USERID = #{userId}
     </update>
 

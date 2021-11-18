@@ -62,36 +62,36 @@
         </div><!-- /.row -->
       </div><!-- /.col-md-4 col-10 -->
       <div class="col-md-1 col-2">
-        <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_mstc_getStoreSensorData();">조회</button>
+        <button type="button" class="btn btn-sm btn-success waves-effect waves-themed" onclick="fn_mcstc_getStoreSensorData();">조회</button>
       </div><!-- /.col-md-1 col-2 -->
     </div><!-- /.row pl-2 mt-3 -->
   </div><!-- /.panel-content p-2 -->
 
   <script type="text/javascript">
   $(function() {
-    fn_mstc_initStoreChart();
+    fn_mcstc_initStoreChart();
 
     $('#termtype').on('change', function(d) {
       if (this.value == 'm') {
         $('#regdt').prop('type', 'month');
-        $('#regdt').val(fn_mlt_dateToString(new Date()).slice(0, 7));
+        $('#regdt').val(fn_mclt_dateToString(new Date()).slice(0, 7));
       } else {
         $('#regdt').prop('type', 'date');
-        $('#regdt').val(fn_mlt_dateToString(new Date()).slice(0, 10));
+        $('#regdt').val(fn_mclt_dateToString(new Date()).slice(0, 10));
       }
 
-      fn_mstc_getStoreSensorData();
+      fn_mcstc_getStoreSensorData();
     });
 
-    $('#charttype').on('change', function() { fn_mstc_getStoreSensorData(); });
-    $('#datatype').on('change', function() { fn_mstc_getStoreSensorData(); });
-    $('#regdt').on('change', function () { fn_mstc_getStoreSensorData(); });
+    $('#charttype').on('change', function() { fn_mcstc_getStoreSensorData(); });
+    $('#datatype').on('change', function() { fn_mcstc_getStoreSensorData(); });
+    $('#regdt').on('change', function () { fn_mcstc_getStoreSensorData(); });
 
-    $('.store-chart-sensor-list').on('change', 'input', function() { fn_mstc_getStoreSensorData(); });
-    $('[name=dataname]').on('click', fn_mstc_setChart);
+    $('.store-chart-sensor-list').on('change', 'input', function() { fn_mcstc_getStoreSensorData(); });
+    $('[name=dataname]').on('click', fn_mcstc_setChart);
   });
 
-  function fn_mstc_initStoreChart() {
+  function fn_mcstc_initStoreChart() {
     window.chart1 = null;
     window.datadt = null;
     window.dataset = null;
@@ -113,13 +113,13 @@
       $('[name=dataname][value="IGC"]').prop('checked', true);
     }
 
-    $('#regdt').val(fn_mlt_dateToString(new Date()).slice(0, 10));
-    fn_mstc_getStoreSensor();
+    $('#regdt').val(fn_mclt_dateToString(new Date()).slice(0, 10));
+    fn_mcstc_getStoreSensor();
   }
 
-  function fn_mstc_refreshStoreInfo() {}
+  function fn_mcstc_refreshStoreInfo() {}
 
-  function fn_mstc_getStoreSensor() {
+  function fn_mcstc_getStoreSensor() {
     $.post(
       $('#contextRoot').val() + '/mng/areaSensorListAjax',
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
@@ -156,11 +156,11 @@
         }
 
         now.setDate(now.getDate());
-        fn_mstc_getStoreSensorData('d', fn_mlt_dateToString(now).slice(0, 10), 1);
+        fn_mcstc_getStoreSensorData('d', fn_mclt_dateToString(now).slice(0, 10), 1);
     });
   }
 
-  function fn_mstc_initDataset() {
+  function fn_mcstc_initDataset() {
     let dns = $('[name=dataname]');
 
     window.val = {};
@@ -173,7 +173,7 @@
     }
   }
 
-  function fn_mstc_updateDataset(d) {
+  function fn_mcstc_updateDataset(d) {
     let ret = false; // 데이터 갱신 여부
     let dns = $('[name=dataname]');
 
@@ -241,8 +241,8 @@
     return ret;
   }
 
-  function fn_mstc_getStoreSensorData(termtype, regdt, dtsize, order, isinit) {
-    fn_mstc_onLoading();
+  function fn_mcstc_getStoreSensorData(termtype, regdt, dtsize, order, isinit) {
+    fn_mcstc_onLoading();
 
     if ($('.chart-title').length > 0)
       $('.chart-title').text($('.radio-' + $('[name=snsrid]:checked').val()).text());
@@ -265,8 +265,8 @@
       prm,
       function(d) {
         if (d && d.length > 0) {
-          if (!isinit) fn_mstc_initDataset();
-          if (fn_mstc_updateDataset(d)) fn_mstc_setChart();
+          if (!isinit) fn_mcstc_initDataset();
+          if (fn_mcstc_updateDataset(d)) fn_mcstc_setChart();
         } else {
           if (!order)
             alert('no data');
@@ -274,11 +274,11 @@
           console.log('no data');
         }
 
-        fn_mstc_offLoading();
+        fn_mcstc_offLoading();
     });
   }
 
-  function fn_mstc_setAnnotations() {
+  function fn_mcstc_setAnnotations() {
     let a1 = null, a2 = null;
     let ret = { yaxis: [] };
 
@@ -308,7 +308,7 @@
     }
   }
 
-  function fn_mstc_onLoading() {
+  function fn_mcstc_onLoading() {
     if (!window.loadingcnt)
       window.loadingcnt = 0;
 
@@ -318,7 +318,7 @@
     $('.loading-chart').show();
   }
 
-  function fn_mstc_offLoading() {
+  function fn_mcstc_offLoading() {
     window.loadingcnt--;
 
     if (window.loadingcnt <= 0) {
@@ -329,7 +329,7 @@
     }
   }
 
-  function fn_mstc_getMore(order) {
+  function fn_mcstc_getMore(order) {
     let dt = null;
     let termtype = $('#termtype option:selected').val();
 
@@ -354,10 +354,10 @@
     if (termtype == 'm')
       regdt = regdt.slice(0, 7);
 
-    fn_mstc_getStoreSensorData(termtype, regdt, 1, order, true);
+    fn_mcstc_getStoreSensorData(termtype, regdt, 1, order, true);
   }
 
-  function fn_mstc_setChart() {
+  function fn_mcstc_setChart() {
     let opt = {
       series: [],
       chart: {
@@ -367,14 +367,14 @@
         animations: { enabled: false },
         events: {
           zoomed: function(a, b) {
-            if (window.datadt.min > new Date(b.xaxis.min)) fn_mstc_getMore("desc");
-            if (window.datadt.max < new Date(b.xaxis.max)) fn_mstc_getMore("asc");
+            if (window.datadt.min > new Date(b.xaxis.min)) fn_mcstc_getMore("desc");
+            if (window.datadt.max < new Date(b.xaxis.max)) fn_mcstc_getMore("asc");
         }}
       },
       colors: [],
       stroke: { width: 3 },
       dataLabels: { enabled: false },
-      annotations: fn_mstc_setAnnotations(),
+      annotations: fn_mcstc_setAnnotations(),
       tooltip: {
         enabled: true, marker: { show: true }, fixed: { enabled: true, position: 'topLeft' },
         x: { format: 'yyyy년 MM월 dd일 HH:mm:ss' },
@@ -421,7 +421,7 @@
 
       if (window.chart1) {
         opt.chart.type = $('#charttype option:selected').val();
-        opt.annotations = fn_mstc_setAnnotations();
+        opt.annotations = fn_mcstc_setAnnotations();
 
         window.chart1.updateOptions(opt);
         window.chart1.updateSeries(series);

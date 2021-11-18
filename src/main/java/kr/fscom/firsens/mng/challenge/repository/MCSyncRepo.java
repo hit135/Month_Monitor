@@ -1,4 +1,4 @@
-package kr.fscom.firsens.mng.repository;
+package kr.fscom.firsens.mng.challenge.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -25,10 +25,10 @@ import java.util.Map;
  */
 @Mapper
 @Repository
-public interface MSyncRepo {
+public interface MCSyncRepo {
     
-    List<HashMap<String, Object>> LIST_MSY_DATA_CNT(Map<String, Object> param) throws Exception;
-    List<HashMap<String, Object>> LIST_MSY_SENSOR_DATA_CNT(Map<String, Object> param) throws Exception;
-    void INSERT_MSY_SENSOR_CHECK(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MCSY_DATA_CNT(Map<String, Object> param) throws Exception;
+    List<HashMap<String, Object>> LIST_MCSY_SENSOR_DATA_CNT(Map<String, Object> param) throws Exception;
+    void INSERT_MCSY_SENSOR_CHECK(Map<String, Object> param) throws Exception;
     
 }
