@@ -47,7 +47,7 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(mngConInterceptor)
                 .addPathPatterns("/mng/**")
-                .excludePathPatterns("/mng/loginPage", "/mng/selectRsaKeyAjax", "/mng/loginAjax", "/mng/logout");
+                .excludePathPatterns("/mng/loginPage", "/mng/selectRsaKeyAjax", "/mng/loginAjax", "/mng/logout", "/mng/incheon/**");
 
         registry.addInterceptor(mngConInterceptor).addPathPatterns("/adm/**");
 
@@ -58,6 +58,8 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("redirect:/mng/main");
+        registry.addViewController("/mng/incheon").setViewName("redirect:/mng/incheon/main");
+        registry.addViewController("/incheon").setViewName("redirect:/mng/incheon/main");
         registry.addViewController("/adm").setViewName("forward:/index.html");
     }
 

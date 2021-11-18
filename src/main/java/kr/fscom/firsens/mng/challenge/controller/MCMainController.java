@@ -53,7 +53,7 @@ public class MCMainController {
     private String naverClientId;
     
     /**
-     * @Method Name : mcmMain
+     * @Method Name : mcmPage
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -61,7 +61,7 @@ public class MCMainController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/main")
-    public ModelAndView mcmMain(HttpServletRequest req) throws Exception {
+    public ModelAndView mcmPage(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/challenge/mc_main");
 
         try {

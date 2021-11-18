@@ -53,7 +53,7 @@ public class MCStoreController {
     private String naverClientId;
     
     /**
-     * @Method Name : mcstStoreInfo
+     * @Method Name : mcstStoreInfoPage
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -61,7 +61,7 @@ public class MCStoreController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/storeInfo")
-    public ModelAndView mcstStoreInfo(HttpServletRequest req) throws Exception {
+    public ModelAndView mcstStoreInfoPage(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/challenge/mc_store_info");
 
         try {
@@ -117,7 +117,7 @@ public class MCStoreController {
     }
 
     /**
-     * @Method Name : mcstStoreLog
+     * @Method Name : mcstStoreLogPage
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -125,7 +125,7 @@ public class MCStoreController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/storeLog")
-    public ModelAndView mcstStoreLog(HttpServletRequest req) throws Exception {
+    public ModelAndView mcstStoreLogPage(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/challenge/mc_store_log");
 
         try {
@@ -152,7 +152,7 @@ public class MCStoreController {
     }
 
     /**
-     * @Method Name : mcstStoreChart
+     * @Method Name : mcstStoreChartPage
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -160,7 +160,7 @@ public class MCStoreController {
      * @return ModelAndView
      */
     @RequestMapping(value = "/storeChart")
-    public ModelAndView mcstStoreChart(HttpServletRequest req) throws Exception {
+    public ModelAndView mcstStoreChartPage(HttpServletRequest req) throws Exception {
         ModelAndView mav = new ModelAndView("mng/challenge/mc_store_chart");
 
         try {
