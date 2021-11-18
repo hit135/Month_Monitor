@@ -389,7 +389,7 @@
 
               $('.carousel-inner').append(
                 '<div class="carousel-item bg-secondary" style="height: 200px;">' +
-                '<img class="d-block h-100 m-auto" src="http://1.223.40.19:30080/' + imgPath[i] + imgName[i] + '" alt="' + oriName[i] + '" data-holder-rendered="true">' +
+                  '<img class="d-block h-100 m-auto" src="http://1.223.40.19:30080/' + imgPath[i] + imgName[i] + '" alt="' + oriName[i] + '" data-holder-rendered="true">' +
                 '</div>'
               );
 
@@ -474,6 +474,7 @@
 
         $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
         $("input:radio[name='snsr-radio-btn']").on('change', function () { fn_msti_refreshStoreInfo(); });
+
         fn_msti_refreshStoreInfo();
     });
   }
@@ -504,7 +505,10 @@
               if ($('#regdt').val()) {
                 $.post(
                   $('#contextRoot').val() + '/mng/sensorUsekwhMonthAjax',
-                  { snsrid: $("input:radio[name='snsr-radio-btn']:checked").val(), regdt: $('.store-info #regdt').val() },
+                  {
+                    snsrid: $("input:radio[name='snsr-radio-btn']:checked").val(),
+                    regdt: $('.store-info #regdt').val()
+                  },
                   function (d) {
                     $('.store-datalog-meta .monkwh td span').text(d);
                 });
@@ -549,7 +553,11 @@
   function fn_msti_getLogStat() {
     $.post(
       $('#contextRoot').val() + '/mng/logStatAjax',
-      { strcode: $('#prm_strcode').val(), areacode: $('#prm_areacode').val(), snsrid: $("input:radio[name='snsr-radio-btn']:checked").val() },
+      {
+        strcode: $('#prm_strcode').val(),
+        areacode: $('#prm_areacode').val(),
+        snsrid: $("input:radio[name='snsr-radio-btn']:checked").val()
+      },
       function (d) {
         if (d.threedays) {
           let max = -1;

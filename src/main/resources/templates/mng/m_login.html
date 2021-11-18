@@ -45,13 +45,12 @@
   </div><!-- /.page-logo -->
   <div class="card p-4 border-top-left-radius-0 border-top-right-radius-0">
     <div class="form-group">
-      <label class="form-label" for="ML_user_id">ID</label>
-      <input type="text" id="ML_user_id" class="form-control" placeholder="아이디를 입력하세요." value="admin" />
+      <label class="form-label" for="ml_user_id">ID</label>
+      <input type="text" id="ml_user_id" class="form-control" placeholder="아이디를 입력하세요." value="admin" />
     </div>
     <div class="form-group">
-      <label class="form-label" for="ML_mem_pwd">비밀번호</label>
-      <input type="password" id="ML_mem_pwd" class="form-control" placeholder="password" value="test@1212" />
-      <!-- <span class="help-block"> Your password </span> -->
+      <label class="form-label" for="ml_mem_pwd">비밀번호</label>
+      <input type="password" id="ml_mem_pwd" class="form-control" placeholder="password" value="test@1212" />
     </div>
     <button type="button" class="btn btn-success float-right mt-1" onclick="fn_ml_loginAjax();">접속</button>
   </div><!-- /.card -->
@@ -67,61 +66,62 @@
 <script th:src="@{/fs/js/rsa/rsa.js}"></script>
 
 <script>
-  var contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
-  var ML_RSA_PUBLIC_KEY_MODULUS = "", ML_RSA_PUBLIC_KEY_EXPONENT = "";
+let contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
+let ML_RSA_PUBLIC_KEY_MODULUS = "", ML_RSA_PUBLIC_KEY_EXPONENT = "";
 
-  $(document).ready(function () {
+$(document).ready(function () {
+  fn_ml_selectRsaKey();
+});
+
+function fn_ml_selectRsaKey() {
+  $.ajax({
+    url: contextPath + '/mng/selectRsaKeyAjax',
+    async: false,
+    dataType: 'json',
+    method: 'post'
+  }).done(function(data) {
+    if (data.result) {
+      if (typeof data.rsaPublicKeyModulus != 'undefined' && data.rsaPublicKeyModulus != null
+          && typeof data.rsaPublicKeyExponent != 'undefined' && data.rsaPublicKeyExponent != null) {
+        ML_RSA_PUBLIC_KEY_MODULUS = data.rsaPublicKeyModulus.toString();
+        ML_RSA_PUBLIC_KEY_EXPONENT = data.rsaPublicKeyExponent.toString();
+      }
+    } else {
+      console.log("error RSA !!!");
+    }
+  }).fail(function (e) {
+    console.log(e);
+    console.log("error RSA !!!");
+  });
+}
+
+function fn_ml_rsaEnc(value) {
+  let rsa = new RSAKey();
+  rsa.setPublic(ML_RSA_PUBLIC_KEY_MODULUS, ML_RSA_PUBLIC_KEY_EXPONENT);
+
+  return rsa.encrypt(value);
+}
+
+function fn_ml_loginAjax() {
+  $.ajax({
+    url: contextPath + '/mng/loginAjax',
+    data: JSON.stringify({ userId: fn_ml_rsaEnc($("#ml_user_id").val()), memPwd: fn_ml_rsaEnc($("#ml_mem_pwd").val()) }),
+    dataType: 'json',
+    method: 'post',
+    contentType: 'application/json',
+    async: false
+  }).done(function (data) {
+    if (data.result) {
+      alert("로그인하였습니다.");
+      location.href = contextPath + '/mng/main';
+    } else {
+      alert("로그인 도중 오류가 발생했습니다.");
+      fn_ml_selectRsaKey();
+    }
+  }).fail(function (e) {
+    console.log(e);
     fn_ml_selectRsaKey();
   });
-
-  function fn_ml_selectRsaKey() {
-    $.ajax({
-      url: contextPath + '/mng/selectRsaKeyAjax',
-      async: false,
-      dataType: 'json',
-      method: 'post'
-    }).done(function(data) {
-      if (data.result) {
-        if (typeof data.rsaPublicKeyModulus != 'undefined' && data.rsaPublicKeyModulus != null
-            && typeof data.rsaPublicKeyExponent != 'undefined' && data.rsaPublicKeyExponent != null) {
-          ML_RSA_PUBLIC_KEY_MODULUS = data['rsaPublicKeyModulus'].toString();
-          ML_RSA_PUBLIC_KEY_EXPONENT = data['rsaPublicKeyExponent'].toString();
-        }
-      } else {
-        console.log("error RSA !!!");
-      }
-    }).fail(function (e) {
-      console.log(e);
-      console.log("error RSA !!!");
-    });
-  }
-
-  function fn_ml_rsaEnc(value) {
-    var rsa = new RSAKey();
-    rsa.setPublic(ML_RSA_PUBLIC_KEY_MODULUS, ML_RSA_PUBLIC_KEY_EXPONENT);
-    return rsa.encrypt(value);
-  }
-
-  function fn_ml_loginAjax() {
-    $.ajax({
-      url: contextPath + '/mng/loginAjax',
-      data: JSON.stringify({ userId: fn_ml_rsaEnc($("#ML_user_id").val()), memPwd: fn_ml_rsaEnc($("#ML_mem_pwd").val()) }),
-      dataType: 'json',
-      method: 'post',
-      contentType: 'application/json',
-      async: false
-    }).done(function (data) {
-      if (data.result) {
-        alert("로그인하였습니다.");
-        location.href = contextPath + '/mng/main';
-      } else {
-        alert("로그인 도중 오류가 발생했습니다.");
-        fn_ml_selectRsaKey();
-      }
-    }).fail(function (e) {
-      console.log(e);
-      fn_ml_selectRsaKey();
-    });
-  }
+}
 </script>
 </html>

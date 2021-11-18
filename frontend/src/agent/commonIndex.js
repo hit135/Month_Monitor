@@ -33,7 +33,7 @@ export let getValidInput = (errKey, keyVal, check) =>
   errKey && "is-invalid form-control" || (!errKey && keyVal !== check) && "form-control is-valid" || (!errKey && keyVal === check) && "form-control";
 
 export const formatDate = (date) => {
-  var d = new Date(date),
+  let d = new Date(date),
       month = '' + (d.getMonth() + 1),
       day = '' + d.getDate(),
       year = d.getFullYear();

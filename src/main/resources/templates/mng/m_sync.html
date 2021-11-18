@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
 <th:block th:replace="mng/layout/m_head"></th:block>
 
-<style type="text/css">
-  .sync-data-cnt p { margin: 5px; border-bottom: 1px solid #ddd; }
-  .sync-data-cnt span { display: inline-block; width: 100px; text-align: right; }
-  .sync-data-cnt-list { border-right: 1px solid #000; height: 700px; overflow-y: scroll; }
-  .sync-sensor-data-cnt p { margin: 5px; border-bottom: 1px solid #ddd; }
-  .sync-sensor-data-cnt p.warn { background: #dbc969; font-weight:bold; }
-  .sync-sensor-data-cnt span { display: inline-block; width: 130px; text-align: right; }
-  .sync-sensor-data-cnt-list { height: 700px; overflow-y: scroll; }
-  .sync-sensor-data-cnt-list .sync { display: none; color: #d00; }
-  .sync-sensor-data-cnt-list .SYNC .sync { display: inline-block; }
-  .sync-sensor-data-cnt-list .SYNC .btn-sensor-data-cnt { display: none; }
+<style>
+.sync-data-cnt p { margin: 5px; border-bottom: 1px solid #ddd; }
+.sync-data-cnt span { display: inline-block; width: 100px; text-align: right; }
+.sync-data-cnt-list { border-right: 1px solid #000; height: 700px; overflow-y: scroll; }
+.sync-sensor-data-cnt p { margin: 5px; border-bottom: 1px solid #ddd; }
+.sync-sensor-data-cnt p.warn { background: #dbc969; font-weight:bold; }
+.sync-sensor-data-cnt span { display: inline-block; width: 130px; text-align: right; }
+.sync-sensor-data-cnt-list { height: 700px; overflow-y: scroll; }
+.sync-sensor-data-cnt-list .sync { display: none; color: #d00; }
+.sync-sensor-data-cnt-list .SYNC .sync { display: inline-block; }
+.sync-sensor-data-cnt-list .SYNC .btn-sensor-data-cnt { display: none; }
 </style>
 </head>
 
@@ -56,8 +57,7 @@
     $.template(
       'sensor-data-cnt',
       '<p class="{{html DATASTAT}}">' +
-        '<span>{{html AREANAME}}</span><span>{{html SNSRID}}</span><span>{{html SNSRNICK}}</span>' +
-        '<span>{{html DAY2}}</span><span>{{html DAY1}}</span><span>{{html DAY}}</span>' +
+        '<span>{{html AREANAME}}</span><span>{{html SNSRID}}</span><span>{{html SNSRNICK}}</span><span>{{html DAY2}}</span><span>{{html DAY1}}</span><span>{{html DAY}}</span>' +
         '<span class="{{html CHECKSTAT}}">' +
           '<button type="button" class="btn-sensor-data-cnt btn btn-xs btn-outline-info waves-effect waves-themed" data-snsrid="{{html SNSRID}}" data-regdt="{{html SDATE}}">동기화요청</button>' +
           '<b class="sync">{{html REQCONT}} 요청</b>' +
@@ -67,11 +67,11 @@
 
     $('#regdt').on('change', fn_msy_getDataCntList);
 
-    $('.sync-data-cnt-list').on('click', '.btn-data-cnt', function() {
+    $('.sync-data-cnt-list').on('click', '.btn-data-cnt', function () {
       fn_msy_getSensorDataCntList($(this).attr('data-regdt'));
     });
 
-    $('.sync-sensor-data-cnt-list').on('click', '.btn-sensor-data-cnt', function() {
+    $('.sync-sensor-data-cnt-list').on('click', '.btn-sensor-data-cnt', function () {
       fn_msy_requestSync($(this).attr('data-snsrid'), $(this).attr('data-regdt'));
     });
 
@@ -81,7 +81,7 @@
   }
 
   function fn_msy_getDataCntList() {
-    $.post($('#contextRoot').val() + '/mng/dataCntListAjax', { regdt: $('#regdt').val() }, function(d) {
+    $.post($('#contextRoot').val() + '/mng/dataCntListAjax', { regdt: $('#regdt').val() }, function (d) {
       $('.sync-data-cnt-list').html('');
 
       for (let i = 0; i < d.length; i++)
@@ -90,7 +90,7 @@
   }
 
   function fn_msy_getSensorDataCntList(regdt) {
-    $.post($('#contextRoot').val() + '/mng/sensorDataCntListAjax', { regdt:regdt }, function(d) {
+    $.post($('#contextRoot').val() + '/mng/sensorDataCntListAjax', { regdt: regdt }, function (d) {
       $('.sync-sensor-data-regdt').text('');
       $('.sync-sensor-data-cnt-list').html('');
 
@@ -107,17 +107,16 @@
 
   function fn_msy_requestSync(snsrid, reqcont) {
     $.post(
-        $('#contextRoot').val() + '/mng/requestSyncAjax'
-      , { snsrid: snsrid, reqcont: reqcont }
-      , function(d) {
-          if (d == 'success') {
-            alert('동기화를 요청했습니다.');
-            fn_msy_getSensorDataCntList(reqcont.replace('|', '-').replace('|', '-'));
-          } else {
-            alert('동기화요청을 실패하였습니다.');
-          }
+      $('#contextRoot').val() + '/mng/requestSyncAjax',
+      { snsrid: snsrid, reqcont: reqcont },
+      function (d) {
+        if (d == 'success') {
+          alert('동기화를 요청했습니다.');
+          fn_msy_getSensorDataCntList(reqcont.replace('|', '-').replace('|', '-'));
+        } else {
+          alert('동기화 요청이 실패하였습니다.');
         }
-    );
+    });
   }
 
   function fn_msy_dateToString(d) {
