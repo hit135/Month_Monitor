@@ -34,3 +34,10 @@ build/
 ### VS Code ###
 .vscode/
 
+package-lock.json
+package.json
+yarn.lock
+frontend/yarn.lock
+node_modules/
+
+src/main/resources/META-INF/MANIFEST.MF

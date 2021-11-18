@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+<title>fireSens</title>
+<th:block th:replace="mng/challenge/districtLayout/mc_d_header"></th:block>
+
+<link rel="stylesheet" media="screen, print" th:href="@{/fs/css/statistics/chart.css}" />
+<link rel="stylesheet" media="screen, print" th:href="@{/fs/css/datagrid/datatables/datatables.bundle.css}" />
+<link rel="stylesheet" media="screen, print" th:href="@{/fs/css/custom/am_common.css}" />
+<link rel="stylesheet" media="screen, print" th:href="@{/fs/css/statistics/chartist.css}" />
+
+<style>
+.ct-label { font-size: 1.4rem; fill: #fff; }
+.top-title { background-color: #4771d0; width: 33%; text-align: center; }
+.top-title-span { letter-spacing: 0.3rem; font-size: 2.5rem; font-weight: 400; }
+
+.main-title {
+  /*padding-bottom: 0.5vh;*/
+  border-bottom: 1px solid #ccc;
+}
+
+.main-title-badge {
+  padding: 0.65rem 1.25rem 0.45rem 1.25rem;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  margin-left: 5vh;
+}
+
+.arrow-icon { width: 16px; height: 16px; margin-left: 1vh; }
+.round-span { padding: 10px; width: 1vh; height: 1vh; }
+#todayDate { font-size: 1.7rem; color: #fff; font-weight: 900; }
+#realTime { font-size: 1.7rem; color: #fff; font-weight: 400; }
+
+.myclass1 { stroke: #ffc000; fill: #ffc000; }
+.myclass2 { stroke: #ed7d31; fill: #ed7d31; }
+.myclass3 { stroke: #36a2eb; fill: #36a2eb; }
+
+.donggu-btn { background-color: #cd2a68; }
+.junggu-btn { background-color: #c6000a; }
+.seogu-btn { background-color: #5c6d00; }
+.daedeokgu-btn { background-color: #f26e00; }
+.yuseonggu-btn { background-color: #c08adc; }
+
+.js-data-attributes { position: absolute; }
+.line-badge { background-color: #2196F3; cursor: auto; width: 21px !important; height: 3px !important; padding: 0px; border-radius: 0px !important; }
+</style>
+</head>
+
+<body class="mod-bg-1 nav-function-minify">
+<div class="page-wrapper">
+  <div class="page-inner">
+    <div class="page-content-wrapper" style="background-color: #222222;">
+      <div class="d-flex justify-content-start">
+        <div class="p-2 top-title">
+          <h2 class="m-0 top-title-span">대전시 자치구별 전력사용현황</h2>
+        </div><!-- /.p-2 top-title -->
+      </div><!-- /.d-flex justify-content-start -->
+
+      <main id="js-page-content" role="main" class="page-content first-main-page">
+        <div class="row">
+          <div class="col-3" style="padding-left: 5vh; padding-right: 4vh;">
+            <div class="row" style="padding-bottom: 10vh;">
+              <div class="col-xl-12">
+                <h2 class="main-title" style="padding-bottom: 5px;">전력사용 현황</h2>
+                <div class="d-flex justify-content-center mb-3">
+                  <div style="padding: 0.25rem 1.0rem 0.25rem 1.0rem;">
+                    <div class="d-flex flex-column">
+                      <div style="margin-bottom: 1vh;">
+                        <img style="width: 100%; max-width: 20px;" th:src="@{/fs/img/district/redVolt.png}" alt="icon" />
+                        <span style="color: #AAAAAA; margin-left: 1vh; font-size: 1rem;">어제</span>
+                      </div><!-- /margin-bottom: 1vh; -->
+                      <div class="d-flex justify-content-center">
+                        <h1 class="m-0" id="yKwh">0</h1>
+                        <span style="color: #fff; font-size: 1rem;" class="justify-content-end align-content-end align-items-end d-flex">MWh</span>
+                      </div><!-- /.d-flex justify-content-center -->
+                    </div><!-- /.d-flex flex-column -->
+                  </div><!-- /padding: 0.25rem 1.0rem 0.25rem 1.0rem; -->
+                  <div style="padding: 0.25rem 1.0rem 0.25rem 1.0rem;">
+                    <div class="d-flex flex-column">
+                      <div style="margin-bottom: 1vh;">
+                        <img style="width: 100%; max-width: 20px;" th:src="@{/fs/img/district/yellowVolt.png}" alt="icon" />
+                        <span style="color: #AAAAAA; margin-left: 1vh; font-size: 1rem;">지난주</span>
+                      </div><!-- /margin-bottom: 1vh -->
+                      <div class="d-flex justify-content-center">
+                        <h1 class="m-0" id="lastWeekKwh">0</h1>
+                        <span style="color: #fff; font-size: 1rem;" class="justify-content-end align-content-end align-items-end d-flex">MWh</span>
+                      </div><!-- /.d-flex justify-content-center -->
+                    </div><!-- /.d-flex flex-column -->
+                  </div><!-- /padding: 0.25rem 1.0rem 0.25rem 1.0rem; -->
+                  <div style="padding: 0.25rem 1.0rem 0.25rem 1.0rem;">
+                    <div class="d-flex flex-column">
+                      <div style="margin-bottom: 1vh; font-size: 1rem;">
+                        <img style="width: 100%; max-width: 20px;" th:src="@{/fs/img/district/blueVolt.png}" alt="icon" />
+                        <span style="color: #AAAAAA; margin-left: 1vh; font-size: 1rem;">지난달</span>
+                      </div><!-- /margin-bottom: 1vh; font-size: 1rem; -->
+                      <div class="d-flex justify-content-center">
+                        <h1 class="m-0" id="lastMonthKwh">0</h1>
+                        <span style="color: #fff; font-size: 1rem;" class="justify-content-end align-content-end align-items-end d-flex">MWh</span>
+                      </div><!-- /.d-flex justify-content-center -->
+                    </div><!-- /.d-flex flex-column -->
+                  </div><!-- /padding: 0.25rem 1.0rem 0.25rem 1.0rem; -->
+                </div><!-- /.d-flex -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+            <div class="row">
+              <div class="col-xl-12">
+                <h2 class="main-title" style="padding-bottom: 5px;">전일대비 전력 사용량</h2>
+                <div class="d-flex mb-3">
+                  <div class="mr-auto p-2">
+                    <div class="d-flex flex-column">
+                      <!--     <div>
+                             <span style="font-size: 1.2rem; color: #AAAAAA;">전체</span>&nbsp;
+                             <span style="color: #fff; font-weight: 900; font-size: 1.7rem;">상점수</span>&nbsp;
+                             <span style="color: #ffe490; font-weight: 900; font-size: 1.7rem;" id="realStrCnt">0</span>
+                             <span style="font-size: 1.2rem; color: #AAAAAA;">개</span>
+                           </div>-->
+                      <div>
+                        <span style="font-size: 1.2rem; color: #AAAAAA;">전체</span>&nbsp;
+                        <span style="color: #fff; font-weight: 900; font-size: 1.7rem;">센서수</span>&nbsp;
+                        <span style="color: #ffe490; font-weight: 900; font-size: 1.7rem;" id="realSnsrCnt">0</span>
+                        <span style="font-size: 1.2rem; color: #AAAAAA;">개</span>
+                      </div>
+                    </div><!-- /.d-flex flex-column -->
+                  </div><!-- /.mr-auto p-2 -->
+                </div><!-- /.d-flex -->
+                <div style="margin-top: 7vh;">
+                  <span id="realKwhPer" data-peity='{ "fill": ["#2196F3", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
+                </div><!-- /margin-top: 7vh; -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+          </div><!-- /.col-3 -->
+          <div class="col-6">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="d-flex flex-row-reverse">
+                  <div class="p-1"><h4 style="color: #fff;">저번주 이번주 시간당 전력사용량 (단위 : kWh) </h4></div>
+                </div><!-- /.d-flex flex-row-reverse -->
+                <div class="d-flex justify-content-center">
+                  <img th:src="@{/fs/img/district/daejeon-map.png}" alt="icon" style="width: 73%;" />
+                  <div class="js-data-attributes" style="left: 62%; top: 51%;">
+                    <span id="donggu" class="bar-colours-2" data-peity='{ "height": 80, "width": "90" }'></span>
+                  </div><!-- /.js-data-attributes -->
+                  <div class="d-flex justify-content-center" style="position: absolute; top: 60%; left: 62.0%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h4 class="mb-0 small-chart-text" id="yDonggu" style="color: #fff;">0</h4>
+                    </div><!-- /.d-flex justify-content-center align-items-center align-content-center text-center -->
+                  </div><!-- /.d-flex -->
+                  <div class="d-flex justify-content-center" style="position: absolute; top: 60%; left: 66.8%; width: 45px;">
+                    <div class="d-flex align-items-center align-content-center">
+                      <h4 class="mb-0 small-chart-text" id="tDonggu" style="color: #fff;">0</h4>
+                    </div><!-- /.d-flex align-items-center align-content-center -->
+                  </div><!-- /.d-flex justify-content-center -->
+                  <div class="js-data-attributes" style="left: 46%; top: 53%;">
+                    <span id="junggu" class="bar-colours-2" data-peity='{ "height": 100, "width": "90" }'></span>
+                    <div class="d-flex justify-content-center" style="position: absolute; top: 74%; left: 0; width: 45px;">
+                      <div class="d-flex justify-content-center align-items-center align-content-center">
+                        <h4 class="mb-0 small-chart-text" id="yJunggu" style="color: #fff;">0</h4>
+                      </div><!-- /.d-flex justify-content-center align-items-center align-content-center -->
+                    </div><!-- /.d-flex justify-content-center -->
+                    <div class="d-flex justify-content-center" style="position: absolute; top: 74%; left: 50%; width: 45px;">
+                      <div class="d-flex align-items-center align-content-center">
+                        <h4 class="mb-0 small-chart-text" id="tJunggu" style="color: #fff;">0</h4>
+                      </div><!-- /.d-flex align-items-center align-content-center -->
+                    </div><!-- /.d-flex justify-content-center -->
+                  </div><!-- /.s-data-attributes -->
+                  <div class="js-data-attributes" style="left: 31%; top: 65%;">
+                    <span id="seogu" class="bar-colours-2" data-peity='{ "height": 80, "width": "90" }'></span>
+                    <div class="d-flex justify-content-center" style="position: absolute; top: 68%; left: 0; width: 45px;">
+                      <div class="d-flex justify-content-center-start align-items-center align-content-center">
+                        <h4 class="mb-0 small-chart-text" id="ySeogu" style="color: #fff;">0</h4>
+                      </div><!-- /.d-flex justify-content-center align-items-center align-content-center -->
+                    </div><!-- /.d-flex justify-content-center -->
+                    <div class="d-flex justify-content-center" style="position: absolute; top: 68%; left: 49%; width: 45px;">
+                      <div class="d-flex align-items-center align-content-center">
+                        <h4 class="mb-0 small-chart-text" id="tSeogu" style="color: #fff;">0</h4>
+                      </div><!-- /.d-flex align-items-center align-content-center -->
+                    </div><!-- /.d-flex justify-content-center -->
+                  </div><!-- /.js-data-attributes -->
+                  <div class="js-data-attributes" style="left: 26.5%; top: 37%;">
+                    <span id="yuseonggu" class="bar-colours-2" data-peity='{ "height": 65, "width": "90" }'></span>
+                    <div class="d-flex justify-content-center" style="position: absolute; top: 63%; left: 0%; width: 45px;">
+                      <div class="d-flex justify-content-start align-items-center align-content-center">
+                        <h4 class="mb-0 small-chart-text" id="yYuseonggu" style="color: #fff;">0</h4>
+                      </div><!-- /.d-flex justify-content-center align-items-center align-content-center -->
+                    </div><!-- /.d-flex justify-content-center -->
+                    <div class="d-flex justify-content-center" style="position: absolute; top: 63%; left: 49%; width: 45px;">
+                      <div class="d-flex align-items-center align-content-center">
+                        <h4 class="mb-0 small-chart-text" id="tYuseonggu" style="color: #fff;">0</h4>
+                      </div><!-- /.d-flex align-items-center align-content-center -->
+                    </div><!-- /.d-flex justify-content-center -->
+                  </div><!-- /.js-data-attributes -->
+                  <div class="js-data-attributes" style="left: 52.5%; top: 22%;">
+                    <span id="daedoekgu" class="bar-colours-2" data-peity='{ "height": 90, "width": "90" }'></span>
+                    <div class="d-flex justify-content-center" style="position: absolute; top: 72%; left: 0%; width: 45px;">
+                      <div class="d-flex justify-content-center align-items-center align-content-center">
+                        <h4 class="mb-0 small-chart-text" id="yDaedoekgu" style="color: #fff;">0</h4>
+                      </div><!-- /.d-flex justify-content-center align-items-center align-content-center -->
+                    </div><!-- /.d-flex justify-content-center -->
+                    <div class="d-flex justify-content-center" style="position: absolute; top: 72%; left: 50%; width: 45px;">
+                      <div class="d-flex align-items-center align-content-center">
+                        <h4 class="mb-0 small-chart-text" id="tDaedoekgu" style="color: #fff;">0</h4>
+                      </div><!-- /.d-flex align-items-center align-content-center -->
+                    </div><!-- /.d-flex justify-content-center -->
+                  </div><!-- /.s-data-attributes -->
+                </div><!-- /.d-flex -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+            <div class="row" style="padding-left: 5vh; padding-right: 5vh;">
+              <div class="col-xl-12">
+                <div class="d-flex" style="border-bottom: 1px solid #ccc;">
+                  <div class="p-2 flex-fill d-flex align-content-end align-items-end"><h2 class="m-0">자치구별 전력사용량(전월대비)</h2></div>
+                  <div class="d-flex flex-column">
+                    <div class="p-1 d-flex justify-content-start">
+                      <span class="line-badge d-flex align-content-center align-items-center justify-content-center"
+                            style="background-color: #2196F3; cursor: auto; margin-top: 9px;"></span>
+                      <span style="font-size:1rem; color: #fff; margin-left: 10px;">전월대비 시간당 전력사용 비율 (단위 : %)</span>
+                    </div><!-- /.p-1 d-flex justify-content-start -->
+                    <div class="p-1 d-flex justify-content-start">
+                      <span class="btn-icon rounded-circle waves-effect waves-themed round-span"
+                            style="background-color: #627594; cursor: auto;"></span>
+                      <span style="font-size:1rem; color: #fff; margin-left: 10px;">금월 전력사용량 (단위 : MWh)</span>
+                    </div><!-- /.p-1 d-flex justify-content-start -->
+                  </div><!-- /.d-flex -->
+                </div><!-- /.d-flex -->
+              </div><!-- /.col-xl-12 -->
+              <div class="col-xl-12 pt-2">
+                <canvas id="localEventChart" style="height: 290px; display: block; width: 100%;"></canvas>
+              </div><!-- /.col-xl-12 pt-2 -->
+            </div><!-- /.row -->
+          </div><!-- /.col-6 -->
+          <div class="col-3">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="d-flex justify-content-center">
+                  <div class="p-3" style="background-color: #4771d0; width: 100%; text-align: center; border-radius: 5px;">
+                    <span id="todayDate"></span>
+                    <span id="realTime"></span>
+                  </div><!-- /.p-3 -->
+                </div><!-- /.d-flex justify-content-center -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+            <div class="row" style="margin-top: 4vh;">
+              <div class="col-xl-12">
+                <div class="d-flex" style="border-bottom: 1px solid #ccc;">
+                  <div class="p-2 flex-fill"><h2 class="m-0">지역별 실시간 현황</h2></div>
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <span style="color: #2196F3; margin-left: 1vh; font-size: 1.0rem;">이번달 누적전력량</span>
+                  </div><!-- /.p-2 flex-fill d-flex justify-content-end align-content-center align-items-center -->
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <span style="color: #f08e45; margin-left: 1vh; font-size: 1.0rem;">전월대비%</span>
+                  </div><!-- /.p-2 flex-fill d-flex justify-content-end align-content-center align-items-center -->
+                </div><!-- /.d-flex -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+            <div class="row pt-3">
+              <div class="col-xl-12" id="areaList"></div>
+            </div><!-- /.row -->
+          </div><!-- /.col-3 -->
+        </div><!-- /.row -->
+      </main>
+
+      <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+      <th:block th:replace="mng/challenge/districtLayout/mc_d_footer"></th:block>
+    </div><!-- /.page-content-wrapper -->
+  </div><!-- /.page-inner -->
+</div><!-- /.page-wrapper -->
+
+<th:block th:replace="mng/challenge/districtLayout/mc_d_bottom"></th:block>
+
+<link id="contextPathHolder" th:data-contextPath="${#httpServletRequest.getContextPath()}"/>
+
+<script th:src="@{/fs/js/statistics/chart.js}"></script>
+<script th:src="@{/fs/js/statistics/utils.js}"></script>
+<script th:src="@{/fs/js/statistics/chartist.js}"></script>
+<script th:src="@{/fs/js/statistics/peity.bundle.js}"></script>
+
+<script>
+let contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
+
+$(function () {
+  fn_mcdk_dateToString();
+  fn_mcdk_init();
+
+  setInterval(fn_mcdk_refresh, 1000 * 60 * 60);
+});
+
+function fn_mcdk_refresh() {
+  fn_mcdk_getYesterdaykwhStat();
+  fn_mcdk_getCurrKwhStat();
+  fn_mcdk_getCurrGuMapKwhStat();
+  fn_mcdk_getCurrGuMonthKwhStat();
+  fn_mcdk_getCurrGuAreaKwhRank();
+}
+
+function fn_mcdk_dateToString() {
+  let d = new Date();
+  let day =  d.getFullYear() + '.' + ('0' + (d.getMonth() + 1)).slice(-2) + '.' + ('0' + d.getDate()).slice(-2);
+  $("#todayDate").html(day + " ");
+}
+
+function fn_mcdk_clock() {
+  let d = new Date();
+  let time = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+  $("#realTime").text(time);
+}
+
+function fn_mcdk_init() {
+  fn_mcdk_clock();
+  fn_mcdk_getYesterdaykwhStat();
+  fn_mcdk_getCurrKwhStat();
+  fn_mcdk_getCurrGuMapKwhStat();
+  fn_mcdk_getCurrGuMonthKwhStat();
+  fn_mcdk_getCurrGuAreaKwhRank();
+
+  setInterval(fn_mcdk_clock, 1000);
+}
+
+function fn_mcdk_getYesterdaykwhStat() {
+  $.get(contextPath + '/district/yesterdayKwhStat', function (d) {
+    $("#yKwh").text($.number(Math.round(d.YESTERDAYUSEKWH)  / 1000));
+    $("#lastWeekKwh").text($.number(d.LASTWEEKUSEKWH / 1000));
+    $("#lastMonthKwh").text($.number(Math.round(d.LASTMONTHUSEKWH) / 1000));
+  });
+}
+
+function fn_mcdk_getCurrKwhStat() {
+  $.get(contextPath + '/district/currKwhStat', function (d) {
+    $("#realStrCnt").text($.number(d.STRCNT));
+    $("#realSnsrCnt").text($.number(d.SNSRCNT));
+    $("#realKwhPer").text($.number(d.USEPER).toString() + "/" + "100");
+
+    $('#realKwhPer').peity('donut', {
+      width: "100%",
+      height: "300px",
+      innerRadius: 100,
+      radius: 40,
+      after: function () {
+        this.$svg.append(
+          this
+            .svgElement('text', { fill: '#fff', 'font-size': "3rem", 'font-weight': 900, 'text-anchor': 'middle', x: this.scale(0, 0)[0], y: this.scale(0, 0)[1] + 12 })
+            .text($.number(d.USEPER) + "%")
+        );
+      }
+    });
+  });
+}
+
+function fn_mcdk_getCurrGuMapKwhStat () {
+  $.get(contextPath + '/district/guMapKwhStat', function (d) {
+    let today = new Date();
+    let week = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    let todayName = week[new Date().getDay()];
+    let korWeek = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+
+    todayIndex = korWeek.indexOf(todayName);
+    let todayNum = 0;
+
+    if (todayIndex === 0)
+      todayNum = today.getHours();
+    else
+      todayNum = 24 * (todayIndex) + today.getHours();
+
+    $.each(d, function (idx, item) {
+      if (item.GUCODE === "30110") {          // 동구
+        let dongguBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
+        let dongguToday = Math.round(item.THISWEEKUSEKWH / todayNum);
+
+        $("#yDonggu").text(dongguBefore);
+        $("#tDonggu").text(dongguToday);
+
+        fn_mcdk_drawPeityBar(item.SNSRCNT, dongguBefore, dongguToday, "donggu");
+      } else if (item.GUCODE === "30140") {   //중구
+        let jungguBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
+        let jungguToday = Math.round(item.THISWEEKUSEKWH / todayNum);
+
+        $("#yJunggu").text(jungguBefore);
+        $("#tJunggu").text(jungguToday);
+
+        fn_mcdk_drawPeityBar(item.SNSRCNT, jungguBefore, jungguToday, "junggu");
+      } else if (item.GUCODE === "30170") {   // 서구
+        let seoguBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
+        let seoguToday = Math.round(item.THISWEEKUSEKWH / todayNum);
+
+        $("#ySeogu").text(seoguBefore);
+        $("#tSeogu").text(seoguToday);
+
+        fn_mcdk_drawPeityBar(item.SNSRCNT, seoguBefore, seoguToday, "seogu");
+      } else if (item.GUCODE === "30200") {   // 유성구
+        let yuseongBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
+        let yuseongToday = Math.round(item.THISWEEKUSEKWH / todayNum);
+
+        $("#yYuseonggu").text(yuseongBefore);
+        $("#tYuseonggu").text(yuseongToday);
+
+        fn_mcdk_drawPeityBar(item.SNSRCNT, yuseongBefore, yuseongToday, "yuseonggu");
+      } else if (item.GUCODE === "30230") {   // 대덕구
+        let daedoekBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
+        let daedoekToday = Math.round(item.THISWEEKUSEKWH / todayNum);
+
+        $("#yDaedoekgu").text(daedoekBefore);
+        $("#tDaedoekgu").text(daedoekToday);
+
+        fn_mcdk_drawPeityBar(item.SNSRCNT, daedoekBefore, daedoekToday, "daedoekgu");
+      }
+    });
+  });
+}
+
+function fn_mcdk_drawPeityBar(snsrCnt, yKwh, tKwh, className) {
+  $("#" + className).text(yKwh + "," + tKwh);
+  $(".bar-colours-2").peity("bar", { fill: ["#2196F3", "#FF684A"] });
+}
+
+function fn_mcdk_getCurrGuMonthKwhStat() {
+  $.get(contextPath + '/district/guMonthKwhStat', function (d) {
+    let guName = "";
+    let guNameLabel = [];
+    let barKwhList = [];
+    let lineKwhPerList = [];
+
+    $.each(d, function (idx, item) {
+      if (item.GUCODE === "30110") guName = "동구";
+      else if (item.GUCODE === "30140") guName = "중구";
+      else if (item.GUCODE === "30170") guName = "서구";
+      else if (item.GUCODE === "30230") guName = "대덕구";
+      else if (item.GUCODE === "30200") guName = "유성구";
+
+      guNameLabel.push(guName);
+      barKwhList.push(Math.round(item.THISMONTHUSEKWH / 1000));
+      lineKwhPerList.push(Math.round(item.USEPER));
+    });
+
+    guNameLabel.push("유성구");
+
+    let bar_ctx = document.getElementById('localEventChart').getContext('2d');
+    let background_1 = bar_ctx.createLinearGradient(0, 0, 0, 310);
+
+    background_1.addColorStop(0, '#374268');
+    background_1.addColorStop(1, '#78849c');
+
+    let localLabel = {
+      labels: guNameLabel,
+      datasets: [
+        { type: 'line', label: '', yAxisID: 'A', fill: false, borderColor: 'rgb(54, 162, 235)', data: lineKwhPerList },
+        { type: 'bar', label: '', yAxisID: 'B', borderColor: background_1, backgroundColor: background_1, borderWidth: 1, data: barKwhList }
+      ]
+    };
+
+    let localChart = new Chart($("#localEventChart"), {
+      type: 'bar',
+      data: localLabel,
+      options: {
+        responsive: false,
+        legend: { position: 'bottom', display: false },
+        "hover": { "animationDuration": 0 },
+        scales: {
+          yAxes : [
+            { id: 'B', type: 'linear', position: 'left', ticks : { fontColor: "white", fontSize: 15 }, afterDataLimits(scale) { scale.max += 50; } },
+            { id: 'A', type: 'linear', position: 'right', ticks: { fontColor: "white", fontSize: 15 } }
+          ],
+          xAxes : [{ ticks : { fontColor: "white", fontSize: 15 } }]
+        },
+        animation: {
+          duration: 1,
+          onComplete: function () {
+            let chartInstance = this.chart, ctx = chartInstance.ctx;
+            ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+
+            this.data.datasets.forEach(function (dataset, i) {
+              if (i === 1) {
+                let meta = chartInstance.controller.getDatasetMeta(i);
+
+                meta.data.forEach(function (bar, index) {
+                  let data = dataset.data[index];
+                  ctx.fillStyle = "#fff";
+                  ctx.font = "bold 20px 'NanumBarunGothic', sans-serif";
+
+                  ctx.fillText(data, bar._model.x, bar._model.y);
+                });
+              }
+            });
+        }},
+        title: { display: false, text: '' }
+      }
+    });
+  });
+}
+
+function fn_mcdk_getCurrGuAreaKwhRank() {
+  $.get(contextPath + '/district/guAreaKwhRank', function (d) {
+    $("#areaList").empty();
+
+    let dongguCnt = 0;
+    let jungguCnt = 0;
+    let seoguCnt = 0;
+    let daedoekguCnt = 0;
+    let yuseongguCnt = 0
+
+    $.each(d, function (idx, item) {
+      if (item.GUCODE === "30110") dongguCnt += item.THISMONTHUSEKWH;
+      else if (item.GUCODE === "30140") jungguCnt += item.THISMONTHUSEKWH;
+      else if (item.GUCODE === "30170") seoguCnt += item.THISMONTHUSEKWH;
+      else if (item.GUCODE === "30200") yuseongguCnt += item.THISMONTHUSEKWH;
+      else if (item.GUCODE === "30230") daedoekguCnt += item.THISMONTHUSEKWH;
+    });
+
+    let orderList = [
+      { GUCODE: "30110", SUMCNT: dongguCnt }, { GUCODE: "30140", SUMCNT: jungguCnt }, { GUCODE: "30170", SUMCNT: seoguCnt },
+      { GUCODE: "30200", SUMCNT: yuseongguCnt}, { GUCODE: "30230", SUMCNT: daedoekguCnt }
+    ];
+
+    orderList.sort(function (a, b) { return b.SUMCNT - a.SUMCNT; });
+
+    let btnClass = "";
+    let guName;
+
+    $.each(orderList, function (idx1, item1) {
+      if (item1.GUCODE === "30110") {
+        btnClass = "donggu-btn";
+        guName = "동구";
+      } else if (item1.GUCODE === "30140") {
+        btnClass = "junggu-btn";
+        guName = "중구";
+      } else if (item1.GUCODE === "30170") {
+        btnClass = "seogu-btn";
+        guName = "서구";
+      } else if (item1.GUCODE === "30230") {
+        btnClass = "daedeokgu-btn";
+        guName = "대덕구";
+      } else if (item1.GUCODE === "30200") {
+        btnClass = "yuseonggu-btn";
+        guName = "유성구";
+      }
+
+      let html = '<div class="d-inline-flex"><h2><span class="badge pl-4 pr-4 pt-2 pb-2 ' + btnClass + '" style="font-weight: 900;">' + guName + '</span></h2></div>';
+
+      $.each(d, function (idx2, item2) {
+        if (item1.GUCODE === item2.GUCODE) {
+          html += [ '<div class="d-flex">'
+                  ,   '<div class="p-2 flex-fill" style="width: 180px;"><h4 class="m-0" style="font-weight: 400">' + item2.AREANAME + '</h4></div>'
+                  ,   '<div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">'
+                  ,     '<h3 class="m-0" style="color: #2196F3;">' + $.number(Math.round(item2.THISMONTHUSEKWH) / 1000)  + " MWh" + '</h3>'
+                  ,   '</div>'
+                  ,   '<div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 50px;">'
+                  ,     '<h3 class="m-0" style="color: #f08e45;">' + Math.round(item2.USEPER) + "%" + '</h3>'
+                  ,   '</div>'
+                  , '</div>' ].join('');
+
+          // if(item2["AREANAME"] === "대전오류동시장" || item2["AREANAME"] === "역전시장") {
+          //     let customNum = 0;
+          //     let customPer = 0;
+          //
+          //     (item2["AREANAME"] === "대전오류동시장") ? customNum = 102000.502 : customNum = 30200;
+          //     (item2["AREANAME"] === "대전오류동시장") ? customPer = 72 : customPer = 70;
+          //
+          //     html += [ '<div class="d-flex">'
+          //         ,   '<div class="p-2 flex-fill" style="width: 180px;"><h4 class="m-0" style="font-weight: 400">'+ item2["AREANAME"] +'</h4></div>'
+          //         ,   '<div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">'
+          //         ,     '<h3 class="m-0" style="color: #2196F3;">' + $.number(customNum / 1000)  + " MWh" + '</h3>'
+          //         ,   '</div>'
+          //         ,   '<div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 50px;">'
+          //         ,     '<h3 class="m-0" style="color: #f08e45;">' + Math.round(customPer) + "%" + '</h3>'
+          //         ,   '</div>'
+          //         , '</div>' ].join('');
+          // } else {
+          //
+          // }
+        }
+      });
+
+      html +=  '<hr/>'
+      $("#areaList").append(html);
+    });
+
+    // let html2 = [ '<div class="d-flex">'
+    //             ,   '<div class="p-2 flex-fill" style="width: 180px;">'
+    //             ,     '<h2><span class="badge pl-4 pr-4 pt-2 pb-2 yuseonggu-btn" style="font-weight: 900;">유성구</span></h2>'
+    //             ,   '</div>'
+    //             , '</div>' ].join('');
+    //
+    // $("#areaList").append(html2);
+  });
+}
+</script>
+</body>
+</html>
