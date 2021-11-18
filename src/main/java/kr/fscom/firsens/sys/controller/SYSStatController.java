@@ -14,20 +14,20 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/api")
 public class SYSStatController {
+
     private final SYSStatRepo sysStatRepo;
 
     @Autowired
-    SYSStatController(SYSStatRepo sysStatRepo) { this.sysStatRepo = sysStatRepo; }
+    SYSStatController(SYSStatRepo sysStatRepo) {
+        this.sysStatRepo = sysStatRepo;
+    }
 
     @GetMapping("/selectGroup")
     public HashMap<String, Object> selectGroup(String type) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
+
         try {
-            if(type.equals("guCode")) {
-                rtn.put("resultList", sysStatRepo.SELECT_TYPE_GUCODE());
-            } else {
-                rtn.put("resultList", sysStatRepo.SELECT_TYPE_AREACODE());
-            }
+            rtn.put("resultList", type.equals("guCode") ? sysStatRepo.LIST_TYPE_GUCODE() : sysStatRepo.LIST_TYPE_AREACODE());
             rtn.put("result", "success");
         } catch (Exception ex) {
             rtn.put("result", "fail");
@@ -41,35 +41,39 @@ public class SYSStatController {
             , String dateType, String yearDate, String monthDate, String halfDate, String halfSelect, String quarterDate) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         HashMap<String, Object> paramMap = new HashMap<>();
+
         try {
-            if(dateType.equals("년")) {
+            if (dateType.equals("년")) {
                 paramMap.put("dateType", "year");
                 paramMap.put("startDate", yearDate.split("-")[0]);
                 rtn.put("startDate", yearDate.split("-")[0] + "년");
-            } else if(dateType.equals("월")) {
+            } else if (dateType.equals("월")) {
                 paramMap.put("dateType", "month");
                 paramMap.put("startDate", monthDate.split("-")[0] + "-" + "01");
                 paramMap.put("endDate", monthDate.split("-")[0] + "-" + monthDate.split("-")[1]);
                 rtn.put("startDate", monthDate.split("-")[0] + "년 " + monthDate.split("-")[1] + "월");
-            } else if(dateType.equals("반기")) {
+            } else if (dateType.equals("반기")) {
                 String halfDate1;
                 String halfDate2;
                 paramMap.put("dateType", "half");
-                if(halfSelect.equals("상반기")) {
+
+                if (halfSelect.equals("상반기")) {
                     halfDate1 = halfDate.split("-")[0] + "-01";
                     halfDate2 = halfDate.split("-")[0] + "-06";
                 } else {
                     halfDate1 = halfDate.split("-")[0] + "-07";
                     halfDate2 = halfDate.split("-")[0] + "-12";
                 }
+
                 paramMap.put("startDate", halfDate1);
                 paramMap.put("endDate", halfDate2);
                 rtn.put("startDate", halfDate1.split("-")[0] + "년 " + halfDate1.split("-")[1] + "월");
                 rtn.put("endDate",  halfDate2.split("-")[0] + "년 " + halfDate2.split("-")[1] + "월");
-            } else if(dateType.equals("분기")) {
+            } else if (dateType.equals("분기")) {
                 paramMap.put("dateType", "quarter");
                 String[] quarter = quarterDate.split("-");
-                if(quarter[1].equals("01")) {
+
+                if (quarter[1].equals("01")) {
                     paramMap.put("startDate", quarter[0] + "-01");
                     paramMap.put("endDate", quarter[0] + "-03");
                     rtn.put("startDate", quarter[0] + "년 01월");
@@ -91,18 +95,20 @@ public class SYSStatController {
                     rtn.put("endDate", quarter[0] + "년 12월");
                 }
             }
+
             paramMap.put("type", type);
             paramMap.put("areaCode", areaCode);
             paramMap.put("strCode", strCode);
+
             rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_AREA_INFO_STAT(areaCode));
             rtn.put("weekMonthStat", sysStatRepo.LIST_SYS_STAT_AREA_MONTHLY_STAT(paramMap));
             rtn.put("hourlyStat", sysStatRepo.LIST_SYS_STAT_AREA_HOURLY_STAT(paramMap));
             rtn.put("dayOfWeekStat", sysStatRepo.LIST_SYS_STAT_AREA_DAYOFWEEK_STAT(paramMap));
 
-            if(type.equals("guCode")) {
+            if (type.equals("guCode")) {
                 paramMap.put("guCode", guCode);
-                rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_GU_INFO_STAT(guCode));
-            } else if(type.equals("areaCode")){
+                rtn.put("infoStat", sysStatRepo.LIST_SYS_STAT_GU_INFO_STAT(guCode));
+            } else if (type.equals("areaCode")){
                 rtn.put("levelAreaStat", sysStatRepo.LIST_SYS_STAT_LEVEL_AREA_STAT(paramMap));
                 rtn.put("levelStrStat", sysStatRepo.LIST_SYS_STAT_STR_EVENT_STAT(paramMap));
             } else {
@@ -186,8 +192,8 @@ public class SYSStatController {
             paramMap.put("type", type);
             if (type.equals("guCode")) {
                 paramMap.put("guCode", guCode);
-                rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_GU_INFO_STAT(guCode));
-            } else if (type.equals("areaCode")){
+                rtn.put("infoStat", sysStatRepo.LIST_SYS_STAT_GU_INFO_STAT(guCode));
+            } else if (type.equals("areaCode")) {
                 paramMap.put("areaCode", areaCode);
 
                 rtn.put("areaKwhStat", sysStatRepo.SELECT_SYS_STAT_AREA_KWHIGO_STAT(paramMap));

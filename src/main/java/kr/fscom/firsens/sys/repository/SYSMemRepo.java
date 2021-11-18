@@ -27,27 +27,14 @@ import java.util.List;
 @Mapper
 @Repository
 public interface SYSMemRepo {
-    // 회원목록 카운트
-    int SELECT_CNT_SYS_MEM(SYSMemDomain domain) throws Exception;
 
-    // 회원 목록
-    List<HashMap<String, Object>> SELECT_LIST_SYS_MEM(SYSMemDomain domain) throws Exception;
+    int CNT_SYS_MEM(SYSMemDomain domain) throws Exception;                                      // 회원목록 카운트
+    List<HashMap<String, Object>> LIST_SYS_MEM(SYSMemDomain domain) throws Exception;           // 회원 목록
+    List<HashMap<String, Object>> LIST_MODAL_SYS_MEM(String searchWrd) throws Exception;        // 모달 회원 목록
+    int CHK_MEM_ID(SYSMemDomain domain) throws Exception;                                       // 중복 체크
+    int INSERT_SYS_MEM(SYSMemDomain domain) throws Exception;                                   // 회원 등록
+    SYSMemDomain SELECT_SYS_MEM(SYSMemDomain domain) throws Exception;                          // 회원 선택
+    int UPDATE_SYS_MEM(SYSMemDomain domain) throws Exception;                                   // 회원 수정
+    int DELETE_SYS_MEM(SYSMemDomain domain) throws Exception;                                   // 회원 삭제
 
-    // 모달 회원 목록
-    List<HashMap<String, Object>> SELECT_MODAL_SYS_MEM(String searchWrd) throws Exception;
-
-    // 중복 체크
-    int SELECT_CHK_MEM_ID(SYSMemDomain domain) throws Exception;
-
-    // 회원 등록
-    int INSERT_SYS_MEM(SYSMemDomain domain) throws Exception;
-
-    // 회원 선택
-    SYSMemDomain SELECT_SYS_MEM(SYSMemDomain domain) throws Exception;
-
-    // 회원 수정
-    int UPDATE_SYS_MEM(SYSMemDomain domain) throws Exception;
-
-    // 회원 삭제
-    int DELETE_SYS_MEM(SYSMemDomain domain) throws Exception;
 }

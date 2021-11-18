@@ -3,7 +3,7 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSSnsrRepo">
 
-    <select id="SELECT_CNT_SYS_SNSR" parameterType="SYSSnsrDomain" resultType="int">
+    <select id="CNT_SYS_SNSR" parameterType="SYSSnsrDomain" resultType="int">
         SELECT
             COUNT(*)
         FROM
@@ -26,7 +26,7 @@
     </select>
 
     <!-- 센서목록 조회 -->
-    <select id="SELECT_LIST_SYS_SNSR" parameterType="SYSSnsrDomain" resultType="SYSSnsrDomain">
+    <select id="LIST_SYS_SNSR" parameterType="SYSSnsrDomain" resultType="SYSSnsrDomain">
         SELECT
             Z.*
         FROM
@@ -77,16 +77,16 @@
             #{page}, #{sizePerPage}
     </select>
 
+    <select id="CHK_SYS_SNSRID" parameterType="SYSSnsrDomain" resultType="int">
+        SELECT COUNT(SNSRID) FROM F_SENSOR_INFO WHERE SNSRID = #{snsrId}
+    </select>
+
     <update id="GENERATE_SNSR_CODE" parameterType="SYSSnsrDomain">
         <selectKey keyProperty="generateKey" resultType="int" order="AFTER">
             SELECT NEXT_ID AS generateKey FROM COMTECOPSEQ WHERE TABLE_NAME = #{keyFied}
         </selectKey>
         UPDATE COMTECOPSEQ SET NEXT_ID = NEXT_ID + 1 WHERE TABLE_NAME = #{keyFied}
     </update>
-
-    <select id="SELECT_CHK_SYS_SNSRID" parameterType="SYSSnsrDomain" resultType="int">
-        SELECT COUNT(SNSRID) FROM F_SENSOR_INFO WHERE SNSRID = #{snsrId}
-    </select>
 
     <insert id="INSERT_SYS_SNSR" parameterType="SYSSnsrDomain">
         INSERT INTO F_SENSOR_INFO (

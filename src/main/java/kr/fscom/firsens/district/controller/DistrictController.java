@@ -50,7 +50,7 @@ public class DistrictController {
     @ResponseBody
     public HashMap<String, Object> yesterdayEventCompStat(HttpServletRequest req) {
         try {
-            return districtRepo.SELECT_YESTERDAY_EVENT_COMP_STAT();
+            return districtRepo.SELECT_D_YESTERDAY_EVENT_COMP_STAT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -70,7 +70,7 @@ public class DistrictController {
     @ResponseBody
     public HashMap<String, Object> todayEventStat(HttpServletRequest req) {
         try {
-            return districtRepo.SELECT_TODAY_EVENT_STAT();
+            return districtRepo.SELECT_D_TODAY_EVENT_STAT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -82,7 +82,7 @@ public class DistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> currGuMapEventStatAjax(HttpServletRequest req) {
         try {
-            return districtRepo.LIST_CURR_GU_MAP_EVENT_STAT();
+            return districtRepo.LIST_D_CURR_GU_MAP_EVENT_STAT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -102,7 +102,7 @@ public class DistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> monthlyGuEventCompStat(HttpServletRequest req) {
         try {
-            return districtRepo.LIST_MONTHLY_GU_EVENT_COMP_STAT();
+            return districtRepo.LIST_D_MONTHLY_GU_EVENT_COMP_STAT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -122,7 +122,7 @@ public class DistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> todayGuAreaEventCompRank(HttpServletRequest req) {
         try {
-            return districtRepo.LIST_TODAY_GU_AREA_EVENT_COMP_RANK();
+            return districtRepo.LIST_D_TODAY_GU_AREA_EVENT_COMP_RANK();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -142,7 +142,7 @@ public class DistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> todayGuEvent(HttpServletRequest req) {
         try {
-            return districtRepo.LIST_TODAY_GU_EVENT();
+            return districtRepo.LIST_D_TODAY_GU_EVENT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -168,7 +168,7 @@ public class DistrictController {
     @ResponseBody
     public HashMap<String, Object> yesterdayKwhStatAjax(HttpServletRequest req) {
         try {
-            return districtRepo.SELECT_KWH_STAT();
+            return districtRepo.SELECT_D_KWH_STAT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -180,7 +180,7 @@ public class DistrictController {
     @ResponseBody
     public HashMap<String, Object> currKwhStatAjax(HttpServletRequest req) {
         try {
-            return districtRepo.SELECT_CURR_KWH_STAT();
+            return districtRepo.SELECT_D_CURR_KWH_STAT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -192,7 +192,7 @@ public class DistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> GuMapKwhStatAjax(HttpServletRequest req) {
         try {
-            return districtRepo.LIST_GU_MAP_KWH_STAT();
+            return districtRepo.LIST_D_GU_MAP_KWH_STAT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -204,7 +204,7 @@ public class DistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> guMonthKwhStatAjax(HttpServletRequest req) {
         try {
-            return districtRepo.LIST_GU_MONTH_KWH_STAT();
+            return districtRepo.LIST_D_GU_MONTH_KWH_STAT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -216,7 +216,7 @@ public class DistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> guAreaKwhRankAjax(HttpServletRequest req) {
         try {
-            return districtRepo.LIST_GU_AREA_KWH_STAT();
+            return districtRepo.LIST_D_GU_AREA_KWH_STAT();
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

@@ -499,7 +499,7 @@
             A.STATE, A.CNT DESC
     </select>
 
-    <select id="LIST_MM_MAIN_AREA_DATA_CHART" parameterType="map" resultType="map">
+    <select id="LIST_MM_AREA_DATA_CHART" parameterType="map" resultType="map">
         SELECT
             '1' AS TYPE
             , CONCAT(SUBSTR(DATE_FORMAT(A.SNSRRCVTIME, '%H:%i'), 1, 4), '0') AS RCVTIME
@@ -537,7 +537,7 @@
             1, 2
     </select>
 
-    <select id="LIST_MM_MAIN_AREA_LOG_CHART" parameterType="map" resultType="map">
+    <select id="LIST_MM_AREA_LOG_CHART" parameterType="map" resultType="map">
         SELECT
             '1' AS TYPE
             , CONCAT(SUBSTR(DATE_FORMAT(A.REGDATE, '%H:%i'), 1, 4), '0') AS RCVTIME
@@ -577,7 +577,7 @@
            1, 2
     </select>
 
-    <select id="LIST_MM_MAIN_AREA_DATA_CHART_WEEK" parameterType="map" resultType="map">
+    <select id="LIST_MM_AREA_DATA_CHART_WEEK" parameterType="map" resultType="map">
         SELECT
             '1' AS DATETYPE
             , SDATE AS RCVTIME
@@ -631,7 +631,7 @@
            1, 2
     </select>
 
-    <select id="LIST_MM_MAIN_AREA_LOG_CHART_WEEK" parameterType="map" resultType="map">
+    <select id="LIST_MM_AREA_LOG_CHART_WEEK" parameterType="map" resultType="map">
         SELECT
             '1' AS TYPE
             , DATE(A.REGDATE) AS RCVTIME
@@ -692,7 +692,7 @@
             1, 2
     </select>
 
-    <select id="LIST_MM_MAIN_AREA_MAP_SENSOR" parameterType="map" resultType="map">
+    <select id="LIST_MM_AREA_MAP_SENSOR" parameterType="map" resultType="map">
         SELECT
             B.STRCODE
             , B.STRNAME

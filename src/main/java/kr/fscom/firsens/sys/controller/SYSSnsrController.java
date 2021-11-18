@@ -51,8 +51,8 @@ public class SYSSnsrController {
                 domain.setLevelAreaCode("0");
             }
 
-            int resultCnt = sysSnsrRepo.SELECT_CNT_SYS_SNSR(domain);
-            sensorList = sysSnsrRepo.SELECT_LIST_SYS_SNSR(domain);
+            int resultCnt = sysSnsrRepo.CNT_SYS_SNSR(domain);
+            sensorList = sysSnsrRepo.LIST_SYS_SNSR(domain);
 
             rtn.put("resultList", sensorList);
             rtn.put("totalElements", resultCnt);
@@ -77,7 +77,7 @@ public class SYSSnsrController {
 
         try {
             if (!StringUtils.isEmptyOrWhitespace(domain.getSnsrId())) {
-                int duplicateCnt = sysSnsrRepo.SELECT_CHK_SYS_SNSRID(domain);           // 센서 아이디 중복 체크
+                int duplicateCnt = sysSnsrRepo.CHK_SYS_SNSRID(domain);      // 센서 아이디 중복 체크
                 if (duplicateCnt > 0) {
                     rtn.put("result", "duplicate");
                     return rtn;
@@ -94,7 +94,7 @@ public class SYSSnsrController {
                         domain.setStrCode("0");      // 상점코드 없을 경우 "0"
 
                     if (!"0".equals(domain.getAreaCode())) {
-                        SYSAreaDomain vo = sysAreaRepo.SELECT_ONE_SYS_AREA_ITEM(domain.getAreaCode());  // 좌표값이 없을 경우 조회된 지역의 자표값으로 set
+                        SYSAreaDomain vo = sysAreaRepo.SELECT_SYS_AREA_ITEM(domain.getAreaCode());  // 좌표값이 없을 경우 조회된 지역의 자표값으로 set
 
                         if (domain.getSnsrPosLat() == null || domain.getSnsrPosLat() == 0.0 && vo.getAreaPosLat() != null)
                             domain.setSnsrPosLat(vo.getAreaPosLat());
@@ -158,7 +158,7 @@ public class SYSSnsrController {
 
         try {
             // 센서 아이디 중복 체크
-            if (!domain.getSnsrId().equals(domain.getUpdSnsrId()) && sysSnsrRepo.SELECT_CHK_SYS_SNSRID(domain) > 0) {
+            if (!domain.getSnsrId().equals(domain.getUpdSnsrId()) && sysSnsrRepo.CHK_SYS_SNSRID(domain) > 0) {
                 result = "duplicate";
             } else if (!StringUtils.isEmptyOrWhitespace(domain.getSnsrId())) {
                 if (StringUtils.isEmpty(domain.getAreaCode())) {      // 구역코드 없을 경우 상위, 하위 "0"

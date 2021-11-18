@@ -46,8 +46,8 @@ public class SYSMemController {
             domain.setMemRcvSms(smsYn);
             domain.setDelYn(delYn);
 
-            int resultCnt = sysMemRepo.SELECT_CNT_SYS_MEM(domain);
-            memberList = sysMemRepo.SELECT_LIST_SYS_MEM(domain);
+            int resultCnt = sysMemRepo.CNT_SYS_MEM(domain);
+            memberList = sysMemRepo.LIST_SYS_MEM(domain);
 
             rtn.put("resultList", memberList);
             rtn.put("totalElements", resultCnt);
@@ -71,7 +71,7 @@ public class SYSMemController {
         String result = "fail";
 
         try {
-            List<HashMap<String, Object>> resultList = sysMemRepo.SELECT_MODAL_SYS_MEM(searchWrd);
+            List<HashMap<String, Object>> resultList = sysMemRepo.LIST_MODAL_SYS_MEM(searchWrd);
             rtn.put("resultList", resultList);
             result = "success";
         } catch (SQLException ex) {
@@ -94,7 +94,7 @@ public class SYSMemController {
         int result = 0;
 
         try {
-            result = sysMemRepo.SELECT_CHK_MEM_ID(domain);
+            result = sysMemRepo.CHK_MEM_ID(domain);
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 ID 중복검사 SQL 오류 : {}", ex.getMessage());
         } catch (Exception ex) {

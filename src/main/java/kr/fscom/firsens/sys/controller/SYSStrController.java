@@ -31,6 +31,7 @@ import java.util.List;
 public class SYSStrController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SYSStrController.class);
+
     private final SYSStrRepo sysStrRepo;
     private final SYSAreaRepo sysAreaRepo;
     private final SYSFileRepo sysFileRepo;
@@ -57,8 +58,8 @@ public class SYSStrController {
             domain.setSizePerPage(size);
             domain.setPage((page -1) * domain.getSizePerPage());
 
-            int resultCnt = sysStrRepo.SELECT_CNT_SYS_STR(domain);
-            strList = sysStrRepo.SELECT_LIST_SYS_STR(domain);
+            int resultCnt = sysStrRepo.CNT_SYS_STR(domain);
+            strList = sysStrRepo.LIST_SYS_STR(domain);
 
             rtn.put("resultList", strList);
             rtn.put("totalElements", resultCnt);
@@ -90,10 +91,10 @@ public class SYSStrController {
                 domain.setModifyStrCode(domain.getStrCode());
 
                 // 상점코드 중복 체크
-                if (sysStrRepo.SELECT_CHK_SYS_STRCODE(domain) > 0) {
+                if (sysStrRepo.CHK_SYS_STRCODE(domain) > 0) {
                     result = "duplicate";
                 } else {
-                    SYSAreaDomain vo = sysAreaRepo.SELECT_ONE_SYS_AREA_ITEM(domain.getAreaCode());
+                    SYSAreaDomain vo = sysAreaRepo.SELECT_SYS_AREA_ITEM(domain.getAreaCode());
                     if (domain.getStrPosLat() == null || domain.getStrPosLat() == 0.0 && vo.getAreaPosLat() != null)
                         domain.setStrPosLat(vo.getAreaPosLat());
                     if (domain.getStrPosLon() == null || domain.getStrPosLon() == 0.0 && vo.getAreaPosLon() != null)
@@ -177,7 +178,7 @@ public class SYSStrController {
             if (!StringUtils.isEmptyOrWhitespace(domain.getStrCode())
                     && !StringUtils.isEmptyOrWhitespace(domain.getAreaCode())) {
                 // 상점코드 중복 체크
-                if (!domain.getStrCode().equals(domain.getModifyStrCode()) && sysStrRepo.SELECT_CHK_SYS_STRCODE(domain) > 0) {
+                if (!domain.getStrCode().equals(domain.getModifyStrCode()) && sysStrRepo.CHK_SYS_STRCODE(domain) > 0) {
                     result = "duplicate";
                 } else {
                     updateCnt = sysStrRepo.UPDATE_SYS_STR(domain);

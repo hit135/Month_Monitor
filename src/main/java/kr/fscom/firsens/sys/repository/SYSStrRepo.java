@@ -25,19 +25,14 @@ import java.util.List;
 @Mapper
 @Repository
 public interface SYSStrRepo {
-    // 상점 카운트
-    int SELECT_CNT_SYS_STR(SYSStrDomain domain) throws Exception;
 
-    // 상점 목록
-    List<HashMap<String, Object>> SELECT_LIST_SYS_STR(SYSStrDomain domain) throws Exception;
-
-    // 상점 중복 체크
-    int SELECT_CHK_SYS_STRCODE(SYSStrDomain domain) throws Exception;
-
+    int CNT_SYS_STR(SYSStrDomain domain) throws Exception;                                   // 상점 카운트
+    List<HashMap<String, Object>> LIST_SYS_STR(SYSStrDomain domain) throws Exception;        // 상점 목록
+    int CHK_SYS_STRCODE(SYSStrDomain domain) throws Exception;                               // 상점 중복 체크
     int GENERATE_STORE_CODE(SYSStrDomain domain) throws Exception;
-
     int INSERT_SYS_STR(SYSStrDomain domain) throws Exception;
     SYSStrDomain SELECT_SYS_ONE_STR(SYSStrDomain domain) throws Exception;
     int UPDATE_SYS_STR(SYSStrDomain domain) throws Exception;
     int DELETE_SYS_STR(SYSStrDomain domain) throws Exception;
+
 }

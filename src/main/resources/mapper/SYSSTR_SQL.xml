@@ -3,7 +3,7 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSStrRepo">
 
-    <select id="SELECT_CNT_SYS_STR" parameterType="SYSStrDomain" resultType="int">
+    <select id="CNT_SYS_STR" parameterType="SYSStrDomain" resultType="int">
         SELECT
             COUNT(*)
         FROM
@@ -20,7 +20,7 @@
             AND FS.USEYN = #{useYn}
     </select>
 
-    <select id="SELECT_LIST_SYS_STR" parameterType="SYSStrDomain" resultType="SYSStrDomain">
+    <select id="LIST_SYS_STR" parameterType="SYSStrDomain" resultType="SYSStrDomain">
         SELECT
             Z.*
         FROM
@@ -68,7 +68,7 @@
             #{page}, #{sizePerPage}
     </select>
 
-    <select id="SELECT_CHK_SYS_STRCODE" parameterType="SYSStrDomain" resultType="int">
+    <select id="CHK_SYS_STRCODE" parameterType="SYSStrDomain" resultType="int">
         SELECT
             COUNT(STRCODE) AS cnt
         FROM

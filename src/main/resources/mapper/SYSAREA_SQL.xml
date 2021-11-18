@@ -3,7 +3,7 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSAreaRepo">
 
-    <select id="SELECT_LIST_SYS_AREA" parameterType="SYSAreaDomain" resultType="SYSAreaDomain">
+    <select id="LIST_SYS_AREA" parameterType="SYSAreaDomain" resultType="SYSAreaDomain">
         SELECT
             A.AREACODE AS 'key'
             , A.AREACODE AS areaCode
@@ -111,7 +111,7 @@
             AREACODE = #{areaCode}
     </select>
 
-    <select id="SELECT_ONE_SYS_AREA_ITEM" parameterType="String" resultType="SYSAreaDomain">
+    <select id="SELECT_SYS_AREA_ITEM" parameterType="String" resultType="SYSAreaDomain">
         SELECT
             DISTINCT FA.AREANAME AS areaName
             , FA.AREACODE AS areaCode

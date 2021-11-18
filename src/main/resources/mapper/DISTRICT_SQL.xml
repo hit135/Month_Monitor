@@ -3,7 +3,7 @@
 
 <mapper namespace="kr.fscom.firsens.district.repository.DistrictRepo">
 
-    <select id="SELECT_YESTERDAY_EVENT_COMP_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_D_YESTERDAY_EVENT_COMP_STAT" parameterType="map" resultType="map">
         SELECT
             I.SNSRCNT - A.ERRCNT AS YSNSRCNT
             , A.DANGERCNT AS YDANGERCNT
@@ -35,7 +35,7 @@
             (SELECT COUNT(*) AS SNSRCNT FROM F_SENSOR_INFO WHERE DELYN = 'N') I
     </select>
 
-    <select id="SELECT_TODAY_EVENT_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_D_TODAY_EVENT_STAT" parameterType="map" resultType="map">
         SELECT
             S.STRCNT
             , I.SNSRCNT
@@ -57,7 +57,7 @@
                  REGDATE BETWEEN CONCAT(DATE(NOW()), ' 00:00:00') AND NOW()) L
     </select>
 
-    <select id="LIST_CURR_GU_MAP_EVENT_STAT" parameterType="map" resultType="map">
+    <select id="LIST_D_CURR_GU_MAP_EVENT_STAT" parameterType="map" resultType="map">
         SELECT
             I.GUCODE
             , I.SNSRCNT
@@ -98,7 +98,7 @@
                         ON I.GUCODE = D.GUCODE
     </select>
 
-    <select id="LIST_MONTHLY_GU_EVENT_COMP_STAT" parameterType="map" resultType="map">
+    <select id="LIST_D_MONTHLY_GU_EVENT_COMP_STAT" parameterType="map" resultType="map">
         SELECT
             L.GUCODE
             , COALESCE(A.EVENTCNT, 0) AS THATEVENTCNT
@@ -159,7 +159,7 @@
             L.GUCODE
     </select>
 
-    <select id="LIST_TODAY_GU_AREA_EVENT_COMP_RANK" parameterType="map" resultType="map">
+    <select id="LIST_D_TODAY_GU_AREA_EVENT_COMP_RANK" parameterType="map" resultType="map">
         SELECT
             DISTINCT L.GUCODE
             , L.GUNAME
@@ -211,7 +211,7 @@
             L.AREACODE != 'AREA_000001'
     </select>
 
-    <select id="LIST_TODAY_GU_EVENT" parameterType="map" resultType="map">
+    <select id="LIST_D_TODAY_GU_EVENT" parameterType="map" resultType="map">
         SELECT
             L.GUCODE
             , L.GUNAME
@@ -252,7 +252,7 @@
     </select>
     <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <select id="SELECT_KWH_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_D_KWH_STAT" parameterType="map" resultType="map">
         SELECT
             A.USEKWH AS YESTERDAYUSEKWH
             , B.USEKWH AS LASTWEEKUSEKWH
@@ -280,7 +280,7 @@
                  DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m')) C
     </select>
 
-    <select id="SELECT_CURR_KWH_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_D_CURR_KWH_STAT" parameterType="map" resultType="map">
         SELECT
             S.STRCNT
             , I.SNSRCNT
@@ -316,7 +316,7 @@
                  F_CRN_AREA_KWH_TODAY_STAT) B
     </select>
 
-    <select id="LIST_GU_MAP_KWH_STAT" parameterType="map" resultType="map">
+    <select id="LIST_D_GU_MAP_KWH_STAT" parameterType="map" resultType="map">
         SELECT
             L.GUCODE
             , COALESCE(A.USEKWH, 0) AS THATWEEKUSEKWH
@@ -372,7 +372,7 @@
             L.GUCODE
     </select>
 
-    <select id="LIST_GU_MONTH_KWH_STAT" parameterType="map" resultType="map">
+    <select id="LIST_D_GU_MONTH_KWH_STAT" parameterType="map" resultType="map">
         SELECT
             DISTINCT L.GUCODE
             , A.USEKWH AS THATMONTHUSEKWH
@@ -431,7 +431,7 @@
             L.GUCODE
     </select>
 
-    <select id="LIST_GU_AREA_KWH_STAT" parameterType="map" resultType="map">
+    <select id="LIST_D_GU_AREA_KWH_STAT" parameterType="map" resultType="map">
         SELECT
             A.GUCODE
             , A.GUNAME

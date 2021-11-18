@@ -3,7 +3,7 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSStatRepo">
 
-    <select id="SELECT_TYPE_GUCODE" resultType="map">
+    <select id="LIST_TYPE_GUCODE" resultType="map">
         SELECT
             A.GUCODE AS guCode
             , A.GRPCODE AS grpCode
@@ -16,7 +16,7 @@
             A.GUCODE
     </select>
 
-    <select id="SELECT_TYPE_AREACODE" resultType="map">
+    <select id="LIST_TYPE_AREACODE" resultType="map">
         SELECT
             A.AREACODE AS areaCode
             , A.AREANAME AS areaName
@@ -29,7 +29,7 @@
             A.AREAORDER
     </select>
 
-    <select id="SELECT_SYS_STAT_GU_INFO_STAT" parameterType="String" resultType="map">
+    <select id="LIST_SYS_STAT_GU_INFO_STAT" parameterType="String" resultType="map">
         SELECT
             L.AREANAME AS areaName
             , L.AREAADDR AS areaAddr
@@ -125,6 +125,7 @@
             AND A.STRCODE LIKE CONCAT('%', #{strCode})
     </select>
 
+    <!--
     <select id="SELECT_SYS_STAT_SNSR_INFO" parameterType="map" resultType="map">
         SELECT
             DISTINCT SNSRID AS snsrId
@@ -138,6 +139,7 @@
             AND (SNSRID LIKE CONCAT('%', #{searchWrd})
                  OR SNSRSEQ LIKE CONCAT('%', #{searchWrd}))
     </select>
+    -->
 
     <select id="LIST_SYS_STAT_AREA_HOURLY_STAT" parameterType="map" resultType="map">
         SELECT

@@ -37,7 +37,7 @@ public class SYSAreaController {
         String result = "fail";
 
         try {
-            JSONArray jsonList = JSONArray.fromObject(getAreaListTree(sysAreaRepo.SELECT_LIST_SYS_AREA(domain), "0"));
+            JSONArray jsonList = JSONArray.fromObject(getAreaListTree(sysAreaRepo.LIST_SYS_AREA(domain), "0"));
             rtn.put("resultList", jsonList);
             result = "success";
         } catch (SQLException ex) {
@@ -83,7 +83,7 @@ public class SYSAreaController {
 
         try {
             if (!StringUtils.isEmptyOrWhitespace(sysAreaDomain.getAreaCode())) {
-                rtn.put("content", sysAreaRepo.SELECT_ONE_SYS_AREA_ITEM(sysAreaDomain.getAreaCode()));
+                rtn.put("content", sysAreaRepo.SELECT_SYS_AREA_ITEM(sysAreaDomain.getAreaCode()));
                 result = "success";
             }
         } catch (SQLException ex) {
