@@ -7,12 +7,15 @@
         (SELECT
              'TODAY' AS TERM
              , 'TOTAL' AS TYPE
-             , COUNT(DISTINCT SNSRID) AS CNT
+             , COUNT(DISTINCT I.SNSRID) AS CNT
          FROM
-             F_SENSOR_INFO
+             F_SENSOR_INFO I
+                LEFT JOIN F_LEVEL_AREA A
+                    ON I.AREACODE = A.AREACODE
          WHERE
-             DELYN != 'Y'
-             AND AREACODE != '0')
+             I.DELYN != 'Y'
+             AND I.AREACODE != '0'
+             AND A.GUCODE LIKE '30%')
 
         UNION
 
@@ -22,12 +25,16 @@
              , COUNT(DISTINCT A.SNSRID) AS CNT
          FROM
              F_SENSOR_LOG A
-                LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.SNSRID = B.SNSRID
+                LEFT JOIN F_LEVEL_AREA C
+                    ON B.AREACODE = C.AREACODE
          WHERE
-             A.REGDATE > DATE(NOW())
+             A.REGDATE > CURDATE()
              AND B.DELYN != 'Y'
              AND B.AREACODE != '0'
-             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0)
+             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0
+             AND C.GUCODE LIKE '30%')
 
         UNION
 
@@ -37,12 +44,16 @@
              , COUNT(A.LSEQ) AS CNT
          FROM
              F_SENSOR_LOG A
-                 LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+                 LEFT JOIN F_SENSOR_INFO B
+                     ON A.SNSRID = B.SNSRID
+                 LEFT JOIN F_LEVEL_AREA C
+                     ON B.AREACODE = C.AREACODE
          WHERE
-             A.REGDATE > DATE(NOW())
+             A.REGDATE > CURDATE()
              AND B.DELYN != 'Y'
              AND B.AREACODE != '0'
-             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0)
+             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '2') > 0
+             AND C.GUCODE LIKE '30%')
 
         UNION
 
@@ -52,12 +63,16 @@
              , COUNT(DISTINCT A.SNSRID) AS CNT
          FROM
              F_SENSOR_LOG A
-                 LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+                 LEFT JOIN F_SENSOR_INFO B
+                     ON A.SNSRID = B.SNSRID
+                 LEFT JOIN F_LEVEL_AREA C
+                     ON B.AREACODE = C.AREACODE
          WHERE
-             A.REGDATE > DATE(NOW())
+             A.REGDATE > CURDATE()
              AND B.DELYN != 'Y'
              AND B.AREACODE != '0'
-             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 )
+             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0
+             AND C.GUCODE LIKE '30%')
 
         UNION
 
@@ -67,25 +82,32 @@
              , COUNT(A.LSEQ) AS CNT
          FROM
              F_SENSOR_LOG A
-                 LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+                 LEFT JOIN F_SENSOR_INFO B
+                     ON A.SNSRID = B.SNSRID
+                 LEFT JOIN F_LEVEL_AREA C
+                     ON B.AREACODE = C.AREACODE
          WHERE
-             A.REGDATE > DATE(NOW())
+             A.REGDATE > CURDATE()
              AND B.DELYN != 'Y'
              AND B.AREACODE != '0'
-             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0 )
+             AND INSTR(CONCAT(A.OCALM, A.IGOALM, A.IGRALM), '1') > 0
+             AND C.GUCODE LIKE '30%')
 
         UNION
 
         (SELECT
              'TODAY' AS TERM
              , 'DISCON' AS TYPE
-             , COUNT(DISTINCT SNSRID) AS CNT
+             , COUNT(DISTINCT I.SNSRID) AS CNT
          FROM
-             F_SENSOR_INFO
+             F_SENSOR_INFO I
+                 LEFT JOIN F_LEVEL_AREA A
+                     ON I.AREACODE = A.AREACODE
          WHERE
-             DELYN != 'Y'
-             AND AREACODE != '0'
-             AND DATARCVTIME <![CDATA[ < ]]> NOW() - INTERVAL 1 HOUR)
+             I.DELYN != 'Y'
+             AND I.AREACODE != '0'
+             AND I.DATARCVTIME <![CDATA[ < ]]> NOW() - INTERVAL 1 HOUR
+             AND A.GUCODE LIKE '30%')
         ORDER BY
             TERM, TYPE
     </select>
@@ -146,6 +168,8 @@
                           SNSRID
                      ) F
                          ON C.SNSRID = F.SNSRID
+         WHERE
+             A.GUCODE LIKE '30%'
          GROUP BY
              A.GUCODE, A.GUNAME)
 
@@ -163,7 +187,15 @@
              , B.GUCODE AS UPCODE
              , 0 - (IFNULL(SUM(D.DANGER), 0) * 10000 + IFNULL(SUM(E.WARN), 0)) AS ORDERNUM
          FROM
-             (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN != 'Y') B
+             (SELECT
+                  *
+              FROM
+                  F_LEVEL_AREA
+              WHERE
+                  AREALEVEL = 1
+                  AND DELYN != 'Y'
+                  AND GUCODE LIKE '30%'
+             ) B
                  LEFT JOIN
                      (SELECT * FROM F_SENSOR_INFO WHERE DELYN != 'Y') C
                          ON B.AREACODE = C.AREACODE
@@ -173,7 +205,7 @@
                       FROM
                           F_SENSOR_LOG
                       WHERE
-                          REGDATE > DATE(NOW())
+                          REGDATE > CURDATE()
                           AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
                       GROUP BY
                           SNSRID
@@ -185,7 +217,7 @@
                       FROM
                           F_SENSOR_LOG
                       WHERE
-                          REGDATE > DATE(NOW())
+                          REGDATE > CURDATE()
                           AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
                       GROUP BY
                           SNSRID
@@ -262,10 +294,11 @@
                     (SELECT STRCODE FROM F_STORE WHERE USEYN = 'Y' AND DELYN = 'N') C
                         ON B.STRCODE = C.STRCODE
                 LEFT JOIN
-                    (SELECT AREACODE, AREANAME FROM F_AREA WHERE DELYN = 'N') D
+                    (SELECT GUCODE, AREACODE, AREANAME FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') D
                         ON B.AREACODE = D.AREACODE
         WHERE
             D.AREACODE IS NOT NULL
+            AND D.GUCODE LIKE '30%'
         ORDER BY
             A.STATE, A.CNT DESC
     </select>
@@ -279,7 +312,7 @@
             , IFNULL(D.WARN, 0) AS WARN
             , IFNULL(E.DISCON, 0) AS DISCON
         FROM
-            F_AREA A
+            (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') A
                 LEFT JOIN
                     (SELECT
                          AREACODE, COUNT(DISTINCT SNSRID) AS TOTAL
@@ -332,14 +365,15 @@
                     ) E
                         ON A.AREACODE = E.AREACODE
         WHERE
-            A.AREACODE = #{areacode}
+            A.GUCODE LIKE '30%'
+            AND A.AREACODE = #{areacode}
     </select>
 
     <select id="LIST_MCM_AREA_STORE" parameterType="map" resultType="map">
         SELECT
-            E.AREACODE
-            , E.STRCODE
-            , E.STRNAME
+            B.AREACODE
+            , B.STRCODE
+            , B.STRNAME
             , IFNULL(SUM(C.DANGER), 0) AS DANGER
             , IFNULL(SUM(D.WARN), 0) AS WARN
             , IFNULL(SUM(E.CON), 0) AS CON
@@ -347,15 +381,18 @@
         FROM
             F_SENSOR_INFO A
                 LEFT JOIN
-                    F_STORE E
-                        ON A.STRCODE = E.STRCODE
+                    F_STORE B
+                        ON A.STRCODE = B.STRCODE
+                LEFT JOIN
+                    (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') F
+                        ON A.AREACODE = F.AREACODE
                 LEFT JOIN
                     (SELECT
                          SNSRID, COUNT(*) AS DANGER
                      FROM
                          F_SENSOR_LOG
                      WHERE
-                         REGDATE > DATE(NOW())
+                         REGDATE > CURDATE()
                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
                      GROUP BY
                          SNSRID
@@ -367,7 +404,7 @@
                      FROM
                          F_SENSOR_LOG
                      WHERE
-                         REGDATE > DATE(NOW())
+                         REGDATE > CURDATE()
                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
                      GROUP BY
                          SNSRID
@@ -387,10 +424,11 @@
         WHERE
             A.DELYN != 'Y'
             AND A.AREACODE = #{areacode}
+            AND F.GUCODE LIKE '30%'
         GROUP BY
-            E.STRCODE, E.STRNAME
+            B.STRCODE, B.STRNAME
         ORDER BY
-            4 DESC, 5 DESC, 6 DESC, E.STRNAME
+            4 DESC, 5 DESC, 6 DESC, B.STRNAME
     </select>
 
     <select id="LIST_MCM_AREA_SENSOR" parameterType="map" resultType="map">
@@ -408,6 +446,9 @@
         FROM
             F_SENSOR_INFO A
                 LEFT JOIN
+                    (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') B
+                        ON A.AREACODE = B.AREACODE
+                LEFT JOIN
                     F_STORE E
                         ON A.AREACODE = E.AREACODE
                         AND A.STRCODE = E.STRCODE
@@ -417,7 +458,7 @@
                      FROM
                          F_SENSOR_LOG
                      WHERE
-                         REGDATE > DATE(NOW())
+                         REGDATE > CURDATE()
                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
                      GROUP BY
                          SNSRID
@@ -429,7 +470,7 @@
                      FROM
                          F_SENSOR_LOG
                      WHERE
-                         REGDATE > DATE(NOW())
+                         REGDATE > CURDATE()
                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
                      GROUP BY
                          SNSRID
@@ -459,6 +500,7 @@
                         ON A.SNSRID = G.SNSRID
         WHERE
             A.DELYN != 'Y'
+            AND B.GUCODE LIKE '30%'
             AND A.AREACODE = #{areacode}
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(strcode)">
             AND A.STRCODE = #{strcode}
@@ -472,9 +514,11 @@
             A.AREACODE, B.AREANAME, A.STRCODE, A.STRNAME
         FROM
             F_STORE A
-                LEFT JOIN F_AREA B ON A.AREACODE = B.AREACODE
+                LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') B
+                    ON A.AREACODE = B.AREACODE
         WHERE
             A.STRNAME LIKE CONCAT('%', #{search}, '%')
+            AND B.GUCODE LIKE '30%'
         ORDER BY
             A.STRNAME
     </select>
@@ -492,9 +536,14 @@
              GROUP BY
                 A.SNSRID
             ) A
-                LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
-                LEFT JOIN F_STORE C ON B.STRCODE = C.STRCODE
-                LEFT JOIN F_AREA D ON B.AREACODE = D.AREACODE
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.SNSRID = B.SNSRID
+                LEFT JOIN F_STORE C
+                    ON B.STRCODE = C.STRCODE
+                LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') D
+                    ON B.AREACODE = D.AREACODE
+        WHERE
+            D.GUCODE LIKE '30%'
         ORDER BY
             A.STATE, A.CNT DESC
     </select>
@@ -511,10 +560,13 @@
             </choose>
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.SNSRID = B.SNSRID
+                LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') C
+                    ON B.AREACODE = C.AREACODE
         WHERE
-            A.SNSRRCVTIME <![CDATA[ < ]]> DATE(NOW()) AND A.SNSRRCVTIME > DATE(NOW() - INTERVAL 1 DAY)
+            A.SNSRRCVTIME <![CDATA[ < ]]> CURDATE() AND A.SNSRRCVTIME > CURDATE() - INTERVAL 1 DAY
             AND B.DELYN != 'Y'
             AND B.AREACODE = #{areacode}
+            AND C.GUCODE LIKE '30%'
         GROUP BY
             2
 
@@ -526,11 +578,15 @@
             , IFNULL(COUNT(*), 0) AS CNT
         FROM
             F_SENSOR_DATA A
-                LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.SNSRID = B.SNSRID
+                LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') C
+                    ON B.AREACODE = C.AREACODE
         WHERE
-            A.SNSRRCVTIME > DATE(NOW())
+            A.SNSRRCVTIME > CURDATE()
             AND B.DELYN != 'Y'
             AND B.AREACODE = #{areacode}
+            AND C.GUCODE LIKE '30%'
         GROUP BY
             2
         ORDER BY
@@ -549,11 +605,14 @@
             </choose>
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.SNSRID = B.SNSRID
+                LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') C
+                    ON B.AREACODE = C.AREACODE
        WHERE
-           A.REGDATE <![CDATA[ < ]]> DATE(NOW()) AND A.REGDATE > DATE(NOW() - INTERVAL 1 DAY)
+           A.REGDATE <![CDATA[ < ]]> CURDATE() AND A.REGDATE > CURDATE() - INTERVAL 1 DAY
            AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
            AND B.DELYN != 'Y'
            AND B.AREACODE = #{areacode}
+           AND C.GUCODE LIKE '30%'
        GROUP BY
            2
 
@@ -565,12 +624,16 @@
            , IFNULL(COUNT(*), 0) AS CNT
        FROM
            F_SENSOR_LOG A
-               LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+               LEFT JOIN F_SENSOR_INFO B
+                   ON A.SNSRID = B.SNSRID
+               LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') C
+                   ON B.AREACODE = C.AREACODE
        WHERE
-           A.REGDATE > DATE(NOW())
+           A.REGDATE > CURDATE()
            AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
            AND B.DELYN != 'Y'
            AND B.AREACODE = #{areacode}
+           AND C.GUCODE LIKE '30%'
        GROUP BY
            2
        ORDER BY
@@ -586,9 +649,10 @@
         FROM
             F_CRN_AREA_ELEC_DAILY_STAT
         WHERE
-            SDATE <![CDATA[<]]> DATE(NOW() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY)
-            AND SDATE > DATE(NOW() - INTERVAL (7 + DAYOFWEEK(NOW())) DAY)
+            SDATE <![CDATA[<]]> CURDATE() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY
+            AND SDATE > CURDATE() - INTERVAL (7 + DAYOFWEEK(NOW())) DAY
             AND AREACODE = #{areacode}
+            AND GUCODE LIKE '30%'
         GROUP BY
             SDATE, AREACODE
 
@@ -602,8 +666,9 @@
         FROM
             F_CRN_AREA_ELEC_DAILY_STAT
         WHERE
-            SDATE > DATE(NOW() - INTERVAL DAYOFWEEK(NOW()) DAY)
+            SDATE > CURDATE() - INTERVAL DAYOFWEEK(NOW()) DAY
             AND AREACODE = #{areacode}
+            AND GUCODE LIKE '30%'
         GROUP BY
             SDATE, AREACODE
 
@@ -611,7 +676,7 @@
 
        SELECT
            '2' AS TYPE
-           , DATE(NOW()) AS RCVTIME
+           , DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS RCVTIME
            , DAYOFWEEK(NOW()) AS WEEK
            , IFNULL(SUM(USEKWH), 0) AS CNT
        FROM
@@ -620,11 +685,15 @@
                 , MAX(A.SNSRKWH) - MIN(A.SNSRKWH) AS USEKWH
             FROM
                 F_SENSOR_DATA A
-                    LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
+                    LEFT JOIN F_SENSOR_INFO B
+                        ON A.SNSRID = B.SNSRID
+                    LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') C
+                        ON B.AREACODE = C.AREACODE
             WHERE
                 B.DELYN != 'Y'
                 AND B.AREACODE = #{areacode}
-                AND A.SNSRRCVTIME > DATE(NOW())
+                AND A.SNSRRCVTIME > CURDATE()
+                AND C.GUCODE LIKE '30%'
             GROUP BY
                 A.SNSRID) Z
        ORDER BY
@@ -641,12 +710,15 @@
             F_SENSOR_LOG_2021 A
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.SNSRID = B.SNSRID
+                LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') C
+                    ON B.AREACODE = C.AREACODE
         WHERE
-            A.REGDATE <![CDATA[<]]> DATE(NOW() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY)
-            AND A.REGDATE > DATE(NOW() - INTERVAL (7 + (DAYOFWEEK(NOW()) - 1)) DAY)
+            A.REGDATE <![CDATA[<]]> CURDATE() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY
+            AND A.REGDATE > CURDATE() - INTERVAL (7 + (DAYOFWEEK(NOW()) - 1)) DAY
             AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
             AND B.DELYN != 'Y'
             AND B.AREACODE = #{areacode}
+            AND C.GUCODE LIKE '30%'
         GROUP BY
             2
 
@@ -661,12 +733,15 @@
             F_SENSOR_LOG A
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.SNSRID = B.SNSRID
+                LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') C
+                    ON B.AREACODE = C.AREACODE
         WHERE
-            A.REGDATE <![CDATA[<]]> DATE(NOW() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY)
-            AND A.REGDATE > DATE(NOW() - INTERVAL (7 + (DAYOFWEEK(NOW()) - 1)) DAY)
+            A.REGDATE <![CDATA[<]]> CURDATE() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY
+            AND A.REGDATE > CURDATE() - INTERVAL (7 + (DAYOFWEEK(NOW()) - 1)) DAY
             AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
             AND B.DELYN != 'Y'
             AND B.AREACODE = #{areacode}
+            AND C.GUCODE LIKE '30%'
         GROUP BY
             2
 
@@ -681,11 +756,14 @@
             F_SENSOR_LOG A
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.SNSRID = B.SNSRID
+                LEFT JOIN (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') C
+                    ON B.AREACODE = C.AREACODE
         WHERE
-            A.REGDATE > DATE(NOW() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY)
+            A.REGDATE > CURDATE() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY
             AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
             AND B.DELYN != 'Y'
             AND B.AREACODE = #{areacode}
+            AND C.GUCODE LIKE '30%'
         GROUP BY
             2
         ORDER BY
@@ -713,12 +791,15 @@
                         ON A.AREACODE = B.AREACODE
                         AND A.STRCODE = B.STRCODE
                 LEFT JOIN
+                    (SELECT * FROM F_LEVEL_AREA WHERE AREALEVEL = 1 AND DELYN = 'N') F
+                        ON A.AREACODE = F.AREACODE
+                LEFT JOIN
                     (SELECT
                          SNSRID, IFNULL(COUNT(*), 0) AS CNT
                      FROM
                          F_SENSOR_LOG
                      WHERE
-                         REGDATE > DATE(NOW())
+                         REGDATE > CURDATE()
                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
                      GROUP BY
                          SNSRID
@@ -730,7 +811,7 @@
                      FROM
                          F_SENSOR_LOG
                      WHERE
-                         REGDATE > DATE(NOW())
+                         REGDATE > CURDATE()
                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
                      GROUP BY
                          SNSRID
@@ -751,6 +832,7 @@
             A.DELYN != 'Y'
             AND B.DELYN != 'Y'
             AND A.AREACODE = #{areacode}
+            AND F.GUCODE LIKE '30%'
         ORDER BY
             C.CNT DESC, D.CNT DESC, E.CNT DESC, B.STRNAME
     </select>
