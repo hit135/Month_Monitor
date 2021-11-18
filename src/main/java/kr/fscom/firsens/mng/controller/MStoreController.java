@@ -94,7 +94,7 @@ public class MStoreController {
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
-     * @Method 설명 : 상점 이미지 목록 및 상점 내 센서 상태 목록 조회
+     * @Method 설명 : 상점 정보 (기본 정보, 이미지, 센서 상태)
      * @return HashMap<String, Object>
      */
     @RequestMapping(value = "/storeInfoAjax")
@@ -272,7 +272,7 @@ public class MStoreController {
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
-     * @Method 설명 : 기간 내 센서 경보 발생 목록 조회
+     * @Method 설명 : 센서 데이터 및 경보 목록
      * @return List<HashMap<String, Object>>
      */
     @RequestMapping(value = "/dataLogListAjax")
@@ -298,7 +298,7 @@ public class MStoreController {
             prm.put("snsrid", req.getParameter("snsrid"));
             prm.put("regdt", req.getParameter("regdt"));
 
-            return storeRepo.LIST_MST_DATA_LOG_TARGET(prm);
+            return storeRepo.LIST_MST_DATA_LOG(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -307,17 +307,53 @@ public class MStoreController {
     }
 
     /**
+     * @Method Name : logWeekStatAjax
+     * @작성일 : 2021-07-13
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 월별 전력사용량 조회
+     * @return float
+     */
+    @RequestMapping(value = "/sensorUsekwhMonthAjax")
+    @ResponseBody
+    public float sensorUsekwhMonthAjax(HttpServletRequest req) throws Exception {
+        try {
+            String regdt = req.getParameter("regdt");
+            HashMap<String, Object> prm = new HashMap<>();
+            prm.put("tblSensorData", "F_SENSOR_DATA");
+            prm.put("tblSensorLog", "F_SENSOR_LOG");
+
+            if (!StringUtils.isEmpty(regdt)) {
+                prm.put("regdt", regdt);
+
+                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
+                prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
+                prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
+            }
+
+            prm.put("snsrid", req.getParameter("snsrid"));
+
+            return storeRepo.SELECT_MST_SENSOR_USEKWH_MONTH(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return 0;
+    }
+
+    /**
      * @Method Name : dataLogList2Ajax
      * @작성일 : 2021-10-14
      * @작성자 : uhm
      * @변경이력 :
-     * @Method 설명 : 센서 경보 발생 페이징 목록 조회
+     * @Method 설명 : 센서 경보 페이징 목록 조회
      * @return List<HashMap<String, Object>>
      */
     @RequestMapping(value = "/dataLogList2Ajax", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @ResponseBody
     public HashMap<String, Object> dataLogList2Ajax(HttpServletRequest req, @RequestParam HashMap<String, Object> paramMap) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
+
         boolean result = false;
         int resultCnt = 0;
         List<HashMap<String, Object>> resultList = new ArrayList<>();
@@ -363,41 +399,6 @@ public class MStoreController {
         }
 
         return rtn;
-    }
-
-    /**
-     * @Method Name : logWeekStatAjax
-     * @작성일 : 2021-07-13
-     * @작성자 : uhm
-     * @변경이력 :
-     * @Method 설명 : 월별 전력사용량 조회
-     * @return float
-     */
-    @RequestMapping(value = "/sensorUsekwhMonthAjax")
-    @ResponseBody
-    public float sensorUsekwhMonthAjax(HttpServletRequest req) throws Exception {
-        try {
-            String regdt = req.getParameter("regdt");
-            HashMap<String, Object> prm = new HashMap<>();
-            prm.put("tblSensorData", "F_SENSOR_DATA");
-            prm.put("tblSensorLog", "F_SENSOR_LOG");
-
-            if (!StringUtils.isEmpty(regdt)) {
-                prm.put("regdt", regdt);
-
-                HashMap<String, Object> tbl_info = storeRepo.SELECT_MST_EVENT_TABLE_INFO(prm);
-                prm.put("tblSensorData", "F_SENSOR_DATA" + tbl_info.get("BACKUPYEAR"));
-                prm.put("tblSensorLog", "F_SENSOR_LOG" + tbl_info.get("BACKUPYEAR"));
-            }
-
-            prm.put("snsrid", req.getParameter("snsrid"));
-
-            return storeRepo.SELECT_MST_SENSOR_USEKWH_MONTH(prm);
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return 0;
     }
 
     /**
@@ -475,6 +476,7 @@ public class MStoreController {
 
         return null;
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // 센서 타깃 영역코드와 상점코드 조회
     private String[] getAreaStoreCode(String snsrid) throws Exception {
