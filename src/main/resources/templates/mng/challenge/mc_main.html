@@ -212,120 +212,6 @@ function fn_mcm_init() {
   });
 }
 
-let refreshTime = window.setInterval(function () {
-  if (new Date().getMinutes() % 10 === 2)
-    fn_mcm_refresh();
-}, 60 * 1000);
-
-function fn_mcm_refresh() {
-  fn_mclt_refreshTop();
-  fn_mcll_refreshLeft();
-  fn_mclr_refreshRight();
-
-  if (window.center_name == 'main') {
-    fn_mcm_updateMainAreaList();
-    fn_mcm_getMainAreaWeek();
-  } else {
-    fn_mcsti_refreshStoreInfo();
-    setTimeout(function () { fn_mcm_onAreaLv2(window.left_area_lv2_on_code); }, 800);
-  }
-}
-
-function fn_mcm_clickAreaLv2(code) {
-  window.center_name = 'store';
-
-  fn_mcm_toggleCenterCont();
-  fn_mcm_getAreaSensorCount(code);
-  fn_mcm_getAreaStoreList(code);
-}
-
-function fn_mcm_onAreaLv2(code, strcode, snsrid) {
-  if (code) {
-    $('.left .area-lv2').removeClass('on');
-    $('.left .area-lv2[data-code="' + code + '"]').addClass('on');
-
-    fn_mcm_getAreaSensorCount(code);
-    fn_mcm_getAreaStoreList(code, strcode, snsrid);
-  }
-}
-
-function fn_mcm_clickRightSensor(code, strcode, snsrid) {
-  window.center_name = 'store';
-
-  fn_mcm_toggleCenterCont();
-  fn_mcm_onAreaLv2(code, strcode, snsrid);
-}
-
-function fn_mcm_getAreaSensorCount(code) {
-  $.post(
-    $('#contextRoot').val() + '/mng/areaSensorCountAjax',
-    { areacode: code },
-    function (d) {
-      $('.center .area-name').text(d[0].AREANAME);
-
-      $('.center .area-stat .total').text(d[0].TOTAL);
-      $('.center .area-stat .danger').text(d[0].DANGER);
-      $('.center .area-stat .warn').text(d[0].WARN);
-      $('.center .area-stat .discon').text(d[0].DISCON);
-  });
-}
-
-function fn_mcm_getAreaStoreList(code, strcode, snsrid) {
-  let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
-  if (strcode)
-    on_strcode = strcode;
-
-  $.post(
-    $('#contextRoot').val() + '/mng/areaStoreListAjax',
-    { areacode: code },
-    function (d) {
-      $('.center-left-sensor-list').html('');
-
-      for (let i = 0; i < d.length; i++) {
-        d[i].CNT = 0;
-
-        if (d[i].DANGER > 0) {
-          d[i].STATE = 'danger';
-          d[i].CNT = d[i].DANGER;
-          d[i].CNT2 = d[i].WARN;
-        } else if (d[i].WARN > 0) {
-          d[i].STATE = 'warn';
-          d[i].CNT = d[i].WARN;
-        } else if (d[i].CON == 0) {
-          d[i].STATE = 'discon';
-        }
-
-        $('.center-left-sensor-list').append($.tmpl('center-left-store', d[i]));
-      }
-
-      let on_obj = $('.center-left-sensor-list p[data-strcode="' + on_strcode + '"]')[0];
-      if (!on_obj)
-        on_obj = $('.center-left-sensor-list p')[0];
-
-      $(on_obj).addClass('on');
-      $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
-
-      if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode'))
-        fn_mcm_clickContPage(snsrid ? { snsrid: snsrid } : null);
-  });
-}
-
-function fn_mcm_clickContPage(p) {
-  let prm = (p) ?
-    p : { areacode: $('.center-left-sensor-list p.on').attr('data-areacode'),
-          strcode: $('.center-left-sensor-list p.on').attr('data-strcode') };
-
-  $.post(
-    $('#contextRoot').val() + '/mng/store' + $('.center-cont-top-btn.on').attr('data-page'),
-    prm,
-    function (d) {
-      let $temp = $('<div>');
-      $temp.html(d);
-
-      $('.center-cont-page').html($temp.find('.sub-cont'));
-  });
-}
-
 function fn_mcm_initMainAreaList() {
   window.min_category = [];
 
@@ -371,10 +257,10 @@ function fn_mcm_initMainAreaList() {
                 fn_mcm_toggleCenterCont();
               }
             );
-      }}}
+          }}}
 
       fn_mcm_loadMainAreaList();
-  });
+    });
 }
 
 function fn_mcm_toggleCenterCont() {
@@ -408,7 +294,7 @@ function fn_mcm_updateMainAreaList(id) {
 
         for (let i = 0; i < show_panel.length; i++)
           fn_mcm_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
-  }});
+      }});
 }
 
 function fn_mcm_setMainArea(i, id) {
@@ -430,7 +316,7 @@ function fn_mcm_setMainArea(i, id) {
         function (resu) {
           fn_mcm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
           fn_mcm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
-      });
+        });
     }
   } else {
     if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
@@ -441,8 +327,8 @@ function fn_mcm_setMainArea(i, id) {
         function (resu) {
           fn_mcm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
           fn_mcm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
-      });
-  }}
+        });
+    }}
 }
 
 function fn_mcm_setChart(title, target, data, colors) {
@@ -512,7 +398,7 @@ function fn_mcm_getMainAreaWeek() {
       function (resu) {
         fn_mcm_setChartWeek('경보 발생 현황', '#panel-' + idx + ' .center-main-log-chart-week', resu.log, ['#ff9966','#cc3300']);
         fn_mcm_setChartWeek('전력사용량 현황', '#panel-' + idx + ' .center-main-data-chart-week', resu.data, ['#99ccff','#003399']);
-    });
+      });
   }
 }
 
@@ -580,6 +466,120 @@ function fn_mcm_setChartWeek(title, target, data, colors) {
     window['chart-' + target_id] = new ApexCharts(document.querySelector(target), opt);
     window['chart-' + target_id].render().then(function () {});
   }
+}
+
+let refreshTime = window.setInterval(function () {
+  if (new Date().getMinutes() % 10 === 2)
+    fn_mcm_refresh();
+}, 60 * 1000);
+
+function fn_mcm_refresh() {
+  fn_mclt_refreshTop();
+  fn_mcll_refreshLeft();
+  fn_mclr_refreshRight();
+
+  if (window.center_name == 'main') {
+    fn_mcm_updateMainAreaList();
+    fn_mcm_getMainAreaWeek();
+  } else {
+    fn_mcsti_refreshStoreInfo();
+    setTimeout(function () { fn_mcm_onAreaLv2(window.left_area_lv2_on_code); }, 800);
+  }
+}
+
+function fn_mcm_onAreaLv2(code, strcode, snsrid) {
+  if (code) {
+    $('.left .area-lv2').removeClass('on');
+    $('.left .area-lv2[data-code="' + code + '"]').addClass('on');
+
+    fn_mcm_getAreaSensorCount(code);
+    fn_mcm_getAreaStoreList(code, strcode, snsrid);
+  }
+}
+
+function fn_mcm_getAreaSensorCount(code) {
+  $.post(
+    $('#contextRoot').val() + '/mng/areaSensorCountAjax',
+    { areacode: code },
+    function (d) {
+      $('.center .area-name').text(d[0].AREANAME);
+
+      $('.center .area-stat .total').text(d[0].TOTAL);
+      $('.center .area-stat .danger').text(d[0].DANGER);
+      $('.center .area-stat .warn').text(d[0].WARN);
+      $('.center .area-stat .discon').text(d[0].DISCON);
+    });
+}
+
+function fn_mcm_getAreaStoreList(code, strcode, snsrid) {
+  let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
+  if (strcode)
+    on_strcode = strcode;
+
+  $.post(
+    $('#contextRoot').val() + '/mng/areaStoreListAjax',
+    { areacode: code },
+    function (d) {
+      $('.center-left-sensor-list').html('');
+
+      for (let i = 0; i < d.length; i++) {
+        d[i].CNT = 0;
+
+        if (d[i].DANGER > 0) {
+          d[i].STATE = 'danger';
+          d[i].CNT = d[i].DANGER;
+          d[i].CNT2 = d[i].WARN;
+        } else if (d[i].WARN > 0) {
+          d[i].STATE = 'warn';
+          d[i].CNT = d[i].WARN;
+        } else if (d[i].CON == 0) {
+          d[i].STATE = 'discon';
+        }
+
+        $('.center-left-sensor-list').append($.tmpl('center-left-store', d[i]));
+      }
+
+      let on_obj = $('.center-left-sensor-list p[data-strcode="' + on_strcode + '"]')[0];
+      if (!on_obj)
+        on_obj = $('.center-left-sensor-list p')[0];
+
+      $(on_obj).addClass('on');
+      $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
+
+      if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode'))
+        fn_mcm_clickContPage(snsrid ? { snsrid: snsrid } : null);
+    });
+}
+
+function fn_mcm_clickContPage(p) {
+  let prm = (p) ?
+    p : { areacode: $('.center-left-sensor-list p.on').attr('data-areacode'),
+      strcode: $('.center-left-sensor-list p.on').attr('data-strcode') };
+
+  $.post(
+    $('#contextRoot').val() + '/mng/store' + $('.center-cont-top-btn.on').attr('data-page'),
+    prm,
+    function (d) {
+      let $temp = $('<div>');
+      $temp.html(d);
+
+      $('.center-cont-page').html($temp.find('.sub-cont'));
+    });
+}
+
+function fn_mcm_clickAreaLv2(code) {
+  window.center_name = 'store';
+
+  fn_mcm_toggleCenterCont();
+  fn_mcm_getAreaSensorCount(code);
+  fn_mcm_getAreaStoreList(code);
+}
+
+function fn_mcm_clickRightSensor(code, strcode, snsrid) {
+  window.center_name = 'store';
+
+  fn_mcm_toggleCenterCont();
+  fn_mcm_onAreaLv2(code, strcode, snsrid);
 }
 
 function fn_mcm_tapCenterMainPage() {

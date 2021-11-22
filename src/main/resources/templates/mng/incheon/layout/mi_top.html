@@ -9,13 +9,15 @@
         <div class="top-time"></div>
       </div><!-- /.col-md-4 col-12 d-md-block d-none -->
       <div class="col-md-6 col-6" style="font-weight: 900; font-size: 30px; color: #0b3251; text-shadow: 1px 1px 3px #000; text-align: center;">인천 종합비즈니스센터 관제현황</div>
+      <!--
       <div class="col-md-3 col-6 text-right position-relative">
         <div class="top-search form-group custom-control-inline position-relative m-0" role="content">
           <input type="text" class="top-search-text form-control bg-subtlelight" placeholder="상점 검색" />
           <button type="button" class="btn btn-sm btn-success waves-effect waves-themed"><i class="fal fa-search"></i></button>
-        </div><!-- /.top-search form-group custom-control-inline position-relative m-0 -->
+        </div>
         <div class="top-search-result"></div>
-      </div><!-- /.col-md-4 col-6 text-right position-relative -->
+      </div>
+      -->
     </div><!-- /.row -->
     <div style="font-weight: 900; font-size: 20px; text-align: center; margin-top: 20px; border-bottom: 2px solid #000;">오늘 센서 현황</div>
     <div class="row sensor-stat">
@@ -65,5 +67,43 @@
 </div>
 
 <script type="text/javascript">
+$(function () {
+  fn_milt_initTop();
+});
 
+function fn_milt_initTop() {
+  fn_milt_getSensorCount();
+
+  $.template(
+    'top-search-result',
+    '<p data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}">{{html STRNAME}} [{{html AREANAME}}]</p>'
+  );
+
+  setInterval(function () {
+    let w = ['일', '월', '화', '수', '목', '금', '토'];
+    let now_str = fn_milt_dateToString(new Date());
+
+    $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
+    $('.top-time').text(now_str.substring(11));
+  }, 1000);
+}
+
+function fn_milt_refreshTop() {
+  fn_milt_getSensorCount();
+}
+
+function fn_milt_getSensorCount() {
+  $.post(
+    $('#contextRoot').val() + '/mng/incheon/sensorCountAjax',
+    {},
+    function (d) {
+      for (let i = 0; i < d.length; i++)
+        $('.COUNT-' + d[i].TERM + d[i].TYPE).text(d[i].CNT);
+    });
+}
+
+function fn_milt_dateToString(d) {
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
+    ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+}
 </script>

@@ -1,0 +1,59 @@
+<div class="sub-cont w-100">
+  <div th:id="${prm_panel_index}" class="panel panel-sortable" role="widget">
+    <div class="panel-hdr" role="heading">
+      <h2 class="ui-sortable-handle">
+        <b class="row w-100">
+          <b class="center-main-area-title col-3"></b>
+          <b class="center-main-area-count col-6">
+            <span>상점수</span><b class="center-main-area-count-store"></b>&nbsp;&nbsp;
+            [<span>센서수</span><b class="center-main-area-count-sensor"></b>&nbsp;/&nbsp;
+            <span>경고</span><b class="center-main-area-count-danger"></b>&nbsp;/&nbsp;
+            <span>주의</span><b class="center-main-area-count-warn"></b>&nbsp;/&nbsp;
+            <span>끊김</span><b class="center-main-area-count-discon"></b>]
+          </b><!-- /.center-main-area-count -->
+          <b class="center-main-area-tab col-3">
+            <span class="center-main-cont-top-btn on" data-page="chart">차트</span>
+            <span class="center-main-cont-top-btn" data-page="map">지도</span>
+          </b><!-- /.center-main-area-tab -->
+        </b><!-- /.row -->
+      </h2><!-- /.ui-sortable-handle -->
+      <div class="panel-saving mr-2" style="display: none;">
+        <i class="fal fa-spinner-third fa-spin-4x fs-xl"></i>
+      </div><!-- /.panel-saving mr-2 -->
+      <div class="panel-toolbar" role="menu">
+        <a href="#" class="btn btn-panel js-panel-collapse" th:data-id="${prm_panel_index}">
+          <i class="fal fa-arrows-v"></i>
+        </a>
+        <a href="#" class="btn btn-panel js-panel-fullscreen" th:data-id="${prm_panel_index}">
+          <i class="fal fa-expand-wide"></i>
+        </a>
+      </div><!-- /.panel-toolbar -->
+    </div><!-- /.panel-hdr -->
+    <div class="panel-container collapse" role="content" th:data-id="${prm_panel_index}">
+      <div class="loader">
+        <i class="fal fa-spinner-third fa-spin-4x fs-xxl"></i>
+      </div><!-- /.loader -->
+      <div class="center-main-page-chart on">
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="center-main-data-chart" style="height: 250px;"></div>
+          </div><!-- /.col-md-6 col-12 -->
+          <div class="col-md-6 col-12">
+            <div class="center-main-log-chart" style="height: 250px;"></div>
+          </div><!-- /.col-md-6 col-12 -->
+        </div><!-- /.row -->
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <div class="center-main-data-chart-week"></div>
+          </div><!-- /.col-md-6 col-12 -->
+          <div class="col-md-6 col-12">
+            <div class="center-main-log-chart-week"></div>
+          </div><!-- /.col-md-6 col-12 -->
+        </div><!-- /.row -->
+      </div><!-- /.center-main-page-chart -->
+      <div class="center-main-page-map" th:data-id="${prm_panel_index}">
+        <div class="center-main-data-chart" style="height: 800px;"></div>
+      </div><!-- /.center-main-page-map -->
+    </div><!-- /.panel-container -->
+  </div><!-- /.panel panel-sortable -->
+</div><!-- /.sub-cont -->

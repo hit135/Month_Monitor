@@ -64,10 +64,71 @@
 <script type="text/javascript" th:src="${naverMap}"></script>
 
 <script type="text/javascript">
-$(document).ready(function () {
-  window.center_name = 'main';
-  fn_mim_toggleCenterCont();
+$(function () {
+  fn_mim_init();
 });
+
+function fn_mim_init() {
+  $.template(
+    'center-left-store',
+    '<p class="{{html STATE}}" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-strname="{{html STRNAME}}">' +
+      '({{html SNSRCOUNT}}) {{html STRNAME}} <span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span>' +
+      '</p>'
+  );
+
+  fn_mim_initMainAreaList();
+}
+
+function fn_mim_initMainAreaList() {
+  window.min_category = [];
+
+  for (let i = 0; i < 24; i++)
+    for (let j = 0; j < 6; j++)
+      window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
+
+  $.post(
+    $('#contextRoot').val() + '/mng/incheon/areaListAjax',
+    {},
+    function (d) {
+      $('.center-main-cont .sortable-grid').html('');
+
+      if (d) {
+        window.area = d;
+        window.areaIndex = {};
+        window.lv1cnt = 0;
+
+        for (let i = d.length - 1; i >= 0; i--) {
+          if (d[i].LEVEL != 1) {
+            window.lv1cnt++;
+            window.areaIndex[d[i].CODE] = i;
+
+            $.post(
+              $('#contextRoot').val() + '/mng/incheon/mainArea',
+              { panel_index: 'panel-' + d[i].CODE, areacode: d[i].CODE },
+              function (cont) {
+                let $temp = $('<div>');
+                $temp.html(cont);
+
+                $('.center-main-cont .sortable-grid').append($temp.find('.sub-cont').html());
+
+                if (window.lv1cnt == $('.center-main-cont .panel').length) {
+                  $('#center-main-cont').smartPanel({ localStorage: true });
+
+                  $($('.center-main-cont .js-panel-collapse')[0]).addClass("on");
+                  $($('.center-main-cont .panel-container')[0]).addClass('show');
+                  $($('.center-main-cont .js-panel-collapse')[1]).addClass("on");
+                  $($('.center-main-cont .panel-container')[1]).addClass('show');
+                }
+
+                window.center_name = 'main';
+                fn_mim_toggleCenterCont();
+              }
+            );
+          }}}
+
+      fn_mim_loadMainAreaList();
+    });
+}
 
 function fn_mim_toggleCenterCont() {
   if (window.center_name == 'main') {
@@ -77,6 +138,132 @@ function fn_mim_toggleCenterCont() {
     $('.center-main-cont').hide();
     $('.center-store-cont').show();
   }
+}
+
+function fn_mim_loadMainAreaList() {
+  fn_mim_updateMainAreaList();
+}
+
+function fn_mim_updateMainAreaList(id) {
+  $.post(
+    $('#contextRoot').val() + '/mng/incheon/areaListAjax',
+    {},
+    function (d) {
+      if (d) {
+        window.area = d;
+        window.areaIndex = {};
+
+        for (let i = d.length - 1; i >= 0; i--)
+          if (d[i].LEVEL != 1)
+            window.areaIndex[d[i].CODE] = i;
+
+        let show_panel = $('.center-main-cont .panel-container');
+
+        for (let i = 0; i < show_panel.length; i++)
+          fn_mim_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
+      }});
+}
+
+function fn_mim_setMainArea(i, id) {
+  let panel_id = 'panel-' + i;
+
+  $('#' + panel_id + ' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
+  $('#' + panel_id + ' .center-main-area-count-store').text(window.area[window.areaIndex[i]].STORE);
+  $('#' + panel_id + ' .center-main-area-count-sensor').text(window.area[window.areaIndex[i]].SENSOR);
+  $('#' + panel_id + ' .center-main-area-count-danger').text(window.area[window.areaIndex[i]].DANGER);
+  $('#' + panel_id + ' .center-main-area-count-warn').text(window.area[window.areaIndex[i]].WARN);
+  $('#' + panel_id + ' .center-main-area-count-discon').text(window.area[window.areaIndex[i]].DISCON);
+
+  if (typeof id === 'undefined') {
+    if ($('#' + panel_id).hasClass('panel-fullscreen')
+        || $('#' + panel_id + ' .panel-container').hasClass('show')) {
+      $.post(
+        $('#contextRoot').val() + '/mng/incheon/mainAreaDataAndLogChartAjax',
+        { areacode: i },
+        function (resu) {
+          fn_mim_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
+          fn_mim_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
+        });
+    }
+  } else {
+    if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
+        || $('#' + panel_id + ' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
+      $.post(
+        $('#contextRoot').val() + '/mng/incheon/mainAreaDataAndLogChartAjax',
+        { areacode: i },
+        function (resu) {
+          fn_mim_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
+          fn_mim_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
+        });
+    }}
+}
+
+function fn_mim_setChart(title, target, data, colors) {
+  let opt = {
+    series: [],
+    chart: { height: 250, type: 'line', id: target, animations: { enabled: false } },
+    title: { text: title, align: 'left' },
+    colors: colors,
+    stroke: { width: 2 },
+    dataLabels: { enabled: false },
+    tooltip: {
+      enabled: true,
+      marker: { show: true },
+      fixed: { enabled: true, position: 'topLeft' },
+      y: { formatter: function (val) { return (val) ? val.toFixed(0) : null; } }
+    },
+    xaxis: { categories: window.min_category, tickAmount: 11, labels: { rotate: 0 } },
+    yaxis: {
+      lines: { show: true },
+      tooltip: { enabled: true },
+      labels: { formatter: function (val) { return (val) ? val.toFixed(0) : null; } }
+    },
+    legend: { position: 'top' }
+  };
+
+  let series = [{ name: '어제', data: [] }, { name:'오늘', data: [] }];
+  let j = 0;
+  let now_time = fn_milt_dateToString(new Date()).slice(11, 15) + '0';
+
+  for (let i = 0; i < window.min_category.length; i++)
+    if (j < data.length && data[j].TYPE == '1' && data[j].RCVTIME == window.min_category[i])
+      series[0].data.push(data[j++].CNT);
+    else if (window.min_category[i])
+      series[0].data.push(0);
+
+  for (let i = 0; i < window.min_category.length; i++)
+    if (j < data.length - 1 && data[j].RCVTIME == window.min_category[i])
+      series[1].data.push(data[j++].CNT);
+    else if (window.min_category[i] < now_time)
+      series[1].data.push(0);
+
+  opt.markers = { size: 0, hover: { size: 0 } };
+
+  let target_id = target.replace(/ /g,'-');
+  if (window['chart-' + target_id]) {
+    window['chart-' + target_id].updateOptions(opt);
+    window['chart-' + target_id].updateSeries(series);
+  } else {
+    opt.series = series;
+    $(target).html('');
+
+    window['chart-' + target_id] = new ApexCharts(document.querySelector(target), opt);
+    window['chart-' + target_id].render().then(function () {});
+  }
+}
+
+let refreshTime = window.setInterval(function () {
+  if (new Date().getMinutes() % 10 === 2)
+    fn_mim_refresh();
+}, 60 * 1000);
+
+function fn_mim_refresh() {
+  fn_milt_refreshTop();
+  fn_mill_refreshLeft();
+  fn_milr_refreshRight();
+
+  if (window.center_name == 'main')
+    fn_mim_updateMainAreaList();
 }
 </script>
 </body>

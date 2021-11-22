@@ -7,56 +7,57 @@
         <![CDATA[
         (SELECT
              'TODAY' TERM
-             , D.TYPE
-             , D.ORDERNUM
-             , (CASE WHEN D.TYPE = 'TOTAL' THEN I.TOTAL WHEN D.TYPE = 'DISCON' THEN I.DISCON END) AS CNT
+             , B.TYPE
+             , B.ORDERNUM
+             , (CASE WHEN B.TYPE = 'TOTAL' THEN A.TOTAL WHEN B.TYPE = 'DISCON' THEN A.DISCON END) AS CNT
          FROM
              (SELECT
-                  STRCODE
-                  , COUNT(DISTINCT SNSRID) AS TOTAL
-                  , COUNT(DISTINCT CASE WHEN DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN SNSRID END) AS DISCON
+                  COUNT(DISTINCT I.SNSRID) AS TOTAL
+                  , COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRID END) AS DISCON
               FROM
-                  F_SENSOR_INFO
-              WHERE
-                  CONCAT(DELYN, AREACODE) LIKE 'NAREA_%'
-             ) I
-                 INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') S
-                     ON I.STRCODE = S.STRCODE
-                 CROSS JOIN (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM UNION ALL SELECT 'DISCON', 2) D
+                  (SELECT STRCODE, SNSRID, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE) LIKE 'NAREA_%') I
+                      INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') S
+                                 ON I.STRCODE = S.STRCODE
+             ) A
+                 CROSS JOIN (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM UNION ALL SELECT 'DISCON', 2) B
          GROUP BY
-             D.TYPE)
+             B.TYPE)
 
         UNION
 
         (SELECT
-             D.TERM
-             , D.TYPE
-             , D.ORDERNUM
-             , COUNT(DISTINCT CASE
-                         WHEN CONCAT(D.TERM, D.TYPE) = 'TODAYWARN' AND INSTR(A.ALM, '1') > 0 THEN A.SNSRID
-                         WHEN CONCAT(D.TERM, D.TYPE) = 'COUNTWARN' AND INSTR(A.ALM, '1') > 0 THEN A.LSEQ
-                         WHEN CONCAT(D.TERM, D.TYPE) = 'TODAYDANGER' AND INSTR(A.ALM, '2') > 0 THEN A.SNSRID
-                         WHEN CONCAT(D.TERM, D.TYPE) = 'COUNTDANGER' AND INSTR(A.ALM, '2') > 0 THEN A.LSEQ
-                     END) AS CNT
+             B.TERM
+              , B.TYPE
+              , B.ORDERNUM
+              , COUNT(DISTINCT CASE
+                          WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYWARN' AND INSTR(A.ALM, '1') > 0 THEN A.SNSRID
+                          WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTWARN' AND INSTR(A.ALM, '1') > 0 THEN A.LSEQ
+                          WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYDANGER' AND INSTR(A.ALM, '2') > 0 THEN A.SNSRID
+                          WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTDANGER' AND INSTR(A.ALM, '2') > 0 THEN A.LSEQ
+                      END) AS CNT
          FROM
              (SELECT
-                  SNSRID, LSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALM
+                  L.SNSRID, L.LSEQ, CONCAT(L.OCALM, L.IGOALM, L.IGRALM) AS ALM
               FROM
-                  F_SENSOR_LOG
-              WHERE
-                  REGDATE > CURDATE()
-                  AND OCALM + IGOALM + IGRALM > 0
+                  (SELECT
+                       SNSRID, LSEQ, OCALM, IGOALM, IGRALM
+                   FROM
+                       F_SENSOR_LOG
+                   WHERE
+                       REGDATE > CURDATE() AND
+                       OCALM + IGOALM + IGRALM > 0
+                  ) L
+                      INNER JOIN (SELECT STRCODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE) LIKE 'NAREA_%') I
+                          ON L.SNSRID = I.SNSRID
+                      INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') S
+                          ON I.STRCODE = S.STRCODE
              ) A
-                 INNER JOIN (SELECT STRCODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE) LIKE 'NAREA_%') B
-                     ON A.SNSRID = B.SNSRID
-                 INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') C
-                     ON B.STRCODE = C.STRCODE
                  CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
                              UNION ALL SELECT 'COUNT', 'WARN', 4
                              UNION ALL SELECT 'TODAY', 'DANGER', 5
-                             UNION ALL SELECT 'COUNT', 'DANGER', 6) D
+                             UNION ALL SELECT 'COUNT', 'DANGER', 6) B
          GROUP BY
-             D.TERM, D.TYPE)
+             B.TERM, B.TYPE)
         ORDER BY
             ORDERNUM
         ]]>
@@ -234,7 +235,7 @@
 
     <select id="LIST_MCM_AREA_SENSOR" parameterType="map" resultType="map">
         SELECT
-            ROW_NUMBER() over (ORDER BY D.DANGER DESC, D.WARN DESC, G.CON DESC, A.SNSRID) AS ROWNUM
+            ROW_NUMBER() OVER () AS ROWNUM
             , C.STRCODE
             , C.STRNAME
             , A.SNSRID
@@ -246,7 +247,7 @@
             , E.CHK
         FROM
             (SELECT
-                 AREACODE, STRCODE, SNSRID, SNSRNICK, SNSRRCVTIME
+                 AREACODE, STRCODE, SNSRID, SNSRNICK, DATARCVTIME
              FROM
                  F_SENSOR_INFO
              WHERE
@@ -266,10 +267,10 @@
                                 REGDATE > CURDATE()
                                 AND OCALM + IGOALM + IGRALM > 0) D
                     ON A.SNSRID = D.SNSRID
-                INNER JOIN (SELECT SNSRID, COUNT(*) AS CHK FROM F_SENSOR_CHECK WHERE CHECKSTAT = 'ING' GROUP BY SNSRID) F
+                LEFT JOIN (SELECT SNSRID, COUNT(*) AS CHK FROM F_SENSOR_CHECK WHERE CHECKSTAT = 'ING' GROUP BY SNSRID) E
                     ON A.SNSRID = E.SNSRID
         ORDER BY
-            DANGER DESC, WARN DESC, CON DESC, A.SNSRID
+            DANGER DESC, WARN DESC, CON DESC, SNSRID
     </select>
 
     <select id="LIST_MCM_STORE_SEARCH" parameterType="map" resultType="map">
@@ -350,7 +351,7 @@
         GROUP BY
             2
         ORDER BY
-            1, 2
+            TYPE, RCVTIME
     </select>
 
     <select id="LIST_MCM_AREA_LOG_CHART" parameterType="map" resultType="map">
@@ -398,7 +399,7 @@
        GROUP BY
            2
        ORDER BY
-           1, 2
+           TYPE, RCVTIME
     </select>
 
     <select id="LIST_MCM_AREA_DATA_CHART_WEEK" parameterType="map" resultType="map">
@@ -447,7 +448,7 @@
             GROUP BY
                 A.SNSRID) Z
        ORDER BY
-           1, 2
+           TYPE, RCVTIME
     </select>
 
     <select id="LIST_MCM_AREA_LOG_CHART_WEEK" parameterType="map" resultType="map">
@@ -470,7 +471,7 @@
                 INNER JOIN (SELECT AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) LIKE '1N30%') C
                     ON B.AREACODE = C.AREACODE
         GROUP BY
-            2
+            DATE(A.REGDATE)
 
         UNION
 
@@ -490,9 +491,9 @@
                 INNER JOIN (SELECT AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) LIKE '1N30%') C
                     ON B.AREACODE = C.AREACODE
         GROUP BY
-            2
+            DATE(A.REGDATE)
         ORDER BY
-            1, 2
+            TYPE, RCVTIME
         ]]>
     </select>
 
@@ -537,10 +538,10 @@
                                                    AND OCALM + IGOALM + IGRALM > 0) C2
                                         ON C1.DSEQ = C2.DSEQ
                             GROUP BY
-                                1) C
+                                C1.SNSRID) C
                     ON A.SNSRID = C.SNSRID
         ORDER BY
-            C.DANGERCNT DESC, C.WARNCNT DESC, C.DATACNT DESC, 2
+            C.DANGERCNT DESC, C.WARNCNT DESC, C.DATACNT DESC, B.STRNAME
     </select>
 
 </mapper>
