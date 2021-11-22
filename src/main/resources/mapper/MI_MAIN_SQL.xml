@@ -29,23 +29,26 @@
              B.TERM
              , B.TYPE
              , B.ORDERNUM
-             , COUNT(DISTINCT CASE
-                         WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYWARN' AND INSTR(A.ALM, '1') > 0 THEN A.SNSRID
-                         WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTWARN' AND INSTR(A.ALM, '1') > 0 THEN A.LSEQ
-                         WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYDANGER' AND INSTR(A.ALM, '2') > 0 THEN A.SNSRID
-                         WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTDANGER' AND INSTR(A.ALM, '2') > 0 THEN A.LSEQ
-                     END) AS CNT
+             , (CASE
+                    WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYWARN' THEN A.TODAYWARN
+                    WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTWARN' THEN A.COUNTWARN
+                    WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYDANGER' THEN A.TODAYDANGER
+                    WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTDANGER' THEN A.COUNTDANGER
+                END) AS CNT
          FROM
              (SELECT
-                  L.SNSRID, L.LSEQ, CONCAT(L.OCALM, L.IGOALM, L.IGRALM) AS ALM
+                  COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '1') > 0 THEN L.SNSRID END) AS TODAYWARN
+                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '1') > 0 THEN L.LSEQ END) AS COUNTWARN
+                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '2') > 0 THEN L.SNSRID END) AS TODAYDANGER
+                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '2') > 0 THEN L.LSEQ END) AS COUNTDANGER
               FROM
                   (SELECT
-                       SNSRID, LSEQ, OCALM, IGOALM, IGRALM
+                       SNSRID, LSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALM
                    FROM
                        F_SENSOR_LOG
                    WHERE
-                       REGDATE > CURDATE() AND
-                       OCALM + IGOALM + IGRALM > 0
+                       REGDATE > CURDATE()
+                       AND OCALM + IGOALM + IGRALM > 0
                   ) L
                       INNER JOIN (SELECT STRCODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE) LIKE 'NAREA_%') I
                           ON L.SNSRID = I.SNSRID
