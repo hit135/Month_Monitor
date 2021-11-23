@@ -46,30 +46,11 @@ function fn_mcll_initLeft() {
     fn_mcm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
   });
 
-  fn_mcll_getAreaList();
   fn_mcll_getCheckSensorList();
 }
 
 function fn_mcll_refreshLeft() {
-  fn_mcll_getAreaList();
   fn_mcll_getCheckSensorList();
-}
-
-function fn_mcll_getAreaList() {
-  window.left_area_lv2_on_code = $('.left .area-lv2.on').attr('data-code');
-
-  $.post(
-    $('#contextRoot').val() + '/mng/areaListAjax',
-    {},
-    function (d) {
-      $('.list-area').html('');
-
-      for (let i = 0; i < d.length; i++)
-        if (d[i].LEVEL == 1)
-          $('.list-area').append($.tmpl('left-area', d[i]));
-        else
-          $('.list-area p[data-code="' + d[i].UPCODE + '"]').after($.tmpl('left-area', d[i]));
-  });
 }
 
 function fn_mcll_getCheckSensorList() {

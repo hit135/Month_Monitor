@@ -622,16 +622,18 @@
     </select>
 
     <select id="LIST_MIM_SENSOR_STATE" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             SUBSTR(I.SNSRID FROM -4) AS SNSRID
             , (CASE
                    WHEN L.DANGERCNT > 0 THEN 'DANGER'
                    WHEN L.DANGERCNT = 0 AND L.WARNCNT > 0 THEN 'WARN'
+                   WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN 'DISCONN'
                    ELSE 'NORMAL'
                END) AS STATE
         FROM
             (SELECT
-                 SNSRID, STRCODE
+                 SNSRID, STRCODE, DATARCVTIME
              FROM
                  F_SENSOR_INFO
              WHERE
@@ -648,6 +650,7 @@
                            GROUP BY
                                SNSRID) L
                     ON I.SNSRID = L.SNSRID;
+        ]]>
     </select>
 
 </mapper>

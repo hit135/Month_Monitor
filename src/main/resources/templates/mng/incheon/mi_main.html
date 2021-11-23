@@ -61,6 +61,10 @@
               <div class="mim_panel_legend_rect" style="background-color: #FF2F44;"></div>
               <div class="mim_panel_legend_txt">경고</div>
             </div>
+            <div class="mim_panel_legend_div">
+              <div class="mim_panel_legend_rect" style="background-color: #a6a6a6;"></div>
+              <div class="mim_panel_legend_txt">끊김</div>
+            </div>
           </div><!-- /#mim_panel_legend -->
         </div><!-- /#mim_panel_inner_body -->
       </div><!-- /#mim_panel_body -->
@@ -141,12 +145,17 @@ function fn_mim_init() {
 }
 
 function fn_mim_initMainAreaList() {
+  // main
   window.min_category = [];
   $('.center-main-cont .sortable-grid').html('');
 
   for (let i = 0; i < 24; i++)
     for (let j = 0; j < 6; j++)
       window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
+
+  // side
+  window.left_area_lv2_on_code = $('.left .area-lv2.on').attr('data-code');
+  $('.list-area').html('');
 
   $.post(
     $('#contextRoot').val() + '/mng/incheon/areaListAjax',
@@ -157,6 +166,14 @@ function fn_mim_initMainAreaList() {
         window.areaIndex = {};
         window.lv1cnt = 0;
 
+        // left side
+        for (let i = 0; i < d.length; i++)
+          if (d[i].LEVEL == 1)
+            $('.list-area').append($.tmpl('left-area', d[i]));
+          else
+            $('.list-area p[data-code="' + d[i].UPCODE + '"]').after($.tmpl('left-area', d[i]));
+
+        // main
         for (let i = d.length - 1; i >= 0; i--) {
           if (d[i].LEVEL != 1) {
             window.lv1cnt++;
@@ -182,10 +199,13 @@ function fn_mim_initMainAreaList() {
 
                 window.center_name = 'main';
                 fn_mim_toggleCenterCont();
+
+                // area 데이터 수신현황 update
+                let show_panel = $('.center-main-cont .panel-container');
+                for (let i = 0; i < show_panel.length; i++)
+                  fn_mim_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', '')/*, id*/);
             });
       }}}
-
-      fn_mim_loadMainAreaList();
   });
 
   fn_mim_getSensorState();
@@ -201,11 +221,7 @@ function fn_mim_toggleCenterCont() {
   }
 }
 
-function fn_mim_loadMainAreaList() {
-  fn_mim_updateMainAreaList();
-}
-
-function fn_mim_updateMainAreaList() {
+function fn_mim_updateMainAreaList(/*id*/) {
   $.post(
     $('#contextRoot').val() + '/mng/incheon/areaListAjax',
     {},
@@ -214,14 +230,18 @@ function fn_mim_updateMainAreaList() {
         window.area = d;
         window.areaIndex = {};
 
-        for (let i = d.length - 1; i >= 0; i--)
+        for (let i = d.length - 1; i >= 0; i--) {
           if (d[i].LEVEL != 1)
             window.areaIndex[d[i].CODE] = i;
 
-        let show_panel = $('.center-main-cont .panel-container');
+          // left side
+          $('.list-area p[data-code="' + d[i].CODE + '"] > span.danger').text(d[i].DANGER);
+          $('.list-area p[data-code="' + d[i].CODE + '"] > span.warn').text(d[i].WARN);
+        }
 
+        let show_panel = $('.center-main-cont .panel-container');
         for (let i = 0; i < show_panel.length; i++)
-          fn_mim_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''));
+          fn_mim_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', '')/*, id*/);
   }});
 }
 
@@ -318,6 +338,7 @@ function fn_mim_getSensorState() {
           switch (d[2 * i].STATE) {
             case 'DANGER': leftStyle = 'background-color: #FF2F44; color: #fff;'; break;
             case 'WARN': leftStyle = 'background-color: #FFBF87; color: #000;'; break;
+            case 'DISCONN': leftStyle = 'background-color: #a6a6a6; color: #000;'; break;
             case 'NORMAL': leftStyle = 'background-color: #00B050; color: #fff;'; break;
           }
 
@@ -331,12 +352,13 @@ function fn_mim_getSensorState() {
             switch (d[2 * i + 1].STATE) {
               case 'DANGER': rightStyle = 'background-color: #FF2F44; color: #fff;'; break;
               case 'WARN': rightStyle = 'background-color: #FFBF87; color: #000;'; break;
+              case 'DISCONN': rightStyle = 'background-color: #a6a6a6; color: #000;'; break;
               case 'NORMAL': rightStyle = 'background-color: #00B050; color: #fff;'; break;
             }
 
             html += '<td style="' + rightStyle + '">' + d[2 * i + 1].SNSRID + '</td>';
           } else {
-            html += '<td style="background-color: #a6a6a6;"></td>';
+            html += '<td style="background-color: #fff;"></td>';
           }
 
           html += '</tr>';
