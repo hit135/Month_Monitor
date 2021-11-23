@@ -406,12 +406,13 @@
     </select>
 
     <select id="LIST_MCM_AREA_DATA_CHART_WEEK" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
-            '1' AS DATETYPE, SDATE AS RCVTIME, DAYOFWEEK(SDATE) AS WEEK, IFNULL(SUM(SNSRKWHDAILY), 0) AS CNT
+            '1' AS TYPE, SDATE AS RCVTIME, DAYOFWEEK(SDATE) AS WEEK, IFNULL(SUM(SNSRKWHDAILY), 0) AS CNT
         FROM
             F_CRN_AREA_ELEC_DAILY_STAT
         WHERE
-            SDATE <![CDATA[<]]> CURDATE() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY
+            SDATE < CURDATE() - INTERVAL (DAYOFWEEK(NOW()) - 1) DAY
             AND SDATE > CURDATE() - INTERVAL (7 + DAYOFWEEK(NOW())) DAY
             AND GUCODE LIKE '30%'
             AND AREACODE = #{areacode}
@@ -452,6 +453,7 @@
                 A.SNSRID) Z
        ORDER BY
            TYPE, RCVTIME
+       ]]>
     </select>
 
     <select id="LIST_MCM_AREA_LOG_CHART_WEEK" parameterType="map" resultType="map">

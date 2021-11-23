@@ -78,7 +78,7 @@ public class MCMainController {
      * @작성일 : 2021-07-29
      * @작성자 : jjm
      * @변경이력 :
-     * @Method 설명 : 시장별 동적 화면
+     * @Method 설명 : 시장 현황 동적 화면
      * @return ModelAndView
      */
     @RequestMapping(value = "/mainArea")
