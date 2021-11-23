@@ -20,7 +20,7 @@
       <div class="panel-saving mr-2" style="display: none;">
         <i class="fal fa-spinner-third fa-spin-4x fs-xl"></i>
       </div><!-- /.panel-saving mr-2 -->
-      <div class="panel-toolbar" role="menu">
+      <div class="panel-toolbar" role="menu" style="display: none;">
         <a href="#" class="btn btn-panel js-panel-collapse" th:data-id="${prm_panel_index}">
           <i class="fal fa-arrows-v"></i>
         </a>
@@ -35,21 +35,21 @@
       </div><!-- /.loader -->
       <div class="center-main-page-chart on">
         <div class="row">
-          <div class="col-md-6 col-12">
-            <div class="center-main-data-chart" style="height: 250px;"></div>
+          <div class="col-12">
+            <div class="center-main-data-chart" style="height: 200px;"></div>
           </div><!-- /.col-md-6 col-12 -->
-          <div class="col-md-6 col-12">
-            <div class="center-main-log-chart" style="height: 250px;"></div>
-          </div><!-- /.col-md-6 col-12 -->
-        </div><!-- /.row -->
-        <div class="row">
-          <div class="col-md-6 col-12">
-            <div class="center-main-data-chart-week"></div>
-          </div><!-- /.col-md-6 col-12 -->
-          <div class="col-md-6 col-12">
-            <div class="center-main-log-chart-week"></div>
+          <div class="col-12">
+            <div class="center-main-log-chart" style="height: 200px;"></div>
           </div><!-- /.col-md-6 col-12 -->
         </div><!-- /.row -->
+<!--        <div class="row">-->
+<!--          <div class="col-md-6 col-12">-->
+<!--            <div class="center-main-data-chart-week"></div>-->
+<!--          </div>&lt;!&ndash; /.col-md-6 col-12 &ndash;&gt;-->
+<!--          <div class="col-md-6 col-12">-->
+<!--            <div class="center-main-log-chart-week"></div>-->
+<!--          </div>&lt;!&ndash; /.col-md-6 col-12 &ndash;&gt;-->
+<!--        </div>&lt;!&ndash; /.row &ndash;&gt;-->
       </div><!-- /.center-main-page-chart -->
       <div class="center-main-page-map" th:data-id="${prm_panel_index}">
         <div class="center-main-data-chart" style="height: 800px;"></div>

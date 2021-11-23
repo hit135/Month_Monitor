@@ -6,22 +6,21 @@
 <link rel="stylesheet" th:href="@{/fs/css/custom.css}" />
 
 <style>
-#center-main-cont { height: 305px; overflow-y: hidden; }
+.center-main-cont .panel-hdr { height: 2rem !important; }
+.center-main-cont .panel-container  { height: 425px; overflow-y: hidden; }
+.center-main-cont { height: 480px; overflow-x: hidden; overflow-y: hidden; }
 
-#mim_panel_div { margin-top: 15px; }
-#mim_panel_title { padding: 0.5rem 1rem; border-radius: 4px 4px 0 0; background-color: #2b559b; color: #ffffff; font-size: 24px; font-weight: bold; }
+#mim_panel_div { margin-top: 10px; }
+#mim_panel_title { height: 2.5rem; padding-left: 1rem; border-radius: 4px 4px 0 0; background-color: #2b559b; color: #ffffff; font-size: 24px; font-weight: bold; }
 #mim_panel_body { display: flex; justify-content: center; border-radius: 0 0 4px 4px; border: 1px solid #e0e0e0; }
-#mim_panel_inner_body { display: flex; flex-direction: row; padding: 30px 20px; }
-#mim_panel_img { display: flex; margin-left: 80px; padding: 20px 20px; border: 2px solid #2F528F; }
-#mim_panel_img_left { display: flex; flex-direction: column; justify-content: center; position: absolute; left: 150px; }
-.mim_panel_img_circle { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #2F528F; }
-.mim_panel_img_hr { width: 80px; border-bottom: 2px solid #2F528F; }
-.mim_panel_img_rect { background-color: #5B9BD5; color: #ffffff; font-size: 24px; padding: 5px 50px; border: 2px solid #2F528F; }
-#mim_panel_img_center { display: flex; justify-content: center; font-size: 33px; padding: 80px 200px; }
-#mim_panel_img_right { display: flex; flex-direction: column; justify-content: center; position: absolute; left: 640px; }
-#mim_panel_legend { display: flex; flex-direction: column; justify-content: center; margin-left: 200px; }
-.mim_panel_legend_rect { padding: 20px; border: 2px solid #2F528F; }
-.mim_panel_legend_txt { margin-left: 10px; font-size: 24px; }
+#mim_panel_inner_body { display: flex; flex-direction: row; padding: 10px 20px; }
+
+#mim_panel_tbl { font-size: 20px; }
+.table td { padding: 0.3rem; width: 175px; display: table-cell; text-align: center; vertical-align: middle; border: 1px solid #2F528F; }
+
+#mim_panel_legend { display: flex; flex-direction: column; justify-content: center; margin-left: 50px; }
+.mim_panel_legend_rect { padding: 16px; border: 2px solid #2F528F; }
+.mim_panel_legend_txt { margin-left: 10px; font-size: 18px; }
 </style>
 </head>
 
@@ -45,53 +44,31 @@
       <div id="mim_panel_title">분전반 현황</div>
       <div id="mim_panel_body">
         <div id="mim_panel_inner_body">
-          <div id="mim_panel_img">
-            <div id="mim_panel_img_left">
-              <div class="d-flex align-items-center">
-                <div class="mim_panel_img_circle" style="background: #00B050;"></div>
-                <hr class="mim_panel_img_hr" />
-                <div class="mim_panel_img_rect">1AA</div>
-              </div>
-              <div class="d-flex align-items-center" style="margin-top: 5px;">
-                <div class="mim_panel_img_circle" style="background: #00B050;"></div>
-                <hr class="mim_panel_img_hr" />
-                <div class="mim_panel_img_rect">1AA</div>
-              </div>
-              <div class="d-flex align-items-center" style="margin-top: 5px;">
-                <div class="mim_panel_img_circle" style="background: #00B050;"></div>
-                <hr class="mim_panel_img_hr" />
-                <div class="mim_panel_img_rect">1AA</div>
-              </div>
-              <div class="d-flex align-items-center" style="margin-top: 5px;">
-                <div class="mim_panel_img_circle" style="background: #00B050;"></div>
-                <hr class="mim_panel_img_hr" />
-                <div class="mim_panel_img_rect">1AA</div>
-              </div>
-            </div><!-- /#mim_panel_img_left -->
-            <div id="mim_panel_img_center">분전반</div>
-            <div id="mim_panel_img_right">
-              <div class="d-flex align-items-center">
-                <div class="mim_panel_img_rect">1AA</div>
-                <hr slass="mim_panel_img_hr" />
-                <div class="mim_panel_img_circle" style="background: #00B050;"></div>
-              </div>
-              <div class="d-flex align-items-center" style="margin-top: 5px;">
-                <div class="mim_panel_img_rect">1AA</div>
-                <hr class="mim_panel_img_hr" />
-                <div class="mim_panel_img_circle" style="background: #00B050;"></div>
-              </div>
-              <div class="d-flex align-items-center" style="margin-top: 5px;">
-                <div class="mim_panel_img_rect">1AA</div>
-                <hr class="mim_panel_img_hr" />
-                <div class="mim_panel_img_circle" style="background: #00B050;"></div>
-              </div>
-              <div class="d-flex align-items-center" style="margin-top: 5px;">
-                <div class="mim_panel_img_rect">1AA</div>
-                <hr class="mim_panel_img_hr" />
-                <div class="mim_panel_img_circle" style="background: #00B050;"></div>
-              </div>
-            </div><!-- /#mim_panel_img_right -->
-          </div><!-- /#mim_panel_img -->
+          <div>
+            <table class="table" id="mim_panel_tbl">
+              <tr>
+                <td style="background-color: #00B050; color: #fff;">A12</td>
+                <td rowspan="5">분전반</td>
+                <td style="background-color: #00B050; color: #fff;">A12</td>
+              </tr>
+              <tr>
+                <td style="background-color: #00B050; color: #fff;">A12</td>
+                <td style="background-color: #00B050; color: #fff;">A12</td>
+              </tr>
+              <tr>
+                <td style="background-color: #00B050; color: #fff;">A12</td>
+                <td style="background-color: #00B050; color: #fff;">A12</td>
+              </tr>
+              <tr>
+                <td style="background-color: #00B050; color: #fff;">A12</td>
+                <td style="background-color: #FFBF87; color: #000;">A12</td>
+              </tr>
+              <tr>
+                <td style="background-color: #00B050; color: #fff;">A12</td>
+                <td style="background-color: #FFBF87; color: #000;">A12</td>
+              </tr>
+            </table><!-- /#mim_panel_tbl -->
+          </div>
           <div id="mim_panel_legend">
             <div class="d-flex align-items-center">
               <div class="mim_panel_legend_rect" style="background-color: #00B050;"></div>
@@ -166,6 +143,22 @@ function fn_mim_init() {
   );
 
   fn_mim_initMainAreaList();
+
+  $('.center-main-cont').on('click', '.js-panel-fullscreen', function () {
+    let id = '#' + $(this).attr('data-id');
+
+    if ($(this).hasClass('on')) {
+      $(this).removeClass('on');
+      $(id).removeClass('panel-fullscreen');
+
+      $("#mim_panel_div").css('display', 'block');
+    } else {
+      $(this).addClass('on');
+      $(id).addClass('panel-fullscreen');
+
+      $("#mim_panel_div").css('display', 'none');
+    }
+  });
 }
 
 function fn_mim_initMainAreaList() {
@@ -272,7 +265,7 @@ function fn_mim_setMainArea(i, id) {
         function (resu) {
           fn_mim_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
           fn_mim_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
-        });
+      });
     }
   } else {
     if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
@@ -283,14 +276,14 @@ function fn_mim_setMainArea(i, id) {
         function (resu) {
           fn_mim_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
           fn_mim_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
-        });
+      });
     }}
 }
 
 function fn_mim_setChart(title, target, data, colors) {
   let opt = {
     series: [],
-    chart: { height: 250, type: 'line', id: target, animations: { enabled: false } },
+    chart: { height: 200, type: 'line', id: target, animations: { enabled: false } },
     title: { text: title, align: 'left' },
     colors: colors,
     stroke: { width: 2 },
