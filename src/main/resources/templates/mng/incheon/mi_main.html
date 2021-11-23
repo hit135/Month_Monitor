@@ -6,21 +6,22 @@
 <link rel="stylesheet" th:href="@{/fs/css/custom.css}" />
 
 <style>
-.center-main-cont .panel-hdr { height: 2rem !important; }
-.center-main-cont .panel-container  { height: 425px; overflow-y: hidden; }
-.center-main-cont { height: 480px; overflow-x: hidden; overflow-y: hidden; }
+.center-main-cont .panel-hdr { min-height: 2.5rem !important; height: 2.5rem !important; }
+.center-main-cont .panel-container { height: 460px; overflow-y: hidden; }
+.center-main-cont { height: 510px; overflow-x: hidden; overflow-y: hidden; }
 
-#mim_panel_div { margin-top: 10px; }
+#mim_panel_div { margin-top: 0px; }
 #mim_panel_title { height: 2.5rem; padding-left: 1rem; border-radius: 4px 4px 0 0; background-color: #2b559b; color: #ffffff; font-size: 24px; font-weight: bold; }
 #mim_panel_body { display: flex; justify-content: center; border-radius: 0 0 4px 4px; border: 1px solid #e0e0e0; }
-#mim_panel_inner_body { display: flex; flex-direction: row; padding: 10px 20px; }
+#mim_panel_inner_body { padding: 10px 20px; display: flex; flex-direction: row; width: 100%; justify-content: space-around; }
 
-#mim_panel_tbl { font-size: 20px; }
-.table td { padding: 0.3rem; width: 175px; display: table-cell; text-align: center; vertical-align: middle; border: 1px solid #2F528F; }
+#mim_panel_tbl { font-size: 20px; margin-bottom: 5px; }
+.table td { padding: 0.2rem; width: 175px; display: table-cell; text-align: center; vertical-align: middle; border: 1px solid #2F528F; }
 
-#mim_panel_legend { display: flex; flex-direction: column; justify-content: center; margin-left: 50px; }
-.mim_panel_legend_rect { padding: 16px; border: 2px solid #2F528F; }
-.mim_panel_legend_txt { margin-left: 10px; font-size: 18px; }
+#mim_panel_legend { display: flex; }
+.mim_panel_legend_div { margin-left: 18px; display: flex; align-items: center; }
+.mim_panel_legend_rect { padding: 12px; border: 2px solid #2F528F; }
+.mim_panel_legend_txt { margin-left: 10px; font-size: 14px; }
 </style>
 </head>
 
@@ -45,40 +46,18 @@
       <div id="mim_panel_body">
         <div id="mim_panel_inner_body">
           <div>
-            <table class="table" id="mim_panel_tbl">
-              <tr>
-                <td style="background-color: #00B050; color: #fff;">A12</td>
-                <td rowspan="5">분전반</td>
-                <td style="background-color: #00B050; color: #fff;">A12</td>
-              </tr>
-              <tr>
-                <td style="background-color: #00B050; color: #fff;">A12</td>
-                <td style="background-color: #00B050; color: #fff;">A12</td>
-              </tr>
-              <tr>
-                <td style="background-color: #00B050; color: #fff;">A12</td>
-                <td style="background-color: #00B050; color: #fff;">A12</td>
-              </tr>
-              <tr>
-                <td style="background-color: #00B050; color: #fff;">A12</td>
-                <td style="background-color: #FFBF87; color: #000;">A12</td>
-              </tr>
-              <tr>
-                <td style="background-color: #00B050; color: #fff;">A12</td>
-                <td style="background-color: #FFBF87; color: #000;">A12</td>
-              </tr>
-            </table><!-- /#mim_panel_tbl -->
+            <table class="table" id="mim_panel_tbl"></table><!-- /#mim_panel_tbl -->
           </div>
           <div id="mim_panel_legend">
-            <div class="d-flex align-items-center">
+            <div class="mim_panel_legend_div">
               <div class="mim_panel_legend_rect" style="background-color: #00B050;"></div>
               <div class="mim_panel_legend_txt">정상</div>
             </div>
-            <div class="d-flex align-items-center" style="margin-top: 11px;">
+            <div class="mim_panel_legend_div">
               <div class="mim_panel_legend_rect" style="background-color: #FFBF87;"></div>
               <div class="mim_panel_legend_txt">주의</div>
             </div>
-            <div class="d-flex align-items-center" style="margin-top: 11px;">
+            <div class="mim_panel_legend_div">
               <div class="mim_panel_legend_rect" style="background-color: #FF2F44;"></div>
               <div class="mim_panel_legend_txt">경고</div>
             </div>
@@ -139,7 +118,7 @@ function fn_mim_init() {
     'center-left-store',
     '<p class="{{html STATE}}" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-strname="{{html STRNAME}}">' +
       '({{html SNSRCOUNT}}) {{html STRNAME}} <span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span>' +
-      '</p>'
+    '</p>'
   );
 
   fn_mim_initMainAreaList();
@@ -204,12 +183,13 @@ function fn_mim_initMainAreaList() {
 
                 window.center_name = 'main';
                 fn_mim_toggleCenterCont();
-              }
-            );
-          }}}
+            });
+      }}}
 
       fn_mim_loadMainAreaList();
-    });
+  });
+
+  fn_mim_getSensorState();
 }
 
 function fn_mim_toggleCenterCont() {
@@ -226,7 +206,7 @@ function fn_mim_loadMainAreaList() {
   fn_mim_updateMainAreaList();
 }
 
-function fn_mim_updateMainAreaList(id) {
+function fn_mim_updateMainAreaList() {
   $.post(
     $('#contextRoot').val() + '/mng/incheon/areaListAjax',
     {},
@@ -242,11 +222,11 @@ function fn_mim_updateMainAreaList(id) {
         let show_panel = $('.center-main-cont .panel-container');
 
         for (let i = 0; i < show_panel.length; i++)
-          fn_mim_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''), id);
-      }});
+          fn_mim_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', ''));
+  }});
 }
 
-function fn_mim_setMainArea(i, id) {
+function fn_mim_setMainArea(i) {
   let panel_id = 'panel-' + i;
 
   $('#' + panel_id + ' .center-main-area-title').text(window.area[window.areaIndex[i]].NAME);
@@ -256,34 +236,21 @@ function fn_mim_setMainArea(i, id) {
   $('#' + panel_id + ' .center-main-area-count-warn').text(window.area[window.areaIndex[i]].WARN);
   $('#' + panel_id + ' .center-main-area-count-discon').text(window.area[window.areaIndex[i]].DISCON);
 
-  if (typeof id === 'undefined') {
-    if ($('#' + panel_id).hasClass('panel-fullscreen')
-        || $('#' + panel_id + ' .panel-container').hasClass('show')) {
-      $.post(
-        $('#contextRoot').val() + '/mng/incheon/mainAreaDataAndLogChartAjax',
-        { areacode: i },
-        function (resu) {
-          fn_mim_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
-          fn_mim_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
-      });
-    }
-  } else {
-    if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
-        || $('#' + panel_id + ' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
-      $.post(
-        $('#contextRoot').val() + '/mng/incheon/mainAreaDataAndLogChartAjax',
-        { areacode: i },
-        function (resu) {
-          fn_mim_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
-          fn_mim_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
-      });
-    }}
+  if ($('#' + panel_id).hasClass('panel-fullscreen') || $('#' + panel_id + ' .panel-container').hasClass('show')) {
+    $.post(
+      $('#contextRoot').val() + '/mng/incheon/mainAreaDataAndLogChartAjax',
+      { areacode: i },
+      function (resu) {
+        fn_mim_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
+        fn_mim_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
+    });
+  }
 }
 
 function fn_mim_setChart(title, target, data, colors) {
   let opt = {
     series: [],
-    chart: { height: 200, type: 'line', id: target, animations: { enabled: false } },
+    chart: { height: 220, type: 'line', id: target, animations: { enabled: false }, zoom: { enabled: false }, toolbar: { show: false } },
     title: { text: title, align: 'left' },
     colors: colors,
     stroke: { width: 2 },
@@ -332,6 +299,53 @@ function fn_mim_setChart(title, target, data, colors) {
     window['chart-' + target_id] = new ApexCharts(document.querySelector(target), opt);
     window['chart-' + target_id].render().then(function () {});
   }
+}
+
+function fn_mim_getSensorState() {
+  $("#mim_panel_tbl").empty();
+
+  $.post(
+    $('#contextRoot').val() + '/mng/incheon/sensorStateAjax',
+    {},
+    function (d) {
+      if (d.length) {
+        let html = '';
+        let trLength = Math.ceil(d.length / 2);
+
+        for (let i = 0 ; i < trLength; i++) {
+          html += '<tr>';
+
+          let leftStyle = '';
+          switch (d[2 * i].STATE) {
+            case 'DANGER': leftStyle = 'background-color: #FF2F44; color: #fff;'; break;
+            case 'WARN': leftStyle = 'background-color: #FFBF87; color: #000;'; break;
+            case 'NORMAL': leftStyle = 'background-color: #00B050; color: #fff;'; break;
+          }
+
+          html += '<td style="' + leftStyle + '">' + d[2 * i].SNSRID + '</td>';
+
+          if (i == 0)
+            html += '<td rowspan="' + trLength + '">분전반</td>';
+
+          if (d[2 * i + 1] != null) {
+            let rightStyle = '';
+            switch (d[2 * i + 1].STATE) {
+              case 'DANGER': rightStyle = 'background-color: #FF2F44; color: #fff;'; break;
+              case 'WARN': rightStyle = 'background-color: #FFBF87; color: #000;'; break;
+              case 'NORMAL': rightStyle = 'background-color: #00B050; color: #fff;'; break;
+            }
+
+            html += '<td style="' + rightStyle + '">' + d[2 * i + 1].SNSRID + '</td>';
+          } else {
+            html += '<td style="background-color: #a6a6a6;"></td>';
+          }
+
+          html += '</tr>';
+        }
+
+        $("#mim_panel_tbl").html(html);
+    }}
+  );
 }
 
 let refreshTime = window.setInterval(function () {

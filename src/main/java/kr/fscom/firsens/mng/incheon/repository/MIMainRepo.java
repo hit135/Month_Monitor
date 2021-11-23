@@ -19,4 +19,6 @@ public interface MIMainRepo {
     List<HashMap<String, Object>> LIST_MIM_AREA_DATA_CHART(Map<String, Object> param) throws Exception;              // 시장별 어제/오늘 데이터 추이
     List<HashMap<String, Object>> LIST_MIM_AREA_LOG_CHART(Map<String, Object> param) throws Exception;               // 시장별 어제/오늘 경보 발생 추이
 
+    List<HashMap<String, Object>> LIST_MIM_SENSOR_STATE(Map<String, Object> param) throws Exception;                 // 분전반 현황
+    
 }

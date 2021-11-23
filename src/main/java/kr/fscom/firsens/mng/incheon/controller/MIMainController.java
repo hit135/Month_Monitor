@@ -55,7 +55,7 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimSensorCountAjax
+     * @Method Name : mimSensorCount
      * @작성일 : 2021-11-22
      * @작성자 : uhm
      * @변경이력 :
@@ -64,7 +64,7 @@ public class MIMainController {
      */
     @RequestMapping(value = "/sensorCountAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mimSensorCountAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mimSensorCount(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -99,7 +99,7 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimAreaListAjax
+     * @Method Name : mimAreaList
      * @작성일 : 2021-11-22
      * @작성자 : uhm
      * @변경이력 :
@@ -108,7 +108,7 @@ public class MIMainController {
      */
     @RequestMapping(value = "/areaListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mimAreaListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mimAreaList(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -121,7 +121,7 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimSensorListAjax
+     * @Method Name : mimSensorList
      * @작성일 : 2021-11-22
      * @작성자 : uhm
      * @변경이력 :
@@ -130,7 +130,7 @@ public class MIMainController {
      */
     @RequestMapping(value = "/sensorListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mimSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mimSensorList(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -143,7 +143,7 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimAreaSensorCountAjax
+     * @Method Name : mimAreaSensorCount
      * @작성일 : 2021-11-22
      * @작성자 : jjm
      * @변경이력 :
@@ -152,7 +152,7 @@ public class MIMainController {
      */
     @RequestMapping(value = "/areaSensorCountAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mimAreaSensorCountAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mimAreaSensorCount(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -166,7 +166,7 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimAreaDataAndLogChartAjax
+     * @Method Name : mimAreaDataAndLogChart
      * @작성일 : 2021-11-22
      * @작성자 : uhm
      * @변경이력 :
@@ -175,7 +175,7 @@ public class MIMainController {
      */
     @RequestMapping(value = "/mainAreaDataAndLogChartAjax")
     @ResponseBody
-    public HashMap<String, Object> mimAreaDataAndLogChartAjax(HttpServletRequest req) throws Exception {
+    public HashMap<String, Object> mimAreaDataAndLogChart(HttpServletRequest req) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
@@ -190,6 +190,28 @@ public class MIMainController {
         }
 
         return rtn;
+    }
+
+    /**
+     * @Method Name : mimSensorState
+     * @작성일 : 2021-11-22
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 분전반 현황
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/sensorStateAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> mimSensorState(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            return miMainRepo.LIST_MIM_SENSOR_STATE(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
     }
 
 }

@@ -96,7 +96,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmSensorCountAjax
+     * @Method Name : mcmSensorCount
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -105,7 +105,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/sensorCountAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmSensorCountAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmSensorCount(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -118,7 +118,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmAreaListAjax
+     * @Method Name : mcmAreaList
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -127,7 +127,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/areaListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmAreaListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmAreaList(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -140,7 +140,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmSensorListAjax
+     * @Method Name : mcmSensorList
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -149,7 +149,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/sensorListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmSensorList(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -162,7 +162,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmAreaSensorCountAjax
+     * @Method Name : mcmAreaSensorCount
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -171,7 +171,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/areaSensorCountAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmAreaSensorCountAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmAreaSensorCount(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -185,7 +185,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmAreaStoreListAjax
+     * @Method Name : mcmAreaStoreList
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -194,7 +194,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/areaStoreListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmAreaStoreListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmAreaStoreList(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -208,7 +208,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmAreaSensorListAjax
+     * @Method Name : mcmAreaSensorList
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
@@ -217,7 +217,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/areaSensorListAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mcmAreaSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String,Object>> mcmAreaSensorList(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -233,7 +233,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmStoreSearchAjax
+     * @Method Name : mcmStoreSearch
      * @작성일 : 2021-07-15
      * @작성자 : jjm
      * @변경이력 :
@@ -242,7 +242,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/storeSearchAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmStoreSearchAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmStoreSearch(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -256,7 +256,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmCheckSensorListAjax
+     * @Method Name : mcmCheckSensorList
      * @작성일 : 2021-07-15
      * @작성자 : jjm
      * @변경이력 :
@@ -265,7 +265,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/checkSensorListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmCheckSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmCheckSensorList(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -278,7 +278,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mainAreaDataChartAjax
+     * @Method Name : mainAreaDataChart
      * @작성일 : 2021-07-29
      * @작성자 : jjm
      * @변경이력 :
@@ -288,7 +288,7 @@ public class MCMainController {
     /*
     @RequestMapping(value = "/mainAreaDataChartAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mainAreaDataChartAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mainAreaDataChart(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -305,7 +305,7 @@ public class MCMainController {
     */
 
     /**
-     * @Method Name : mainAreaLogChartAjax
+     * @Method Name : mainAreaLogChart
      * @작성일 : 2021-07-29
      * @작성자 : jjm
      * @변경이력 :
@@ -315,7 +315,7 @@ public class MCMainController {
     /*
     @RequestMapping(value = "/mainAreaLogChartAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mainAreaLogChartAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mainAreaLogChart(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -332,7 +332,7 @@ public class MCMainController {
     */
 
     /**
-     * @Method Name : mainAreaDataChartAjax
+     * @Method Name : mainAreaDataChart
      * @작성일 : 2021-07-29
      * @작성자 : jjm
      * @변경이력 :
@@ -342,7 +342,7 @@ public class MCMainController {
     /*
     @RequestMapping(value = "/mainAreaDataChartAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mainAreaDataChartAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mainAreaDataChart(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -359,7 +359,7 @@ public class MCMainController {
     */
 
     /**
-     * @Method Name : mcmAreaDataAndLogChartAjax
+     * @Method Name : mcmAreaDataAndLogChart
      * @작성일 : 2021-11-17
      * @작성자 : uhm
      * @변경이력 :
@@ -368,7 +368,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/mainAreaDataAndLogChartAjax")
     @ResponseBody
-    public HashMap<String, Object> mcmAreaDataAndLogChartAjax(HttpServletRequest req) throws Exception {
+    public HashMap<String, Object> mcmAreaDataAndLogChart(HttpServletRequest req) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
@@ -386,7 +386,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mainAreaDataChartWeekAjax
+     * @Method Name : mainAreaDataChartWeek
      * @작성일 : 2021-07-29
      * @작성자 : jjm
      * @변경이력 :
@@ -396,7 +396,7 @@ public class MCMainController {
     /*
     @RequestMapping(value = "/mainAreaDataChartWeekAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mainAreaDataChartWeekAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mainAreaDataChartWeek(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -411,7 +411,7 @@ public class MCMainController {
     */
 
     /**
-     * @Method Name : mainAreaLogChartWeekAjax
+     * @Method Name : mainAreaLogChartWeek
      * @작성일 : 2021-07-29
      * @작성자 : jjm
      * @변경이력 :
@@ -421,7 +421,7 @@ public class MCMainController {
     /*
     @RequestMapping(value = "/mainAreaLogChartWeekAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mainAreaLogChartWeekAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String,Object>> mainAreaLogChartWeek(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
@@ -436,7 +436,7 @@ public class MCMainController {
     */
 
     /**
-     * @Method Name : mcmAreaDataAndLogChartWeekAjax
+     * @Method Name : mcmAreaDataAndLogChartWeek
      * @작성일 : 2021-11-17
      * @작성자 : uhm
      * @변경이력 :
@@ -445,7 +445,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/mainAreaDataAndLogChartWeekAjax")
     @ResponseBody
-    public HashMap<String,Object> mcmAreaDataAndLogChartWeekAjax(HttpServletRequest req) throws Exception {
+    public HashMap<String,Object> mcmAreaDataAndLogChartWeek(HttpServletRequest req) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
@@ -462,7 +462,7 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmAreaMapSensorListAjax
+     * @Method Name : mcmAreaMapSensorList
      * @작성일 : 2021-07-29
      * @작성자 : jjm
      * @변경이력 :
@@ -471,7 +471,7 @@ public class MCMainController {
      */
     @RequestMapping(value = "/mainAreaMapSensorListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmAreaMapSensorListAjax(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmAreaMapSensorList(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
