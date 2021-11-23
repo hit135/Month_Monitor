@@ -121,6 +121,28 @@ public class MIMainController {
     }
 
     /**
+     * @Method Name : mcmCheckSensorList
+     * @작성일 : 2021-07-15
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 점검내역 목록 조회
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/checkSensorListAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> mcmCheckSensorList(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            return miMainRepo.LIST_MIM_CHECK_SENSOR(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
      * @Method Name : mimSensorList
      * @작성일 : 2021-11-22
      * @작성자 : uhm

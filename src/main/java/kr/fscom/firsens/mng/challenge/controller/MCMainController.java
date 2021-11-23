@@ -140,6 +140,28 @@ public class MCMainController {
     }
 
     /**
+     * @Method Name : mcmCheckSensorList
+     * @작성일 : 2021-07-15
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 점검내역 목록 조회
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/checkSensorListAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> mcmCheckSensorList(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            return mcMainRepo.LIST_MCM_CHECK_SENSOR(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
      * @Method Name : mcmSensorList
      * @작성일 : 2021-07-09
      * @작성자 : jjm
@@ -248,28 +270,6 @@ public class MCMainController {
         try {
             prm.put("search", req.getParameter("search"));
             return mcMainRepo.LIST_MCM_STORE_SEARCH(prm);
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return null;
-    }
-
-    /**
-     * @Method Name : mcmCheckSensorList
-     * @작성일 : 2021-07-15
-     * @작성자 : jjm
-     * @변경이력 :
-     * @Method 설명 : 점검내역 목록 조회
-     * @return List<HashMap<String, Object>>
-     */
-    @RequestMapping(value = "/checkSensorListAjax")
-    @ResponseBody
-    public List<HashMap<String, Object>> mcmCheckSensorList(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
-        try {
-            return mcMainRepo.LIST_MCM_CHECK_SENSOR(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

@@ -142,6 +142,7 @@ function fn_mim_init() {
 
 function fn_mim_initMainAreaList() {
   window.min_category = [];
+  $('.center-main-cont .sortable-grid').html('');
 
   for (let i = 0; i < 24; i++)
     for (let j = 0; j < 6; j++)
@@ -151,8 +152,6 @@ function fn_mim_initMainAreaList() {
     $('#contextRoot').val() + '/mng/incheon/areaListAjax',
     {},
     function (d) {
-      $('.center-main-cont .sortable-grid').html('');
-
       if (d) {
         window.area = d;
         window.areaIndex = {};

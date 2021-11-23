@@ -224,6 +224,7 @@ function fn_mcm_init() {
 
 function fn_mcm_initMainAreaList() {
   window.min_category = [];
+  $('.center-main-cont .sortable-grid').html('');
 
   for (let i = 0; i < 24; i++)
     for (let j = 0; j < 6; j++)
@@ -234,8 +235,6 @@ function fn_mcm_initMainAreaList() {
     $('#contextRoot').val() + '/mng/areaListAjax',
     {},
     function (d) {
-      $('.center-main-cont .sortable-grid').html('');
-
       if (d) {
         window.area = d;
         window.areaIndex = {};

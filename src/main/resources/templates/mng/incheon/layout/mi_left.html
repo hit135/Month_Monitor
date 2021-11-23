@@ -36,12 +36,12 @@ function fn_mill_initLeft() {
   );
 
   fn_mill_getAreaList();
-  //fn_mill_getCheckSensorList();
+  fn_mill_getCheckSensorList();
 }
 
 function fn_mill_refreshLeft() {
   fn_mill_getAreaList();
-  //fn_mill_getCheckSensorList();
+  fn_mill_getCheckSensorList();
 }
 
 function fn_mill_getAreaList() {
@@ -53,25 +53,26 @@ function fn_mill_getAreaList() {
     function (d) {
       $('.list-area').html('');
 
-      for (let i = 0; i < d.length; i++)
+      for (let i = 0; i < d.length; i++) {
         if (d[i].LEVEL == 1)
           $('.list-area').append($.tmpl('left-area', d[i]));
         else
           $('.list-area p[data-code="' + d[i].UPCODE + '"]').after($.tmpl('left-area', d[i]));
+      }
     });
 }
 
-// function fn_mill_getCheckSensorList() {
-//   $.post(
-//     $('#contextRoot').val() + '/mng/incheon/checkSensorListAjax',
-//     {},
-//     function (d) {
-//       $('.left-list-sensor').html('');
-//
-//       for (let i = 0; i < d.length; i++)
-//         $('.sensors-' + d[i].STATE + ' .left-list-sensor').append($.tmpl('left-check-sensor', d[i]));
-//
-//       $('.sensors-CHECK .cnt').text('(' + $('.sensors-CHECK .left-list-sensor p').length + ')');
-//   });
-// }
+function fn_mill_getCheckSensorList() {
+  $.post(
+    $('#contextRoot').val() + '/mng/incheon/checkSensorListAjax',
+    {},
+    function (d) {
+      $('.left-list-sensor').html('');
+
+      for (let i = 0; i < d.length; i++)
+        $('.sensors-' + d[i].STATE + ' .left-list-sensor').append($.tmpl('left-check-sensor', d[i]));
+
+      $('.sensors-CHECK .cnt').text('(' + $('.sensors-CHECK .left-list-sensor p').length + ')');
+  });
+}
 </script>

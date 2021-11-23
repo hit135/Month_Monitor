@@ -27,6 +27,8 @@ function fn_milr_initRight() {
       '{{html AREANAME}}_{{html SNSRNICK}} ({{html CNT}})' +
     '</p>'
   );
+
+  fn_milr_getRightSensorList();
 }
 
 function fn_milr_refreshRight() {
@@ -40,8 +42,9 @@ function fn_milr_getRightSensorList() {
     function (d) {
       $('.list-sensor').html('');
 
-      for (let i = 0; i < d.length; i++)
+      for (let i = 0; i < d.length; i++) {
         $('.sensors-' + d[i].STATE + ' .list-sensor').append($.tmpl('right-sensor', d[i]));
+      }
 
       $('.sensors-DANGER .cnt').text('(' + $('.sensors-DANGER .list-sensor p').length + ')');
       $('.sensors-WARN .cnt').text('(' + $('.sensors-WARN .list-sensor p').length + ')');

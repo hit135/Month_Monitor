@@ -139,6 +139,29 @@
             LEVEL, ORDERNUM DESC
     </select>
 
+    <select id="LIST_MCM_CHECK_SENSOR" parameterType="map" resultType="map">
+        SELECT
+            D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
+        FROM
+            (SELECT
+                 A.SNSRID, 'CHECK' AS STATE, COUNT(*) AS CNT
+             FROM
+                 F_SENSOR_CHECK A
+             WHERE
+                 A.CHECKSTAT = 'ING'
+             GROUP BY
+                 A.SNSRID
+            ) A
+                INNER JOIN (SELECT AREACODE, STRCODE, SNSRID, SNSRNICK FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE) LIKE 'NAREA_%') B
+                           ON A.SNSRID = B.SNSRID
+                INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') C
+                           ON B.STRCODE = C.STRCODE
+                INNER JOIN (SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) LIKE '1N30%') D
+                           ON B.AREACODE = D.AREACODE
+        ORDER BY
+            A.STATE, A.CNT DESC
+    </select>
+
     <select id="LIST_MCM_SENSOR" parameterType="map" resultType="map">
         SELECT
             S.AREACODE, S.AREANAME, S.STRCODE, S.SNSRID, S.SNSRNICK, S.STATE, S.CNT
@@ -274,47 +297,6 @@
                     ON A.SNSRID = E.SNSRID
         ORDER BY
             DANGER DESC, WARN DESC, CON DESC, SNSRID
-    </select>
-
-    <select id="LIST_MCM_STORE_SEARCH" parameterType="map" resultType="map">
-        SELECT
-            A.AREACODE, B.AREANAME, A.STRCODE, A.STRNAME
-        FROM
-            (SELECT
-                 AREACODE, STRCODE, STRNAME
-             FROM
-                 F_STORE
-             WHERE
-                 CONCAT(GRPCODE, USEYN, DELYN) = '042YN'
-                 AND STRNAME LIKE CONCAT('%', #{search}, '%')
-            ) A
-                LEFT JOIN (SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) LIKE '1N30%') B
-                    ON A.AREACODE = B.AREACODE
-        ORDER BY
-            A.STRNAME
-    </select>
-
-    <select id="LIST_MCM_CHECK_SENSOR" parameterType="map" resultType="map">
-        SELECT
-            D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
-        FROM
-            (SELECT
-                 A.SNSRID, 'CHECK' AS STATE, COUNT(*) AS CNT
-             FROM
-                 F_SENSOR_CHECK A
-             WHERE
-                 A.CHECKSTAT = 'ING'
-             GROUP BY
-                 A.SNSRID
-            ) A
-                INNER JOIN (SELECT AREACODE, STRCODE, SNSRID, SNSRNICK FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE) LIKE 'NAREA_%') B
-                    ON A.SNSRID = B.SNSRID
-                INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') C
-                    ON B.STRCODE = C.STRCODE
-                INNER JOIN (SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) LIKE '1N30%') D
-                    ON B.AREACODE = D.AREACODE
-        ORDER BY
-            A.STATE, A.CNT DESC
     </select>
 
     <select id="LIST_MCM_AREA_DATA_CHART" parameterType="map" resultType="map">
@@ -547,6 +529,24 @@
                     ON A.SNSRID = C.SNSRID
         ORDER BY
             C.DANGERCNT DESC, C.WARNCNT DESC, C.DATACNT DESC, B.STRNAME
+    </select>
+
+    <select id="LIST_MCM_STORE_SEARCH" parameterType="map" resultType="map">
+        SELECT
+            A.AREACODE, B.AREANAME, A.STRCODE, A.STRNAME
+        FROM
+            (SELECT
+                 AREACODE, STRCODE, STRNAME
+             FROM
+                 F_STORE
+             WHERE
+                 CONCAT(GRPCODE, USEYN, DELYN) = '042YN'
+               AND STRNAME LIKE CONCAT('%', #{search}, '%')
+            ) A
+                LEFT JOIN (SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) LIKE '1N30%') B
+                          ON A.AREACODE = B.AREACODE
+        ORDER BY
+            A.STRNAME
     </select>
 
 </mapper>
