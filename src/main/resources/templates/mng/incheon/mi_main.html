@@ -15,8 +15,8 @@
 #mim_panel_body { display: flex; justify-content: center; border-radius: 0 0 4px 4px; border: 1px solid #e0e0e0; }
 #mim_panel_inner_body { padding: 10px 20px; display: flex; flex-direction: row; width: 100%; justify-content: space-around; }
 
-#mim_panel_tbl { font-size: 20px; margin-bottom: 5px; }
-.table td { padding: 0.2rem; width: 175px; display: table-cell; text-align: center; vertical-align: middle; border: 1px solid #2F528F; }
+#mim_panel_tbl { font-size: 20px; margin-bottom: 5px; border: 2px solid #2F528F;}
+.table td { width: 175px; display: table-cell; text-align: center; vertical-align: middle; border: none; }
 
 #mim_panel_legend { display: flex; }
 .mim_panel_legend_div { margin-left: 18px; display: flex; align-items: center; }
@@ -312,8 +312,8 @@ function fn_mim_setChart(title, target, data, colors) {
     window['chart-' + target_id].updateOptions(opt);
     window['chart-' + target_id].updateSeries(series);
   } else {
-    opt.series = series;
     $(target).html('');
+    opt.series = series;
 
     window['chart-' + target_id] = new ApexCharts(document.querySelector(target), opt);
     window['chart-' + target_id].render().then(function () {});
@@ -334,29 +334,36 @@ function fn_mim_getSensorState() {
         for (let i = 0 ; i < trLength; i++) {
           html += '<tr>';
 
-          let leftStyle = '';
-          switch (d[2 * i].STATE) {
-            case 'DANGER': leftStyle = 'background-color: #FF2F44; color: #fff;'; break;
-            case 'WARN': leftStyle = 'background-color: #FFBF87; color: #000;'; break;
-            case 'DISCONN': leftStyle = 'background-color: #a6a6a6; color: #000;'; break;
-            case 'NORMAL': leftStyle = 'background-color: #00B050; color: #fff;'; break;
-          }
+          let tdStyle = (i == 0) ? 'padding: 0.5rem;' : 'padding: 0 0.5rem 0.5rem 0.5rem;';
 
-          html += '<td style="' + leftStyle + '">' + d[2 * i].SNSRID + '</td>';
+          let leftDivStyle = '';
+          switch (d[2 * i].STATE) {
+            case 'DANGER': leftDivStyle = 'background-color: #FF2F44; color: #fff;'; break;
+            case 'WARN': leftDivStyle = 'background-color: #FFBF87; color: #000;'; break;
+            case 'DISCONN': leftDivStyle = 'background-color: #a6a6a6; color: #000;'; break;
+            case 'NORMAL': leftDivStyle = 'background-color: #00B050; color: #fff;'; break;
+          }
+          leftDivStyle += ' border: 2px solid #2F528F;';
+
+          html += '<td style="' + tdStyle + '"><div style="' + leftDivStyle + '">' + d[2 * i].SNSRID + '</div></td>';
+          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
           if (i == 0)
             html += '<td rowspan="' + trLength + '">분전반</td>';
+          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
           if (d[2 * i + 1] != null) {
-            let rightStyle = '';
+            let rightDivStyle = '';
             switch (d[2 * i + 1].STATE) {
-              case 'DANGER': rightStyle = 'background-color: #FF2F44; color: #fff;'; break;
-              case 'WARN': rightStyle = 'background-color: #FFBF87; color: #000;'; break;
-              case 'DISCONN': rightStyle = 'background-color: #a6a6a6; color: #000;'; break;
-              case 'NORMAL': rightStyle = 'background-color: #00B050; color: #fff;'; break;
+              case 'DANGER': rightDivStyle = 'background-color: #FF2F44; color: #fff;'; break;
+              case 'WARN': rightDivStyle = 'background-color: #FFBF87; color: #000;'; break;
+              case 'DISCONN': rightDivStyle = 'background-color: #a6a6a6; color: #000;'; break;
+              case 'NORMAL': rightDivStyle = 'background-color: #00B050; color: #fff;'; break;
             }
 
-            html += '<td style="' + rightStyle + '">' + d[2 * i + 1].SNSRID + '</td>';
+            rightDivStyle += ' border: 2px solid #2F528F;';
+
+            html += '<td style="' + tdStyle + '"><div style="' + rightDivStyle + '">' + d[2 * i + 1].SNSRID + '</div></td>';
           } else {
             html += '<td style="background-color: #fff;"></td>';
           }

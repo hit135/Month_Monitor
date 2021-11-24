@@ -153,11 +153,11 @@
                  A.SNSRID
             ) A
                 INNER JOIN (SELECT AREACODE, STRCODE, SNSRID, SNSRNICK FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE) LIKE 'NAREA_%') B
-                           ON A.SNSRID = B.SNSRID
+                    ON A.SNSRID = B.SNSRID
                 INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') C
-                           ON B.STRCODE = C.STRCODE
+                    ON B.STRCODE = C.STRCODE
                 INNER JOIN (SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) LIKE '1N30%') D
-                           ON B.AREACODE = D.AREACODE
+                    ON B.AREACODE = D.AREACODE
         ORDER BY
             A.STATE, A.CNT DESC
     </select>

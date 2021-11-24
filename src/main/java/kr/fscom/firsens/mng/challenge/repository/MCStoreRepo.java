@@ -49,6 +49,4 @@ public interface MCStoreRepo {
     void INSERT_MCST_SENSOR_CHECK(Map<String, Object> param) throws Exception;                               // 점검 등록
     void UPDATE_MCST_SENSOR_CHECK(Map<String, Object> param) throws Exception;                               // 점검 갱신
 
-    // List<HashMap<String, Object>> SELECT_MCST_LIST_MCST_STORE_SENSOR(Map<String, Object> param) throws Exception;
-
 }

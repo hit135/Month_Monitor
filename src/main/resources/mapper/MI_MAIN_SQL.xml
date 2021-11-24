@@ -72,7 +72,7 @@
              , (CASE WHEN B.TYPE = 'TOTAL' THEN A.TOTAL WHEN B.TYPE = 'DISCON' THEN A.DISCON END) AS CNT
          FROM
              (SELECT
-                    COUNT(DISTINCT I.SNSRID) AS TOTAL
+                  COUNT(DISTINCT I.SNSRID) AS TOTAL
                   , COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRID END) AS DISCON
               FROM
                   (SELECT STRCODE, SNSRID, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') I
@@ -187,8 +187,7 @@
                                 AND OCALM + IGOALM + IGRALM > 0
                             GROUP BY
                                 SNSRID) D
-                     ON
-                         A.SNSRID = D.SNSRID
+                     ON A.SNSRID = D.SNSRID
          GROUP BY
              ${alias}) S
         ]]>
