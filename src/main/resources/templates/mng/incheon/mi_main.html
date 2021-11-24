@@ -332,9 +332,9 @@ function fn_mim_getSensorState() {
         let trLength = Math.ceil(d.length / 2);
 
         for (let i = 0 ; i < trLength; i++) {
-          html += '<tr>';
-
           let tdStyle = (i == 0) ? 'padding: 0.5rem;' : 'padding: 0 0.5rem 0.5rem 0.5rem;';
+
+          html += '<tr>';
 
           let leftDivStyle = '';
           switch (d[2 * i].STATE) {
