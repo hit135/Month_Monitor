@@ -19,7 +19,9 @@
              FROM
                  V_ALL_SENSOR_LOG_MAP
              WHERE
-                 REGDATE BETWEEN CONCAT(DATE(NOW() - INTERVAL 1 DAY), ' 00:00:00') AND CONCAT(DATE(NOW() - INTERVAL 1 DAY), ' 23:59:59')
+                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 AND REGDATE BETWEEN CONCAT(CURDATE() - INTERVAL 1 DAY, ' 00:00:00')
+                             AND CONCAT(CURDATE() - INTERVAL 1 DAY, ' 23:59:59')
             ) A
             ,
             (SELECT
@@ -29,46 +31,67 @@
              FROM
                  V_ALL_SENSOR_LOG_MAP
              WHERE
-                 REGDATE BETWEEN CONCAT(DATE(NOW()), ' 00:00:00') AND NOW()
+                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
             ) B
             ,
-            (SELECT COUNT(*) AS SNSRCNT FROM F_SENSOR_INFO WHERE DELYN = 'N') I
+            (SELECT COUNT(*) AS SNSRCNT FROM V_ALL_SENSOR_MAP WHERE CONCAT(GRPCODE, GUCODE) LIKE '04230%') I
     </select>
 
     <select id="SELECT_MCD_TODAY_EVENT_STAT" parameterType="map" resultType="map">
         SELECT
-            S.STRCNT
-            , I.SNSRCNT
+            V.STRCNT
+            , V.SNSRCNT
             , L.DANGERCNT
             , L.WARNINGCNT
             , L.DISCONNCNT
         FROM
-            (SELECT COUNT(*) AS STRCNT FROM F_STORE WHERE USEYN = 'Y' AND DELYN = 'N') S
-            ,
-            (SELECT COUNT(*) AS SNSRCNT FROM F_SENSOR_INFO WHERE DELYN = 'N') I
+            (SELECT
+                 COUNT(DISTINCT STRCODE) AS STRCNT
+                 , COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
+             FROM
+                 V_ALL_SENSOR_MAP
+             WHERE
+                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+            ) V
             ,
             (SELECT
                  COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNINGCNT
-                 , COUNT(DISTINCT CASE WHEN DISCONN = 1 THEN SNSRSEQ END) AS DISCONNCNT
+                 , COUNT(DISTINCT
+                             CASE
+                                 WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
+                                 THEN SNSRSEQ
+                             END) AS WARNINGCNT
+                 , COUNT(DISTINCT
+                             CASE
+                                 WHEN CONCAT(OCALM, IGOALM, IGRALM) = '000' AND DISCONN = 1
+                                 THEN SNSRSEQ
+                             END) AS DISCONNCNT
              FROM
                  V_ALL_SENSOR_LOG_MAP
              WHERE
-                 REGDATE BETWEEN CONCAT(DATE(NOW()), ' 00:00:00') AND NOW()) L
+                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
+            ) L
     </select>
 
     <select id="LIST_MCD_CURR_GU_MAP_EVENT_STAT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             I.GUCODE
             , I.SNSRCNT
+            , I.DISCONNCNT AS DISCONNCNT
             , COALESCE(L.DANGERCNT, 0) AS DANGERCNT
             , COALESCE(L.WARNINGCNT, 0) AS WARNINGCNT
-            , COALESCE(D.DISCONNCNT, 0) AS DISCONNCNT
         FROM
             (SELECT
-                 GUCODE, COUNT(SNSRSEQ) AS SNSRCNT
+                 GUCODE
+                 , COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
+                 , COUNT(DISTINCT CASE WHEN DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN SNSRSEQ END) AS DISCONNCNT
              FROM
                  V_ALL_SENSOR_MAP
+             WHERE
+                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
              GROUP BY
                  GUCODE
             ) I
@@ -80,22 +103,13 @@
                      FROM
                          V_ALL_SENSOR_LOG_MAP
                      WHERE
-                         REGDATE BETWEEN CONCAT(DATE(NOW()), ' 00:00:00') AND NOW()
+                         CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                         AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
                      GROUP BY
                          GUCODE
                     ) L
                         ON I.GUCODE = L.GUCODE
-                LEFT JOIN
-                    (SELECT
-                         GUCODE, COUNT(DISTINCT SNSRSEQ) AS DISCONNCNT
-                     FROM
-                         V_ALL_SENSOR_MAP
-                     WHERE
-                         DATARCVTIME <![CDATA[ < ]]> NOW() - INTERVAL 30 MINUTE
-                     GROUP BY
-                         GUCODE
-                    ) D
-                        ON I.GUCODE = D.GUCODE
+        ]]>
     </select>
 
     <select id="LIST_MCD_MONTHLY_GU_EVENT_COMP_STAT" parameterType="map" resultType="map">
@@ -109,8 +123,7 @@
              FROM
                  F_GUCODE
              WHERE
-                 GRPCODE = '042'
-                 AND USEYN = 'Y'
+                 CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%'
             ) L
                 LEFT JOIN
                     (SELECT
@@ -119,7 +132,8 @@
                      FROM
                          F_CRN_AREA_ELEC_DAILY_STAT
                      WHERE
-                         DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m')
+                         GUCODE LIKE '30%'
+                         AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
                      GROUP BY
                          GUCODE
                     ) A
@@ -135,7 +149,8 @@
                          FROM
                              F_CRN_AREA_ELEC_DAILY_STAT
                          WHERE
-                             DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
+                             GUCODE LIKE '30%'
+                             AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
                          GROUP BY
                              GUCODE
 
@@ -147,7 +162,8 @@
                          FROM
                              V_ALL_SENSOR_LOG_MAP
                          WHERE
-                             REGDATE BETWEEN CONCAT(DATE(NOW()), ' 00:00:00') and NOW()
+                             CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                             AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') and NOW()
                          GROUP BY
                              GUCODE) SS
                      GROUP BY SS.GUCODE
@@ -161,10 +177,10 @@
 
     <select id="LIST_MCD_TODAY_GU_AREA_EVENT_COMP_RANK" parameterType="map" resultType="map">
         SELECT
-            DISTINCT L.GUCODE
-            , L.GUNAME
-            , L.AREACODE
-            , L.AREANAME
+            R1.GUCODE
+            , R1.GUNAME
+            , R1.AREACODE
+            , R1.AREANAME
             , COALESCE(R1.DANGERCNT, 0) AS THISDANGERCNT
             , COALESCE(R1.WARNINGCNT, 0) AS THISWARNINGCNT
             , RANK() OVER (ORDER BY (COALESCE(R1.DANGERCNT, 0) + COALESCE(R1.WARNINGCNT, 0)) DESC) AS 'RANK'
@@ -172,83 +188,75 @@
             , COALESCE(R2.WARNINGCNT, 0) AS THATWARNINGCNT
         FROM
             (SELECT
-                 A.GUCODE, B.GUNAME, A.AREACODE, A.AREANAME
+                 GUCODE
+                 , GUNAME
+                 , AREACODE
+                 , AREANAME
+                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
+                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
              FROM
-                 F_LEVEL_AREA A
-                     LEFT JOIN F_GUCODE B ON A.GUCODE = B.GUCODE
+                 V_ALL_SENSOR_LOG_MAP
              WHERE
-                 A.AREALEVEL = 1
-                 AND A.USEYN = 'Y'
-                 AND A.DELYN = 'N'
-            ) L
-                LEFT JOIN
-                    (SELECT
-                         AREACODE
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
-                     FROM
-                         V_ALL_SENSOR_LOG_MAP
-                     WHERE
-                         REGDATE BETWEEN CONCAT(DATE(NOW()), ' 00:00:00') AND NOW()
-                     GROUP BY
-                         AREACODE
-                    ) R1
-                        ON L.AREACODE = R1.AREACODE
-                LEFT JOIN
-                    (SELECT
-                         AREACODE
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
-                     FROM
-                         V_ALL_SENSOR_LOG_MAP
-                     WHERE
-                         REGDATE BETWEEN CONCAT(DATE(NOW() - INTERVAL 1 DAY), ' 00:00:00') AND CONCAT(DATE(NOW() - INTERVAL 1 DAY), ' 23:59:59')
-                     GROUP BY
-                         AREACODE
-                    ) R2
-                        ON L.AREACODE = R2.AREACODE
+                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
+             GROUP BY
+                 AREACODE
+            ) R1
+                LEFT JOIN (SELECT
+                               AREACODE
+                               , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
+                               , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
+                           FROM
+                               V_ALL_SENSOR_LOG_MAP
+                           WHERE
+                               CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                               AND REGDATE BETWEEN CONCAT(CURDATE() - INTERVAL 1 DAY, ' 00:00:00') AND CONCAT(CURDATE() - INTERVAL 1 DAY, ' 23:59:59')
+                           GROUP BY
+                               AREACODE
+                          ) R2
+                    ON R1.AREACODE = R2.AREACODE
         WHERE
-            L.AREACODE != 'AREA_000001'
+            R1.AREACODE != 'AREA_000001'
     </select>
 
     <select id="LIST_MCD_TODAY_GU_EVENT" parameterType="map" resultType="map">
         SELECT
-            L.GUCODE
-            , L.GUNAME
+            R1.GUCODE
+            , R1.GUNAME
             , COALESCE(R1.DANGERCNT, 0) AS THISDANGERCNT
             , COALESCE(R1.WARNINGCNT, 0) AS THISWARNINGCNT
             , COALESCE(R2.DANGERCNT, 0) AS THATDANGERCNT
             , COALESCE(R2.WARNINGCNT, 0) AS THATWARNINGCNT
         FROM
-            (SELECT GUCODE, GUNAME FROM F_GUCODE WHERE USEYN = 'Y') L
-                LEFT JOIN
-                    (SELECT
-                         DISTINCT GUCODE
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
-                     FROM
-                         V_ALL_SENSOR_LOG_MAP
-                     WHERE
-                         REGDATE BETWEEN CONCAT(DATE(NOW()), ' 00:00:00') AND NOW()
-                         AND AREACODE != 'AREA_000001'
-                     GROUP BY
-                         GUCODE
-                    ) R1
-                        ON L.GUCODE = R1.GUCODE
-                LEFT JOIN
-                    (SELECT
-                         DISTINCT GUCODE
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
-                     FROM
-                         V_ALL_SENSOR_LOG_MAP
-                     WHERE
-                         REGDATE BETWEEN CONCAT(DATE(NOW() - INTERVAL 1 DAY), ' 00:00:00') AND CONCAT(DATE(NOW() - INTERVAL 1 DAY), ' 23:59:59')
-                         AND AREACODE != 'AREA_000001'
-                     GROUP BY
-                         GUCODE
-                    ) R2
-                        ON L.GUCODE = R2.GUCODE
+            (SELECT
+                 GUCODE
+                 , GUNAME
+                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
+                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
+             FROM
+                  V_ALL_SENSOR_LOG_MAP
+             WHERE
+                  CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                  AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
+                  AND AREACODE != 'AREA_000001'
+             GROUP BY
+                  GUCODE
+            ) R1
+                LEFT JOIN (SELECT
+                               GUCODE
+                               , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
+                               , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
+                           FROM
+                               V_ALL_SENSOR_LOG_MAP
+                           WHERE
+                               CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                               AND REGDATE BETWEEN CONCAT(CURDATE() - INTERVAL 1 DAY, ' 00:00:00')
+                                           AND CONCAT(CURDATE() - INTERVAL 1 DAY, ' 23:59:59')
+                               AND AREACODE != 'AREA_000001'
+                           GROUP BY
+                               GUCODE
+                          ) R2
+                    ON R1.GUCODE = R2.GUCODE
     </select>
     <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 

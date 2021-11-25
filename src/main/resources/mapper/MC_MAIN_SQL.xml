@@ -15,15 +15,12 @@
                 END) AS CNT
          FROM
              (SELECT
-                  COUNT(DISTINCT I.SNSRID) AS TOTAL
-                  , COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRID END) AS DISCON
+                  COUNT(DISTINCT SNSRID) AS TOTAL
+                  , COUNT(DISTINCT CASE WHEN DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN SNSRID END) AS DISCON
               FROM
-                  F_SENSOR_INFO I
-                      LEFT JOIN F_STORE S
-                          ON I.STRCODE = S.STRCODE
+                  V_ALL_SENSOR_MAP
               WHERE
-                  CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                  AND CONCAT(S.GRPCODE, S.USEYN, S.DELYN) = '042YN'
+                  CONCAT(GRPCODE, GUCODE) LIKE '04230%'
              ) A
                  CROSS JOIN (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM
                              UNION ALL SELECT 'DISCON', 2) B
@@ -99,9 +96,9 @@
                                 SNSRID) E
                      ON D.SNSRID = E.SNSRID
          WHERE
-             CONCAT(A.USEYN, A.GUCODE) LIKE 'Y30%'
+             CONCAT(A.USEYN, A.GRPCODE, A.GUCODE) LIKE 'Y04230%'
              AND CONCAT(B.AREALEVEL, B.DELYN, B.GUCODE) LIKE '1N30%'
-             AND CONCAT(C.GRPCODE, C.USEYN, C.DELYN) = '042YN'
+             AND CONCAT(C.USEYN, C.DELYN, C.GRPCODE) = 'YN042'
              AND CONCAT(D.DELYN, D.STRCODE) LIKE 'NFS_STR_%'
          GROUP BY
              ${alias}) S
@@ -167,7 +164,7 @@
                     ON C.AREACODE = D.AREACODE
         WHERE
             CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(C.GRPCODE, C.USEYN, C.DELYN) = '042YN'
+            AND CONCAT(C.USEYN, C.DELYN, C.GRPCODE) = 'YN042'
             AND CONCAT(D.AREALEVEL, D.DELYN, D.GUCODE) LIKE '1N30%'
         ORDER BY
             A.STATE, A.CNT DESC
@@ -275,7 +272,8 @@
                                I.STRCODE) B
                     ON A.STRCODE = B.STRCODE
         WHERE
-            A.AREACODE = #{areacode}
+            CONCAT(A.USEYN, A.DELYN, A.GRPCODE) = 'YN042'
+            AND A.AREACODE = #{areacode}
         ORDER BY
             B.DANGER DESC, B.WARN DESC, B.CON DESC, A.STRNAME
         ]]>
@@ -311,7 +309,7 @@
                     ON A.SNSRID = E.SNSRID
         WHERE
             CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(B.GRPCODE, B.USEYN, B.DELYN) = '042YN'
+            AND CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
             AND C.AREACODE = #{areacode}
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(strcode)">AND A.STRCODE = #{strcode}</if>
@@ -584,7 +582,7 @@
                     ON A.SNSRID = C.SNSRID
         WHERE
             CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(B.GRPCODE, B.USEYN, B.DELYN) = '042YN'
+            AND CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
         ORDER BY
             C.DANGERCNT DESC, C.WARNCNT DESC, C.DATACNT DESC, B.STRNAME
     </select>
