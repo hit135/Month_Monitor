@@ -379,8 +379,7 @@
                               F_CRN_AREA_ELEC_DAILY_STAT
                           WHERE
                               GUCODE LIKE '30%'
-                              AND SDATE BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
-                                        AND CURDATE() - INTERVAL WEEKDAY(CURDATE()) - 5 DAY
+                              AND SDATE >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
                           GROUP BY
                               GUCODE
 
