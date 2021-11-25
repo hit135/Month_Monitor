@@ -88,8 +88,8 @@
                      ON C.STRCODE = D.STRCODE
                  LEFT JOIN (SELECT
                                 SNSRID
-                                 , CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)) AS DANGERALM
-                                 , CONCAT(MAX(REPLACE(OCALM, 2, 0)), MAX(REPLACE(IGOALM, 2, 0)), MAX(REPLACE(IGRALM, 2, 0))) AS WARNALM
+                                , CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)) AS DANGERALM
+                                , CONCAT(MAX(REPLACE(OCALM, 2, 0)), MAX(REPLACE(IGOALM, 2, 0)), MAX(REPLACE(IGRALM, 2, 0))) AS WARNALM
                             FROM
                                 F_SENSOR_LOG
                             WHERE
@@ -178,43 +178,35 @@
             S.AREACODE, S.AREANAME, S.STRCODE, S.SNSRID, S.SNSRNICK, S.STATE, S.CNT
         FROM
             (SELECT
-                 D.AREACODE
-                 , D.AREANAME
-                 , C.STRCODE
-                 , B.SNSRID
-                 , B.SNSRNICK
-                 , E.STATE
+                 A.AREACODE
+                 , A.AREANAME
+                 , A.STRCODE
+                 , A.SNSRID
+                 , A.SNSRNICK
+                 , B.STATE
                  , (CASE
-                        WHEN E.STATE = 'DANGER'
+                        WHEN B.STATE = 'DANGER'
                             THEN COUNT(CASE WHEN INSTR(A.ALM, '2') > 0 THEN A.LSEQ END)
-                        WHEN E.STATE = 'WARN'
+                        WHEN B.STATE = 'WARN'
                             THEN COUNT(CASE WHEN INSTR(A.ALM, '1') > 0 THEN A.LSEQ END)
-                        WHEN E.STATE = 'BROKEN'
+                        WHEN B.STATE = 'BROKEN'
                             THEN COUNT(CASE WHEN EXISTS (SELECT DSEQ FROM F_SENSOR_DATA WHERE DSEQ = A.DSEQ AND SNSRIGO > 50) THEN A.DSEQ END)
                     END) AS CNT
              FROM
                  (SELECT
-                      DSEQ, LSEQ, SNSRID, CONCAT(OCALM, IGOALM, IGRALM) AS ALM
+                      AREACODE, AREANAME, STRCODE, SNSRNICK, SNSRID, DSEQ, LSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALM
                   FROM
-                      F_SENSOR_LOG
+                      V_ALL_SENSOR_LOG_MAP
                   WHERE
                       REGDATE > CURDATE()
+                      AND CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                      AND STRCODE LIKE 'FS_STR_%'
                  ) A
-                     LEFT JOIN F_SENSOR_INFO B
-                         ON A.SNSRID = B.SNSRID
-                     LEFT JOIN F_STORE C
-                         ON B.STRCODE = C.STRCODE
-                     LEFT JOIN F_LEVEL_AREA D
-                         ON C.AREACODE = D.AREACODE
                      CROSS JOIN (SELECT 'DANGER' AS STATE
                                  UNION ALL SELECT 'WARN'
-                                 UNION ALL SELECT 'BROKEN') E
-             WHERE
-                 CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-                 AND CONCAT(C.GRPCODE, C.USEYN, C.DELYN) = '042YN'
-                 AND CONCAT(D.AREALEVEL, D.DELYN, D.GUCODE) LIKE '1N30%'
+                                 UNION ALL SELECT 'BROKEN') B
              GROUP BY
-                 D.AREACODE, C.STRCODE, B.SNSRID, E.STATE) S
+                 A.AREACODE, A.STRCODE, A.SNSRID, B.STATE) S
         WHERE
             S.CNT > 0
         ORDER BY
@@ -283,7 +275,7 @@
                                I.STRCODE) B
                     ON A.STRCODE = B.STRCODE
         WHERE
-            AREACODE = #{areacode}
+            A.AREACODE = #{areacode}
         ORDER BY
             B.DANGER DESC, B.WARN DESC, B.CON DESC, A.STRNAME
         ]]>

@@ -18,21 +18,19 @@
 
     <select id="LIST_MCST_SENSOR_EVT_CNT" parameterType="map" resultType="map">
         SELECT
-            A.AREACODE
-            , A.SNSRID
-            , MAX(B.OCALM + B.IGOALM + B.IGRALM) AS ALMCNT
+            AREACODE
+            , SNSRID
+            , MAX(OCALM + IGOALM + IGRALM) AS ALMCNT
         FROM
-            F_SENSOR_INFO A
-                LEFT JOIN F_SENSOR_LOG B
-                    ON A.SNSRID = B.SNSRID
+            V_ALL_SENSOR_LOG_MAP
         WHERE
-            CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
-            AND A.AREACODE = #{areacode}
-            AND A.STRCODE = #{strcode}
+            CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+            AND AREACODE = #{areacode}
+            AND STRCODE = #{strcode}
         GROUP BY
-            A.AREACODE, A.SNSRID
+            AREACODE, SNSRID
         ORDER BY
-            3 DESC, A.SNSRID
+            3 DESC, SNSRID
     </select>
 
     <select id="SELECT_MCST_STORE_INFO" parameterType="map" resultType="map">
@@ -268,6 +266,14 @@
                  COUNT(DSEQ) AS CNT
              FROM
                  F_SENSOR_DATA_2021
+             WHERE
+                 SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+                 AND SNSRID = #{snsrid}) B
+            ,
+            (SELECT
+                 COUNT(DSEQ) AS CNT
+             FROM
+                 F_SENSOR_DATA_2020
              WHERE
                  SNSRRCVTIME <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
                  AND SNSRID = #{snsrid}) B
