@@ -44,26 +44,16 @@
                 END) AS CNT
          FROM
              (SELECT
-                  COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '1') > 0 THEN L.SNSRID END) AS TODAYWARN
-                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '1') > 0 THEN L.LSEQ END) AS COUNTWARN
-                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '2') > 0 THEN L.SNSRID END) AS TODAYDANGER
-                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '2') > 0 THEN L.LSEQ END) AS COUNTDANGER
+                  COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRID END) AS TODAYWARN
+                  , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS COUNTWARN
+                  , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRID END) AS TODAYDANGER
+                  , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS COUNTDANGER
               FROM
-                  (SELECT
-                       SNSRID, LSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALM
-                   FROM
-                       F_SENSOR_LOG
-                   WHERE
-                       REGDATE > CURDATE()
-                       AND OCALM + IGOALM + IGRALM > 0
-                  ) L
-                      LEFT JOIN F_SENSOR_INFO I
-                          ON L.SNSRID = I.SNSRID
-                      LEFT JOIN F_STORE S
-                          ON I.STRCODE = S.STRCODE
+                  V_ALL_SENSOR_LOG_MAP
               WHERE
-                  CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                  AND CONCAT(S.GRPCODE, S.USEYN, S.DELYN) = '042YN'
+                  REGDATE > CURDATE()
+                  AND CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                  AND STRCODE LIKE 'FS_STR_%'
              ) A
                  CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
                              UNION ALL SELECT 'COUNT', 'WARN', 4
@@ -98,8 +88,8 @@
                      ON C.STRCODE = D.STRCODE
                  LEFT JOIN (SELECT
                                 SNSRID
-                                , CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)) AS DANGERALM
-                                , CONCAT(MAX(REPLACE(OCALM, 2, 0)), MAX(REPLACE(IGOALM, 2, 0)), MAX(REPLACE(IGRALM, 2, 0))) AS WARNALM
+                                 , CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)) AS DANGERALM
+                                 , CONCAT(MAX(REPLACE(OCALM, 2, 0)), MAX(REPLACE(IGOALM, 2, 0)), MAX(REPLACE(IGRALM, 2, 0))) AS WARNALM
                             FROM
                                 F_SENSOR_LOG
                             WHERE
