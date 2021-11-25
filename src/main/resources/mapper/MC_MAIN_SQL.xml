@@ -22,7 +22,7 @@
                       LEFT JOIN F_STORE S
                           ON I.STRCODE = S.STRCODE
               WHERE
-                  I.DELYN = 'N'
+                  CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
                   AND CONCAT(S.GRPCODE, S.USEYN, S.DELYN) = '042YN'
              ) A
                  CROSS JOIN (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM
@@ -62,7 +62,7 @@
                       LEFT JOIN F_STORE S
                           ON I.STRCODE = S.STRCODE
               WHERE
-                  I.DELYN = 'N'
+                  CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
                   AND CONCAT(S.GRPCODE, S.USEYN, S.DELYN) = '042YN'
              ) A
                  CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
@@ -112,7 +112,7 @@
              CONCAT(A.USEYN, A.GUCODE) LIKE 'Y30%'
              AND CONCAT(B.AREALEVEL, B.DELYN, B.GUCODE) LIKE '1N30%'
              AND CONCAT(C.GRPCODE, C.USEYN, C.DELYN) = '042YN'
-             AND D.DELYN = 'N'
+             AND CONCAT(D.DELYN, D.STRCODE) LIKE 'NFS_STR_%'
          GROUP BY
              ${alias}) S
         ]]>
@@ -176,7 +176,7 @@
                 LEFT JOIN F_LEVEL_AREA D
                     ON C.AREACODE = D.AREACODE
         WHERE
-            B.DELYN = 'N'
+            CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(C.GRPCODE, C.USEYN, C.DELYN) = '042YN'
             AND CONCAT(D.AREALEVEL, D.DELYN, D.GUCODE) LIKE '1N30%'
         ORDER BY
@@ -220,7 +220,7 @@
                                  UNION ALL SELECT 'WARN'
                                  UNION ALL SELECT 'BROKEN') E
              WHERE
-                 B.DELYN = 'N'
+                 CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
                  AND CONCAT(C.GRPCODE, C.USEYN, C.DELYN) = '042YN'
                  AND CONCAT(D.AREALEVEL, D.DELYN, D.GUCODE) LIKE '1N30%'
              GROUP BY
@@ -256,7 +256,7 @@
                                                   AND OCALM + IGOALM + IGRALM > 0) C3
                                        ON C1.SNSRID = C3.SNSRID
                            WHERE
-                               C1.DELYN = 'N'
+                               CONCAT(C1.DELYN, C1.STRCODE) LIKE 'NFS_STR_%'
                                AND CONCAT(C2.GRPCODE, C2.USEYN, C2.DELYN) = '042YN'
                                AND C2.AREACODE = #{areacode}) B
                     ON A.AREACODE = B.AREACODE
@@ -288,7 +288,7 @@
                                                   AND OCALM + IGOALM + IGRALM > 0) L
                                        ON I.SNSRID = L.SNSRID
                            WHERE
-                               I.DELYN = 'N'
+                               CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
                            GROUP BY
                                I.STRCODE) B
                     ON A.STRCODE = B.STRCODE
@@ -328,7 +328,7 @@
                 LEFT JOIN (SELECT SNSRID, COUNT(*) AS CHK FROM F_SENSOR_CHECK WHERE CHECKSTAT = 'ING' GROUP BY SNSRID) E
                     ON A.SNSRID = E.SNSRID
         WHERE
-            A.DELYN = 'N'
+            CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(B.GRPCODE, B.USEYN, B.DELYN) = '042YN'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
             AND C.AREACODE = #{areacode}
@@ -358,7 +358,7 @@
                 LEFT JOIN F_LEVEL_AREA C
                     ON B.AREACODE = C.AREACODE
         WHERE
-            B.DELYN = 'N'
+            CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
             AND C.AREACODE = #{areacode}
         GROUP BY
@@ -377,7 +377,7 @@
                 LEFT JOIN F_LEVEL_AREA C
                     ON B.AREACODE = C.AREACODE
         WHERE
-            B.DELYN = 'N'
+            CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
             AND C.AREACODE = #{areacode}
         GROUP BY
@@ -408,7 +408,7 @@
                 LEFT JOIN F_LEVEL_AREA C
                     ON B.AREACODE = C.AREACODE
        WHERE
-           B.DELYN = 'N'
+           CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
            AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
            AND C.AREACODE = #{areacode}
        GROUP BY
@@ -434,7 +434,7 @@
                LEFT JOIN F_LEVEL_AREA C
                    ON B.AREACODE = C.AREACODE
        WHERE
-           B.DELYN = 'N'
+           CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
            AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
            AND C.AREACODE = #{areacode}
        GROUP BY
@@ -494,7 +494,7 @@
                     LEFT JOIN F_LEVEL_AREA C
                         ON B.AREACODE = C.AREACODE
             WHERE
-                B.DELYN = 'N'
+                CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
                 AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
                 AND C.AREACODE = #{areacode}
             GROUP BY
@@ -527,7 +527,7 @@
                 LEFT JOIN F_LEVEL_AREA C
                     ON B.AREACODE = C.AREACODE
         WHERE
-            B.DELYN = 'N'
+            CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
             AND C.AREACODE = #{areacode}
         GROUP BY
@@ -554,7 +554,7 @@
                 LEFT JOIN F_LEVEL_AREA C
                     ON B.AREACODE = C.AREACODE
         WHERE
-            B.DELYN = 'N'
+            CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
             AND C.AREACODE = #{areacode}
         GROUP BY
@@ -601,7 +601,7 @@
                                 C1.SNSRID) C
                     ON A.SNSRID = C.SNSRID
         WHERE
-            A.DELYN = 'N'
+            CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(B.GRPCODE, B.USEYN, B.DELYN) = '042YN'
         ORDER BY
             C.DANGERCNT DESC, C.WARNCNT DESC, C.DATACNT DESC, B.STRNAME

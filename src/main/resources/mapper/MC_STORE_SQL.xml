@@ -11,7 +11,9 @@
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.STRCODE = B.STRCODE
         WHERE
-            B.SNSRID = #{snsrid}
+            CONCAT(A.GRPCODE, A.USEYN, A.DELYN) = '042YN'
+            AND CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
+            AND B.SNSRID = #{snsrid}
     </select>
 
     <select id="LIST_MCST_SENSOR_EVT_CNT" parameterType="map" resultType="map">
@@ -24,7 +26,8 @@
                 LEFT JOIN F_SENSOR_LOG B
                     ON A.SNSRID = B.SNSRID
         WHERE
-            A.AREACODE = #{areacode}
+            CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
+            AND A.AREACODE = #{areacode}
             AND A.STRCODE = #{strcode}
         GROUP BY
             A.AREACODE, A.SNSRID
@@ -55,7 +58,8 @@
                 LEFT JOIN (SELECT * FROM F_AREA_IMG WHERE IMGLEVEL = 'store') B
                     ON A.STRCODE = B.STRCODE
         WHERE
-            A.AREACODE = #{areacode}
+            CONCAT(A.GRPCODE, A.USEYN, A.DELYN) = '042YN'
+            AND A.AREACODE = #{areacode}
             AND A.STRCODE = #{strcode}
     </select>
 
@@ -100,7 +104,9 @@
                                SNSRID) D
                     ON A.SNSRID = D.SNSRID
         WHERE
-            B.AREACODE = #{areacode}
+            CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
+            AND CONCAT(B.GRPCODE, B.USEYN, B.DELYN) = '042YN'
+            AND B.AREACODE = #{areacode}
             AND B.STRCODE = #{strcode}
         ORDER BY
             6 DESC, D.DATACNT DESC, A.PANELNAME, A.SNSRNICK
@@ -157,7 +163,9 @@
                 LEFT JOIN ${tblSensorData} C
                     ON A.SNSRID = C.SNSRID
         WHERE
-            B.STRCODE = #{strcode}
+            CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
+            AND CONCAT(B.GRPCODE, B.USEYN, B.DELYN) = '042YN'
+            AND B.STRCODE = #{strcode}
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">
             AND A.SNSRID = #{snsrid}
             </if>
@@ -213,7 +221,9 @@
                 LEFT JOIN F_STORE D
                     ON C.STRCODE = D.STRCODE
         WHERE
-            A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED) - 5 AND B.DSEQ + 5
+            CONCAT(C.DELYN, C.STRCODE) LIKE 'NFS_STR_%'
+            AND CONCAT(D.GRPCODE, D.USEYN, D.DELYN) = '042YN'
+            AND A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED) - 5 AND B.DSEQ + 5
             <choose>
                 <when test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(regdt)">
                 AND A.SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND CONCAT(#{regdt}, ' 23:59:59')
@@ -462,7 +472,8 @@
                      FROM
                          F_CRN_SNSR_ELEC_EVT_STAT S
                      WHERE
-                         S.AREACODE = #{areacode}
+                         S.GUCODE LIKE '30%'
+                         AND S.AREACODE = #{areacode}
                          AND S.STRCODE = #{strcode}
                          AND S.SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})
                          AND S.DATETIME BETWEEN CONCAT(CURDATE() - INTERVAL 2 DAY, ' 00') AND NOW()
@@ -491,7 +502,8 @@
                      FROM
                          F_CRN_SNSR_ELEC_EVT_STAT S
                      WHERE
-                         S.AREACODE = #{areacode}
+                         S.GUCODE LIKE '30%'
+                         AND S.AREACODE = #{areacode}
                          AND S.STRCODE = #{strcode}
                          AND S.SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})
                          AND S.DATETIME BETWEEN CONCAT(CURDATE() - INTERVAL 6 DAY, ' 00') AND NOW()
