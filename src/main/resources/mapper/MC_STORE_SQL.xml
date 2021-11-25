@@ -9,8 +9,7 @@
         FROM
             F_STORE A
                 LEFT JOIN F_SENSOR_INFO B
-                    ON A.AREACODE = B.AREACODE
-                    AND A.STRCODE = B.STRCODE
+                    ON A.STRCODE = B.STRCODE
         WHERE
             B.SNSRID = #{snsrid}
     </select>
@@ -54,8 +53,7 @@
         FROM
             F_STORE A
                 LEFT JOIN (SELECT * FROM F_AREA_IMG WHERE IMGLEVEL = 'store') B
-                    ON A.AREACODE = B.AREACODE
-                    AND A.STRCODE = B.STRCODE
+                    ON A.STRCODE = B.STRCODE
         WHERE
             A.AREACODE = #{areacode}
             AND A.STRCODE = #{strcode}
@@ -77,36 +75,30 @@
                END) AS STATE
         FROM
             F_SENSOR_INFO A
-                LEFT JOIN
-                    F_STORE B
-                        ON A.AREACODE = B.AREACODE
-                        AND A.STRCODE = B.STRCODE
-                LEFT JOIN
-                    (SELECT
-                         SNSRID
-                         , (CASE
-                                WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN 'WARNING'
-                                WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '1') > 0 THEN 'CAUTION'
-                            END) AS STATE
-                     FROM
-                         F_SENSOR_LOG
-                     WHERE
-                         REGDATE > CURDATE()
-                     GROUP BY
-                         SNSRID
-                    ) C
-                        ON A.SNSRID = C.SNSRID
-                LEFT JOIN
-                    (SELECT
-                         SNSRID, COUNT(*) AS DATACNT
-                     FROM
-                         F_SENSOR_DATA
-                     WHERE
-                         SNSRRCVTIME > NOW() - INTERVAL 1 HOUR
-                     GROUP BY
-                         SNSRID
-                    ) D
-                        ON A.SNSRID = D.SNSRID
+                LEFT JOIN F_STORE B
+                    ON A.STRCODE = B.STRCODE
+                LEFT JOIN (SELECT
+                               SNSRID
+                               , (CASE
+                                      WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN 'WARNING'
+                                      WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '1') > 0 THEN 'CAUTION'
+                                  END) AS STATE
+                           FROM
+                               F_SENSOR_LOG
+                           WHERE
+                               REGDATE > CURDATE()
+                           GROUP BY
+                               SNSRID) C
+                    ON A.SNSRID = C.SNSRID
+                LEFT JOIN (SELECT
+                               SNSRID, COUNT(*) AS DATACNT
+                           FROM
+                               F_SENSOR_DATA
+                           WHERE
+                               SNSRRCVTIME > NOW() - INTERVAL 1 HOUR
+                           GROUP BY
+                               SNSRID) D
+                    ON A.SNSRID = D.SNSRID
         WHERE
             B.AREACODE = #{areacode}
             AND B.STRCODE = #{strcode}
@@ -185,7 +177,7 @@
         SELECT
             A.DSEQ
             , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
-            , DATE(A.SNSRRCVTIME) AS REGDATE
+            , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d') AS REGDATE
             , A.SNSRID
             , A.SNSRKWH
             , A.SNSRVOLT
@@ -216,11 +208,12 @@
             ${tblSensorData} A
                 LEFT JOIN ${tblSensorLog} B
                     ON A.SNSRID = B.SNSRID
-                    AND A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED) - 5 AND B.DSEQ + 5
                 LEFT JOIN F_SENSOR_INFO C
                     ON A.SNSRID = C.SNSRID
+                LEFT JOIN F_STORE D
+                    ON C.STRCODE = D.STRCODE
         WHERE
-            1 = 1
+            A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED) - 5 AND B.DSEQ + 5
             <choose>
                 <when test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(regdt)">
                 AND A.SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND CONCAT(#{regdt}, ' 23:59:59')
@@ -229,7 +222,7 @@
                 AND A.SNSRRCVTIME BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
                 </otherwise>
             </choose>
-            AND C.AREACODE = #{areacode}
+            AND D.AREACODE = #{areacode}
             AND C.STRCODE = #{strcode}
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">
             AND C.SNSRID = #{snsrid}
@@ -245,7 +238,7 @@
             ${tblSensorData} A
         WHERE
             A.SNSRRCVTIME BETWEEN CONCAT(DATE_FORMAT(#{regdt}, '%Y-%m'), '-01 00:00:00')
-            AND CONCAT(LAST_DAY(#{regdt}), ' 23:59:59')
+                          AND CONCAT(LAST_DAY(#{regdt}), ' 23:59:59')
             AND SNSRID = #{snsrid}
     </select>
 
@@ -342,8 +335,7 @@
                          <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                          <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                          <when test='"check-warn".equals(type)'>
-                         (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
-                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                         (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
                          </when>
                      </choose>) B
             ,
@@ -358,8 +350,7 @@
                          <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                          <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                          <when test='"check-warn".equals(type)'>
-                         (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
-                          AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                         (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
                          </when>
                      </choose>) C
     </select>
@@ -385,8 +376,7 @@
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                      <when test='"check-warn".equals(type)'>
-                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
-                      AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
                      </when>
                  </choose>
          ORDER BY
@@ -416,8 +406,7 @@
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                      <when test='"check-warn".equals(type)'>
-                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
-                      AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
                      </when>
                  </choose>
          ORDER BY
@@ -447,8 +436,7 @@
                      <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
                      <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
                      <when test='"check-warn".equals(type)'>
-                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0
-                      AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                     (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
                      </when>
                  </choose>
          ORDER BY
@@ -477,7 +465,7 @@
                          S.AREACODE = #{areacode}
                          AND S.STRCODE = #{strcode}
                          AND S.SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})
-                         AND DATE(S.DATETIME) BETWEEN CURDATE() - INTERVAL 2 DAY AND CURDATE()
+                         AND S.DATETIME BETWEEN CONCAT(CURDATE() - INTERVAL 2 DAY, ' 00') AND NOW()
                      GROUP BY
                          DATE(S.DATETIME)
                     ) B
@@ -506,7 +494,7 @@
                          S.AREACODE = #{areacode}
                          AND S.STRCODE = #{strcode}
                          AND S.SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})
-                         AND DATE(S.DATETIME) BETWEEN CURDATE() - INTERVAL 6 DAY AND CURDATE()
+                         AND S.DATETIME BETWEEN CONCAT(CURDATE() - INTERVAL 6 DAY, ' 00') AND NOW()
                      GROUP BY
                          DATE(S.DATETIME)
                     ) B
