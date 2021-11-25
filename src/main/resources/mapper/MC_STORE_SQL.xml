@@ -227,7 +227,7 @@
                 AND A.SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND CONCAT(#{regdt}, ' 23:59:59')
                 </when>
                 <otherwise>
-                AND A.SNSRRCVTIME BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
+                AND A.SNSRRCVTIME > CURDATE()
                 </otherwise>
             </choose>
             AND D.AREACODE = #{areacode}
@@ -482,7 +482,7 @@
                          AND S.AREACODE = #{areacode}
                          AND S.STRCODE = #{strcode}
                          AND S.SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})
-                         AND S.DATETIME BETWEEN CONCAT(CURDATE() - INTERVAL 2 DAY, ' 00') AND NOW()
+                         AND S.DATETIME > CURDATE() - INTERVAL 2 DAY
                      GROUP BY
                          DATE(S.DATETIME)
                     ) B
@@ -512,7 +512,7 @@
                          AND S.AREACODE = #{areacode}
                          AND S.STRCODE = #{strcode}
                          AND S.SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})
-                         AND S.DATETIME BETWEEN CONCAT(CURDATE() - INTERVAL 6 DAY, ' 00') AND NOW()
+                         AND S.DATETIME > CURDATE() - INTERVAL 6 DAY
                      GROUP BY
                          DATE(S.DATETIME)
                     ) B

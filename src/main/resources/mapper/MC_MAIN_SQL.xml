@@ -498,8 +498,8 @@
                  (SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG_2021
                   UNION ALL SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG) S
              WHERE
-                 S.REGDATE < CURDATE() - INTERVAL (DAYOFWEEK(CURDATE()) - 1) DAY
-                 AND S.REGDATE > CURDATE() - INTERVAL (7 + (DAYOFWEEK(CURDATE()) - 1)) DAY
+                 S.REGDATE > CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 8 DAY
+                 AND S.REGDATE < CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
                  AND INSTR(S.ALM, '2') > 0
             ) A
                 LEFT JOIN F_SENSOR_INFO B
@@ -526,7 +526,7 @@
              FROM
                  F_SENSOR_LOG
              WHERE
-                 REGDATE > CURDATE() - INTERVAL (DAYOFWEEK(CURDATE()) - 1) DAY
+                 REGDATE > CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
                  AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
             ) A
                 LEFT JOIN F_SENSOR_INFO B

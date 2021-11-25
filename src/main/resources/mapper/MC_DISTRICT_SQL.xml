@@ -4,6 +4,7 @@
 <mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCDistrictRepo">
 
     <select id="SELECT_MCD_YESTERDAY_EVENT_COMP_STAT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             I.SNSRCNT - A.ERRCNT AS YSNSRCNT
             , A.DANGERCNT AS YDANGERCNT
@@ -20,8 +21,8 @@
                  V_ALL_SENSOR_LOG_MAP
              WHERE
                  CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                 AND REGDATE BETWEEN CONCAT(CURDATE() - INTERVAL 1 DAY, ' 00:00:00')
-                             AND CONCAT(CURDATE() - INTERVAL 1 DAY, ' 23:59:59')
+                 AND REGDATE > CURDATE() - INTERVAL 1 DAY
+                 AND REGDATE < CURDATE()
             ) A
             ,
             (SELECT
@@ -32,10 +33,11 @@
                  V_ALL_SENSOR_LOG_MAP
              WHERE
                  CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                 AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
+                 AND REGDATE > CURDATE()
             ) B
             ,
             (SELECT COUNT(*) AS SNSRCNT FROM V_ALL_SENSOR_MAP WHERE CONCAT(GRPCODE, GUCODE) LIKE '04230%') I
+        ]]>
     </select>
 
     <select id="SELECT_MCD_TODAY_EVENT_STAT" parameterType="map" resultType="map">
@@ -71,7 +73,7 @@
                  V_ALL_SENSOR_LOG_MAP
              WHERE
                  CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                 AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
+                 AND REGDATE > CURDATE()
             ) L
     </select>
 
@@ -104,7 +106,7 @@
                          V_ALL_SENSOR_LOG_MAP
                      WHERE
                          CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                         AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
+                         AND REGDATE > CURDATE()
                      GROUP BY
                          GUCODE
                     ) L
@@ -113,6 +115,7 @@
     </select>
 
     <select id="LIST_MCD_MONTHLY_GU_EVENT_COMP_STAT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             L.GUCODE
             , COALESCE(A.EVENTCNT, 0) AS THATEVENTCNT
@@ -134,7 +137,8 @@
                          F_CRN_AREA_ELEC_DAILY_STAT
                      WHERE
                          GUCODE LIKE '30%'
-                         AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                         AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                         AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
                          AND GUCODE != '30200'
                      GROUP BY
                          GUCODE
@@ -152,7 +156,7 @@
                              F_CRN_AREA_ELEC_DAILY_STAT
                          WHERE
                              GUCODE LIKE '30%'
-                             AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+                             AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
                              AND GUCODE != '30200'
                          GROUP BY
                              GUCODE
@@ -166,7 +170,7 @@
                              V_ALL_SENSOR_LOG_MAP
                          WHERE
                              CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                             AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') and NOW()
+                             AND REGDATE > CURDATE()
                          GROUP BY
                              GUCODE) SS
                      GROUP BY SS.GUCODE
@@ -174,9 +178,11 @@
                         ON A.GUCODE = B.GUCODE
         ORDER BY
             L.GUCODE
+        ]]>
     </select>
 
     <select id="LIST_MCD_TODAY_GU_AREA_EVENT_COMP_RANK" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             R1.GUCODE
             , R1.GUNAME
@@ -200,7 +206,7 @@
              WHERE
                  CONCAT(GRPCODE, GUCODE) LIKE '04230%'
                  AND AREACODE != 'AREA_000001'
-                 AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
+                 AND REGDATE > CURDATE()
              GROUP BY
                  AREACODE
             ) R1
@@ -212,16 +218,18 @@
                                V_ALL_SENSOR_LOG_MAP
                            WHERE
                                CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                               AND REGDATE BETWEEN CONCAT(CURDATE() - INTERVAL 1 DAY, ' 00:00:00')
-                                           AND CONCAT(CURDATE() - INTERVAL 1 DAY, ' 23:59:59')
+                               AND REGDATE > CURDATE() - INTERVAL 1 DAY
+                               AND REGDATE < CURDATE()
                                AND AREACODE != 'AREA_000001'
                            GROUP BY
                                AREACODE
                           ) R2
                     ON R1.AREACODE = R2.AREACODE
+        ]]>
     </select>
 
     <select id="LIST_MCD_TODAY_GU_EVENT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             R1.GUCODE
             , R1.GUNAME
@@ -239,7 +247,7 @@
                   V_ALL_SENSOR_LOG_MAP
              WHERE
                   CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                  AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
+                  AND REGDATE > CURDATE()
                   AND AREACODE != 'AREA_000001'
              GROUP BY
                   GUCODE
@@ -252,17 +260,19 @@
                                V_ALL_SENSOR_LOG_MAP
                            WHERE
                                CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                               AND REGDATE BETWEEN CONCAT(CURDATE() - INTERVAL 1 DAY, ' 00:00:00')
-                                           AND CONCAT(CURDATE() - INTERVAL 1 DAY, ' 23:59:59')
+                               AND REGDATE > CURDATE() - INTERVAL 1 DAY
+                               AND REGDATE < CURDATE()
                                AND AREACODE != 'AREA_000001'
                            GROUP BY
                                GUCODE
                           ) R2
                     ON R1.GUCODE = R2.GUCODE
+        ]]>
     </select>
     <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <select id="SELECT_MCD_KWH_STAT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             A.USEKWH AS YESTERDAYUSEKWH
             , B.USEKWH AS LASTWEEKUSEKWH
@@ -282,7 +292,8 @@
                  F_CRN_AREA_ELEC_DAILY_STAT
              WHERE
                  GUCODE LIKE '30%'
-                 AND WEEK(SDATE) = WEEK(CURDATE() - INTERVAL 7 DAY)
+                 AND SDATE BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 8 DAY
+                           AND CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 2 DAY
             ) B
             ,
             (SELECT
@@ -291,8 +302,10 @@
                  F_CRN_AREA_ELEC_DAILY_STAT
              WHERE
                  GUCODE LIKE '30%'
-                 AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                 AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                 AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
             ) C
+        ]]>
     </select>
 
     <select id="SELECT_MCD_CURR_KWH_STAT" parameterType="map" resultType="map">
@@ -350,7 +363,8 @@
                          F_CRN_AREA_ELEC_DAILY_STAT
                      WHERE
                          GUCODE LIKE '30%'
-                         AND WEEKOFYEAR(SDATE) = WEEKOFYEAR(CURDATE() - INTERVAL 7 DAY)
+                         AND SDATE BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 8 DAY
+                                   AND CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 2 DAY
                      GROUP BY
                          GUCODE
                     ) A
@@ -365,7 +379,8 @@
                               F_CRN_AREA_ELEC_DAILY_STAT
                           WHERE
                               GUCODE LIKE '30%'
-                              AND WEEKOFYEAR(SDATE) = WEEKOFYEAR(CURDATE())
+                              AND SDATE BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
+                                        AND CURDATE() - INTERVAL WEEKDAY(CURDATE()) - 5 DAY
                           GROUP BY
                               GUCODE
 
@@ -377,7 +392,7 @@
                               F_CRN_AREA_KWH_TODAY_STAT
                           WHERE
                               GUCODE LIKE '30%'
-                              AND DATETIME BETWEEN CONCAT(CURDATE(), ' 00') AND NOW()
+                              AND DATETIME > CURDATE()
                           GROUP BY
                               GUCODE) SS
                      GROUP BY
@@ -389,6 +404,7 @@
     </select>
 
     <select id="LIST_MCD_GU_MONTH_KWH_STAT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             DISTINCT L.GUCODE
             , A.USEKWH AS THATMONTHUSEKWH
@@ -410,7 +426,8 @@
                          F_CRN_AREA_ELEC_DAILY_STAT
                      WHERE
                          GUCODE LIKE '30%'
-                         AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                         AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                         AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
                          AND GUCODE != '30200'
                      GROUP BY
                          GUCODE
@@ -426,7 +443,7 @@
                               F_CRN_AREA_ELEC_DAILY_STAT
                           WHERE
                               GUCODE LIKE '30%'
-                              AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                              AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
                               AND GUCODE != '30200'
                           GROUP BY
                               GUCODE
@@ -439,7 +456,7 @@
                               F_CRN_AREA_KWH_TODAY_STAT
                           WHERE
                               GUCODE LIKE '30%'
-                              AND DATETIME BETWEEN CONCAT(CURDATE(), ' 00') AND NOW()
+                              AND DATETIME > CURDATE()
                               AND GUCODE != '30200'
                           GROUP BY
                               GUCODE) SS
@@ -448,9 +465,11 @@
                         ON L.GUCODE = B.GUCODE
         ORDER BY
             L.GUCODE
+        ]]>
     </select>
 
     <select id="LIST_MCD_GU_AREA_KWH_STAT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             A.GUCODE
             , A.GUNAME
@@ -487,7 +506,8 @@
                               F_CRN_AREA_ELEC_DAILY_STAT SS
                          WHERE
                               GUCODE LIKE '30%'
-                              AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                              AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                              AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
                               AND AREACODE != 'AREA_000001'
                          GROUP BY
                               AREACODE
@@ -506,7 +526,7 @@
                               F_CRN_AREA_ELEC_DAILY_STAT
                           WHERE
                               GUCODE LIKE '30%'
-                              AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+                              AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
                               AND AREACODE != 'AREA_000001'
                           GROUP BY
                               AREACODE
@@ -519,7 +539,7 @@
                               F_CRN_AREA_KWH_TODAY_STAT
                           WHERE
                               GUCODE LIKE '30%'
-                              AND DATETIME BETWEEN CONCAT(CURDATE(), ' 00') AND NOW()
+                              AND DATETIME > CURDATE()
                               AND AREACODE != 'AREA_000001'
                           GROUP BY
                               AREACODE) SS
@@ -529,6 +549,7 @@
                         ON A.AREACODE = B.AREACODE
         ORDER BY
             A.GUCODE, COALESCE(B.USEKWH, 0) DESC
+        ]]>
     </select>
 
 </mapper>
