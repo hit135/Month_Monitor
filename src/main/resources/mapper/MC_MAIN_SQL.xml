@@ -462,19 +462,12 @@
            '2' AS TYPE
            , DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS RCVTIME
            , DAYOFWEEK(CURDATE()) AS WEEK
-           , IFNULL(SUM(A.USEKWH), 0) AS CNT
+           , IFNULL(SUM(USEKWH), 0) AS CNT
        FROM
-           (SELECT
-                SNSRID
-                , MAX(SNSRKWH) - MIN(SNSRKWH) AS USEKWH
-            FROM
-                V_ALL_SENSOR_DATA_MAP
-            WHERE
-                SNSRRCVTIME > CURDATE()
-                AND CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                AND AREACODE = #{areacode}
-            GROUP BY
-                SNSRID) A
+           F_CRN_AREA_KWH_TODAY_STAT
+       WHERE
+           GUCODE LIKE '30%'
+           AND AREACODE = #{areacode}
        ORDER BY
            TYPE, RCVTIME
        ]]>
@@ -518,12 +511,13 @@
             , COUNT(*) AS CNT
         FROM
             (SELECT
-                 SNSRID, REGDATE
+                 S.SNSRID, S.REGDATE
              FROM
-                 F_SENSOR_LOG
+                 (SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG_2021
+                  UNION ALL SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG) S
              WHERE
-                 REGDATE > CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
-                 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
+                 S.REGDATE > CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
+                 AND INSTR(S.ALM, '2') > 0
             ) A
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.SNSRID = B.SNSRID
