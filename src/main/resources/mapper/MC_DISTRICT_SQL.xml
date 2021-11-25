@@ -124,6 +124,7 @@
                  F_GUCODE
              WHERE
                  CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%'
+                 AND GUCODE != '30200'
             ) L
                 LEFT JOIN
                     (SELECT
@@ -134,6 +135,7 @@
                      WHERE
                          GUCODE LIKE '30%'
                          AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                         AND GUCODE != '30200'
                      GROUP BY
                          GUCODE
                     ) A
@@ -151,6 +153,7 @@
                          WHERE
                              GUCODE LIKE '30%'
                              AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+                             AND GUCODE != '30200'
                          GROUP BY
                              GUCODE
 
@@ -169,8 +172,6 @@
                      GROUP BY SS.GUCODE
                     ) B
                         ON A.GUCODE = B.GUCODE
-        WHERE
-            L.GUCODE != '30200'
         ORDER BY
             L.GUCODE
     </select>
@@ -198,6 +199,7 @@
                  V_ALL_SENSOR_LOG_MAP
              WHERE
                  CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 AND AREACODE != 'AREA_000001'
                  AND REGDATE BETWEEN CONCAT(CURDATE(), ' 00:00:00') AND NOW()
              GROUP BY
                  AREACODE
@@ -210,13 +212,13 @@
                                V_ALL_SENSOR_LOG_MAP
                            WHERE
                                CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                               AND REGDATE BETWEEN CONCAT(CURDATE() - INTERVAL 1 DAY, ' 00:00:00') AND CONCAT(CURDATE() - INTERVAL 1 DAY, ' 23:59:59')
+                               AND REGDATE BETWEEN CONCAT(CURDATE() - INTERVAL 1 DAY, ' 00:00:00')
+                                           AND CONCAT(CURDATE() - INTERVAL 1 DAY, ' 23:59:59')
+                               AND AREACODE != 'AREA_000001'
                            GROUP BY
                                AREACODE
                           ) R2
                     ON R1.AREACODE = R2.AREACODE
-        WHERE
-            R1.AREACODE != 'AREA_000001'
     </select>
 
     <select id="LIST_MCD_TODAY_GU_EVENT" parameterType="map" resultType="map">
@@ -271,57 +273,61 @@
              FROM
                  F_CRN_AREA_ELEC_DAILY_STAT
              WHERE
-                 SDATE = DATE(NOW() - INTERVAL 1 DAY)) A
+                 GUCODE LIKE '30%'
+                 AND SDATE = CURDATE() - INTERVAL 1 DAY) A
             ,
             (SELECT
                  SUM(SNSRKWHDAILY) AS USEKWH
              FROM
                  F_CRN_AREA_ELEC_DAILY_STAT
              WHERE
-                 WEEK(SDATE) = WEEK(NOW() - INTERVAL 7 DAY)) B
+                 GUCODE LIKE '30%'
+                 AND WEEK(SDATE) = WEEK(CURDATE() - INTERVAL 7 DAY)
+            ) B
             ,
             (SELECT
                  SUM(SNSRKWHDAILY) AS USEKWH
              FROM
                  F_CRN_AREA_ELEC_DAILY_STAT
              WHERE
-                 DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m')) C
+                 GUCODE LIKE '30%'
+                 AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+            ) C
     </select>
 
     <select id="SELECT_MCD_CURR_KWH_STAT" parameterType="map" resultType="map">
         SELECT
-            S.STRCNT
-            , I.SNSRCNT
+            V.STRCNT
+            , V.SNSRCNT
             , A.USEKWH AS YESTERDAYUSEKWH
             , B.USEKWH AS TODAYUSEKWH
             , (B.USEKWH / A.USEKWH) * 100 AS USEPER
         FROM
             (SELECT
-                 COUNT(*) AS STRCNT
+                 COUNT(DISTINCT STRCODE) AS STRCNT
+                 ,  COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
              FROM
-                 F_STORE
+                 V_ALL_SENSOR_MAP
              WHERE
-                 USEYN = 'Y'
-                 AND DELYN = 'N') S
-            ,
-            (SELECT
-                 COUNT(*) AS SNSRCNT
-             FROM
-                 F_SENSOR_INFO
-             WHERE
-                 DELYN = 'N') I
+                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+            ) V
             ,
             (SELECT
                  SUM(SNSRKWHDAILY) AS USEKWH
              FROM
                  F_CRN_AREA_ELEC_DAILY_STAT
              WHERE
-                 SDATE = DATE(NOW() - INTERVAL 1 DAY)) A
+                 GUCODE LIKE '30%'
+                 AND SDATE = CURDATE() - INTERVAL 1 DAY
+            ) A
             ,
             (SELECT
                  SUM(USEKWH) AS USEKWH
              FROM
-                 F_CRN_AREA_KWH_TODAY_STAT) B
+                 F_CRN_AREA_KWH_TODAY_STAT
+             WHERE
+                 GUCODE LIKE '30%'
+            ) B
     </select>
 
     <select id="LIST_MCD_GU_MAP_KWH_STAT" parameterType="map" resultType="map">
@@ -335,8 +341,7 @@
              FROM
                  F_GUCODE
              WHERE
-                 GRPCODE = '042'
-                 AND USEYN = 'Y'
+                 CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%'
             ) L
                 LEFT JOIN
                     (SELECT
@@ -344,7 +349,8 @@
                      FROM
                          F_CRN_AREA_ELEC_DAILY_STAT
                      WHERE
-                         WEEKOFYEAR(SDATE) = WEEKOFYEAR(NOW() - INTERVAL 7 DAY)
+                         GUCODE LIKE '30%'
+                         AND WEEKOFYEAR(SDATE) = WEEKOFYEAR(CURDATE() - INTERVAL 7 DAY)
                      GROUP BY
                          GUCODE
                     ) A
@@ -358,7 +364,8 @@
                           FROM
                               F_CRN_AREA_ELEC_DAILY_STAT
                           WHERE
-                              WEEKOFYEAR(SDATE) = WEEKOFYEAR(NOW())
+                              GUCODE LIKE '30%'
+                              AND WEEKOFYEAR(SDATE) = WEEKOFYEAR(CURDATE())
                           GROUP BY
                               GUCODE
 
@@ -369,7 +376,8 @@
                           FROM
                               F_CRN_AREA_KWH_TODAY_STAT
                           WHERE
-                              DATETIME BETWEEN CONCAT(DATE(NOW()), ' 00') AND NOW()
+                              GUCODE LIKE '30%'
+                              AND DATETIME BETWEEN CONCAT(CURDATE(), ' 00') AND NOW()
                           GROUP BY
                               GUCODE) SS
                      GROUP BY
@@ -392,9 +400,8 @@
              FROM
                  F_LEVEL_AREA
              WHERE
-                 AREALEVEL = 1
-                 AND USEYN = 'Y'
-                 AND DELYN = 'N'
+                 CONCAT(AREALEVEL, DELYN, GUCODE) LIKE '1N30%'
+                 AND GUCODE != '30200'
             ) L
                 LEFT JOIN
                     (SELECT
@@ -402,7 +409,9 @@
                      FROM
                          F_CRN_AREA_ELEC_DAILY_STAT
                      WHERE
-                         DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m')
+                         GUCODE LIKE '30%'
+                         AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                         AND GUCODE != '30200'
                      GROUP BY
                          GUCODE
                     ) A
@@ -416,7 +425,9 @@
                           FROM
                               F_CRN_AREA_ELEC_DAILY_STAT
                           WHERE
-                              DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m')
+                              GUCODE LIKE '30%'
+                              AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                              AND GUCODE != '30200'
                           GROUP BY
                               GUCODE
 
@@ -427,14 +438,14 @@
                           FROM
                               F_CRN_AREA_KWH_TODAY_STAT
                           WHERE
-                              DATETIME BETWEEN CONCAT(DATE(NOW()), ' 00') AND NOW()
+                              GUCODE LIKE '30%'
+                              AND DATETIME BETWEEN CONCAT(CURDATE(), ' 00') AND NOW()
+                              AND GUCODE != '30200'
                           GROUP BY
                               GUCODE) SS
                      GROUP BY SS.GUCODE
                     ) B
                         ON L.GUCODE = B.GUCODE
-        WHERE
-            L.GUCODE != '30200'
         ORDER BY
             L.GUCODE
     </select>
@@ -461,14 +472,12 @@
                  , COALESCE(R.USEKWH, 0) AS USEKWH
              FROM
                  (SELECT
-                      A.GUCODE, B.GUNAME, A.AREACODE, A.AREANAME
+                      DISTINCT GUCODE, GUNAME, AREACODE, AREANAME
                   FROM
-                      F_LEVEL_AREA A
-                          LEFT JOIN F_GUCODE B ON A.GUCODE = B.GUCODE
+                      V_ALL_SENSOR_MAP
                   WHERE
-                      A.AREALEVEL = 1
-                      AND A.USEYN = 'Y'
-                      AND A.DELYN = 'N'
+                      CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                      AND AREACODE != 'AREA_000001'
                  ) L
                     LEFT JOIN
                         (SELECT
@@ -477,13 +486,13 @@
                          FROM
                               F_CRN_AREA_ELEC_DAILY_STAT SS
                          WHERE
-                              DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m')
+                              GUCODE LIKE '30%'
+                              AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                              AND AREACODE != 'AREA_000001'
                          GROUP BY
                               AREACODE
                         ) R
                             ON L.AREACODE = R.AREACODE
-             WHERE
-                 L.AREACODE != 'AREA_000001'
             ) A
                 LEFT JOIN
                     (SELECT
@@ -496,7 +505,8 @@
                           FROM
                               F_CRN_AREA_ELEC_DAILY_STAT
                           WHERE
-                              DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
+                              GUCODE LIKE '30%'
+                              AND DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
                               AND AREACODE != 'AREA_000001'
                           GROUP BY
                               AREACODE
@@ -508,7 +518,8 @@
                           FROM
                               F_CRN_AREA_KWH_TODAY_STAT
                           WHERE
-                              DATETIME BETWEEN CONCAT(DATE(NOW()), ' 00') AND NOW()
+                              GUCODE LIKE '30%'
+                              AND DATETIME BETWEEN CONCAT(CURDATE(), ' 00') AND NOW()
                               AND AREACODE != 'AREA_000001'
                           GROUP BY
                               AREACODE) SS
