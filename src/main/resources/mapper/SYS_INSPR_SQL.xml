@@ -10,9 +10,7 @@
         FROM
             F_LEVEL_AREA
         WHERE
-            AREALEVEL = 1
-            AND USEYN = 'Y'
-            AND DELYN = 'N'
+            CONCAT(AREALEVEL, USEYN, DELYN) = '1YN'
         ORDER BY
             AREACODE
     </select>
@@ -38,16 +36,8 @@
                       , DATE_FORMAT(I.INSPRSNTDATE, '%Y-%m-%d %H:%i:%s') AS inspRsntDate
                   FROM
                       F_INSPECTOR I
-                          LEFT JOIN
-                            (SELECT
-                                 AREACODE, AREANAME
-                             FROM
-                                 F_LEVEL_AREA
-                             WHERE
-                                 AREALEVEL = 1
-                                 AND DELYN = 'N'
-                            ) A
-                                ON I.INSPAREACODE = A.AREACODE
+                          LEFT JOIN (SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN) = '1YN') A
+                              ON I.INSPAREACODE = A.AREACODE
                   WHERE
                       I.USEYN = #{useYn}
                       AND I.ALARMUSE = #{alarmUse}
@@ -149,16 +139,8 @@
             , I.USEYN AS useYn
         FROM
             F_INSPECTOR I
-                LEFT JOIN
-                    (SELECT
-                         AREACODE, AREANAME
-                     FROM
-                         F_LEVEL_AREA
-                     WHERE
-                        AREALEVEL = 1
-                        AND DELYN = 'N'
-                    ) A
-                        ON I.INSPAREACODE = A.AREACODE
+                LEFT JOIN (SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN) = '1YN') A
+                    ON I.INSPAREACODE = A.AREACODE
         WHERE
             I.INSPID = #{param}
     </select>

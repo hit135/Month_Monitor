@@ -8,7 +8,8 @@
             COUNT(*)
         FROM
             F_STORE FS
-                LEFT OUTER JOIN F_MEMBER FM ON FM.USERID = FS.USERID
+                LEFT OUTER JOIN F_MEMBER FM
+                    ON FM.USERID = FS.USERID
         WHERE
             1 = 1
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND FS.AREACODE = #{areaCode}</if>
@@ -46,9 +47,12 @@
                       , FS.STRCODE AS strCodeKey
                   FROM
                       F_STORE FS
-                          LEFT OUTER JOIN F_AREA FA ON FS.AREACODE = FA.AREACODE
-                          LEFT OUTER JOIN F_GROUP FG ON FS.GRPCODE = FG.GRPCODE
-                          LEFT OUTER JOIN F_MEMBER FM ON FM.USERID = FS.USERID
+                          LEFT OUTER JOIN F_AREA FA
+                              ON FS.AREACODE = FA.AREACODE
+                          LEFT OUTER JOIN F_GROUP FG
+                              ON FS.GRPCODE = FG.GRPCODE
+                          LEFT OUTER JOIN F_MEMBER FM
+                              ON FM.USERID = FS.USERID
                   WHERE
                       1 = 1
                       <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND FS.AREACODE = #{areaCode}</if>
@@ -135,8 +139,10 @@
             , FS.DELYN AS delYn
         FROM
             F_STORE FS
-                LEFT OUTER JOIN F_GROUP FG ON FS.GRPCODE = FG.GRPCODE
-                LEFT OUTER JOIN F_MEMBER FM ON FM.USERID = FS.USERID
+                LEFT OUTER JOIN F_GROUP FG
+                    ON FS.GRPCODE = FG.GRPCODE
+                LEFT OUTER JOIN F_MEMBER FM
+                    ON FM.USERID = FS.USERID
         WHERE
             FS.STRCODE = #{strCode}
             AND FS.AREACODE = #{areaCode}

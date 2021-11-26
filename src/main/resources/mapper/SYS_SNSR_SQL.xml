@@ -89,66 +89,70 @@
     <insert id="INSERT_SYS_SNSR" parameterType="SYSSnsrDomain">
         INSERT INTO F_SENSOR_INFO (
                SNSRSEQ
-             , SNSRID
-             , STRCODE
-             , REGDATE
-             , SNSRNICK
-             , SNSRMGPS
-             , SNSRADDR
-             , AREACODE
-             , LEVELAREACODE
-             , SVOL
-             , SOC1V1
-             , SOC1T1
-             , SOC1V2
-             , SOC1T2
-             , SOC2V1
-             , SOC2T1
-             , SOC2V2
-             , SOC2T2
-             , SIGO1V
-             , SIGO1T
-             , SIGO2V
-             , SIGO2T
-             , SIGR1V
-             , SIGR1T
-             , SIGR2V
-             , SIGR2T
-             , SSEC
-             , COMPTYPE
-             , CHANNEL
-             , PANELNAME
+               , SNSRID
+               , STRCODE
+               , REGDATE
+               , SNSRNICK
+               , SNSRMGPS
+               , SNSRADDR
+               <!--
+               , AREACODE
+               , LEVELAREACODE
+               -->
+               , SVOL
+               , SOC1V1
+               , SOC1T1
+               , SOC1V2
+               , SOC1T2
+               , SOC2V1
+               , SOC2T1
+               , SOC2V2
+               , SOC2T2
+               , SIGO1V
+               , SIGO1T
+               , SIGO2V
+               , SIGO2T
+               , SIGR1V
+               , SIGR1T
+               , SIGR2V
+               , SIGR2T
+               , SSEC
+               <!-- , COMPTYPE -->
+               , CHANNEL
+               , PANELNAME
         ) VALUES (
                CONCAT('FS_SNR_', LPAD(#{generateKey}, '13', '0'))
-             , #{snsrId}
-             , #{strCode}
-             , NOW()
-             , #{snsrNick}
-             , #{snsrMGps}
-             , #{snsrAddr}
-             , #{areaCode}
-             , #{levelAreaCode}
-             , #{sVol}
-             , #{sOc1V1}
-             , #{sOc1T1}
-             , #{sOc1V2}
-             , #{sOc1T2}
-             , #{sOc2V1}
-             , #{sOc2T1}
-             , #{sOc2V2}
-             , #{sOc2T2}
-             , #{sIgo1V}
-             , #{sIgo1T}
-             , #{sIgo2V}
-             , #{sIgo2T}
-             , #{sIgr1V}
-             , #{sIgr1T}
-             , #{sIgr2V}
-             , #{sIgr2T}
-             , #{sSec}
-             , 'A'
-             , #{channel}
-             , '분전반1'
+               , #{snsrId}
+               , #{strCode}
+               , NOW()
+               , #{snsrNick}
+               , #{snsrMGps}
+               , #{snsrAddr}
+               <!--
+               , #{areaCode}
+               , #{levelAreaCode}
+               -->
+               , #{sVol}
+               , #{sOc1V1}
+               , #{sOc1T1}
+               , #{sOc1V2}
+               , #{sOc1T2}
+               , #{sOc2V1}
+               , #{sOc2T1}
+               , #{sOc2V2}
+               , #{sOc2T2}
+               , #{sIgo1V}
+               , #{sIgo1T}
+               , #{sIgo2V}
+               , #{sIgo2T}
+               , #{sIgr1V}
+               , #{sIgr1T}
+               , #{sIgr2V}
+               , #{sIgr2T}
+               , #{sSec}
+               <!-- , 'A' -->
+               , #{channel}
+               , '분전반1'
         )
     </insert>
 

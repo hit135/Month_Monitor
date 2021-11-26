@@ -12,6 +12,7 @@
             F_GUCODE
         WHERE
             USEYN = 'Y'
+            AND GUCODE != '28'
         ORDER BY
             GUCODE
     </select>
@@ -24,6 +25,7 @@
             F_LEVEL_AREA
         WHERE
             CONCAT(AREALEVEL, USEYN, DELYN) = '1YN'
+            AND GUCODE != '28'
         ORDER BY
             AREAORDER
     </select>
@@ -44,27 +46,12 @@
                  CONCAT(AREALEVEL, USEYN, DELYN) = '1YN'
                  AND GUCODE = #{guCode}
             ) L
-                LEFT JOIN
-                    (SELECT
-                         *
-                     FROM
-                         F_STORE
-                     WHERE
-                         USEYN = 'Y'
-                         AND DELYN = 'N'
-                    ) S
-                        ON S.AREACODE = L.AREACODE
-                LEFT JOIN
-                    (SELECT
-                         STRCODE, SNSRSEQ
-                     FROM
-                         F_SENSOR_INFO
-                     WHERE
-                         DELYN = 'N'
-                    ) I
-                        ON S.STRCODE = I.STRCODE
+                LEFT JOIN (SELECT AREACODE, STRCODE FROM F_STORE WHERE COUCAT(USEYN, DELYN) = 'YN') S
+                    ON L.AREACODE = S.AREACODE
+                LEFT JOIN (SELECT STRCODE, SNSRSEQ FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
+                    ON S.STRCODE = I.STRCODE
         GROUP BY
-            areaName
+            L.AREANAME
     </select>
 
     <select id="SELECT_SYS_STAT_AREA_INFO_STAT" parameterType="String" resultType="map">
@@ -76,34 +63,16 @@
             , COUNT(DISTINCT S.STRCODE) AS strCnt
             , COUNT(DISTINCT I.SNSRSEQ) AS snsrCnt
         FROM
-            (SELECT
-                 *
-             FROM
-                 F_STORE
-             WHERE
-                 AREACODE = #{areaCode}
-                 AND USEYN = 'Y'
-                 AND DELYN = 'N'
-            ) S
-                LEFT JOIN
-                    (SELECT
-                         DISTINCT AREACODE, AREANAME, AREAADDR, REGDATE
-                     FROM
-                         F_LEVEL_AREA
-                     WHERE
-                         AREALEVEL = 1
-                         AND DELYN = 'N'
-                    ) L
-                        ON S.AREACODE = L.AREACODE
-                LEFT JOIN
-                    (SELECT
-                         STRCODE, SNSRSEQ
-                     FROM
-                         F_SENSOR_INFO
-                     WHERE
-                         DELYN = 'N'
-                    ) I
-                        ON S.STRCODE = I.STRCODE
+            (SELECT * FROM F_STORE WHERE CONCAT(USEYN, DELYN) = 'YN' AND AREACODE = #{areaCode}) S
+                LEFT JOIN (SELECT
+                               DISTINCT AREACODE, AREANAME, AREAADDR, REGDATE
+                           FROM
+                               F_LEVEL_AREA
+                           WHERE
+                               CONCAT(AREALEVEL, USEYN, DELYN) = '1YN') L
+                    ON S.AREACODE = L.AREACODE
+                LEFT JOIN (SELECT STRCODE, SNSRSEQ FROM F_SENSOR_INFO WHERE DELYN = 'N') I
+                    ON S.STRCODE = I.STRCODE
     </select>
 
     <select id="SELECT_SYS_STAT_STR_INFO" parameterType="map" resultType="map">
@@ -118,10 +87,10 @@
                 LEFT JOIN F_SENSOR_INFO B
                     ON A.STRCODE = B.STRCODE
         WHERE
-            A.AREACODE = #{areaCode}
-            AND A.USEYN = 'Y'
-            AND A.DELYN = 'N'
+            CONCAT(A.USEYN, A.DELYN) = 'YN'
+            AND A.AREACODE = #{areaCode}
             AND A.STRCODE LIKE CONCAT('%', #{strCode})
+            AND B.DELYN = 'N'
     </select>
 
     <!--
@@ -149,7 +118,7 @@
                  WHEN 3 THEN '12 ~ 15'
                  WHEN 4 THEN '16 ~ 19'
                  WHEN 5 THEN '20 ~ 23'
-            END) AS hour
+             END) AS hour
             , COALESCE(SUM(A.OCWARNINGCNT), 0) AS ocWarningCnt
             , COALESCE(SUM(A.OCDANGERCNT), 0) AS ocDangerCnt
             , ROUND(COALESCE((SUM(A.OCDANGERCNT) + SUM(A.OCWARNINGCNT)) * 100 / SUM(SUM(A.OCDANGERCNT) + SUM(A.OCWARNINGCNT)) OVER(), 0), 1) as ocTotalPer
@@ -163,97 +132,94 @@
             , ROUND(COALESCE(SUM(B.USEKWH) * 100 / SUM(SUM(B.USEKWH)) OVER(), 0), 1) AS snsrKwhPer
         FROM
             (SELECT LPAD(seq, 2, '0') AS HOUR FROM seq_0_to_23) T
-                LEFT JOIN
-                    (SELECT
-                         DATE_FORMAT(DATETIME, '%H') AS HOUR
-                         , SUM(OCWARNINGCNT) AS OCWARNINGCNT
-                         , SUM(OCDANGERCNT) AS OCDANGERCNT
-                         , SUM(IGOWARNINGCNT) AS IGOWARNINGCNT
-                         , SUM(IGODANGERCNT) AS IGODANGERCNT
-                         , SUM(IGRWARNINGCNT) AS IGRWARNINGCNT
-                         , SUM(IGRDANGERCNT) AS IGRDANGERCNT
-                        <choose>
-                            <when test='"areaCode".equals(type)'>
-                            FROM
-                                F_CRN_AREA_ELEC_EVT_STAT
-                            WHERE
-                                AREACODE = #{areaCode}
-                                AND <choose>
-                                        <when test='dateType == "year"'>DATE_FORMAT(DATETIME, '%Y') = #{startDate}</when>
-                                        <when test='dateType == "month"'>DATE_FORMAT(DATETIME, '%Y-%m') = #{endDate}</when>
-                                        <otherwise>DATE_FORMAT(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
-                                    </choose>
-                            GROUP BY
-                                AREACODE, DATE_FORMAT(DATETIME, '%H')
-                            </when>
-                            <when test='"store".equals(type)'>
-                            FROM
-                                F_CRN_SNSR_ELEC_EVT_STAT
-                            WHERE
-                                AREACODE = #{areaCode}
-                                AND STRCODE = #{strCode}
-                                AND <choose>
-                                        <when test='dateType == "year"'>DATE_FORMAT(DATETIME, '%Y') = #{startDate}</when>
-                                        <when test='dateType == "month"'>DATE_FORMAT(DATETIME, '%Y-%m') = #{endDate}</when>
-                                        <otherwise>DATE_FORMAT(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
-                                    </choose>
-                            GROUP BY
-                                AREACODE, STRCODE, DATE_FORMAT(DATETIME, '%H')
-                            </when>
-                        </choose>
-                     ORDER BY
-                        HOUR
-                    ) A
-                        ON T.HOUR = A.HOUR
-                LEFT JOIN
-                    (SELECT
-                         T.HOUR
-                         , (CASE
-                                WHEN T.HOUR = '00' THEN K.H00  WHEN T.HOUR = '01' THEN K.H01 WHEN T.HOUR = '02' THEN K.H02 WHEN T.HOUR = '03' THEN K.H03
-                                WHEN T.HOUR = '04' THEN K.H04  WHEN T.HOUR = '05' THEN K.H05 WHEN T.HOUR = '06' THEN K.H06 WHEN T.HOUR = '07' THEN K.H07
-                                WHEN T.HOUR = '08' THEN K.H08  WHEN T.HOUR = '09' THEN K.H09 WHEN T.HOUR = '10' THEN K.H10 WHEN T.HOUR = '11' THEN K.H11
-                                WHEN T.HOUR = '12' THEN K.H12  WHEN T.HOUR = '13' THEN K.H13 WHEN T.HOUR = '14' THEN K.H14 WHEN T.HOUR = '15' THEN K.H15
-                                WHEN T.HOUR = '16' THEN K.H16  WHEN T.HOUR = '17' THEN K.H17 WHEN T.HOUR = '18' THEN K.H18 WHEN T.HOUR = '19' THEN K.H19
-                                WHEN T.HOUR = '20' THEN K.H20  WHEN T.HOUR = '21' THEN K.H21 WHEN T.HOUR = '22' THEN K.H22 WHEN T.HOUR = '23' THEN K.H23
-                           END) AS USEKWH
-                     FROM
-                         (SELECT LPAD(seq, 2, '0') AS HOUR FROM seq_0_to_23) T
-                         ,
-                         (SELECT
-                              SUM(H00) AS H00, SUM(H01) AS H01, SUM(H02) AS H02, SUM(H03) AS H03, SUM(H04) AS H04, SUM(H05) AS H05, SUM(H06) AS H06, SUM(H07) AS H07
-                              , SUM(H08) AS H08, SUM(H09) AS H09, SUM(H10) AS H10, SUM(H11) AS H11, SUM(H12) AS H12, SUM(H13) AS H13, SUM(H14) AS H14, SUM(H15) AS H15
-                              , SUM(H16) AS H16, SUM(H17) AS H17, SUM(H18) AS H18, SUM(H19) AS H19, SUM(H20) AS H20, SUM(H21) AS H21, SUM(H22) AS H22, SUM(H23) AS H23
-                         <choose>
-                             <when test='"areaCode".equals(type)'>
-                             FROM
-                                 F_CRN_AREA_KWH_HIST
-                             WHERE
-                                 AREACODE = #{areaCode}
-                                 AND <choose>
-                                         <when test='dateType == "year"'>DATE_FORMAT(DATETIME, '%Y') = #{startDate}</when>
-                                         <when test='dateType == "month"'>DATE_FORMAT(DATETIME, '%Y-%m') = #{endDate}</when>
-                                         <otherwise>DATE_FORMAT(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
-                                     </choose>
-                             GROUP BY
-                                 AREACODE
-                             </when>
-                             <when test='"store".equals(type)'>
-                             FROM
-                                 F_CRN_SNSR_KWH_HIST
-                             WHERE
-                                 AREACODE = #{areaCode}
-                                 AND STRCODE = #{strCode}
-                                 AND <choose>
-                                         <when test='dateType == "year"'>DATE_FORMAT(DATETIME, '%Y') = #{startDate}</when>
-                                         <when test='dateType == "month"'>DATE_FORMAT(DATETIME, '%Y-%m') = #{endDate}</when>
-                                         <otherwise>DATE_FORMAT(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
-                                     </choose>
-                             GROUP BY
-                                 AREACODE, STRCODE
-                             </when>
-                         </choose>) K
-                    ) B
-                        ON T.HOUR = B.HOUR
+                LEFT JOIN (SELECT
+                               DATE_FORMAT(DATETIME, '%H') AS HOUR
+                               , SUM(OCWARNINGCNT) AS OCWARNINGCNT
+                               , SUM(OCDANGERCNT) AS OCDANGERCNT
+                               , SUM(IGOWARNINGCNT) AS IGOWARNINGCNT
+                               , SUM(IGODANGERCNT) AS IGODANGERCNT
+                               , SUM(IGRWARNINGCNT) AS IGRWARNINGCNT
+                               , SUM(IGRDANGERCNT) AS IGRDANGERCNT
+                              <choose>
+                                  <when test='"areaCode".equals(type)'>
+                                  FROM
+                                      F_CRN_AREA_ELEC_EVT_STAT
+                                  WHERE
+                                      AREACODE = #{areaCode}
+                                      AND <choose>
+                                              <when test='dateType == "year"'>DATE_FORMAT(DATETIME, '%Y') = #{startDate}</when>
+                                              <when test='dateType == "month"'>DATE_FORMAT(DATETIME, '%Y-%m') = #{endDate}</when>
+                                              <otherwise>DATE_FORMAT(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                          </choose>
+                                  GROUP BY
+                                      AREACODE, DATE_FORMAT(DATETIME, '%H')
+                                  </when>
+                                  <when test='"store".equals(type)'>
+                                  FROM
+                                      F_CRN_SNSR_ELEC_EVT_STAT
+                                  WHERE
+                                      AREACODE = #{areaCode}
+                                      AND STRCODE = #{strCode}
+                                      AND <choose>
+                                              <when test='dateType == "year"'>DATE_FORMAT(DATETIME, '%Y') = #{startDate}</when>
+                                              <when test='dateType == "month"'>DATE_FORMAT(DATETIME, '%Y-%m') = #{endDate}</when>
+                                              <otherwise>DATE_FORMAT(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                          </choose>
+                                  GROUP BY
+                                      AREACODE, STRCODE, DATE_FORMAT(DATETIME, '%H')
+                                  </when>
+                              </choose>
+                           ORDER BY
+                              HOUR) A
+                    ON T.HOUR = A.HOUR
+                LEFT JOIN (SELECT
+                               T.HOUR
+                               , (CASE
+                                      WHEN T.HOUR = '00' THEN K.H00  WHEN T.HOUR = '01' THEN K.H01 WHEN T.HOUR = '02' THEN K.H02 WHEN T.HOUR = '03' THEN K.H03
+                                      WHEN T.HOUR = '04' THEN K.H04  WHEN T.HOUR = '05' THEN K.H05 WHEN T.HOUR = '06' THEN K.H06 WHEN T.HOUR = '07' THEN K.H07
+                                      WHEN T.HOUR = '08' THEN K.H08  WHEN T.HOUR = '09' THEN K.H09 WHEN T.HOUR = '10' THEN K.H10 WHEN T.HOUR = '11' THEN K.H11
+                                      WHEN T.HOUR = '12' THEN K.H12  WHEN T.HOUR = '13' THEN K.H13 WHEN T.HOUR = '14' THEN K.H14 WHEN T.HOUR = '15' THEN K.H15
+                                      WHEN T.HOUR = '16' THEN K.H16  WHEN T.HOUR = '17' THEN K.H17 WHEN T.HOUR = '18' THEN K.H18 WHEN T.HOUR = '19' THEN K.H19
+                                      WHEN T.HOUR = '20' THEN K.H20  WHEN T.HOUR = '21' THEN K.H21 WHEN T.HOUR = '22' THEN K.H22 WHEN T.HOUR = '23' THEN K.H23
+                                 END) AS USEKWH
+                           FROM
+                               (SELECT LPAD(seq, 2, '0') AS HOUR FROM seq_0_to_23) T
+                               ,
+                               (SELECT
+                                    SUM(H00) AS H00, SUM(H01) AS H01, SUM(H02) AS H02, SUM(H03) AS H03, SUM(H04) AS H04, SUM(H05) AS H05, SUM(H06) AS H06, SUM(H07) AS H07
+                                    , SUM(H08) AS H08, SUM(H09) AS H09, SUM(H10) AS H10, SUM(H11) AS H11, SUM(H12) AS H12, SUM(H13) AS H13, SUM(H14) AS H14, SUM(H15) AS H15
+                                    , SUM(H16) AS H16, SUM(H17) AS H17, SUM(H18) AS H18, SUM(H19) AS H19, SUM(H20) AS H20, SUM(H21) AS H21, SUM(H22) AS H22, SUM(H23) AS H23
+                                   <choose>
+                                       <when test='"areaCode".equals(type)'>
+                                       FROM
+                                           F_CRN_AREA_KWH_HIST
+                                       WHERE
+                                           AREACODE = #{areaCode}
+                                           AND <choose>
+                                                   <when test='dateType == "year"'>DATE_FORMAT(DATETIME, '%Y') = #{startDate}</when>
+                                                   <when test='dateType == "month"'>DATE_FORMAT(DATETIME, '%Y-%m') = #{endDate}</when>
+                                                   <otherwise>DATE_FORMAT(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                               </choose>
+                                       GROUP BY
+                                           AREACODE
+                                       </when>
+                                       <when test='"store".equals(type)'>
+                                       FROM
+                                           F_CRN_SNSR_KWH_HIST
+                                       WHERE
+                                           AREACODE = #{areaCode}
+                                           AND STRCODE = #{strCode}
+                                           AND <choose>
+                                                   <when test='dateType == "year"'>DATE_FORMAT(DATETIME, '%Y') = #{startDate}</when>
+                                                   <when test='dateType == "month"'>DATE_FORMAT(DATETIME, '%Y-%m') = #{endDate}</when>
+                                                   <otherwise>DATE_FORMAT(DATETIME, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                               </choose>
+                                       GROUP BY
+                                           AREACODE, STRCODE
+                                       </when>
+                                   </choose>) K
+                          ) B
+                    ON T.HOUR = B.HOUR
         GROUP BY
             TRUNCATE(T.HOUR / 4, 0)
         ORDER BY
@@ -275,58 +241,59 @@
             , COALESCE(A.SNSRKWH, 0) AS snsrKwh
             , ROUND(COALESCE(A.SNSRKWPER, 0), 1) AS snsrKwhPer
         FROM
-            (SELECT '일요일' AS DAYNAME, 1 AS DAYOFWEEK UNION SELECT '월요일' AS DAYNAME, 2 AS DAYOFWEEK UNION
-             SELECT '화요일' AS DAYNAME, 3 AS DAYOFWEEK UNION SELECT '수요일' AS DAYNAME, 4 AS DAYOFWEEK UNION
-             SELECT '목요일' AS DAYNAME, 5 AS DAYOFWEEK UNION SELECT '금요일' AS DAYNAME, 6 AS DAYOFWEEK UNION
-             SELECT '토요일' AS DAYNAME, 7 AS DAYOFWEEK
+            (SELECT '일요일' AS DAYNAME, 1 AS DAYOFWEEK
+             UNION SELECT '월요일' AS DAYNAME, 2 AS DAYOFWEEK
+             UNION SELECT '화요일' AS DAYNAME, 3 AS DAYOFWEEK
+             UNION SELECT '수요일' AS DAYNAME, 4 AS DAYOFWEEK
+             UNION SELECT '목요일' AS DAYNAME, 5 AS DAYOFWEEK
+             UNION SELECT '금요일' AS DAYNAME, 6 AS DAYOFWEEK
+             UNION SELECT '토요일' AS DAYNAME, 7 AS DAYOFWEEK
             ) T
-                LEFT JOIN
-                    (SELECT
-                         (CASE DAYNAME(SDATE)
-                              WHEN 'Sunday' THEN '일요일'
-                              WHEN 'Monday' THEN '월요일'
-                              WHEN 'Tuesday' THEN '화요일'
-                              WHEN 'Wednesday'THEN '수요일'
-                              WHEN 'Thursday' THEN '목요일'
-                              WHEN 'Friday' THEN '금요일'
-                              WHEN 'Saturday' THEN '토요일'
-                         END) AS DAYNAME
-                         , DAYOFWEEK(SDATE) AS DAYOFWEEK
-                         , SUM(OC1ST) AS OC1STCNT
-                         , SUM(OC2ND) AS OC2NDCNT
-                         , ROUND((SUM(OC1ST) + SUM(OC2ND)) * 100 / SUM(SUM(OC1ST) + SUM(OC2ND)) OVER(), 1) as OCTOTALPER
-                         , SUM(IGO1ST) AS IGO1STCNT
-                         , SUM(IGO2ND) AS IGO2NDCNT
-                         , ROUND((SUM(IGO1ST) + SUM(IGO2ND)) * 100 / SUM(SUM(IGO1ST) + SUM(IGO2ND)) OVER(), 1) as IGOTOTALPER
-                         , SUM(IGR1ST) AS IGR1STCNT
-                         , SUM(IGR2ND) AS IGR2NDCNT
-                         , ROUND((SUM(IGR1ST) + SUM(IGR2ND)) * 100 / SUM(SUM(IGR1ST) + SUM(IGR2ND)) OVER(), 1) as IGRTOTALPER
-                         , SUM(SNSRKWHDAILY) AS SNSRKWH
-                         , ROUND(SUM(SNSRKWHDAILY) * 100 / SUM(SUM(SNSRKWHDAILY)) OVER(), 1) AS SNSRKWPER
-                             <choose>
-                                 <when test='"areaCode".equals(type)'>
-                                 FROM
-                                     F_CRN_AREA_ELEC_DAILY_STAT
-                                 WHERE
-                                     AREACODE = #{areaCode}
-                                 </when>
-                                 <when test='"store".equals(type)'>
-                                 FROM
-                                     F_ELEC_SENSOR_STAT
-                                 WHERE
-                                     AREACODE = #{areaCode}
-                                     AND STRCODE = #{strCode}
-                                 </when>
-                             </choose>
-                         AND <choose>
-                                 <when test='dateType == "year"'>DATE_FORMAT(SDATE, '%Y') = #{startDate}</when>
-                                 <when test='dateType == "month"'>DATE_FORMAT(SDATE, '%Y-%m') = #{endDate}</when>
-                                 <otherwise>DATE_FORMAT(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
-                             </choose>
-                     GROUP BY
-                         DAYOFWEEK(SDATE)
-                    ) A
-                        ON T.DAYOFWEEK = A.DAYOFWEEK
+                LEFT JOIN (SELECT
+                               (CASE DAYNAME(SDATE)
+                                    WHEN 'Sunday' THEN '일요일'
+                                    WHEN 'Monday' THEN '월요일'
+                                    WHEN 'Tuesday' THEN '화요일'
+                                    WHEN 'Wednesday'THEN '수요일'
+                                    WHEN 'Thursday' THEN '목요일'
+                                    WHEN 'Friday' THEN '금요일'
+                                    WHEN 'Saturday' THEN '토요일'
+                                END) AS DAYNAME
+                               , DAYOFWEEK(SDATE) AS DAYOFWEEK
+                               , SUM(OC1ST) AS OC1STCNT
+                               , SUM(OC2ND) AS OC2NDCNT
+                               , ROUND((SUM(OC1ST) + SUM(OC2ND)) * 100 / SUM(SUM(OC1ST) + SUM(OC2ND)) OVER(), 1) as OCTOTALPER
+                               , SUM(IGO1ST) AS IGO1STCNT
+                               , SUM(IGO2ND) AS IGO2NDCNT
+                               , ROUND((SUM(IGO1ST) + SUM(IGO2ND)) * 100 / SUM(SUM(IGO1ST) + SUM(IGO2ND)) OVER(), 1) as IGOTOTALPER
+                               , SUM(IGR1ST) AS IGR1STCNT
+                               , SUM(IGR2ND) AS IGR2NDCNT
+                               , ROUND((SUM(IGR1ST) + SUM(IGR2ND)) * 100 / SUM(SUM(IGR1ST) + SUM(IGR2ND)) OVER(), 1) as IGRTOTALPER
+                               , SUM(SNSRKWHDAILY) AS SNSRKWH
+                               , ROUND(SUM(SNSRKWHDAILY) * 100 / SUM(SUM(SNSRKWHDAILY)) OVER(), 1) AS SNSRKWPER
+                           <choose>
+                               <when test='"areaCode".equals(type)'>
+                               FROM
+                                   F_CRN_AREA_ELEC_DAILY_STAT
+                               WHERE
+                                   AREACODE = #{areaCode}
+                               </when>
+                               <when test='"store".equals(type)'>
+                               FROM
+                                   F_ELEC_SENSOR_STAT
+                               WHERE
+                                   AREACODE = #{areaCode}
+                                   AND STRCODE = #{strCode}
+                               </when>
+                           </choose>
+                                 AND <choose>
+                                         <when test='dateType == "year"'>DATE_FORMAT(SDATE, '%Y') = #{startDate}</when>
+                                         <when test='dateType == "month"'>DATE_FORMAT(SDATE, '%Y-%m') = #{endDate}</when>
+                                         <otherwise>DATE_FORMAT(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                     </choose>
+                           GROUP BY
+                               DAYOFWEEK(SDATE)) A
+                    ON T.DAYOFWEEK = A.DAYOFWEEK
     </select>
 
     <select id="SELECT_SYS_STAT_AREA_KWHIGO_STAT" parameterType="map" resultType="map">
@@ -370,34 +337,33 @@
             , COALESCE(E.SNSRIGO, 0) AS snsrIgo
         FROM
             (SELECT CONCAT(LPAD(seq, 2, '0')) AS sDate FROM seq_1_to_12) T
-                LEFT JOIN
-                    (SELECT
-                         DATE_FORMAT(SDATE, '%m') AS sDate
-                         , SUM(OC1ST) AS OC1ST
-                         , SUM(OC2ND) AS OC2ND
-                         , SUM(TOTOCALM) AS OCEVT
-                         , SUM(IGO1ST) AS IGO1ST
-                         , SUM(IGO2ND) AS IGO2ND
-                         , SUM(IGO1ST) + SUM(IGO2ND) AS IGOEVT
-                         , SUM(IGR1ST) AS IGR1ST
-                         , SUM(IGR2ND) AS IGR2ND
-                         , SUM(IGR1ST) + SUM(IGR2ND) AS IGREVT
-                         , SUM(TOTOCALM) + SUM(TOTIGALM) AS MONTHLYEVT
-                         , SUM(SNSRKWHDAILY) AS SNSRKWH
-                         , SUM(SNSRIGOAVG) AS SNSRIGO
-                     FROM
-                         F_ELEC_SENSOR_STAT
-                     WHERE
-                         <choose>
-                              <when test='dateType == "year"'>DATE_FORMAT(SDATE, '%Y') = #{startDate}</when>
-                              <otherwise>DATE_FORMAT(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
-                          </choose>
-                         AND AREACODE = #{areaCode}
-                         <if test='"store".equals(type)'>AND STRCODE = #{strCode}</if>
-                     GROUP BY
-                         DATE_FORMAT(SDATE, '%m')
-                    ) E
-                        ON T.SDATE = E.SDATE
+                LEFT JOIN (SELECT
+                               DATE_FORMAT(SDATE, '%m') AS sDate
+                               , SUM(OC1ST) AS OC1ST
+                               , SUM(OC2ND) AS OC2ND
+                               , SUM(TOTOCALM) AS OCEVT
+                               , SUM(IGO1ST) AS IGO1ST
+                               , SUM(IGO2ND) AS IGO2ND
+                               , SUM(IGO1ST) + SUM(IGO2ND) AS IGOEVT
+                               , SUM(IGR1ST) AS IGR1ST
+                               , SUM(IGR2ND) AS IGR2ND
+                               , SUM(IGR1ST) + SUM(IGR2ND) AS IGREVT
+                               , SUM(TOTOCALM) + SUM(TOTIGALM) AS MONTHLYEVT
+                               , SUM(SNSRKWHDAILY) AS SNSRKWH
+                               , SUM(SNSRIGOAVG) AS SNSRIGO
+                           FROM
+                               F_ELEC_SENSOR_STAT
+                           WHERE
+                               <choose>
+                                    <when test='dateType == "year"'>DATE_FORMAT(SDATE, '%Y') = #{startDate}</when>
+                                    <otherwise>DATE_FORMAT(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
+                                </choose>
+                               AND AREACODE = #{areaCode}
+                               <if test='"store".equals(type)'>AND STRCODE = #{strCode}</if>
+                           GROUP BY
+                               DATE_FORMAT(SDATE, '%m')
+                          ) E
+                    ON T.SDATE = E.SDATE
 
         UNION ALL
 
@@ -455,7 +421,7 @@
                          <otherwise>DATE_FORMAT(E.SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                      </choose>
              GROUP BY
-                levelAreaCode) A
+                 E.LEVELAREACODE) A
         ORDER BY
             (oc1st + oc2nd + igo1st + igo2nd + igr1st + igr2nd) DESC
         LIMIT

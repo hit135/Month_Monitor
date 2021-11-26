@@ -9,49 +9,31 @@
             , A.AREACODE AS areaCode
             , A.UPAREACODE AS upAreaCode
             , CONCAT(
-                 A.AREANAME
-                 , ' ('
-                 , IFNULL(
-                     CASE
-                         WHEN A.AREALEVEL = 1
-                         THEN (SELECT
-                                   COUNT(AREACODE) AS STORECNT
-                               FROM
-                                   F_STORE
-                               WHERE
-                                   A.AREACODE = AREACODE
-                               GROUP BY
-                                   AREACODE)
-                         WHEN A.AREALEVEL = 2
-                         THEN (SELECT
-                                   COUNT(LEVELAREACODE) AS STORECNT
-                               FROM
-                                   F_STORE
-                               WHERE
-                                   A.UPAREACODE = AREACODE
-                                   AND A.AREACODE = LEVELAREACODE
-                               GROUP BY
-                                   AREACODE)
-                     END
-                   , 0)
-                 , ')'
+                  A.AREANAME
+                  , ' ('
+                  , IFNULL(CASE
+                               WHEN A.AREALEVEL = 1
+                               THEN (SELECT COUNT(AREACODE) AS STORECNT
+                                     FROM F_STORE
+                                     WHERE AREACODE = A.AREACODE
+                                     GROUP BY AREACODE)
+                               WHEN A.AREALEVEL = 2
+                               THEN (SELECT COUNT(LEVELAREACODE) AS STORECNT
+                                     FROM F_STORE
+                                     WHERE AREACODE = A.UPAREACODE AND LEVELAREACODE = A.AREACODE
+                                     GROUP BY AREACODE)
+                           END, 0)
+                  , ')'
               ) AS title
             , A.AREALEVEL AS areaLevel
-            , IFNULL(
-                (SELECT
-                     COUNT(AREACODE) AS STORECNT
-                 FROM
-                     F_STORE
-                 WHERE
-                     A.AREACODE = AREACODE
-                 GROUP BY
-                     AREACODE)
-              , 0) AS storeCnt
+            , IFNULL((SELECT COUNT(AREACODE) AS STORECNT FROM F_STORE WHERE AREACODE = A.AREACODE GROUP BY AREACODE), 0) AS storeCnt
         FROM
             F_LEVEL_AREA A
+        <!--
         WHERE
-            1 = 1
-            <!-- AND USEYN = 'Y' -->
+            USEYN = 'Y'
+            AND DELYN = 'N'
+        -->
         ORDER BY
             AREALEVEL, AREAORDER
     </select>
@@ -59,29 +41,21 @@
     <insert id="INSERT_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">
         INSERT INTO F_LEVEL_AREA (
                AREACODE
-             , UPAREACODE
-             , AREANAME
-             , USEYN
-             , AREAORDER
-             , AREALEVEL
-             , REGDATE
+               , UPAREACODE
+               , AREANAME
+               , USEYN
+               , AREAORDER
+               , AREALEVEL
+               , REGDATE
         ) VALUES (
-               CONCAT(
-                'AREA_'
-               , LPAD(IFNULL((SELECT MAX(SEQ) FROM F_LEVEL_AREA FA), 0) + 1, '6', '0')
-               )
-             , #{upAreaCode}
-             , 'temp'
-             , 'Y'
-             , (SELECT
-                    IFNULL(MAX(FA.AREAORDER), 0) + 1
-                FROM
-                    F_LEVEL_AREA FA
-                WHERE
-                    UPAREACODE = #{upAreaCode})
-             , #{areaLevel}
-             , NOW()
-        );
+               CONCAT('AREA_', LPAD(IFNULL((SELECT MAX(SEQ) FROM F_LEVEL_AREA FA), 0) + 1, '6', '0'))
+               , #{upAreaCode}
+               , 'temp'
+               , 'Y'
+               , (SELECT IFNULL(MAX(FA.AREAORDER), 0) + 1 FROM F_LEVEL_AREA FA WHERE UPAREACODE = #{upAreaCode})
+               , #{areaLevel}
+               , NOW()
+        )
     </insert>
 
     <update id="UPDATE_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">
@@ -103,12 +77,7 @@
     </update>
 
     <select id="CHECK_SYS_AREA_CODE" parameterType="String" resultType="int">
-        SELECT
-            IFNULL(COUNT(AREACODE), 0) AS cnt
-        FROM
-            F_LEVEL_AREA
-        WHERE
-            AREACODE = #{areaCode}
+        SELECT IFNULL(COUNT(AREACODE), 0) AS cnt FROM F_LEVEL_AREA WHERE AREACODE = #{areaCode}
     </select>
 
     <select id="SELECT_SYS_AREA_ITEM" parameterType="String" resultType="SYSAreaDomain">
@@ -126,19 +95,11 @@
             , FA.AREAMANAGER AS areaManager
             , FA.AREATEL AS areaTel
             , FA.GUCODE AS guCode
-            , IFNULL(
-                (SELECT
-                     COUNT(AREACODE)
-                 FROM
-                     F_LEVEL_AREA B
-                 WHERE
-                     B.UPAREACODE = FA.UPAREACODE)
-              , 0) AS orderCnt
+            , IFNULL((SELECT COUNT(AREACODE) FROM F_LEVEL_AREA B WHERE B.UPAREACODE = FA.UPAREACODE), 0) AS orderCnt
         FROM
             F_LEVEL_AREA FA
         WHERE
-            1 = 1
-            AND FA.AREACODE = #{areaCode}
+            FA.AREACODE = #{areaCode}
     </select>
 
     <delete id="DELETE_SYS_LEVEL_AREA_ITEM" parameterType="SYSAreaDomain">

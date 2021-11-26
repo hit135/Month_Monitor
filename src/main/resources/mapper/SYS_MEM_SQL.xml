@@ -109,40 +109,40 @@
     <insert id="INSERT_SYS_MEM" parameterType="SYSMemDomain">
         INSERT INTO F_MEMBER (
                USERID
-             , MEMPWD
-             , MEMNAME
-             , MEMEMAIL
-             , MEMTEL
-             , MEMMOBILE
-             , MEMLEVEL
-             , MEMRCVSMS
-             , MEMRCVPUSH
-             , REGDATE
-             , MEMRSNTDATE
-             , MEMISLEAVE
-             , USEYN
-             , DELYN
-             , MEMMEMO
-             , PWCHANGE
-             , GROUPUSE
+               , MEMPWD
+               , MEMNAME
+               , MEMEMAIL
+               , MEMTEL
+               , MEMMOBILE
+               , MEMLEVEL
+               , MEMRCVSMS
+               , MEMRCVPUSH
+               , REGDATE
+               , MEMRSNTDATE
+               , MEMISLEAVE
+               , USEYN
+               , DELYN
+               , MEMMEMO
+               , PWCHANGE
+               , GROUPUSE
         ) VALUES (
                #{userId}
-             , #{memPwd}
-             , #{memName}
-             , #{memEmail}
-             , #{memTel}
-             , #{memMobile}
-             , 0
-             , #{memRcvSms}
-             , #{memRcvPush}
-             , NOW()
-             , NOW()
-             , #{memIsLeave}
-             , #{useYn}
-             , #{delYn}
-             , #{memMemo}
-             , 'Y'
-             , #{groupUse}
+               , #{memPwd}
+               , #{memName}
+               , #{memEmail}
+               , #{memTel}
+               , #{memMobile}
+               , 0
+               , #{memRcvSms}
+               , #{memRcvPush}
+               , NOW()
+               , NOW()
+               , #{memIsLeave}
+               , #{useYn}
+               , #{delYn}
+               , #{memMemo}
+               , 'Y'
+               , #{groupUse}
         )
     </insert>
 
@@ -171,7 +171,8 @@
             , FM.LOGINFAILCNT AS loginFailCnt
         FROM
             F_MEMBER FM
-                LEFT JOIN F_GROUP FG ON FM.GRPCODE = FG.GRPCODE
+                LEFT JOIN F_GROUP FG
+                    ON FM.GRPCODE = FG.GRPCODE
         WHERE
             FM.USERID = #{userId}
         GROUP BY
