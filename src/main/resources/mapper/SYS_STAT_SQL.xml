@@ -5,28 +5,27 @@
 
     <select id="LIST_TYPE_GUCODE" resultType="map">
         SELECT
-            A.GUCODE AS guCode
-            , A.GRPCODE AS grpCode
-            , A.GUNAME AS guName
+            GUCODE AS guCode
+            , GRPCODE AS grpCode
+            , GUNAME AS guName
         FROM
-            F_GUCODE A
+            F_GUCODE
         WHERE
-            A.USEYN = 'Y'
+            USEYN = 'Y'
         ORDER BY
-            A.GUCODE
+            GUCODE
     </select>
 
     <select id="LIST_TYPE_AREACODE" resultType="map">
         SELECT
-            A.AREACODE AS areaCode
-            , A.AREANAME AS areaName
+            AREACODE AS areaCode
+            , AREANAME AS areaName
         FROM
-            F_LEVEL_AREA A
+            F_LEVEL_AREA
         WHERE
-            A.USEYN = 'Y'
-            AND A.AREALEVEL = 1
+            CONCAT(AREALEVEL, USEYN, DELYN) = '1YN'
         ORDER BY
-            A.AREAORDER
+            AREAORDER
     </select>
 
     <select id="LIST_SYS_STAT_GU_INFO_STAT" parameterType="String" resultType="map">
@@ -40,11 +39,10 @@
             (SELECT
                  *
              FROM
-                 F_LEVEL_AREA S
+                 F_LEVEL_AREA
              WHERE
-                 AREALEVEL = 1
+                 CONCAT(AREALEVEL, USEYN, DELYN) = '1YN'
                  AND GUCODE = #{guCode}
-                 AND DELYN = 'N'
             ) L
                 LEFT JOIN
                     (SELECT
@@ -58,13 +56,13 @@
                         ON S.AREACODE = L.AREACODE
                 LEFT JOIN
                     (SELECT
-                         AREACODE, STRCODE, SNSRSEQ
+                         STRCODE, SNSRSEQ
                      FROM
                          F_SENSOR_INFO
                      WHERE
                          DELYN = 'N'
                     ) I
-                        ON S.AREACODE = I.AREACODE
+                        ON S.STRCODE = I.STRCODE
         GROUP BY
             areaName
     </select>
@@ -99,13 +97,13 @@
                         ON S.AREACODE = L.AREACODE
                 LEFT JOIN
                     (SELECT
-                         AREACODE, STRCODE, SNSRSEQ
+                         STRCODE, SNSRSEQ
                      FROM
                          F_SENSOR_INFO
                      WHERE
                          DELYN = 'N'
                     ) I
-                        ON S.AREACODE = I.AREACODE
+                        ON S.STRCODE = I.STRCODE
     </select>
 
     <select id="SELECT_SYS_STAT_STR_INFO" parameterType="map" resultType="map">
@@ -117,7 +115,8 @@
             , A.STROWNTEL AS strOwnTel
         FROM
             F_STORE A
-                LEFT JOIN F_SENSOR_INFO B ON A.STRCODE = B.STRCODE
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.STRCODE = B.STRCODE
         WHERE
             A.AREACODE = #{areaCode}
             AND A.USEYN = 'Y'

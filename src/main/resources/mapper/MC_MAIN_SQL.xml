@@ -97,7 +97,7 @@
                      ON D.SNSRID = E.SNSRID
          WHERE
              CONCAT(A.USEYN, A.GRPCODE, A.GUCODE) LIKE 'Y04230%'
-             AND CONCAT(B.AREALEVEL, B.DELYN, B.GUCODE) LIKE '1N30%'
+             AND CONCAT(B.AREALEVEL, B.USEYN, B.DELYN, B.GUCODE) LIKE '1YN30%'
              AND CONCAT(C.USEYN, C.DELYN, C.GRPCODE) = 'YN042'
              AND CONCAT(D.DELYN, D.STRCODE) LIKE 'NFS_STR_%'
          GROUP BY
@@ -165,7 +165,7 @@
         WHERE
             CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(C.USEYN, C.DELYN, C.GRPCODE) = 'YN042'
-            AND CONCAT(D.AREALEVEL, D.DELYN, D.GUCODE) LIKE '1N30%'
+            AND CONCAT(D.AREALEVEL, D.USEYN, D.DELYN, D.GUCODE) LIKE '1YN30%'
         ORDER BY
             A.STATE, A.CNT DESC
     </select>
@@ -240,7 +240,8 @@
                                AND C2.AREACODE = #{areacode}) B
                     ON A.AREACODE = B.AREACODE
         WHERE
-            A.AREACODE = #{areacode}
+            CONCAT(A.USEYN, A.DELYN, A.GUCODE) LIKE 'YN30%'
+            AND A.AREACODE = #{areacode}
         ]]>
     </select>
 
@@ -305,12 +306,19 @@
                                 REGDATE > CURDATE()
                                 AND OCALM + IGOALM + IGRALM > 0) D
                     ON A.SNSRID = D.SNSRID
-                LEFT JOIN (SELECT SNSRID, COUNT(*) AS CHK FROM F_SENSOR_CHECK WHERE CHECKSTAT = 'ING' GROUP BY SNSRID) E
+                LEFT JOIN (SELECT
+                               SNSRID, COUNT(*) AS CHK
+                           FROM
+                               F_SENSOR_CHECK
+                           WHERE
+                               CHECKSTAT = 'ING'
+                           GROUP BY
+                               SNSRID) E
                     ON A.SNSRID = E.SNSRID
         WHERE
             CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
-            AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
+            AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
             AND C.AREACODE = #{areacode}
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(strcode)">AND A.STRCODE = #{strcode}</if>
         ORDER BY
@@ -339,7 +347,7 @@
                     ON B.AREACODE = C.AREACODE
         WHERE
             CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
+            AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
             AND C.AREACODE = #{areacode}
         GROUP BY
             2
@@ -358,7 +366,7 @@
                     ON B.AREACODE = C.AREACODE
         WHERE
             CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
+            AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
             AND C.AREACODE = #{areacode}
         GROUP BY
             2
@@ -389,7 +397,7 @@
                     ON B.AREACODE = C.AREACODE
        WHERE
            CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-           AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
+           AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
            AND C.AREACODE = #{areacode}
        GROUP BY
            2
@@ -415,7 +423,7 @@
                    ON B.AREACODE = C.AREACODE
        WHERE
            CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-           AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
+           AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
            AND C.AREACODE = #{areacode}
        GROUP BY
            2
@@ -433,8 +441,8 @@
         FROM
             F_CRN_AREA_ELEC_DAILY_STAT
         WHERE
-            SDATE BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 8 DAY
-                  AND CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 2 DAY
+            SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
+                  AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
             AND GUCODE LIKE '30%'
             AND AREACODE = #{areacode}
         GROUP BY
@@ -487,7 +495,7 @@
                  (SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG_2021
                   UNION ALL SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG) S
              WHERE
-                 S.REGDATE > CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 8 DAY
+                 S.REGDATE > CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
                  AND S.REGDATE < CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
                  AND INSTR(S.ALM, '2') > 0
             ) A
@@ -497,7 +505,7 @@
                     ON B.AREACODE = C.AREACODE
         WHERE
             CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
+            AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
             AND C.AREACODE = #{areacode}
         GROUP BY
             DATE(A.REGDATE)
@@ -525,7 +533,7 @@
                     ON B.AREACODE = C.AREACODE
         WHERE
             CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) LIKE '1N30%'
+            AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
             AND C.AREACODE = #{areacode}
         GROUP BY
             DATE(A.REGDATE)
@@ -586,7 +594,7 @@
                     ON A.AREACODE = B.AREACODE
         WHERE
             CONCAT(A.GRPCODE, A.USEYN, A.DELYN) = '042YN'
-            AND CONCAT(B.AREALEVEL, B.DELYN, B.GUCODE) LIKE '1N30%'
+            AND CONCAT(B.AREALEVEL, B.USEYN, B.DELYN, B.GUCODE) LIKE '1YN30%'
             AND A.STRNAME LIKE CONCAT('%', #{search}, '%')
         ORDER BY
             A.STRNAME

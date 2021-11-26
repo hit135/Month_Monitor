@@ -10,12 +10,11 @@
             F_SENSOR_INFO SI
                 LEFT JOIN F_STORE ST
                     ON ST.STRCODE = SI.STRCODE
-                    AND ST.AREACODE = SI.AREACODE
         WHERE
             SI.DELYN = #{delYn}
             <if test='areaCode != "all" and areaCode == levelAreaCode'>
-            AND SI.AREACODE = #{areaCode}
-            AND SI.LEVELAREACODE = #{levelAreaCode}
+            AND ST.AREACODE = #{areaCode}
+            AND ST.LEVELAREACODE = #{levelAreaCode}
             </if>
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
             AND (SI.SNSRID LIKE CONCAT('%', #{searchWrd}, '%')
@@ -54,12 +53,11 @@
                       F_SENSOR_INFO SI
                           LEFT JOIN F_STORE ST
                               ON ST.STRCODE = SI.STRCODE
-                              AND ST.AREACODE = SI.AREACODE
                   WHERE
                       SI.DELYN = #{delYn}
                       <if test='areaCode != "all" and areaCode == levelAreaCode'>
-                      AND SI.AREACODE = #{areaCode}
-                      AND SI.LEVELAREACODE = #{levelAreaCode}
+                      AND ST.AREACODE = #{areaCode}
+                      AND ST.LEVELAREACODE = #{levelAreaCode}
                       </if>
                       <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
                       AND (SI.SNSRID LIKE CONCAT('%', #{searchWrd}, '%')
@@ -165,8 +163,10 @@
             , REGDATE AS regDate
             , UPDDATE AS updDate
             , SNSRADDR AS snsrAddr
+             <!--
             , AREACODE AS areaCode
             , LEVELAREACODE AS levelAreaCode
+            -->
             , SVOL AS sVol
             , SOC1V1 AS sOc1V1
             , SOC1V2 AS sOc1V2
@@ -207,8 +207,10 @@
             , SNSRID = #{snsrId}
             , SNSRNICK = #{snsrNick}
             , SNSRMGPS = #{snsrMGps}
+            <!--
             , AREACODE = #{areaCode}
             , LEVELAREACODE = #{levelAreaCode}
+            -->
             , SNSRADDR = #{snsrAddr}
             , STRCODE = #{strCode}
             , SOC1V1 = #{sOc1V1}

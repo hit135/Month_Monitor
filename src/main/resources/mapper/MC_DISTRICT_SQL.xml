@@ -292,8 +292,8 @@
                  F_CRN_AREA_ELEC_DAILY_STAT
              WHERE
                  GUCODE LIKE '30%'
-                 AND SDATE BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 8 DAY
-                           AND CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 2 DAY
+                 AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
+                           AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
             ) B
             ,
             (SELECT
@@ -363,8 +363,8 @@
                          F_CRN_AREA_ELEC_DAILY_STAT
                      WHERE
                          GUCODE LIKE '30%'
-                         AND SDATE BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 8 DAY
-                                   AND CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 2 DAY
+                         AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
+                                   AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
                      GROUP BY
                          GUCODE
                     ) A
@@ -415,7 +415,7 @@
              FROM
                  F_LEVEL_AREA
              WHERE
-                 CONCAT(AREALEVEL, DELYN, GUCODE) LIKE '1N30%'
+                 CONCAT(AREALEVEL, USEYN, DELYN, GUCODE) LIKE '1YN30%'
                  AND GUCODE != '30200'
             ) L
                 LEFT JOIN
