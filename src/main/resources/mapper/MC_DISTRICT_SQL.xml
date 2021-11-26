@@ -14,29 +14,29 @@
             , B.WARNINGCNT AS TWARNINGCNT
         FROM
             (SELECT
-                 COUNT(DISTINCT CASE WHEN (OCALM + IGOALM + IGRALM) > 0 THEN SNSRSEQ END) AS ERRCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNINGCNT
+                 COUNT(DISTINCT CASE WHEN ISALM = 1 THEN SNSRSEQ END) AS ERRCNT
+                 , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
+                 , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
              FROM
                  V_ALL_SENSOR_LOG_MAP
              WHERE
-                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 GRPGUCODE LIKE '042|30%'
                  AND REGDATE > CURDATE() - INTERVAL 1 DAY
                  AND REGDATE < CURDATE()
             ) A
             ,
             (SELECT
-                 COUNT(DISTINCT CASE WHEN (OCALM + IGOALM + IGRALM) > 0 THEN SNSRSEQ END) AS ERRCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNINGCNT
+                 COUNT(DISTINCT CASE WHEN ISALM = 1 THEN SNSRSEQ END) AS ERRCNT
+                 , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
+                 , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
              FROM
                  V_ALL_SENSOR_LOG_MAP
              WHERE
-                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 GRPGUCODE LIKE '042|30%'
                  AND REGDATE > CURDATE()
             ) B
             ,
-            (SELECT COUNT(*) AS SNSRCNT FROM V_ALL_SENSOR_MAP WHERE CONCAT(GRPCODE, GUCODE) LIKE '04230%') I
+            (SELECT COUNT(*) AS SNSRCNT FROM V_ALL_SENSOR_MAP WHERE GRPGUCODE LIKE '042|30%') I
         ]]>
     </select>
 
@@ -54,25 +54,17 @@
              FROM
                  V_ALL_SENSOR_MAP
              WHERE
-                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 GRPGUCODE LIKE '042|30%'
             ) V
             ,
             (SELECT
-                 COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT
-                             CASE
-                                 WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0
-                                 THEN SNSRSEQ
-                             END) AS WARNINGCNT
-                 , COUNT(DISTINCT
-                             CASE
-                                 WHEN CONCAT(OCALM, IGOALM, IGRALM) = '000' AND DISCONN = 1
-                                 THEN SNSRSEQ
-                             END) AS DISCONNCNT
+                 COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
+                 , COUNT(DISTINCT CASE WHEN ISDANGER = 0 AND ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
+                 , COUNT(DISTINCT CASE WHEN ISALM = 0 AND DISCONN = 1 THEN SNSRSEQ END) AS DISCONNCNT
              FROM
                  V_ALL_SENSOR_LOG_MAP
              WHERE
-                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 GRPGUCODE LIKE '042|30%'
                  AND REGDATE > CURDATE()
             ) L
     </select>
@@ -89,28 +81,26 @@
             (SELECT
                  GUCODE
                  , COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
-                 , COUNT(DISTINCT CASE WHEN DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN SNSRSEQ END) AS DISCONNCNT
+                 , COUNT(DISTINCT CASE WHEN DATADISN = 1 THEN SNSRSEQ END) AS DISCONNCNT
              FROM
                  V_ALL_SENSOR_MAP
              WHERE
-                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 GRPGUCODE LIKE '042|30%'
              GROUP BY
                  GUCODE
             ) I
-                LEFT JOIN
-                    (SELECT
-                         GUCODE
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERCNT
-                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNINGCNT
-                     FROM
-                         V_ALL_SENSOR_LOG_MAP
-                     WHERE
-                         CONCAT(GRPCODE, GUCODE) LIKE '04230%'
-                         AND REGDATE > CURDATE()
-                     GROUP BY
-                         GUCODE
-                    ) L
-                        ON I.GUCODE = L.GUCODE
+                LEFT JOIN (SELECT
+                               GUCODE
+                               , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
+                               , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
+                           FROM
+                               V_ALL_SENSOR_LOG_MAP
+                           WHERE
+                               GRPGUCODE LIKE '042|30%'
+                               AND REGDATE > CURDATE()
+                           GROUP BY
+                               GUCODE) L
+                    ON I.GUCODE = L.GUCODE
         ]]>
     </select>
 
@@ -164,12 +154,11 @@
                          UNION ALL
 
                          SELECT
-                             GUCODE
-                             , COUNT(DISTINCT CASE WHEN (OCALM + IGRALM + IGOALM) > 0 THEN LSEQ END) AS EVENTCNT
+                             GUCODE, COALESCE(SUM(ISALM), 0) AS EVENTCNT
                          FROM
                              V_ALL_SENSOR_LOG_MAP
                          WHERE
-                             CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                             GRPGUCODE LIKE '042|30%'
                              AND REGDATE > CURDATE()
                          GROUP BY
                              GUCODE) SS
@@ -199,12 +188,12 @@
                  , GUNAME
                  , AREACODE
                  , AREANAME
-                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
+                 , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
+                 , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
              FROM
                  V_ALL_SENSOR_LOG_MAP
              WHERE
-                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 GRPGUCODE LIKE '042|30%'
                  AND AREACODE != 'AREA_000001'
                  AND REGDATE > CURDATE()
              GROUP BY
@@ -212,12 +201,12 @@
             ) R1
                 LEFT JOIN (SELECT
                                AREACODE
-                               , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
-                               , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
+                               , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
+                               , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
                            FROM
                                V_ALL_SENSOR_LOG_MAP
                            WHERE
-                               CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                               GRPGUCODE LIKE '042|30%'
                                AND REGDATE > CURDATE() - INTERVAL 1 DAY
                                AND REGDATE < CURDATE()
                                AND AREACODE != 'AREA_000001'
@@ -241,12 +230,12 @@
             (SELECT
                  GUCODE
                  , GUNAME
-                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
+                 , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
+                 , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
              FROM
                   V_ALL_SENSOR_LOG_MAP
              WHERE
-                  CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                  GRPGUCODE LIKE '042|30%'
                   AND REGDATE > CURDATE()
                   AND AREACODE != 'AREA_000001'
              GROUP BY
@@ -254,18 +243,17 @@
             ) R1
                 LEFT JOIN (SELECT
                                GUCODE
-                               , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN LSEQ END) AS DANGERCNT
-                               , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN LSEQ END) AS WARNINGCNT
+                               , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
+                               , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
                            FROM
                                V_ALL_SENSOR_LOG_MAP
                            WHERE
-                               CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                               GRPGUCODE LIKE '042|30%'
                                AND REGDATE > CURDATE() - INTERVAL 1 DAY
                                AND REGDATE < CURDATE()
                                AND AREACODE != 'AREA_000001'
                            GROUP BY
-                               GUCODE
-                          ) R2
+                               GUCODE) R2
                     ON R1.GUCODE = R2.GUCODE
         ]]>
     </select>
@@ -494,7 +482,7 @@
                   FROM
                       V_ALL_SENSOR_MAP
                   WHERE
-                      CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                      GRPGUCODE LIKE '042|30%'
                       AND AREACODE != 'AREA_000001'
                  ) L
                     LEFT JOIN
