@@ -62,107 +62,43 @@
         ]]>
     </select>
 
-    <sql id="LIST_MCM_AREA_CMM">
-        <![CDATA[
-        (SELECT
-             A.GUCODE
-              , A.GUNAME
-              , B.AREACODE
-              , B.AREANAME
-              , COUNT(DISTINCT D.SNSRSEQ) AS SENSOR
-              , COUNT(DISTINCT D.STRCODE) AS STORE
-              , COUNT(DISTINCT CASE WHEN D.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN D.SNSRSEQ END) AS DISCON
-              , COUNT(DISTINCT CASE WHEN INSTR(E.DANGERALM, '2') > 0 THEN D.SNSRSEQ END) AS DANGER
-              , COUNT(DISTINCT CASE WHEN INSTR(E.WARNALM, '1') > 0 THEN D.SNSRSEQ END) AS WARN
-         FROM
-             F_GUCODE A
-                 LEFT JOIN F_LEVEL_AREA B
-                     ON A.GUCODE = B.GUCODE
-                 LEFT JOIN F_STORE C
-                     ON B.AREACODE = C.AREACODE
-                 LEFT JOIN F_SENSOR_INFO D
-                     ON C.STRCODE = D.STRCODE
-                 LEFT JOIN (SELECT
-                                SNSRSEQ
-                                , CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)) AS DANGERALM
-                                , CONCAT(MAX(REPLACE(OCALM, 2, 0)), MAX(REPLACE(IGOALM, 2, 0)), MAX(REPLACE(IGRALM, 2, 0))) AS WARNALM
-                            FROM
-                                V_ALL_SENSOR_LOG_MAP
-                            WHERE
-                                REGDATE > CURDATE()
-                                AND OCALM + IGOALM + IGRALM > 0
-                            GROUP BY
-                                SNSRSEQ) E
-                     ON D.SNSRSEQ = E.SNSRSEQ
-         WHERE
-             CONCAT(A.USEYN, A.GRPCODE, A.GUCODE) LIKE 'Y04230%'
-             AND CONCAT(B.AREALEVEL, B.USEYN, B.DELYN, B.GUCODE) LIKE '1YN30%'
-             AND CONCAT(C.USEYN, C.DELYN, C.GRPCODE) = 'YN042'
-             AND CONCAT(D.DELYN, D.STRCODE) LIKE 'NFS_STR_%'
-         GROUP BY
-             ${alias}) S
-        ]]>
-    </sql>
-
     <!-- 구별, 시장별 센서 현황 (상점, 센서, 경고, 주의, 끊김) -->
     <select id="LIST_MCM_AREA" parameterType="map" resultType="map">
         SELECT
             1 AS LEVEL
-            , A.GUCODE AS CODE
-            , A.GUNAME AS NAME
-            , A.SNSRCNT AS SENSOR
-            , A.STRCNT AS STORE
-            , COALESCE(B.DANGER, 0) AS DANGER
-            , COALESCE(B.WARN, 0) AS WARN
-            , A.SNSRDISNCNT AS DISCON
+            , GUCODE AS CODE
+            , GUNAME AS NAME
+            , SNSRCNT AS SENSOR
+            , STRCNT AS STORE
+            , SUM(DANGERSNSRCNT) AS DANGER
+            , SUM(WARNSNSRCNT) AS WARN
+            , SUM(SNSRDISNCNT) AS DISCON
             , NULL AS UPCODE
-            , COALESCE(B.DANGER, 0) * 10000 + COALESCE(B.WARN, 0) AS ORDERNUM
+            , SUM(DANGERCNT) * 10000 + SUM(WARNCNT) AS ORDERNUM
         FROM
-            V_ALL_AREA_MAP A
-                LEFT JOIN (SELECT
-                               GUCODE
-                               , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGER
-                               , COUNT(DISTINCT CASE WHEN ISDANGER = 0 AND ISWARN = 1 THEN SNSRSEQ END) AS WARN
-                           FROM
-                               V_ALL_SENSOR_LOG_MAP
-                           WHERE
-                               REGDATE > CURDATE()
-                               AND ISALM = 1
-                           GROUP BY
-                               GUCODE) B
-                    ON A.GUCODE = B.GUCODE
+            V_ALL_AREA_MAP
+        WHERE
+            GRPGUCODE LIKE '042|30%'
         GROUP BY
-            A.GUCODE
+            GUCODE
 
         UNION
 
         SELECT
             2 AS LEVEL
-            , A.AREACODE AS CODE
-            , A.AREANAME AS NAME
-            , A.SNSRCNT AS SENSOR
-            , A.STRCNT AS STORE
-            , COALESCE(B.DANGER, 0) AS DANGER
-            , COALESCE(B.WARN, 0) AS WARN
-            , A.SNSRDISNCNT AS DISCON
-            , A.GUCODE AS UPCODE
-            , 0 - (COALESCE(B.DANGER, 0) * 10000 + COALESCE(B.WARN, 0)) AS ORDERNUM
+            , AREACODE AS CODE
+            , AREANAME AS NAME
+            , SNSRCNT AS SENSOR
+            , STRCNT AS STORE
+            , DANGERSNSRCNT AS DANGER
+            , WARNSNSRCNT AS WARN
+            , SNSRDISNCNT AS DISCON
+            , GUCODE AS UPCODE
+            , 0 - (DANGERCNT * 10000 + WARNCNT) AS ORDERNUM
         FROM
-            V_ALL_AREA_MAP A
-                LEFT JOIN (SELECT
-                               AREACODE
-                                , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGER
-                                , COUNT(DISTINCT CASE WHEN ISDANGER = 0 AND ISWARN = 1 THEN SNSRSEQ END) AS WARN
-                           FROM
-                               V_ALL_SENSOR_LOG_MAP
-                           WHERE
-                               REGDATE > CURDATE()
-                               AND ISALM = 1
-                           GROUP BY
-                               AREACODE) B
-                          ON A.AREACODE = B.AREACODE
-        GROUP BY
-            A.AREACODE
+            V_ALL_AREA_MAP
+        WHERE
+            GRPGUCODE LIKE '042|30%'
         ORDER BY
             LEVEL, ORDERNUM DESC
     </select>
