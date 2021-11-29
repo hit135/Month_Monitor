@@ -482,12 +482,14 @@ function fn_mcm_getAreaSensorCount(code) {
     $('#contextRoot').val() + '/mng/areaSensorCountAjax',
     { areacode: code },
     function (d) {
-      $('.center .area-name').text(d[0].AREANAME);
+      if (d) {
+        $('.center .area-name').text(d[0].AREANAME);
 
-      $('.center .area-stat .total').text(d[0].TOTAL);
-      $('.center .area-stat .danger').text(d[0].DANGER);
-      $('.center .area-stat .warn').text(d[0].WARN);
-      $('.center .area-stat .discon').text(d[0].DISCON);
+        $('.center .area-stat .total').text(d[0].TOTAL);
+        $('.center .area-stat .danger').text(d[0].DANGER);
+        $('.center .area-stat .warn').text(d[0].WARN);
+        $('.center .area-stat .discon').text(d[0].DISCON);
+      }
   });
 }
 

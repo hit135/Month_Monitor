@@ -174,8 +174,8 @@
             , AREANAME
             , STRCNT AS TOTAL
             , SNSRDISNCNT AS DISCON
-            , AS DANGERCNT AS DANGER
-            , AS WARNCNT AS WARN
+            , DANGERCNT AS DANGER
+            , WARNCNT AS WARN
         FROM
             V_ALL_AREA_MAP
         WHERE
@@ -187,34 +187,20 @@
     <select id="LIST_MCM_AREA_STORE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
-            A.AREACODE, A.STRCODE, A.STRNAME, B.DANGER, B.WARN, B.CON, B.SNSRCOUNT
+            AREACODE
+            , STRCODE
+            , STRNAME
+            , DANGERCNT AS DANGER
+            , WARNCNT AS WARN
+            , SNSRDISNCNT AS CON
+            , SNSRCNT AS SNSRCOUNT
         FROM
-            F_STORE A
-                LEFT JOIN (SELECT
-                               I.STRCODE
-                               , COUNT(DISTINCT I.SNSRID) AS SNSRCOUNT
-                               , COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRID END) AS CON
-                               , COALESCE(SUM(L.ISDANGER), 0) AS DANGER
-                               , COALESCE(SUM(L.ISWARN), 0) AS WARN
-                           FROM
-                               F_SENSOR_INFO I
-                                   LEFT JOIN (SELECT
-                                                  SNSRSEQ, LSEQ, ISDANGER, ISWARN
-                                              FROM
-                                                  V_TODAY_SENSOR_LOG_MAP
-                                              WHERE
-                                                  ISALM = 1) L
-                                       ON I.SNSRSEQ = L.SNSRSEQ
-                           WHERE
-                               CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                           GROUP BY
-                               I.STRCODE) B
-                    ON A.STRCODE = B.STRCODE
+            V_ALL_STORE_MAP
         WHERE
-            CONCAT(A.USEYN, A.DELYN, A.GRPCODE) = 'YN042'
-            AND A.AREACODE = #{areacode}
+            GRPGUCODE LIKE '042|30%'
+            AND AREACODE = #{areacode}
         ORDER BY
-            B.DANGER DESC, B.WARN DESC, B.CON DESC, A.STRNAME
+            DANGER DESC, WARN DESC, CON DESC, STRNAME
         ]]>
     </select>
 

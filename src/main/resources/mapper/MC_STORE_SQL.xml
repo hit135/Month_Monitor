@@ -103,7 +103,7 @@
                     ON A.SNSRID = D.SNSRID
         WHERE
             CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
-            CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
+            AND CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
             AND B.AREACODE = #{areacode}
             AND B.STRCODE = #{strcode}
         ORDER BY
@@ -162,7 +162,7 @@
                     ON A.SNSRID = C.SNSRID
         WHERE
             CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
-            CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
+            AND CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
             AND B.STRCODE = #{strcode}
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">
             AND A.SNSRID = #{snsrid}

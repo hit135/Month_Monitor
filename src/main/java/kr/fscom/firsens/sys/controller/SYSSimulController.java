@@ -172,7 +172,7 @@ public class SYSSimulController {
             String userid = "admin";
 
             String toinfo = (String) param.get("toinfo");
-            String frominfo = "01047235254";
+            String frominfo = "0424715215";
 //            String linkMo = (String) param.get("linkMo");
 //            String linkPc = (String) param.get("linkPc");
 
@@ -186,7 +186,7 @@ public class SYSSimulController {
                              "\"kakaoOptions\":{" +
                              "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
                              "\"templateId\":\"KA01TP210823050028521KC5UGZeTLMz\"," +
-                             "\"disableSms\":\"true\"" +
+                             "\"disableSms\":\"false\"" +
                              "}}}";
             } else {
                 parameters = "{\"message\":{" +
@@ -197,7 +197,7 @@ public class SYSSimulController {
                              "\"kakaoOptions\":{" +
                                  "\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\"," +
                                  "\"templateId\":\"KA01TP210823080223539jyGNGvWMXxt\"," +
-                                 "\"disableSms\":\"true\"" +
+                                 "\"disableSms\":\"false\"" +
                              "}}}";
             }
 
@@ -282,7 +282,7 @@ public class SYSSimulController {
 
             String userid = "admin";
             String toinfo = (String) param.get("toinfo");
-            String frominfo = "01047235254";
+            String frominfo = "0424715215";
 
             StringBuffer parameters = new StringBuffer();
             parameters.append("{\"message\":{");
