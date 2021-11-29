@@ -12,16 +12,12 @@
 
 #mim_panel_div { margin-top: 0px; }
 #mim_panel_title { height: 2.5rem; padding-left: 1rem; border-radius: 4px 4px 0 0; background-color: #2b559b; color: #ffffff; font-size: 24px; font-weight: bold; }
-#mim_panel_body { display: flex; justify-content: center; border-radius: 0 0 4px 4px; border: 1px solid #e0e0e0; }
-#mim_panel_inner_body { padding: 10px 20px; display: flex; flex-direction: row; width: 100%; justify-content: space-around; }
 
-#mim_panel_tbl { font-size: 20px; margin-bottom: 5px; border: 2px solid #2F528F;}
-.table td { width: 175px; display: table-cell; text-align: center; vertical-align: middle; border: none; }
-
-#mim_panel_legend { display: flex; }
-.mim_panel_legend_div { margin-left: 18px; display: flex; align-items: center; }
-.mim_panel_legend_rect { padding: 12px; border: 2px solid #2F528F; }
-.mim_panel_legend_txt { margin-left: 10px; font-size: 14px; }
+#mim_panel_div { border-radius: 0 0 4px 4px; border: 1px solid #e0e0e0; }
+#mim_snsr_main_info { padding: 1rem; }
+.mim_snsr_main_info_title { font-weight: 800; font-size: 20px; }
+table th, table td { font-size: 16px; }
+table th { text-align: center; font-weight: 800; }
 </style>
 </head>
 
@@ -43,61 +39,130 @@
 
     <div id="mim_panel_div">
       <div id="mim_panel_title">분전반 현황</div>
-      <div id="mim_panel_body">
-        <div id="mim_panel_inner_body">
-          <div>
-            <table class="table" id="mim_panel_tbl"></table><!-- /#mim_panel_tbl -->
-          </div>
-          <div id="mim_panel_legend">
-            <div class="mim_panel_legend_div">
-              <div class="mim_panel_legend_rect" style="background-color: #00B050;"></div>
-              <div class="mim_panel_legend_txt">정상</div>
-            </div>
-            <div class="mim_panel_legend_div">
-              <div class="mim_panel_legend_rect" style="background-color: #FFBF87;"></div>
-              <div class="mim_panel_legend_txt">주의</div>
-            </div>
-            <div class="mim_panel_legend_div">
-              <div class="mim_panel_legend_rect" style="background-color: #FF2F44;"></div>
-              <div class="mim_panel_legend_txt">경고</div>
-            </div>
-            <div class="mim_panel_legend_div">
-              <div class="mim_panel_legend_rect" style="background-color: #a6a6a6;"></div>
-              <div class="mim_panel_legend_txt">끊김</div>
-            </div>
-          </div><!-- /#mim_panel_legend -->
-        </div><!-- /#mim_panel_inner_body -->
-      </div><!-- /#mim_panel_body -->
-    </div><!-- /#mim_panel_div -->
-
-    <div class="center-store-cont">
-      <div class="row center-top p-1">
-        <div class="area-name col-4"></div>
-        <div class="area-stat col-8">
-          전체<span class="total" style="color: #afd9ee;"></span> |
-          경고<span class="danger" style="color: #e082ae;"></span> |
-          주의<span class="warn" style="color: #dbc969;"></span> |
-          끊김<span class="discon" style="color: #dddddd;"></span>
-        </div><!-- /.area-stat col-8 -->
-      </div><!-- /.row -->
       <div class="row">
-        <div class="center-left col-md-3 col-12">
-          <div class="center-left-sensor-list"></div>
-        </div><!-- /.col-md-3 -->
-        <div class="center-cont col-md-9 col-12">
-          <div class="row center-cont-top">
-            <div class="store-name col-4"></div>
-            <div class="cont-btn col-8">
-              <span class="center-cont-top-btn on" data-page="Info">기본정보</span>
-              <span class="center-cont-top-btn" data-page="Log">경보이력</span>
-              <span class="center-cont-top-btn" data-page="Chart">분석차트</span>
-              <span class="center-main-btn">Main Page</span>
-            </div><!-- /.col-8 -->
-          </div><!-- /.row -->
-          <div class="row center-cont-page"></div>
-        </div><!-- /.col-md-9 -->
+        <div class="col-5">
+
+        </div>
+        <div class="col-7">
+          <div id="mim_snsr_main_info">
+            <div class="mim_snsr_main_info_title">기본정보</div>
+
+            <table class="mt-3 table table-sm table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th>구분</th>
+                  <th>전류</th>
+                  <th>IGO</th>
+                  <th>IGR</th>
+                  <th>IGC</th>
+                  <th>전류</th>
+                  <th>전압</th>
+                  <th>전력량</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="4">심상</td>
+                  <td>R</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>S</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>T</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table class="mt-4 table table-sm table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th>구분</th>
+                  <th>분기명</th>
+                  <th>IGO</th>
+                  <th>IGR</th>
+                  <th>IGC</th>
+                  <th>전류</th>
+                  <th>전압</th>
+                  <th>전력량</th>
+                  <th>수신감도</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="4">분기</td>
+                  <td>1</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div><!-- /#mim_snsr_main_info -->
+        </div><!-- /.col-7 -->
       </div><!-- /.row -->
-    </div><!-- /.center-store-cont -->
+    </div><!-- /#mim_panel_div -->
   </div><!-- /.center -->
   <div class="right col-md-2 mt-md-n7 col-12 mt-0">
     <th:block th:replace="mng/incheon/layout/mi_right"></th:block>

@@ -293,7 +293,7 @@ public class SYSSimulController {
             parameters.append("\"kakaoOptions\":{");
             parameters.append("\"pfId\":\"KA01PF211129011921158mUHJ1CKs80J\",");
             parameters.append("\"templateId\":\"KA01TP211129013758537es9X3C3kylP\",");
-            parameters.append("\"disableSms\":\"true\"");
+            parameters.append("\"disableSms\":\"false\"");
             parameters.append("}}}");
 
             URL url = new URL(targetUrl);
