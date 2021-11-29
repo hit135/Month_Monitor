@@ -30,10 +30,9 @@
                  , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
                  , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
              FROM
-                 V_ALL_SENSOR_LOG_MAP
+                 V_TODAY_SENSOR_LOG_MAP
              WHERE
                  GRPGUCODE LIKE '042|30%'
-                 AND REGDATE > CURDATE()
             ) B
             ,
             (SELECT COUNT(*) AS SNSRCNT FROM V_ALL_SENSOR_MAP WHERE GRPGUCODE LIKE '042|30%') I
@@ -62,10 +61,9 @@
                  , COUNT(DISTINCT CASE WHEN ISDANGER = 0 AND ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
                  , COUNT(DISTINCT CASE WHEN ISALM = 0 AND DISCONN = 1 THEN SNSRSEQ END) AS DISCONNCNT
              FROM
-                 V_ALL_SENSOR_LOG_MAP
+                 V_TODAY_SENSOR_LOG_MAP
              WHERE
                  GRPGUCODE LIKE '042|30%'
-                 AND REGDATE > CURDATE()
             ) L
     </select>
 
@@ -94,10 +92,9 @@
                                , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
                                , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
                            FROM
-                               V_ALL_SENSOR_LOG_MAP
+                               V_TODAY_SENSOR_LOG_MAP
                            WHERE
                                GRPGUCODE LIKE '042|30%'
-                               AND REGDATE > CURDATE()
                            GROUP BY
                                GUCODE) L
                     ON I.GUCODE = L.GUCODE
@@ -156,10 +153,9 @@
                          SELECT
                              GUCODE, COALESCE(SUM(ISALM), 0) AS EVENTCNT
                          FROM
-                             V_ALL_SENSOR_LOG_MAP
+                             V_TODAY_SENSOR_LOG_MAP
                          WHERE
                              GRPGUCODE LIKE '042|30%'
-                             AND REGDATE > CURDATE()
                          GROUP BY
                              GUCODE) SS
                      GROUP BY SS.GUCODE
@@ -191,11 +187,10 @@
                  , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
                  , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
              FROM
-                 V_ALL_SENSOR_LOG_MAP
+                 V_TODAY_SENSOR_LOG_MAP
              WHERE
                  GRPGUCODE LIKE '042|30%'
                  AND AREACODE != 'AREA_000001'
-                 AND REGDATE > CURDATE()
              GROUP BY
                  AREACODE
             ) R1
@@ -233,10 +228,9 @@
                  , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
                  , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
              FROM
-                  V_ALL_SENSOR_LOG_MAP
+                  V_TODAY_SENSOR_LOG_MAP
              WHERE
                   GRPGUCODE LIKE '042|30%'
-                  AND REGDATE > CURDATE()
                   AND AREACODE != 'AREA_000001'
              GROUP BY
                   GUCODE

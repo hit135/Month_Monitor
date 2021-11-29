@@ -3,284 +3,107 @@
 
 <mapper namespace="kr.fscom.firsens.mng.incheon.repository.MIMainRepo">
 
+    <!-- 종합 현황 (전체, 경고, 주의, 끊김) -->
     <select id="LIST_MIM_SENSOR_CNT" parameterType="map" resultType="map">
-        <!--
-        (SELECT
-             'TODAY' TERM
-             , B.TYPE
-             , B.ORDERNUM
-             , (CASE WHEN B.TYPE = 'TOTAL' THEN A.TOTAL WHEN B.TYPE = 'DISCON' THEN A.DISCON END) AS CNT
-         FROM
-             (SELECT
-                  COUNT(DISTINCT I.SNSRID) AS TOTAL
-                  , COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRID END) AS DISCON
-              FROM
-                  F_SENSOR_INFO I
-                      LEFT JOIN F_STORE S
-                          ON I.STRCODE = S.STRCODE
-              WHERE
-                  I.DELYN = 'N'
-                  AND CONCAT(S.GRPCODE, S.USEYN, S.DELYN) = '032YN'
-             ) A
-                 CROSS JOIN (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM UNION ALL SELECT 'DISCON', 2) B
-         GROUP BY
-             B.TYPE)
-
-        UNION
-
-        (SELECT
-             B.TERM
-             , B.TYPE
-             , B.ORDERNUM
-             , (CASE
-                    WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYWARN' THEN A.TODAYWARN
-                    WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTWARN' THEN A.COUNTWARN
-                    WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYDANGER' THEN A.TODAYDANGER
-                    WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTDANGER' THEN A.COUNTDANGER
-                END) AS CNT
-         FROM
-             (SELECT
-                  COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '1') > 0 THEN L.SNSRID END) AS TODAYWARN
-                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '1') > 0 THEN L.LSEQ END) AS COUNTWARN
-                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '2') > 0 THEN L.SNSRID END) AS TODAYDANGER
-                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '2') > 0 THEN L.LSEQ END) AS COUNTDANGER
-              FROM
-                  (SELECT
-                       SNSRID, LSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALM
-                   FROM
-                       F_SENSOR_LOG
-                   WHERE
-                       REGDATE > CURDATE()
-                       AND OCALM + IGOALM + IGRALM > 0
-                  ) L
-                      LEFT JOIN F_SENSOR_INFO I ON L.SNSRID = I.SNSRID
-                      LEFT JOIN F_STORE S ON I.STRCODE = S.STRCODE
-              WHERE
-                  I.DELYN = 'N'
-                  AND CONCAT(S.GRPCODE, S.USEYN, S.DELYN) = '032YN'
-             ) A
-                 CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
-                             UNION ALL SELECT 'COUNT', 'WARN', 4
-                             UNION ALL SELECT 'TODAY', 'DANGER', 5
-                             UNION ALL SELECT 'COUNT', 'DANGER', 6) B
-         GROUP BY
-             B.TERM, B.TYPE)
-        ORDER BY
-            ORDERNUM
-        -->
         <![CDATA[
-        (SELECT
-             'TODAY' TERM
+        SELECT
+            'TODAY' TERM
              , B.TYPE
              , B.ORDERNUM
-             , (CASE WHEN B.TYPE = 'TOTAL' THEN A.TOTAL WHEN B.TYPE = 'DISCON' THEN A.DISCON END) AS CNT
-         FROM
-             (SELECT
-                  COUNT(DISTINCT I.SNSRID) AS TOTAL
-                  , COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRID END) AS DISCON
-              FROM
-                  (SELECT STRCODE, SNSRID, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') I
-                      INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') S
-                          ON I.STRCODE = S.STRCODE
-             ) A
-                 CROSS JOIN (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM UNION ALL SELECT 'DISCON', 2) B
-         GROUP BY
-             B.TYPE)
+             , (CASE
+                    WHEN B.TYPE = 'TOTAL' THEN A.TOTAL
+                    WHEN B.TYPE = 'DISCON' THEN A.DISCON
+            END) AS CNT
+        FROM
+            (SELECT
+                 SUM(SNSRCNT) AS TOTAL, SUM(SNSRDISNCNT) AS DISCON
+             FROM
+                 V_ALL_AREA_MAP
+             WHERE
+                 GRPGUCODE = '032|28'
+            ) A
+                CROSS JOIN (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM
+                            UNION ALL SELECT 'DISCON', 2) B
+        GROUP BY
+            B.TYPE
 
         UNION
 
-        (SELECT
-             B.TERM
+        SELECT
+            B.TERM
              , B.TYPE
              , B.ORDERNUM
              , (CASE
                     WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYWARN' THEN A.TODAYWARN
-                    WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTWARN' THEN A.COUNTWARN
                     WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYDANGER' THEN A.TODAYDANGER
+                    WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTWARN' THEN A.COUNTWARN
                     WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTDANGER' THEN A.COUNTDANGER
-                END) AS CNT
-         FROM
-             (SELECT
-                  COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '1') > 0 THEN L.SNSRID END) AS TODAYWARN
-                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '1') > 0 THEN L.LSEQ END) AS COUNTWARN
-                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '2') > 0 THEN L.SNSRID END) AS TODAYDANGER
-                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALM, '2') > 0 THEN L.LSEQ END) AS COUNTDANGER
-              FROM
-                  (SELECT
-                       SNSRID, LSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALM
-                   FROM
-                       F_SENSOR_LOG
-                   WHERE
-                       REGDATE > CURDATE()
-                       AND OCALM + IGOALM + IGRALM > 0
-                  ) L
-                      INNER JOIN (SELECT STRCODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') I
-                          ON L.SNSRID = I.SNSRID
-                      INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') S
-                          ON I.STRCODE = S.STRCODE
-             ) A
-                 CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
-                             UNION ALL SELECT 'COUNT', 'WARN', 4
-                             UNION ALL SELECT 'TODAY', 'DANGER', 5
-                             UNION ALL SELECT 'COUNT', 'DANGER', 6) B
-         GROUP BY
-             B.TERM, B.TYPE)
+            END) AS CNT
+        FROM
+            (SELECT
+                 COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS TODAYWARN
+                 , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS TODAYDANGER
+                 , COALESCE(SUM(ISWARN), 0) AS COUNTWARN
+                 , COALESCE(SUM(ISDANGER), 0) AS COUNTDANGER
+             FROM
+                 V_TODAY_SENSOR_LOG_MAP
+             WHERE
+                 GRPGUCODE = '032|28'
+            ) A
+                CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
+                            UNION ALL SELECT 'COUNT', 'WARN', 4
+                            UNION ALL SELECT 'TODAY', 'DANGER', 5
+                            UNION ALL SELECT 'COUNT', 'DANGER', 6) B
+        GROUP BY
+            B.TERM, B.TYPE
         ORDER BY
             ORDERNUM
         ]]>
     </select>
 
-    <sql id="LIST_MIM_AREA_CMM">
-        <!--
-        (SELECT
-             A.GUCODE
-             , A.GUNAME
-             , B.AREACODE
-             , B.AREANAME
-             , COUNT(DISTINCT D.SNSRID) AS SENSOR
-             , COUNT(DISTINCT D.STRCODE) AS STORE
-             , COUNT(DISTINCT CASE WHEN D.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN D.SNSRID END) AS DISCON
-             , COUNT(DISTINCT CASE WHEN INSTR(E.DANGERALM, '2') > 0 THEN D.SNSRID END) AS DANGER
-             , COUNT(DISTINCT CASE WHEN INSTR(E.WARNALM, '1') > 0 THEN D.SNSRID END) AS WARN
-         FROM
-             F_GUCODE A
-                 LEFT JOIN F_LEVEL_AREA B
-                     ON A.GUCODE = B.GUCODE
-                 LEFT JOIN F_STORE C
-                     ON B.AREACODE = C.AREACODE
-                 LEFT JOIN F_SENSOR_INFO D
-                     ON C.STRCODE = D.STRCODE
-                 LEFT JOIN (SELECT
-                                SNSRID
-                                , CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)) AS DANGERALM
-                                , CONCAT(MAX(REPLACE(OCALM, 2, 0)), MAX(REPLACE(IGOALM, 2, 0)), MAX(REPLACE(IGRALM, 2, 0))) AS WARNALM
-                            FROM
-                                F_SENSOR_LOG
-                            WHERE
-                                REGDATE > CURDATE()
-                                AND OCALM + IGOALM + IGRALM > 0
-                            GROUP BY
-                                SNSRID) E
-                     ON D.SNSRID = E.SNSRID
-         WHERE
-             CONCAT(A.USEYN, A.GUCODE) = 'Y28'
-             AND CONCAT(B.AREALEVEL, B.DELYN, B.GUCODE) = '1N28'
-             AND CONCAT(C.GRPCODE, C.USEYN, C.DELYN) = '032YN'
-             AND D.DELYN = 'N'
-         GROUP BY
-             ${alias}) S
-        -->
-        <![CDATA[
-        (SELECT
-             C.GUCODE
-             , C.GUNAME
-             , B.AREACODE
-             , B.AREANAME
-             , COUNT(DISTINCT A.SNSRID) AS SENSOR
-             , COUNT(DISTINCT A.STRCODE) AS STORE
-             , COUNT(DISTINCT CASE WHEN A.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN A.SNSRID END) AS DISCON
-             , COUNT(DISTINCT CASE WHEN INSTR(D.DANGERALM, '2') > 0 THEN D.SNSRID END) AS DANGER
-             , COUNT(DISTINCT CASE WHEN INSTR(D.WARNALM, '1') > 0 THEN D.SNSRID END) AS WARN
-         FROM
-             (SELECT AREACODE, STRCODE, SNSRID, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') A
-                 LEFT JOIN (SELECT GUCODE, AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) = '1N30110') B
-                     ON A.AREACODE = B.AREACODE
-                 LEFT JOIN (SELECT GUCODE, GUNAME FROM F_GUCODE WHERE CONCAT(USEYN, GUCODE) = 'Y30110') C
-                     ON B.GUCODE = C.GUCODE
-                 LEFT JOIN (SELECT
-                                SNSRID
-                                , CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)) AS DANGERALM
-                                , CONCAT(MAX(REPLACE(OCALM, 2, 0)), MAX(REPLACE(IGOALM, 2, 0)), MAX(REPLACE(IGRALM, 2, 0))) AS WARNALM
-                            FROM
-                                F_SENSOR_LOG
-                            WHERE
-                                REGDATE > CURDATE()
-                                AND OCALM + IGOALM + IGRALM > 0
-                            GROUP BY
-                                SNSRID) D
-                     ON A.SNSRID = D.SNSRID
-         GROUP BY
-             ${alias}) S
-        ]]>
-    </sql>
-
+    <!-- 구별, 시장별 센서 현황 (상점, 센서, 경고, 주의, 끊김) -->
     <select id="LIST_MIM_AREA" parameterType="map" resultType="map">
-        <!--
-        (SELECT
-             1 AS LEVEL
-             , S.GUCODE AS CODE
-             , S.GUNAME AS NAME
-             , S.SENSOR
-             , S.STORE
-             , S.DANGER
-             , S.WARN
-             , S.DISCON
-             , NULL AS UPCODE
-             , S.DANGER * 10000 + S.WARN AS ORDERNUM
-         FROM
-             <include refid="LIST_MCM_AREA_CMM">
-                 <property name="alias" value="A.GUCODE" />
-             </include>)
+        SELECT
+            1 AS LEVEL
+            , GUCODE AS CODE
+            , GUNAME AS NAME
+            , SNSRCNT AS SENSOR
+            , STRCNT AS STORE
+            , SUM(DANGERSNSRCNT) AS DANGER
+            , SUM(WARNSNSRCNT) AS WARN
+            , SUM(SNSRDISNCNT) AS DISCON
+            , NULL AS UPCODE
+            , SUM(DANGERCNT) * 10000 + SUM(WARNCNT) AS ORDERNUM
+        FROM
+            V_ALL_AREA_MAP
+        WHERE
+            GRPGUCODE = '032|28'
+        GROUP BY
+            GUCODE
 
         UNION
 
-        (SELECT
-             2 AS LEVEL
-             , S.AREACODE AS CODE
-             , S.AREANAME AS NAME
-             , S.SENSOR
-             , S.STORE
-             , S.DANGER
-             , S.WARN
-             , S.DISCON
-             , S.GUCODE AS UPCODE
-             , 0 - (S.DANGER * 10000 + S.WARN) AS ORDERNUM
-         FROM
-             <include refid="LIST_MCM_AREA_CMM">
-                 <property name="alias" value="B.AREACODE" />
-             </include>)
+        SELECT
+            2 AS LEVEL
+            , AREACODE AS CODE
+            , AREANAME AS NAME
+            , SNSRCNT AS SENSOR
+            , STRCNT AS STORE
+            , DANGERSNSRCNT AS DANGER
+            , WARNSNSRCNT AS WARN
+            , SNSRDISNCNT AS DISCON
+            , GUCODE AS UPCODE
+            , 0 - (DANGERCNT * 10000 + WARNCNT) AS ORDERNUM
+        FROM
+            V_ALL_AREA_MAP
+        WHERE
+            GRPGUCODE = '032|28'
         ORDER BY
             LEVEL, ORDERNUM DESC
-      -->
-        (SELECT
-             1 AS LEVEL
-             , S.GUCODE AS CODE
-             , '인천' AS NAME
-             , S.SENSOR
-             , S.STORE
-             , S.DANGER
-             , S.WARN
-             , S.DISCON
-             , NULL AS UPCODE
-             , S.DANGER * 10000 + S.WARN AS ORDERNUM
-         FROM
-             <include refid="LIST_MIM_AREA_CMM">
-                 <property name="alias" value="C.GUCODE" />
-             </include>)
-
-        UNION
-
-        (SELECT
-             2 AS LEVEL
-             , S.AREACODE AS CODE
-             , '종합비즈니스센터' AS NAME
-             , S.SENSOR
-             , S.STORE
-             , S.DANGER
-             , S.WARN
-             , S.DISCON
-             , S.GUCODE AS UPCODE
-             , 0 - (S.DANGER * 10000 + S.WARN) AS ORDERNUM
-         FROM
-             <include refid="LIST_MIM_AREA_CMM">
-                 <property name="alias" value="B.AREACODE" />
-             </include>)
-         ORDER BY
-             LEVEL, ORDERNUM DESC
     </select>
 
+    <!-- 점검내역 목록 -->
     <select id="LIST_MIM_CHECK_SENSOR" parameterType="map" resultType="map">
-        <!--
         SELECT
             D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
         FROM
@@ -293,173 +116,75 @@
              GROUP BY
                  A.SNSRID
             ) A
-                LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
-                LEFT JOIN F_STORE C ON B.STRCODE = C.STRCODE
-                LEFT JOIN F_LEVEL_AREA D ON C.AREACODE = D.AREACODE
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.SNSRID = B.SNSRID
+                LEFT JOIN F_STORE C
+                    ON B.STRCODE = C.STRCODE
+                LEFT JOIN F_LEVEL_AREA D
+                    ON C.AREACODE = D.AREACODE
         WHERE
             B.DELYN = 'N'
             AND CONCAT(C.GRPCODE, C.USEYN, C.DELYN) = '032YN'
             AND CONCAT(D.AREALEVEL, D.DELYN, D.GUCODE) = '1N28'
         ORDER BY
             A.STATE, A.CNT DESC
-        -->
-        SELECT
-            D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
-        FROM
-            (SELECT
-                 A.SNSRID, 'CHECK' AS STATE, COUNT(*) AS CNT
-             FROM
-                 F_SENSOR_CHECK A
-             WHERE
-                 A.CHECKSTAT = 'ING'
-             GROUP BY
-                 A.SNSRID
-            ) A
-                INNER JOIN (SELECT AREACODE, STRCODE, SNSRID, SNSRNICK FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') B
-                    ON A.SNSRID = B.SNSRID
-                INNER JOIN (SELECT STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') C
-                    ON B.STRCODE = C.STRCODE
-                INNER JOIN (SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) = '1N30110') D
-                    ON B.AREACODE = D.AREACODE
-        ORDER BY
-            A.STATE, A.CNT DESC
     </select>
 
+    <!-- 상태이상 센서 목록 -->
     <select id="LIST_MIM_SENSOR" parameterType="map" resultType="map">
-        <!--
         SELECT
-            S.AREACODE, S.AREANAME, S.STRCODE, S.SNSRID, S.SNSRNICK, S.STATE, S.CNT
+            S.AREACODE, S.AREANAME, S.STRCODE, S.SNSRSEQ, S.SNSRNICK, S.STATE, S.CNT
         FROM
             (SELECT
-                 D.AREACODE
-                 , D.AREANAME
-                 , C.STRCODE
-                 , B.SNSRID
-                 , B.SNSRNICK
-                 , E.STATE
+                 A.AREACODE
+                 , A.AREANAME
+                 , A.STRCODE
+                 , A.SNSRSEQ
+                 , A.SNSRNICK
+                 , B.STATE
                  , (CASE
-                        WHEN E.STATE = 'DANGER' THEN COUNT(CASE WHEN INSTR(A.ALM, '2') > 0 THEN A.LSEQ END)
-                        WHEN E.STATE = 'WARN' THEN COUNT(CASE WHEN INSTR(A.ALM, '1') > 0 THEN A.LSEQ END)
-                        WHEN E.STATE = 'BROKEN' THEN COUNT(CASE WHEN EXISTS (SELECT DSEQ FROM F_SENSOR_DATA WHERE DSEQ = A.DSEQ AND SNSRIGO > 50) THEN A.DSEQ END)
-                    END) AS CNT
+                        WHEN B.STATE = 'DANGER' THEN COALESCE(SUM(A.ISDANGER), 0)
+                        WHEN B.STATE = 'WARN' THEN COALESCE(SUM(A.ISWARN), 0)
+                        WHEN B.STATE = 'BROKEN'
+                            THEN COUNT(CASE WHEN EXISTS (SELECT DSEQ FROM F_SENSOR_DATA WHERE DSEQ = A.DSEQ AND SNSRIGO > 50) THEN A.DSEQ END)
+                   END) AS CNT
              FROM
-                 (SELECT DSEQ, LSEQ, SNSRID, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG WHERE REGDATE > CURDATE()) A
-                     LEFT JOIN F_SENSOR_INFO B
-                         ON A.SNSRID = B.SNSRID
-                     LEFT JOIN F_STORE C
-                         ON B.STRCODE = C.STRCODE
-                     LEFT JOIN F_LEVEL_AREA D
-                         ON C.AREACODE = D.AREACODE
-                     CROSS JOIN (SELECT 'DANGER' AS STATE UNION ALL SELECT 'WARN' UNION ALL SELECT 'BROKEN') E
-             WHERE
-                 B.DELYN = 'N'
-                 AND CONCAT(C.GRPCODE, C.USEYN, C.DELYN) = '032YN'
-                 AND CONCAT(D.AREALEVEL, D.DELYN, D.GUCODE) = '1N28'
+                 (SELECT
+                      AREACODE, AREANAME, STRCODE, SNSRNICK, SNSRSEQ, DSEQ, LSEQ, ISDANGER, ISWARN
+                  FROM
+                      V_TODAY_SENSOR_LOG_MAP
+                  WHERE
+                      GRPGUCODE = '032|28'
+                 ) A
+                     CROSS JOIN (SELECT 'DANGER' AS STATE
+                                 UNION ALL SELECT 'WARN'
+                                 UNION ALL SELECT 'BROKEN') B
              GROUP BY
-                 D.AREACODE, C.STRCODE, B.SNSRID, E.STATE) S
-        WHERE
-            S.CNT > 0
-        ORDER BY
-            S.STATE, S.CNT DESC
-        -->
-        SELECT
-            S.AREACODE, S.AREANAME, S.STRCODE, S.SNSRID, S.SNSRNICK, S.STATE, S.CNT
-        FROM
-            (SELECT
-                 D.AREACODE
-                 , D.AREANAME
-                 , C.STRCODE
-                 , B.SNSRID
-                 , B.SNSRNICK
-                 , E.STATE
-                 , (CASE
-                        WHEN E.STATE = 'DANGER' THEN COUNT(CASE WHEN INSTR(A.ALM, '2') > 0 THEN A.LSEQ END)
-                        WHEN E.STATE = 'WARN' THEN COUNT(CASE WHEN INSTR(A.ALM, '1') > 0 THEN A.LSEQ END)
-                        WHEN E.STATE = 'BROKEN' THEN COUNT(CASE WHEN EXISTS (SELECT DSEQ FROM F_SENSOR_DATA WHERE DSEQ = A.DSEQ AND SNSRIGO > 50) THEN A.DSEQ END)
-                    END) AS CNT
-             FROM
-                 (SELECT DSEQ, LSEQ, SNSRID, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG WHERE REGDATE > CURDATE()) A
-                     INNER JOIN (SELECT AREACODE, STRCODE, SNSRID, SNSRNICK FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') B
-                         ON A.SNSRID = B.SNSRID
-                     INNER JOIN (SELECT AREACODE, STRCODE FROM F_STORE WHERE CONCAT(GRPCODE, USEYN, DELYN) = '042YN') C
-                         ON B.STRCODE = C.STRCODE
-                     INNER JOIN (SELECT GUCODE, AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) = '1N30110') D
-                         ON C.AREACODE = D.AREACODE
-                     CROSS JOIN (SELECT 'DANGER' AS STATE UNION ALL SELECT 'WARN' UNION ALL SELECT 'BROKEN') E
-             GROUP BY
-                 D.AREACODE, C.STRCODE, B.SNSRID, E.STATE) S
+                 A.AREACODE, A.STRCODE, A.SNSRSEQ, B.STATE) S
         WHERE
             S.CNT > 0
         ORDER BY
             S.STATE, S.CNT DESC
     </select>
 
+    <!-- 시장 현황 (전체, 경고, 주의, 끊김) -->
     <select id="LIST_MIM_AREA_SENSOR_CNT" parameterType="map" resultType="map">
-        <!--
         SELECT
-            A.AREACODE, A.AREANAME, B.TOTAL, B.DISCON, B.DANGER, B.WARN
+            AREACODE
+            , AREANAME
+            , STRCNT AS TOTAL
+            , SNSRDISNCNT AS DISCON
+            , AS DANGERCNT AS DANGER
+            , AS WARNCNT AS WARN
         FROM
-            F_LEVEL_AREA A
-                LEFT JOIN (SELECT
-                               C2.AREACODE
-                               , COUNT(DISTINCT C1.SNSRID) AS TOTAL
-                               , COUNT(DISTINCT CASE WHEN C1.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN C1.SNSRID END) AS DISCON
-                               , COUNT(CASE WHEN INSTR(C3.ALM, '2') > 0 THEN C3.LSEQ END) AS DANGER
-                               , COUNT(CASE WHEN INSTR(C3.ALM, '1') > 0 THEN C3.LSEQ END) AS WARN
-                           FROM
-                               F_SENSOR_INFO C1
-                                   LEFT JOIN F_STORE C2
-                                       ON C1.STRCODE = C2.STRCODE
-                                   LEFT JOIN (SELECT
-                                                  SNSRID, LSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALM
-                                              FROM
-                                                  F_SENSOR_LOG
-                                              WHERE
-                                                  REGDATE > CURDATE()
-                                                  AND OCALM + IGOALM + IGRALM > 0) C3
-                                       ON C1.SNSRID = C3.SNSRID
-                           WHERE
-                               C1.DELYN = 'N'
-                               AND CONCAT(C2.GRPCODE, C2.USEYN, C2.DELYN) = '032YN'
-                               AND C2.AREACODE = #{areacode}) B
-                    ON A.AREACODE = B.AREACODE
+            V_ALL_AREA_MAP
         WHERE
-            A.AREACODE = #{areacode}
-        -->
-        <![CDATA[
-        SELECT
-            A.AREACODE, A.AREANAME, B.TOTAL, C.DANGER, C.WARN, B.DISCON
-        FROM
-            (SELECT AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) = '1N30110' AND AREACODE = #{areacode}) A
-                LEFT JOIN (SELECT
-                               AREACODE
-                               , COUNT(DISTINCT SNSRID) AS TOTAL
-                               , COUNT(DISTINCT CASE WHEN DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN SNSRID END) AS DISCON
-                           FROM
-                               F_SENSOR_INFO
-                           WHERE
-                               CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') B
-                    ON A.AREACODE = B.AREACODE
-                LEFT JOIN (SELECT
-                               C1.AREACODE
-                               , COUNT(CASE WHEN INSTR(C2.ALM, '2') > 0 THEN C2.LSEQ END) AS DANGER
-                               , COUNT(CASE WHEN INSTR(C2.ALM, '1') > 0 THEN C2.LSEQ END) AS WARN
-                           FROM
-                               (SELECT AREACODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') C1
-                                   LEFT JOIN (SELECT
-                                                  SNSRID, LSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALM
-                                              FROM
-                                                  F_SENSOR_LOG
-                                              WHERE
-                                                  REGDATE > CURDATE()
-                                                  AND OCALM + IGOALM + IGRALM > 0) C2
-                                       ON C1.SNSRID = C2.SNSRID) C
-                    ON A.AREACODE = C.AREACODE
-        ]]>
+            GRPGUCODE = '032|28'
+            AND AREACODE = #{areacode}
     </select>
 
+    <!-- 시장별 어제/오늘 데이터 추이 -->
     <select id="LIST_MIM_AREA_DATA_CHART" parameterType="map" resultType="map">
-        <!--
         SELECT
             '1' AS TYPE
             , CONCAT(SUBSTR(DATE_FORMAT(A.SNSRRCVTIME, '%H:%i'), 1, 4), '0') AS RCVTIME
@@ -501,49 +226,10 @@
             2
         ORDER BY
             TYPE, RCVTIME
-        -->
-        SELECT
-            '1' AS TYPE
-            , CONCAT(SUBSTR(DATE_FORMAT(A.SNSRRCVTIME, '%H:%i'), 1, 4), '0') AS RCVTIME
-            , COUNT(*) AS CNT
-        FROM
-            (SELECT
-                 SNSRID, SNSRRCVTIME
-             FROM
-                 <choose>
-                      <when test="day == 1">F_SENSOR_DATA_2021</when>
-                      <otherwise>F_SENSOR_DATA</otherwise>
-                 </choose>
-             WHERE
-                 SNSRRCVTIME <![CDATA[<]]> CURDATE() AND SNSRRCVTIME > CURDATE() - INTERVAL 1 DAY
-            ) A
-                INNER JOIN (SELECT AREACODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') B
-                    ON A.SNSRID = B.SNSRID
-                INNER JOIN (SELECT AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) = '1N30110') C
-                    ON B.AREACODE = C.AREACODE
-        GROUP BY
-            2
-
-        UNION
-
-        SELECT
-            '2' AS TYPE
-            , CONCAT(SUBSTR(DATE_FORMAT(A.SNSRRCVTIME, '%H:%i'), 1, 4), '0') AS RCVTUNE
-            , COUNT(*) AS CNT
-        FROM
-            (SELECT SNSRID, SNSRRCVTIME FROM F_SENSOR_DATA WHERE SNSRRCVTIME > CURDATE()) A
-                INNER JOIN (SELECT AREACODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') B
-                    ON A.SNSRID = B.SNSRID
-                INNER JOIN (SELECT AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) = '1N30110') C
-                    ON B.AREACODE = C.AREACODE
-        GROUP BY
-            2
-        ORDER BY
-            TYPE, RCVTIME
     </select>
 
+    <!-- 시장별 어제/오늘 경보 발생 추이 -->
     <select id="LIST_MIM_AREA_LOG_CHART" parameterType="map" resultType="map">
-        <!--
         SELECT
             '1' AS TYPE
             , CONCAT(SUBSTR(DATE_FORMAT(A.REGDATE, '%H:%i'), 1, 4), '0') AS RCVTIME
@@ -593,59 +279,12 @@
             2
         ORDER BY
             TYPE, RCVTIME
-        -->
-        SELECT
-            '1' AS TYPE
-            , CONCAT(SUBSTR(DATE_FORMAT(A.REGDATE, '%H:%i'), 1, 4), '0') AS RCVTIME
-            , COUNT(*) AS CNT
-        FROM
-            (SELECT
-                 SNSRID, REGDATE
-             FROM
-                 <choose>
-                     <when test="day == 1">F_SENSOR_LOG_2021 A</when>
-                     <otherwise>F_SENSOR_LOG A</otherwise>
-                 </choose>
-             WHERE
-                 REGDATE <![CDATA[<]]> CURDATE() AND REGDATE > CURDATE() - INTERVAL 1 DAY
-                 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
-            ) A
-                INNER JOIN (SELECT AREACODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') B
-                    ON A.SNSRID = B.SNSRID
-                INNER JOIN (SELECT AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) = '1N30110') C
-                    ON B.AREACODE = C.AREACODE
-        GROUP BY
-            2
-
-        UNION
-
-        SELECT
-            '2' AS TYPE
-            , CONCAT(SUBSTR(DATE_FORMAT(A.REGDATE, '%H:%i'), 1, 4), '0') AS RCVTUNE
-            , COUNT(*) AS CNT
-        FROM
-            (SELECT
-                 SNSRID, REGDATE
-             FROM
-                 F_SENSOR_LOG
-             WHERE
-                 REGDATE > CURDATE()
-                 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
-            ) A
-                INNER JOIN (SELECT AREACODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, AREACODE, STRCODE) = 'NAREA_000004FS_STR_0000000000316') B
-                    ON A.SNSRID = B.SNSRID
-                INNER JOIN (SELECT AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, DELYN, GUCODE) = '1N30110') C
-                    ON B.AREACODE = C.AREACODE
-        GROUP BY
-            2
-        ORDER BY
-            TYPE, RCVTIME
     </select>
 
     <select id="LIST_MIM_SENSOR_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
-            SUBSTR(I.SNSRID FROM -4) AS SNSRID
+            I.SNSRID AS SNSRID
             , (CASE
                    WHEN L.DANGERCNT > 0 THEN 'DANGER'
                    WHEN L.DANGERCNT = 0 AND L.WARNCNT > 0 THEN 'WARN'
@@ -654,11 +293,15 @@
                END) AS STATE
         FROM
             (SELECT
-                 SNSRID, STRCODE, DATARCVTIME
+                 A.SNSRID, A.STRCODE, A.DATARCVTIME
              FROM
-                 F_SENSOR_INFO
+                 F_SENSOR_INFO A
+                     LEFT JOIN F_STORE S
+                         ON A.STRCODE = S.STRCODE
              WHERE
-                 STRCODE = 'FS_STR_0000000000316'
+                 A.DELYN = 'N'
+                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
+                 AND GRPCODE = '032'
             ) I
                 LEFT JOIN (SELECT
                                SNSRID

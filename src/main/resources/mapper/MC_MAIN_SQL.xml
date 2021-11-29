@@ -18,7 +18,7 @@
             (SELECT
                  SUM(SNSRCNT) AS TOTAL, SUM(SNSRDISNCNT) AS DISCON
              FROM
-                 V_ALL_STORE_MAP
+                 V_ALL_AREA_MAP
              WHERE
                  GRPGUCODE LIKE '042|30%'
             ) A
@@ -46,10 +46,9 @@
                  , COALESCE(SUM(ISWARN), 0) AS COUNTWARN
                  , COALESCE(SUM(ISDANGER), 0) AS COUNTDANGER
              FROM
-                 V_ALL_SENSOR_LOG_MAP
+                 V_TODAY_SENSOR_LOG_MAP
              WHERE
-                 REGDATE > CURDATE()
-                 AND GRPGUCODE LIKE '042|30%'
+                 GRPGUCODE LIKE '042|30%'
             ) A
                 CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
                             UNION ALL SELECT 'COUNT', 'WARN', 4
@@ -153,10 +152,9 @@
                  (SELECT
                       AREACODE, AREANAME, STRCODE, SNSRNICK, SNSRSEQ, DSEQ, LSEQ, ISDANGER, ISWARN
                   FROM
-                      V_ALL_SENSOR_LOG_MAP
+                      V_TODAY_SENSOR_LOG_MAP
                   WHERE
-                      REGDATE > CURDATE()
-                      AND GRPGUCODE LIKE '042|30%'
+                      GRPGUCODE LIKE '042|30%'
                  ) A
                      CROSS JOIN (SELECT 'DANGER' AS STATE
                                  UNION ALL SELECT 'WARN'
@@ -171,39 +169,18 @@
 
     <!-- 시장 현황 (전체, 경고, 주의, 끊김) -->
     <select id="LIST_MCM_AREA_SENSOR_CNT" parameterType="map" resultType="map">
-        <![CDATA[
         SELECT
-            A.AREACODE, A.AREANAME, B.TOTAL, B.DISCON, B.DANGER, B.WARN
+            AREACODE
+            , AREANAME
+            , STRCNT AS TOTAL
+            , SNSRDISNCNT AS DISCON
+            , AS DANGERCNT AS DANGER
+            , AS WARNCNT AS WARN
         FROM
-            F_LEVEL_AREA A
-                LEFT JOIN (SELECT
-                               C2.AREACODE
-                               , COUNT(DISTINCT C1.SNSRSEQ) AS TOTAL
-                               , COUNT(DISTINCT CASE WHEN C1.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN C1.SNSRSEQ END) AS DISCON
-                               , COALESCE(SUM(C3.ISDANGER), 0) AS DANGER
-                               , COALESCE(SUM(C3.ISWARN), 0) AS WARN
-                           FROM
-                               F_SENSOR_INFO C1
-                                   LEFT JOIN F_STORE C2
-                                       ON C1.STRCODE = C2.STRCODE
-                                   LEFT JOIN (SELECT
-                                                  SNSRSEQ, LSEQ, ISDANGER, ISWARN
-                                              FROM
-                                                  V_ALL_SENSOR_LOG_MAP
-                                              WHERE
-                                                  REGDATE > CURDATE()
-                                                  AND ISALM = 1
-                                             ) C3
-                                       ON C1.SNSRSEQ = C3.SNSRSEQ
-                           WHERE
-                               CONCAT(C1.DELYN, C1.STRCODE) LIKE 'NFS_STR_%'
-                               AND CONCAT(C2.GRPCODE, C2.USEYN, C2.DELYN) = '042YN'
-                               AND C2.AREACODE = #{areacode}) B
-                    ON A.AREACODE = B.AREACODE
+            V_ALL_AREA_MAP
         WHERE
-            CONCAT(A.USEYN, A.DELYN, A.GUCODE) LIKE 'YN30%'
-            AND A.AREACODE = #{areacode}
-        ]]>
+            GRPGUCODE LIKE '042|30%'
+            AND AREACODE = #{areacode}
     </select>
 
     <!-- 시장 내 상점 현황 (경고, 주의, 끊김, 센서) -->
@@ -224,10 +201,9 @@
                                    LEFT JOIN (SELECT
                                                   SNSRSEQ, LSEQ, ISDANGER, ISWARN
                                               FROM
-                                                  V_ALL_SENSOR_LOG_MAP
+                                                  V_TODAY_SENSOR_LOG_MAP
                                               WHERE
-                                                  REGDATE > CURDATE()
-                                                  AND ISALM = 1) L
+                                                  ISALM = 1) L
                                        ON I.SNSRSEQ = L.SNSRSEQ
                            WHERE
                                CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
@@ -264,10 +240,9 @@
                 LEFT JOIN (SELECT
                                 SNSRSEQ, LSEQ, ISDANGER, ISWARN
                             FROM
-                                V_ALL_SENSOR_LOG_MAP
+                                V_TODAY_SENSOR_LOG_MAP
                             WHERE
-                                REGDATE > CURDATE()
-                                AND ISALM = 1) D
+                                ISALM = 1) D
                     ON A.SNSRSEQ = D.SNSRSEQ
                 LEFT JOIN (SELECT
                                SNSRID, COUNT(*) AS CHK
@@ -538,10 +513,9 @@
                                     LEFT JOIN (SELECT
                                                    DSEQ, LSEQ, ISDANGER, ISWARN
                                                FROM
-                                                   V_ALL_SENSOR_LOG_MAP
+                                                   V_TODAY_SENSOR_LOG_MAP
                                                WHERE
-                                                   REGDATE > CURDATE()
-                                                   AND ISALM = 1) C2
+                                                   ISALM = 1) C2
                                         ON C1.DSEQ = C2.DSEQ
                             GROUP BY
                                 C1.SNSRID) C
