@@ -4,7 +4,7 @@
 <mapper namespace="kr.fscom.firsens.mng.incheon.repository.MIMainRepo">
 
     <!-- 종합 현황 (전체, 경고, 주의, 끊김) -->
-    <select id="LIST_MIM_SENSOR_CNT" parameterType="map" resultType="map">
+    <select id="LIST_MIM_TODAY_TOTAL" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             'TODAY' TERM
@@ -61,8 +61,8 @@
         ]]>
     </select>
 
-    <!-- 구별, 시장별 센서 현황 (상점, 센서, 경고, 주의, 끊김) -->
-    <select id="LIST_MIM_AREA" parameterType="map" resultType="map">
+    <!-- 구별, 시장별 현황 (상점, 센서, 경고, 주의, 끊김) -->
+    <select id="LIST_MIM_TODAY_GU_AREA" parameterType="map" resultType="map">
         SELECT
             1 AS LEVEL
             , GUCODE AS CODE
@@ -103,7 +103,7 @@
     </select>
 
     <!-- 점검내역 목록 -->
-    <select id="LIST_MIM_CHECK_SENSOR" parameterType="map" resultType="map">
+    <select id="LIST_MIM_TODAY_CHK_SNSR" parameterType="map" resultType="map">
         SELECT
             D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
         FROM
@@ -131,7 +131,7 @@
     </select>
 
     <!-- 상태이상 센서 목록 -->
-    <select id="LIST_MIM_SENSOR" parameterType="map" resultType="map">
+    <select id="LIST_MIM_TODAY_ABNOMAL_SNSR" parameterType="map" resultType="map">
         SELECT
             S.AREACODE, S.AREANAME, S.STRCODE, S.SNSRSEQ, S.SNSRNICK, S.STATE, S.CNT
         FROM
@@ -168,7 +168,8 @@
     </select>
 
     <!-- 시장 현황 (전체, 경고, 주의, 끊김) -->
-    <select id="LIST_MIM_AREA_SENSOR_CNT" parameterType="map" resultType="map">
+    <!--
+    <select id="LIST_MIM_TODAY_AREA" parameterType="map" resultType="map">
         SELECT
             AREACODE
             , AREANAME
@@ -182,6 +183,7 @@
             GRPGUCODE = '032|28'
             AND AREACODE = #{areacode}
     </select>
+    -->
 
     <!-- 시장별 어제/오늘 데이터 추이 -->
     <select id="LIST_MIM_AREA_DATA_CHART" parameterType="map" resultType="map">
@@ -281,7 +283,8 @@
             TYPE, RCVTIME
     </select>
 
-    <select id="LIST_MIM_SENSOR_STATE" parameterType="map" resultType="map">
+    <!-- 분전반 센서 상태 현황 -->
+    <select id="LIST_MIM_CURR_SNSR_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             I.SNSRID AS SNSRID
@@ -313,8 +316,159 @@
                                REGDATE > CURDATE()
                            GROUP BY
                                SNSRID) L
-                    ON I.SNSRID = L.SNSRID;
+                    ON I.SNSRID = L.SNSRID
         ]]>
+    </select>
+
+    <select id="LIST_MIM_CURR_SNSR_RST_DATA" parameterType="map" resultType="map">
+        SELECT
+            'R' AS TYPE
+            , ROUND(SUM(A.SNSRIGO), 2) AS SNSRIGO
+            , ROUND(SUM(A.SNSRIGR), 2) AS SNSRIGR
+            , ROUND(SUM(A.SNSRIGC), 2) AS SNSRIGC
+            , ROUND(AVG(A.SNSRAMPERE), 2) AS SNSRAMPERE
+            , ROUND(AVG(A.SNSRVOLT), 2) AS SNSRVOLT
+            , ROUND(SUM(A.SNSRKWH), 1) AS SNSRKWH
+        FROM
+            (SELECT
+                 D.SNSRIGO, D.SNSRIGR, D.SNSRIGC, D.SNSRAMPERE, D.SNSRVOLT, D.SNSRKWH, D.SNSRRSSI, I.RSTTYPE
+             FROM
+                 F_SENSOR_DATA D
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON D.SNSRID = I.SNSRID
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+             WHERE
+                 D.ISSIMUL = 0
+                 AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
+                 AND I.DELYN = 'N'
+                 AND I.RSTTYPE = 'R'
+                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
+                 AND S.GRPCODE = '032'
+              GROUP BY
+                  I.SNSRSEQ
+              ORDER BY
+                  I.SNSRID) A
+
+        UNION ALL
+
+        SELECT
+            'S' AS TYPE
+            , ROUND(SUM(A.SNSRIGO), 2) AS SNSRIGO
+            , ROUND(SUM(A.SNSRIGR), 2) AS SNSRIGR
+            , ROUND(SUM(A.SNSRIGC), 2) AS SNSRIGC
+            , ROUND(AVG(A.SNSRAMPERE), 2) AS SNSRAMPERE
+            , ROUND(AVG(A.SNSRVOLT), 2) AS SNSRVOLT
+            , ROUND(SUM(A.SNSRKWH), 1) AS SNSRKWH
+        FROM
+            (SELECT
+                 D.SNSRIGO, D.SNSRIGR, D.SNSRIGC, D.SNSRAMPERE, D.SNSRVOLT, D.SNSRKWH, D.SNSRRSSI, I.RSTTYPE
+             FROM
+                 F_SENSOR_DATA D
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON D.SNSRID = I.SNSRID
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+             WHERE
+                 D.ISSIMUL = 0
+                 AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
+                 AND I.DELYN = 'N'
+                 AND I.RSTTYPE = 'S'
+                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
+                 AND S.GRPCODE = '032'
+             GROUP BY
+                 I.SNSRSEQ
+             ORDER BY
+                 I.SNSRID) A
+
+        UNION ALL
+
+        SELECT
+            'T' AS TYPE
+            , ROUND(SUM(A.SNSRIGO), 2) AS SNSRIGO
+            , ROUND(SUM(A.SNSRIGR), 2) AS SNSRIGR
+            , ROUND(SUM(A.SNSRIGC), 2) AS SNSRIGC
+            , ROUND(AVG(A.SNSRAMPERE), 2) AS SNSRAMPERE
+            , ROUND(AVG(A.SNSRVOLT), 2) AS SNSRVOLT
+            , ROUND(SUM(A.SNSRKWH), 1) AS SNSRKWH
+        FROM
+            (SELECT
+                 D.SNSRIGO, D.SNSRIGR, D.SNSRIGC, D.SNSRAMPERE, D.SNSRVOLT, D.SNSRKWH, D.SNSRRSSI, I.RSTTYPE
+             FROM
+                 F_SENSOR_DATA D
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON D.SNSRID = I.SNSRID
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+             WHERE
+                 D.ISSIMUL = 0
+                 AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
+                 AND I.DELYN = 'N'
+                 AND I.RSTTYPE = 'T'
+                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
+                 AND S.GRPCODE = '032'
+             GROUP BY
+                 I.SNSRSEQ
+             ORDER BY
+                 I.SNSRID) A
+
+        UNION ALL
+
+        SELECT
+            'Total' AS TYPE
+            , ROUND(SUM(A.SNSRIGO), 2) AS SNSRIGO
+            , ROUND(SUM(A.SNSRIGR), 2) AS SNSRIGR
+            , ROUND(SUM(A.SNSRIGC), 2) AS SNSRIGC
+            , ROUND(AVG(A.SNSRAMPERE), 2) AS SNSRAMPERE
+            , ROUND(AVG(A.SNSRVOLT), 2) AS SNSRVOLT
+            , ROUND(SUM(A.SNSRKWH), 1) AS SNSRKWH
+        FROM
+            (SELECT
+                 D.SNSRIGO, D.SNSRIGR, D.SNSRIGC, D.SNSRAMPERE, D.SNSRVOLT, D.SNSRKWH, D.SNSRRSSI, I.RSTTYPE
+             FROM
+                 F_SENSOR_DATA D
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON D.SNSRID = I.SNSRID
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+             WHERE
+                 D.ISSIMUL = 0
+                 AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
+                 AND I.DELYN = 'N'
+                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
+                 AND S.GRPCODE = '032'
+             GROUP BY
+                 I.SNSRSEQ
+             ORDER BY
+                 I.SNSRID) A
+    </select>
+
+    <select id="LIST_MIM_CURR_SNSR_DATA" parameterType="map" resultType="map">
+        SELECT
+            I.SNSRNICK
+            , ROUND(D.SNSRIGO, 2) AS SNSRIGO
+            , ROUND(D.SNSRIGR, 2) AS SNSRIGR
+            , ROUND(D.SNSRIGC, 2) AS SNSRIGC
+            , ROUND(D.SNSRAMPERE, 2) AS SNSRAMPERE
+            , ROUND(D.SNSRVOLT, 2) AS SNSRVOLT
+            , ROUND(D.SNSRKWH, 1) AS SNSRKWH
+            , D.SNSRRSSI
+        FROM
+            F_SENSOR_DATA D
+                LEFT JOIN F_SENSOR_INFO I
+                    ON D.SNSRID = I.SNSRID
+                LEFT JOIN F_STORE S
+                    ON I.STRCODE = S.STRCODE
+        WHERE
+            D.ISSIMUL = 0
+            AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
+            AND I.DELYN = 'N'
+            AND CONCAT(S.USEYN, S.DELYN) = 'YN'
+            AND S.GRPCODE = '032'
+        GROUP BY
+            I.SNSRSEQ
+        ORDER BY
+            I.SNSRID
     </select>
 
 </mapper>

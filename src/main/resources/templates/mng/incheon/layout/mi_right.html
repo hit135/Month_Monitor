@@ -37,7 +37,7 @@ function fn_milr_refreshRight() {
 
 function fn_milr_getRightSensorList() {
   $.post(
-    $('#contextRoot').val() + '/mng/incheon/sensorListAjax',
+    $('#contextRoot').val() + '/mng/incheon/todayAbnormalSnsrAjax',
     {},
     function (d) {
       $('.list-sensor').html('');

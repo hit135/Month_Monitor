@@ -72,7 +72,7 @@ $(function () {
 });
 
 function fn_milt_initTop() {
-  fn_milt_getSensorCount();
+  fn_milt_getTodayTotal();
 
   $.template(
     'top-search-result',
@@ -89,12 +89,13 @@ function fn_milt_initTop() {
 }
 
 function fn_milt_refreshTop() {
-  fn_milt_getSensorCount();
+  fn_milt_getTodayTotal();
 }
 
-function fn_milt_getSensorCount() {
+// 오늘 종합 현황
+function fn_milt_getTodayTotal() {
   $.post(
-    $('#contextRoot').val() + '/mng/incheon/sensorCountAjax',
+    $('#contextRoot').val() + '/mng/incheon/todayTotalAjax',
     {},
     function (d) {
       for (let i = 0; i < d.length; i++)

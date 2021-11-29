@@ -55,20 +55,20 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimSensorCount
+     * @Method Name : mimTodayTotal
      * @작성일 : 2021-11-22
      * @작성자 : uhm
      * @변경이력 :
      * @Method 설명 : 종합 현황 조회 (전체, 경고, 주의, 끊김)
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/sensorCountAjax")
+    @RequestMapping(value = "/todayTotalAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mimSensorCount(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mimTodayTotal(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return miMainRepo.LIST_MIM_SENSOR_CNT(prm);
+            return miMainRepo.LIST_MIM_TODAY_TOTAL(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -99,20 +99,20 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimAreaList
+     * @Method Name : mimTodayGuArea
      * @작성일 : 2021-11-22
      * @작성자 : uhm
      * @변경이력 :
-     * @Method 설명 : 구별, 시장별 센서 현황 조회 (상점, 센서, 경고, 주의, 끊김)
+     * @Method 설명 : 구별, 시장별 현황 조회 (상점, 센서, 경고, 주의, 끊김)
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/areaListAjax")
+    @RequestMapping(value = "/todayGuAreaAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mimAreaList(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mimTodayGuArea(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return miMainRepo.LIST_MIM_AREA(prm);
+            return miMainRepo.LIST_MIM_TODAY_GU_AREA(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -121,20 +121,20 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mcmCheckSensorList
+     * @Method Name : mcmTodayChkSnsr
      * @작성일 : 2021-07-15
      * @작성자 : jjm
      * @변경이력 :
      * @Method 설명 : 점검내역 목록 조회
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/checkSensorListAjax")
+    @RequestMapping(value = "/todayChkSnsrAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmCheckSensorList(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmTodayChkSnsr(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return miMainRepo.LIST_MIM_CHECK_SENSOR(prm);
+            return miMainRepo.LIST_MIM_TODAY_CHK_SNSR(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -143,20 +143,20 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimSensorList
+     * @Method Name : mimTodayAbnormalSnsr
      * @작성일 : 2021-11-22
      * @작성자 : uhm
      * @변경이력 :
      * @Method 설명 : 상태이상 센서 목록 조회
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/sensorListAjax")
+    @RequestMapping(value = "/todayAbnormalSnsrAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mimSensorList(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mimTodayAbnormalSnsr(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return miMainRepo.LIST_MIM_SENSOR(prm);
+            return miMainRepo.LIST_MIM_TODAY_ABNOMAL_SNSR(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -165,27 +165,29 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimAreaSensorCount
+     * @Method Name : mimTodayArea
      * @작성일 : 2021-11-22
      * @작성자 : jjm
      * @변경이력 :
      * @Method 설명 : 시장 현황 조회 (전체, 경고, 주의, 끊김)
      * @return List<HashMap<String, Object>>
      */
+    /*
     @RequestMapping(value = "/areaSensorCountAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mimAreaSensorCount(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mimTodayArea(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return miMainRepo.LIST_MIM_AREA_SENSOR_CNT(prm);
+            return miMainRepo.LIST_MIM_TODAY_AREA(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
 
         return null;
     }
+    */
 
     /**
      * @Method Name : mimAreaDataAndLogChart
@@ -215,25 +217,56 @@ public class MIMainController {
     }
 
     /**
-     * @Method Name : mimSensorState
+     * @Method Name : mimCurrSnsrState
      * @작성일 : 2021-11-22
      * @작성자 : uhm
      * @변경이력 :
-     * @Method 설명 : 분전반 현황
+     * @Method 설명 : 분전반 센서 상태 현황
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/sensorStateAjax")
+    @RequestMapping(value = "/currSnsrStateAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mimSensorState(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mimCurrSnsrState(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return miMainRepo.LIST_MIM_SENSOR_STATE(prm);
+            return miMainRepo.LIST_MIM_CURR_SNSR_STATE(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
 
         return null;
     }
+
+    /**
+     * @Method Name : mimCurrSnsrInfo
+     * @작성일 : 2021-11-29
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 분전반 기본 정보 (심상별 및 분기별 기본 정보)
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/currSnsrInfoAjax")
+    @ResponseBody
+    public HashMap<String, Object> mimCurrSnsrInfo(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        boolean result = false;
+
+        try {
+            HashMap<String, Object> prm = new HashMap<>();
+            rtn.put("resultRstList", miMainRepo.LIST_MIM_CURR_SNSR_RST_DATA(prm));
+            rtn.put("resultSnsrList", miMainRepo.LIST_MIM_CURR_SNSR_DATA(prm));
+
+            result = true;
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        } finally {
+            rtn.put("result", result);
+        }
+
+        return rtn;
+    }
+
+
 
 }

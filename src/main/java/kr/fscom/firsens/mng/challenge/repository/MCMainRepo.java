@@ -28,7 +28,7 @@ import java.util.Map;
 public interface MCMainRepo {
 
     List<HashMap<String, Object>> LIST_MCM_SENSOR_CNT(Map<String, Object> param) throws Exception;                   // 종합 현황 (전체, 경고, 주의, 끊김)
-    List<HashMap<String, Object>> LIST_MCM_AREA(Map<String, Object> param) throws Exception;                         // 구별, 시장별 센서 현황 (상점, 센서, 경고, 주의, 끊김)
+    List<HashMap<String, Object>> LIST_MCM_AREA(Map<String, Object> param) throws Exception;                         // 구별, 시장별 현황 (상점, 센서, 경고, 주의, 끊김)
     List<HashMap<String, Object>> LIST_MCM_CHECK_SENSOR(Map<String, Object> param) throws Exception;                 // 점검내역 목록
     List<HashMap<String, Object>> LIST_MCM_SENSOR(Map<String, Object> param) throws Exception;                       // 상태이상 센서 목록
     List<HashMap<String, Object>> LIST_MCM_AREA_SENSOR_CNT(Map<String, Object> param) throws Exception;              // 시장 현황 (전체, 경고, 주의, 끊김)

@@ -44,7 +44,7 @@ function fn_mill_refreshLeft() {
 
 function fn_mill_getCheckSensorList() {
   $.post(
-    $('#contextRoot').val() + '/mng/incheon/checkSensorListAjax',
+    $('#contextRoot').val() + '/mng/incheon/todayChkSnsrAjax',
     {},
     function (d) {
       $('.left-list-sensor').html('');
