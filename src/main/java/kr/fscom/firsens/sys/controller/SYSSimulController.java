@@ -132,7 +132,7 @@ public class SYSSimulController {
                 resultData.put("snsrKwhRank", resultData2.get(0).get("snsrKwhRank"));
                 resultData.put("snsrKwhCompare", (double) resultData2.get(0).get("snsrKwhDailyAvg") - (double) resultData2.get(1).get("snsrKwhDailyAvg"));
 
-                resultData.put("link", "http://1.223.40.19h:30080/mobile/store/report?areaCode=" + resultData.get("areaCode") + "&strCode=" + resultData.get("strCode"));
+                resultData.put("link", "http://1.223.40.19:30080/store/rpt?strCode=" + resultData.get("strCode"));
             }
 
             rtn.put("resultData", resultData);
@@ -156,8 +156,8 @@ public class SYSSimulController {
         HashMap<String, Object> ret = new HashMap<String, Object>();
 
         try {
-            String apiKey = "NCS6IS9H8EY6IZ8Z";
-            String apiSecret = "CERFHKFEXFGJPCJIKUD7XENTPXPKIW8N";
+            String apiKey = "NCSA3RKT687MGISV";
+            String apiSecret = "AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN";
             String salt = UUID.randomUUID().toString().replaceAll("-", "");
             String date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split("\\[")[0];
 
@@ -172,7 +172,7 @@ public class SYSSimulController {
             String userid = "admin";
 
             String toinfo = (String) param.get("toinfo");
-            String frominfo = "01022787929";
+            String frominfo = "01047235254";
 //            String linkMo = (String) param.get("linkMo");
 //            String linkPc = (String) param.get("linkPc");
 
@@ -255,8 +255,8 @@ public class SYSSimulController {
         HashMap<String, Object> ret = new HashMap<String, Object>();
 
         try {
-            String apiKey = "NCS6IS9H8EY6IZ8Z";
-            String apiSecret = "CERFHKFEXFGJPCJIKUD7XENTPXPKIW8N";
+            String apiKey = "NCSA3RKT687MGISV";
+            String apiSecret = "AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN";
             String salt = UUID.randomUUID().toString().replaceAll("-", "");
             String date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split("\\[")[0];
 
@@ -278,11 +278,11 @@ public class SYSSimulController {
             msg_text.append("■ 조치방법:\\n");
             msg_text.append("상점내 전기설비에 대해 전기전문가에게 점검받을 것을 권장합니다.\\n\\n");
             msg_text.append("■ 링크:\\n");
-            msg_text.append("http://1.223.40.19:30080/mobile/store/issue/push");
+            msg_text.append("http://1.223.40.19:30080/store/rpt?strCode=FS_STR_0000000000306");
 
             String userid = "admin";
             String toinfo = (String) param.get("toinfo");
-            String frominfo = "01022787929";
+            String frominfo = "01047235254";
 
             StringBuffer parameters = new StringBuffer();
             parameters.append("{\"message\":{");
@@ -291,8 +291,8 @@ public class SYSSimulController {
             parameters.append("\"text\":\"" + msg_text + "\",");
             parameters.append("\"type\":\"ATA\",");
             parameters.append("\"kakaoOptions\":{");
-            parameters.append("\"pfId\":\"KA01PF210610052835506nEjCd0OOvtA\",");
-            parameters.append("\"templateId\":\"KA01TP210824025929118Wp0XVbiNKfG\",");
+            parameters.append("\"pfId\":\"KA01PF211129011921158mUHJ1CKs80J\",");
+            parameters.append("\"templateId\":\"KA01TP211129013758537es9X3C3kylP\",");
             parameters.append("\"disableSms\":\"true\"");
             parameters.append("}}}");
 

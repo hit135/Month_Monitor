@@ -6,57 +6,57 @@
     <!-- 종합 현황 (전체, 경고, 주의, 끊김) -->
     <select id="LIST_MCM_SENSOR_CNT" parameterType="map" resultType="map">
         <![CDATA[
-        (SELECT
-             'TODAY' TERM
-             , B.TYPE
-             , B.ORDERNUM
-             , (CASE
-                    WHEN B.TYPE = 'TOTAL' THEN A.TOTAL
-                    WHEN B.TYPE = 'DISCON' THEN A.DISCON
-                END) AS CNT
-         FROM
-             (SELECT
-                  SUM(SNSRCNT) AS TOTAL, SUM(SNSRDISNCNT) AS DISCON
-              FROM
-                  V_ALL_STORE_MAP
-              WHERE
-                  GRPGUCODE LIKE '042|30%'
-             ) A
-                 CROSS JOIN (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM
-                             UNION ALL SELECT 'DISCON', 2) B
-         GROUP BY
-             B.TYPE)
+        SELECT
+            'TODAY' TERM
+            , B.TYPE
+            , B.ORDERNUM
+            , (CASE
+                   WHEN B.TYPE = 'TOTAL' THEN A.TOTAL
+                   WHEN B.TYPE = 'DISCON' THEN A.DISCON
+               END) AS CNT
+        FROM
+            (SELECT
+                 SUM(SNSRCNT) AS TOTAL, SUM(SNSRDISNCNT) AS DISCON
+             FROM
+                 V_ALL_STORE_MAP
+             WHERE
+                 GRPGUCODE LIKE '042|30%'
+            ) A
+                CROSS JOIN (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM
+                            UNION ALL SELECT 'DISCON', 2) B
+        GROUP BY
+            B.TYPE
 
         UNION
 
-        (SELECT
-             B.TERM
-             , B.TYPE
-             , B.ORDERNUM
-             , (CASE
-                    WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYWARN' THEN A.TODAYWARN
-                    WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYDANGER' THEN A.TODAYDANGER
-                    WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTWARN' THEN A.COUNTWARN
-                    WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTDANGER' THEN A.COUNTDANGER
-                END) AS CNT
-         FROM
-             (SELECT
-                  COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS TODAYWARN
-                  , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS TODAYDANGER
-                  , COALESCE(SUM(ISWARN), 0) AS COUNTWARN
-                  , COALESCE(SUM(ISDANGER), 0) AS COUNTDANGER
-              FROM
-                  V_ALL_SENSOR_LOG_MAP
-              WHERE
-                  REGDATE > CURDATE()
-                  AND GRPGUCODE LIKE '042|30%'
-             ) A
-                 CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
-                             UNION ALL SELECT 'COUNT', 'WARN', 4
-                             UNION ALL SELECT 'TODAY', 'DANGER', 5
-                             UNION ALL SELECT 'COUNT', 'DANGER', 6) B
-         GROUP BY
-             B.TERM, B.TYPE)
+        SELECT
+            B.TERM
+            , B.TYPE
+            , B.ORDERNUM
+            , (CASE
+                   WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYWARN' THEN A.TODAYWARN
+                   WHEN CONCAT(B.TERM, B.TYPE) = 'TODAYDANGER' THEN A.TODAYDANGER
+                   WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTWARN' THEN A.COUNTWARN
+                   WHEN CONCAT(B.TERM, B.TYPE) = 'COUNTDANGER' THEN A.COUNTDANGER
+               END) AS CNT
+        FROM
+            (SELECT
+                 COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS TODAYWARN
+                 , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS TODAYDANGER
+                 , COALESCE(SUM(ISWARN), 0) AS COUNTWARN
+                 , COALESCE(SUM(ISDANGER), 0) AS COUNTDANGER
+             FROM
+                 V_ALL_SENSOR_LOG_MAP
+             WHERE
+                 REGDATE > CURDATE()
+                 AND GRPGUCODE LIKE '042|30%'
+            ) A
+                CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
+                            UNION ALL SELECT 'COUNT', 'WARN', 4
+                            UNION ALL SELECT 'TODAY', 'DANGER', 5
+                            UNION ALL SELECT 'COUNT', 'DANGER', 6) B
+        GROUP BY
+            B.TERM, B.TYPE
         ORDER BY
             ORDERNUM
         ]]>
