@@ -13,7 +13,7 @@ public interface MIMainRepo {
 
     List<HashMap<String, Object>> LIST_MIM_TODAY_TOTAL(Map<String, Object> param) throws Exception;                  // 종합 현황 (전체, 경고, 주의, 끊김)
     List<HashMap<String, Object>> LIST_MIM_TODAY_GU_AREA(Map<String, Object> param) throws Exception;                // 구별, 시장별 현황 (상점, 센서, 경고, 주의, 끊김)
-    List<HashMap<String, Object>> LIST_MIM_TODAY_CHK_SNSR(Map<String, Object> param) throws Exception;               // 점검내역 목록
+    // List<HashMap<String, Object>> LIST_MIM_TODAY_CHK_SNSR(Map<String, Object> param) throws Exception;               // 점검내역 목록
     List<HashMap<String, Object>> LIST_MIM_TODAY_ABNOMAL_SNSR(Map<String, Object> param) throws Exception;           // 상태이상 센서 목록
 
     // List<HashMap<String, Object>> LIST_MIM_TODAY_AREA(Map<String, Object> param) throws Exception;                // 시장 현황 (전체, 경고, 주의, 끊김)

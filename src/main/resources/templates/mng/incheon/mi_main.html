@@ -16,9 +16,15 @@
 
 #mim_panel_snsr_legend { font-size: 18px; }
 .mim_panel_snsr_legend_rect { padding: 12px; border: 2px solid #2F528F; }
-#mim_panel_snsr_state_tbl { font-size: 15px; border: 2px solid #2F528F; }
-#mim_panel_snsr_state_tbl td { border: none; display: table-cell; text-align: center; vertical-align: middle; height: 100%; padding: 0.25rem; }
-#mim_panel_snsr_state_tbl div { padding: 1.17rem 0; }
+
+#mim_panel_snsr_state_div {
+  margin-top: 1rem; width: 625px; height: 425px; border: 2px solid #2F528F;
+  background-image: url('/fs/img/incheon/incheon_panel.png'); background-repeat: no-repeat; background-size: auto 100%; background-position: center;
+}
+.mim_panel_div {
+  width: 180px; height: 40px; border: 2px solid #2F528F; font-size: 15px;
+  padding: 0 0.25rem; position: relative; display: flex; justify-content: space-between; align-items: center;
+}
 
 .mim_snsr_info_title { font-weight: 800; font-size: 20px; }
 #mim_rst_tbl th, #mim_rst_tbl td, #mim_snsr_tbl th, #mim_snsr_tbl td { font-size: 13px; padding: 0.15rem; }
@@ -44,8 +50,8 @@
 
     <div id="mim_panel_div">
       <div id="mim_panel_title">분전반 현황</div>
-      <div class="row ml-0 mr-0">
-        <div class="col-5" id="mim_panel_left_div">
+      <div class="form-inline">
+        <div id="mim_panel_left_div">
           <div class="form-inline" id="mim_panel_snsr_legend">
             <span class="mim_panel_snsr_legend_rect" style="background-color: #00B050;"></span>
             <span class="ml-2">정상</span>
@@ -53,21 +59,28 @@
             <span class="ml-2">주의</span>
             <span class="ml-3 mim_panel_snsr_legend_rect" style="background-color: #FF2F44;"></span>
             <span class="ml-2">경고</span>
-            <span class="ml-3 mim_panel_snsr_legend_rect" style="background-color: #A6A6A6;"></span>
+            <span class="ml-3 mim_panel_snsr_legend_rect" style="background-color: #6B6B6B;"></span>
             <span class="ml-2">끊김</span>
           </div>
 
-          <table class="mt-3 table" id="mim_panel_snsr_state_tbl">
-            <colgroup>
-              <col style="width: 33.3%" />
-              <col style="width: 33.3%" />
-              <col style="width: 33.3%" />
-            </colgroup>
-            <tbody>
-            </tbody>
-          </table>
+          <div id="mim_panel_snsr_state_div">
+            <div class="mim_panel_div" id="min_panel_00" style="top: 122px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_01" style="top: 82px; left: 435px;"></div>
+            <div class="mim_panel_div" id="min_panel_02" style="top: 85px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_03" style="top: 45px; left: 435px;"></div>
+            <div class="mim_panel_div" id="min_panel_04" style="top: 48px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_05" style="top: 8px; left: 435px;"></div>
+            <div class="mim_panel_div" id="min_panel_06" style="top: 10px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_07" style="top: -30px; left: 435px;"></div>
+            <div class="mim_panel_div" id="min_panel_08" style="top: -29px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_09" style="top: -69px; left: 435px;"></div>
+            <div class="mim_panel_div" id="min_panel_10" style="top: -68px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_11" style="top: -108px; left: 435px;"></div>
+            <div class="mim_panel_div" id="min_panel_12" style="top: -107px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_13" style="top: -147px; left: 435px;"></div>
+          </div>
         </div><!-- /#mim_panel_left_div -->
-        <div class="col-7" id="mim_panel_right_div"></div>
+        <div id="mim_panel_right_div"></div>
       </div><!-- /.row -->
     </div><!-- /#mim_panel_div -->
   </div><!-- /.center -->
@@ -295,66 +308,43 @@ function fn_mim_setChart(title, target, data, colors) {
 }
 
 function fn_mim_getCurrSnsrState() {
-  $("#mim_panel_snsr_state_tbl > tbody").empty();
-
   $.post(
     $('#contextRoot').val() + '/mng/incheon/currSnsrStateAjax',
     {},
     function (d) {
       if (d.length) {
-        let html = '';
-        let trLength = Math.ceil(d.length / 2);
+       for (let i = 0; i < d.length; i++) {
+         let id = '';
 
-        for (let i = 0 ; i < trLength; i++) {
-          html += '<tr>';
+         if (d[i].SNSRID == '1718') id = '#min_panel_00';
+         else if (d[i].SNSRID == '1719') id = '#min_panel_01';
+         else if (d[i].SNSRID == '4304') id = '#min_panel_02';
+         else if (d[i].SNSRID == '3601') id = '#min_panel_05';
+         else if (d[i].SNSRID == '4305') id = '#min_panel_06';
+         else if (d[i].SNSRID == '3602') id = '#min_panel_07';
+         else if (d[i].SNSRID == '4303') id = '#min_panel_08';
+         else if (d[i].SNSRID == '3603') id = '#min_panel_09';
+         else if (d[i].SNSRID == '4302') id = '#min_panel_10';
+         else if (d[i].SNSRID == '3604') id = '#min_panel_11';
+         else if (d[i].SNSRID == '4301') id = '#min_panel_12';
+         else if (d[i].SNSRID == '3605') id = '#min_panel_13';
 
-          let lIdx = 2 * i;
-          let leftDivStyle = '';
-          switch (d[lIdx].STATE) {
-            case 'DANGER': leftDivStyle = 'background-color: #FF2F44; color: #fff; border: 2px solid #2F528F;'; break;
-            case 'WARN': leftDivStyle = 'background-color: #FFBF87; color: #000; border: 2px solid #2F528F;'; break;
-            case 'DISCONN': leftDivStyle = 'background-color: #a6a6a6; color: #000; border: 2px solid #2F528F;'; break;
-            case 'NORMAL': leftDivStyle = 'background-color: #00B050; color: #fff; border: 2px solid #2F528F;'; break;
-          }
+         $(id).html('<span>' + d[i].SNSRNICK + '</span><span>' + d[i].SNSRID + '</span>');
 
-          html += '<td>'
-               +    '<div class="d-flex justify-content-between pl-1 pr-1" style="' + leftDivStyle + '">'
-               +      '<span>' + d[lIdx].SNSRNICK + '</span>'
-               +      '<span>' + d[lIdx].SNSRID + '</span>'
-               +    '</div>'
-               +  '</td>';
-          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         let cssStyle = {};
+         if (d[i].STATE == 'DANGER') cssStyle = { 'backgroundColor': '#FF2F44', 'color': '#fff' };
+         else if (d[i].STATE == 'WARN') cssStyle = { 'backgroundColor': '#FFBF87', 'color': '#000' };
+         else if (d[i].STATE == 'DISCONN') cssStyle = { 'backgroundColor': '#6B6B6B', 'color': '#fff'};
+         else if (d[i].STATE == 'NORMAL') cssStyle = { 'backgroundColor': '#00B050', 'color': '#fff' };
 
-          if (i == 0)
-            html += '<td rowspan="' + trLength + '">분전반</td>';
-          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-          let rIdx = 2 * i + 1;
-          if (d[rIdx] != null) {
-            let rightDivStyle = '';
-            switch (d[rIdx].STATE) {
-              case 'DANGER': rightDivStyle = 'background-color: #FF2F44; color: #fff; border: 2px solid #2F528F;'; break;
-              case 'WARN': rightDivStyle = 'background-color: #FFBF87; color: #000; border: 2px solid #2F528F;'; break;
-              case 'DISCONN': rightDivStyle = 'background-color: #a6a6a6; color: #000; border: 2px solid #2F528F;'; break;
-              case 'NORMAL': rightDivStyle = 'background-color: #00B050; color: #fff; border: 2px solid #2F528F;'; break;
-            }
-
-            html += '<td>'
-                 +    '<div class="d-flex justify-content-between pl-1 pr-1" style="' + rightDivStyle + '">'
-                 +      '<span>' + d[rIdx].SNSRNICK + '</span>'
-                 +      '<span>' + d[rIdx].SNSRID + '</span>'
-                 +    '</div>'
-                 +  '</td>';
-          } else {
-            html += '<td style="background-color: #fff;"></td>';
-          }
-
-          html += '</tr>';
-        }
-
-        $("#mim_panel_snsr_state_tbl > tbody").html(html);
+         $(id).css(cssStyle);
+       }
     }}
   );
+
+  $("#min_panel_03").html('<span>L-2 (OFF)</span>');
+  $("#min_panel_04").html('<span>L-3 (OFF)</span>');
+  $("#min_panel_03, #min_panel_04").css({ 'backgroundColor': '#6B6B6B', 'color': '#fff' });
 }
 
 function fn_mim_getCurrSnsrInfo() {
@@ -368,7 +358,7 @@ function fn_mim_getCurrSnsrInfo() {
     {},
     function (resu) {
       if (resu) {
-        html += '<table class="mt-1 table table-bordered" id="mim_rst_tbl">'
+        html += '<table class="mt-1 mb-0 table table-bordered" id="mim_rst_tbl">'
              +    '<thead class="thead-light">'
              +      '<tr>'
              +        '<th>구분</th>'
@@ -407,7 +397,7 @@ function fn_mim_getCurrSnsrInfo() {
 
         html += '</tbody></table>';
 
-        html += '<table class="mt-1 table table-bordered" id="mim_snsr_tbl">'
+        html += '<table class="mt-3 mb-0 table table-bordered" id="mim_snsr_tbl">'
              +    '<thead class="thead-light">'
              +      '<tr>'
              +        '<th>구분</th>'

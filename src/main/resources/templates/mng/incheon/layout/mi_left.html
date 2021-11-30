@@ -7,12 +7,12 @@
     </p>
   </div><!-- /.col-12 -->
   <div class="list-area col-12"></div>
-  <div class="col-12">
-    <div class="sensors-CHECK" style="border: 1px solid #6c757d; margin: 15px;">
-      <h3 class="bg-secondary"><i class="fal fa-sensor-alert"></i> 점검 <span class="cnt"></span></h3>
-      <div class="left-list-sensor" style="height: 655px !important;"></div>
-    </div><!-- /.sensors-CHECK -->
-  </div><!-- /.col-12 -->
+<!--  <div class="col-12">-->
+<!--    <div class="sensors-CHECK" style="border: 1px solid #6c757d; margin: 15px;">-->
+<!--      <h3 class="bg-secondary"><i class="fal fa-sensor-alert"></i> 점검 <span class="cnt"></span></h3>-->
+<!--      <div class="left-list-sensor" style="height: 655px !important;"></div>-->
+<!--    </div>&lt;!&ndash; /.sensors-CHECK &ndash;&gt;-->
+<!--  </div>&lt;!&ndash; /.col-12 &ndash;&gt;-->
 </div><!-- /.row -->
 
 <script type="text/javascript">
@@ -28,31 +28,31 @@ function fn_mill_initLeft() {
     '</p>'
   );
 
-  $.template(
-    'left-check-sensor',
-    '<p class="left-check-sensor" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-code="{{html SNSRID}}">' +
-      '{{html AREANAME}}_{{html SNSRNICK}} ({{html CNT}})' +
-    '</p>'
-  );
+  // $.template(
+  //   'left-check-sensor',
+  //   '<p class="left-check-sensor" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-code="{{html SNSRID}}">' +
+  //     '{{html AREANAME}}_{{html SNSRNICK}} ({{html CNT}})' +
+  //   '</p>'
+  // );
 
-  fn_mill_getCheckSensorList();
+  // fn_mill_getCheckSensorList();
 }
 
 function fn_mill_refreshLeft() {
-  fn_mill_getCheckSensorList();
+  // fn_mill_getCheckSensorList();
 }
 
-function fn_mill_getCheckSensorList() {
-  $.post(
-    $('#contextRoot').val() + '/mng/incheon/todayChkSnsrAjax',
-    {},
-    function (d) {
-      $('.left-list-sensor').html('');
-
-      for (let i = 0; i < d.length; i++)
-        $('.sensors-' + d[i].STATE + ' .left-list-sensor').append($.tmpl('left-check-sensor', d[i]));
-
-      $('.sensors-CHECK .cnt').text('(' + $('.sensors-CHECK .left-list-sensor p').length + ')');
-  });
-}
+// function fn_mill_getCheckSensorList() {
+//   $.post(
+//     $('#contextRoot').val() + '/mng/incheon/todayChkSnsrAjax',
+//     {},
+//     function (d) {
+//       $('.left-list-sensor').html('');
+//
+//       for (let i = 0; i < d.length; i++)
+//         $('.sensors-' + d[i].STATE + ' .left-list-sensor').append($.tmpl('left-check-sensor', d[i]));
+//
+//       $('.sensors-CHECK .cnt').text('(' + $('.sensors-CHECK .left-list-sensor p').length + ')');
+//   });
+// }
 </script>

@@ -128,6 +128,7 @@ public class MIMainController {
      * @Method 설명 : 점검내역 목록 조회
      * @return List<HashMap<String, Object>>
      */
+    /*
     @RequestMapping(value = "/todayChkSnsrAjax")
     @ResponseBody
     public List<HashMap<String, Object>> mcmTodayChkSnsr(HttpServletRequest req) throws Exception {
@@ -141,6 +142,7 @@ public class MIMainController {
 
         return null;
     }
+    */
 
     /**
      * @Method Name : mimTodayAbnormalSnsr

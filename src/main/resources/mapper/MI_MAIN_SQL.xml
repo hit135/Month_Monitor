@@ -103,6 +103,7 @@
     </select>
 
     <!-- 점검내역 목록 -->
+    <!--
     <select id="LIST_MIM_TODAY_CHK_SNSR" parameterType="map" resultType="map">
         SELECT
             D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
@@ -129,6 +130,7 @@
         ORDER BY
             A.STATE, A.CNT DESC
     </select>
+    -->
 
     <!-- 상태이상 센서 목록 -->
     <select id="LIST_MIM_TODAY_ABNOMAL_SNSR" parameterType="map" resultType="map">
