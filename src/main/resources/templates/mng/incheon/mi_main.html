@@ -21,9 +21,10 @@
   margin-top: 1rem; width: 625px; height: 425px; border: 2px solid #2F528F;
   background-image: url('/fs/img/incheon/incheon_panel.png'); background-repeat: no-repeat; background-size: auto 100%; background-position: center;
 }
+
 .mim_panel_div {
-  width: 180px; height: 40px; border: 2px solid #2F528F; font-size: 15px;
-  padding: 0 0.25rem; position: relative; display: flex; justify-content: space-between; align-items: center;
+  width: 180px; height: 34px; font-size: 15px; padding: 0 0.5rem;
+  position: relative; display: flex; justify-content: space-between; align-items: center;
 }
 
 .mim_snsr_info_title { font-weight: 800; font-size: 20px; }
@@ -64,24 +65,24 @@
           </div>
 
           <div id="mim_panel_snsr_state_div">
-            <div class="mim_panel_div" id="min_panel_00" style="top: 122px; left: 10px;"></div>
-            <div class="mim_panel_div" id="min_panel_01" style="top: 82px; left: 435px;"></div>
-            <div class="mim_panel_div" id="min_panel_02" style="top: 85px; left: 10px;"></div>
-            <div class="mim_panel_div" id="min_panel_03" style="top: 45px; left: 435px;"></div>
-            <div class="mim_panel_div" id="min_panel_04" style="top: 48px; left: 10px;"></div>
-            <div class="mim_panel_div" id="min_panel_05" style="top: 8px; left: 435px;"></div>
-            <div class="mim_panel_div" id="min_panel_06" style="top: 10px; left: 10px;"></div>
-            <div class="mim_panel_div" id="min_panel_07" style="top: -30px; left: 435px;"></div>
-            <div class="mim_panel_div" id="min_panel_08" style="top: -29px; left: 10px;"></div>
-            <div class="mim_panel_div" id="min_panel_09" style="top: -69px; left: 435px;"></div>
-            <div class="mim_panel_div" id="min_panel_10" style="top: -68px; left: 10px;"></div>
-            <div class="mim_panel_div" id="min_panel_11" style="top: -108px; left: 435px;"></div>
-            <div class="mim_panel_div" id="min_panel_12" style="top: -107px; left: 10px;"></div>
-            <div class="mim_panel_div" id="min_panel_13" style="top: -147px; left: 435px;"></div>
+            <div class="mim_panel_div" id="min_panel_00" style="top: 125px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_01" style="top: 90px; left: 436px;"></div>
+            <div class="mim_panel_div" id="min_panel_02" style="top: 102px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_03" style="top: 68px; left: 436px;"></div>
+            <div class="mim_panel_div" id="min_panel_04" style="top: 76px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_05" style="top: 42px; left: 436px;"></div>
+            <div class="mim_panel_div" id="min_panel_06" style="top: 48px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_07" style="top: 14px; left: 436px;"></div>
+            <div class="mim_panel_div" id="min_panel_08" style="top: 22px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_09" style="top: -12px; left: 436px;"></div>
+            <div class="mim_panel_div" id="min_panel_10" style="top: -5px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_11" style="top: -39px; left: 436px;"></div>
+            <div class="mim_panel_div" id="min_panel_12" style="top: -31px; left: 10px;"></div>
+            <div class="mim_panel_div" id="min_panel_13" style="top: -65px; left: 436px;"></div>
           </div>
         </div><!-- /#mim_panel_left_div -->
         <div id="mim_panel_right_div"></div>
-      </div><!-- /.row -->
+      </div><!-- /.form-inline -->
     </div><!-- /#mim_panel_div -->
   </div><!-- /.center -->
   <div class="right col-md-2 mt-md-n7 col-12 mt-0">
@@ -320,7 +321,6 @@ function fn_mim_getCurrSnsrState() {
          else if (d[i].SNSRID == '1719') id = '#min_panel_01';
          else if (d[i].SNSRID == '4304') id = '#min_panel_02';
          else if (d[i].SNSRID == '3601') id = '#min_panel_05';
-         else if (d[i].SNSRID == '4305') id = '#min_panel_06';
          else if (d[i].SNSRID == '3602') id = '#min_panel_07';
          else if (d[i].SNSRID == '4303') id = '#min_panel_08';
          else if (d[i].SNSRID == '3603') id = '#min_panel_09';
@@ -344,7 +344,8 @@ function fn_mim_getCurrSnsrState() {
 
   $("#min_panel_03").html('<span>L-2 (OFF)</span>');
   $("#min_panel_04").html('<span>L-3 (OFF)</span>');
-  $("#min_panel_03, #min_panel_04").css({ 'backgroundColor': '#6B6B6B', 'color': '#fff' });
+  $("#min_panel_06").html('<span>OFF</span>');
+  $("#min_panel_03, #min_panel_04, #min_panel_06").css({ 'backgroundColor': '#6B6B6B', 'color': '#fff' });
 }
 
 function fn_mim_getCurrSnsrInfo() {

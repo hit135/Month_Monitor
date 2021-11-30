@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<th:block th:replace="mng/incheon/layout/mi_head"></th:block>
+
+<style>
+@media(orientation: portrait) {
+  html {
+    transform: rotate(-90deg); transform-origin: top left; position: absolute; top: 100%; left: 0; width: 100vh; height: 100vw;
+  }
+}
+
+#mim_panel_snsr_legend { font-size: 18px; }
+.mim_panel_snsr_legend_rect { padding: 12px; border: 2px solid #2F528F; }
+
+#mim_panel_snsr_state_div {
+  margin-top: 1rem; width: 625px; height: 425px; border: 2px solid #2F528F;
+  background-image: url('/fs/img/incheon/incheon_panel.png'); background-repeat: no-repeat; background-size: auto 100%; background-position: center;
+}
+
+.mim_panel_div {
+  width: 180px; height: 34px; font-size: 15px; padding: 0 0.5rem;
+  position: relative; display: flex; justify-content: space-between; align-items: center;
+}
+</style>
+</head>
+<body>
+<div id="mim_panel_area_div">
+  <div class="form-inline" id="mim_panel_snsr_legend">
+    <span class="mim_panel_snsr_legend_rect" style="background-color: #00B050;"></span>
+    <span class="ml-2">정상</span>
+    <span class="ml-3 mim_panel_snsr_legend_rect" style="background-color: #FFBF87;"></span>
+    <span class="ml-2">주의</span>
+    <span class="ml-3 mim_panel_snsr_legend_rect" style="background-color: #FF2F44;"></span>
+    <span class="ml-2">경고</span>
+    <span class="ml-3 mim_panel_snsr_legend_rect" style="background-color: #6B6B6B;"></span>
+    <span class="ml-2">끊김</span>
+  </div>
+
+  <div id="mim_panel_snsr_state_div">
+    <div class="mim_panel_div" id="min_panel_00" style="top: 125px; left: 10px;"></div>
+    <div class="mim_panel_div" id="min_panel_01" style="top: 90px; left: 436px;"></div>
+    <div class="mim_panel_div" id="min_panel_02" style="top: 102px; left: 10px;"></div>
+    <div class="mim_panel_div" id="min_panel_03" style="top: 68px; left: 436px;"></div>
+    <div class="mim_panel_div" id="min_panel_04" style="top: 76px; left: 10px;"></div>
+    <div class="mim_panel_div" id="min_panel_05" style="top: 42px; left: 436px;"></div>
+    <div class="mim_panel_div" id="min_panel_06" style="top: 48px; left: 10px;"></div>
+    <div class="mim_panel_div" id="min_panel_07" style="top: 14px; left: 436px;"></div>
+    <div class="mim_panel_div" id="min_panel_08" style="top: 22px; left: 10px;"></div>
+    <div class="mim_panel_div" id="min_panel_09" style="top: -12px; left: 436px;"></div>
+    <div class="mim_panel_div" id="min_panel_10" style="top: -5px; left: 10px;"></div>
+    <div class="mim_panel_div" id="min_panel_11" style="top: -39px; left: 436px;"></div>
+    <div class="mim_panel_div" id="min_panel_12" style="top: -31px; left: 10px;"></div>
+    <div class="mim_panel_div" id="min_panel_13" style="top: -65px; left: 436px;"></div>
+  </div>
+</div>
+</body>
+</html>

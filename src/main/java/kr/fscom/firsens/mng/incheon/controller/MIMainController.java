@@ -30,9 +30,6 @@ public class MIMainController {
         this.miMainRepo = miMainRepo;
     }
 
-    @Value("${globals.naver.clientId}")
-    private String naverClientId;
-
     /**
      * @Method Name : mimPage
      * @작성일 : 2021-07-09
@@ -43,15 +40,7 @@ public class MIMainController {
      */
     @RequestMapping(value = "/main")
     public ModelAndView mimPage(HttpServletRequest req) throws Exception {
-        ModelAndView mav = new ModelAndView("mng/incheon/mi_main");
-
-        try {
-            mav.addObject("naverMap", "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization");
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return mav;
+        return new ModelAndView("mng/incheon/mi_main");
     }
 
     /**
