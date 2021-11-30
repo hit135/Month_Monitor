@@ -34,16 +34,14 @@
 
 body { overflow-x: scroll; overflow-y: scroll; }
 
+#mimm_panel_title { font-size: 20px; font-weight: 800; padding: 10px 0px 10px 15px; }
 
-#mimm_panel_area_div {
-  margin-top: 15px; margin-left: 15px; width: 84vh;
-}
-
-#mimm_panel_snsr_legend { font-size: 18px; }
+#mimm_panel_area_div { padding: 15px 0 15px 15px; width: 84vh; }
+#mimm_panel_snsr_legend_div { font-size: 18px; background-color: #fff; padding: 0.5rem; }
 .mimm_panel_snsr_legend_rect { padding: 12px; }
 
 #mimm_panel_snsr_state_div {
-  margin-top: 1rem; margin-right: 30px; width: 100%; height: 425px; border: 2px solid #2F528F;
+  width: 100%; height: 425px; border: 2px solid #2F528F; background-color: #fff;
   background-image: url('/fs/img/incheon/incheon_panel.png'); background-repeat: no-repeat; background-size: auto 100%; background-position: center;
 }
 
@@ -51,62 +49,68 @@ body { overflow-x: scroll; overflow-y: scroll; }
   width: 26%; height: 34px; font-size: 13px; padding: 0 0.5rem; display: flex; justify-content: space-between; align-items: center;
 }
 
-#mimm_panel_tbl_div { margin-top: 2rem; width: 100%; }
-.mimm_snsr_info_title { font-weight: 800; font-size: 20px; }
+#mimm_panel_tbl_div { margin-top: 2rem; }
+.mimm_snsr_info_title { font-weight: 800; font-size: 20px; margin-bottom: 10px; }
 #mimm_rst_tbl th, #mimm_rst_tbl td, #mimm_snsr_tbl th, #mimm_snsr_tbl td { font-size: 13px; padding: 0.15rem; }
+#mimm_rst_tbl td, #mimm_snsr_tbl td { background-color: #fff; }
 #mimm_rst_tbl th, #mimm_snsr_tbl th { text-align: center; font-weight: 800; }
 </style>
 </head>
 
-<body onload="setTimeout(function() {window.scrollTo(0, 1)}, 100)">
+<body>
 <input id="contextRoot" type="hidden" th:value="${#httpServletRequest.getContextPath()}" />
 
-<div id="mimm_panel_area_div">
-  <div class="form-inline" id="mimm_panel_snsr_legend">
-    <span class="mimm_panel_snsr_legend_rect" style="background-color: #00B050;"></span>
-    <span class="ml-2">정상</span>
-    <span class="ml-3 mimm_panel_snsr_legend_rect" style="background-color: #FFBF87;"></span>
-    <span class="ml-2">주의</span>
-    <span class="ml-3 mimm_panel_snsr_legend_rect" style="background-color: #FF2F44;"></span>
-    <span class="ml-2">경고</span>
-    <span class="ml-3 mimm_panel_snsr_legend_rect" style="background-color: #BEBEBE;"></span>
-    <span class="ml-2">끊김</span>
-    <span class="ml-3 mimm_panel_snsr_legend_rect" style="background-color: #6B6B6B;"></span>
-    <span class="ml-2">미사용</span>
-  </div>
+<div id="mimm_panel_title">인천 종합비즈니스 센터 관제 현황</div>
+<div style="background-color: #BEBEBE;">
+  <div id="mimm_panel_area_div">
+    <div class="mimm_snsr_info_title">분전반현황</div>
 
-  <div id="mimm_panel_snsr_state_div">
-    <div class="d-flex justify-content-between" style="position: relative; top: 126px;">
-      <div class="mimm_panel_div" id="mimm_panel_00"></div>
-      <div class="mimm_panel_div" id="mimm_panel_01"></div>
+    <div class="form-inline" id="mimm_panel_snsr_legend_div">
+      <span class="mimm_panel_snsr_legend_rect" style="background-color: #00B050;"></span>
+      <span class="ml-2">정상</span>
+      <span class="ml-3 mimm_panel_snsr_legend_rect" style="background-color: #FFBF87;"></span>
+      <span class="ml-2">주의</span>
+      <span class="ml-3 mimm_panel_snsr_legend_rect" style="background-color: #FF2F44;"></span>
+      <span class="ml-2">경고</span>
+      <span class="ml-3 mimm_panel_snsr_legend_rect" style="background-color: #BEBEBE;"></span>
+      <span class="ml-2">끊김</span>
+      <span class="ml-3 mimm_panel_snsr_legend_rect" style="background-color: #6B6B6B;"></span>
+      <span class="ml-2">미사용</span>
     </div>
-    <div class="d-flex justify-content-between" style="position: relative; top: 136px;">
-      <div class="mimm_panel_div" id="mimm_panel_02"></div>
-      <div class="mimm_panel_div" id="mimm_panel_03"></div>
-    </div>
-    <div class="d-flex justify-content-between" style="position: relative; top: 144px;">
-      <div class="mimm_panel_div" id="mimm_panel_04"></div>
-      <div class="mimm_panel_div" id="mimm_panel_05"></div>
-    </div>
-    <div class="d-flex justify-content-between" style="position: relative; top: 150px;">
-      <div class="mimm_panel_div" id="mimm_panel_06"></div>
-      <div class="mimm_panel_div" id="mimm_panel_07"></div>
-    </div>
-    <div class="d-flex justify-content-between" style="position: relative; top: 158px;">
-      <div class="mimm_panel_div" id="mimm_panel_08"></div>
-      <div class="mimm_panel_div" id="mimm_panel_09"></div>
-    </div>
-    <div class="d-flex justify-content-between" style="position: relative; top: 166px;">
-      <div class="mimm_panel_div" id="mimm_panel_10"></div>
-      <div class="mimm_panel_div" id="mimm_panel_11"></div>
-    </div>
-    <div class="d-flex justify-content-between" style="position: relative; top: 173px;">
-      <div class="mimm_panel_div" id="mimm_panel_12"></div>
-      <div class="mimm_panel_div" id="mimm_panel_13"></div>
-    </div>
-  </div>
 
-  <div id="mimm_panel_tbl_div"></div>
+    <div id="mimm_panel_snsr_state_div">
+      <div class="d-flex justify-content-between" style="position: relative; top: 126px;">
+        <div class="mimm_panel_div" id="mimm_panel_00"></div>
+        <div class="mimm_panel_div" id="mimm_panel_01"></div>
+      </div>
+      <div class="d-flex justify-content-between" style="position: relative; top: 136px;">
+        <div class="mimm_panel_div" id="mimm_panel_02"></div>
+        <div class="mimm_panel_div" id="mimm_panel_03"></div>
+      </div>
+      <div class="d-flex justify-content-between" style="position: relative; top: 144px;">
+        <div class="mimm_panel_div" id="mimm_panel_04"></div>
+        <div class="mimm_panel_div" id="mimm_panel_05"></div>
+      </div>
+      <div class="d-flex justify-content-between" style="position: relative; top: 150px;">
+        <div class="mimm_panel_div" id="mimm_panel_06"></div>
+        <div class="mimm_panel_div" id="mimm_panel_07"></div>
+      </div>
+      <div class="d-flex justify-content-between" style="position: relative; top: 158px;">
+        <div class="mimm_panel_div" id="mimm_panel_08"></div>
+        <div class="mimm_panel_div" id="mimm_panel_09"></div>
+      </div>
+      <div class="d-flex justify-content-between" style="position: relative; top: 166px;">
+        <div class="mimm_panel_div" id="mimm_panel_10"></div>
+        <div class="mimm_panel_div" id="mimm_panel_11"></div>
+      </div>
+      <div class="d-flex justify-content-between" style="position: relative; top: 173px;">
+        <div class="mimm_panel_div" id="mimm_panel_12"></div>
+        <div class="mimm_panel_div" id="mimm_panel_13"></div>
+      </div>
+    </div>
+
+    <div id="mimm_panel_tbl_div"></div>
+  </div>
 </div>
 
 <script th:src="@{/fs/js/polyfill.min.js}"></script>
@@ -165,7 +169,7 @@ function fn_mimm_getCurrSnsrInfo() {
   $("#mimm_panel_tbl_div").empty();
   let html = '';
 
-  html += ' <div class="mimm_snsr_info_title">기본정보</div>';
+  html += '<div class="mimm_snsr_info_title">기본정보</div>';
 
   $.post(
     $('#contextRoot').val() + '/mng/incheon/currSnsrInfoAjax',
