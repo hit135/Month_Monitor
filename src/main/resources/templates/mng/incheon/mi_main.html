@@ -18,10 +18,10 @@
 .mim_panel_snsr_legend_rect { padding: 12px; border: 2px solid #2F528F; }
 #mim_panel_snsr_state_tbl { font-size: 15px; border: 2px solid #2F528F; }
 #mim_panel_snsr_state_tbl td { border: none; display: table-cell; text-align: center; vertical-align: middle; height: 100%; padding: 0.25rem; }
-#mim_panel_snsr_state_tbl div { padding: 1.1rem 0; }
+#mim_panel_snsr_state_tbl div { padding: 1.17rem 0; }
 
 .mim_snsr_info_title { font-weight: 800; font-size: 20px; }
-#mim_rst_tbl th, #mim_rst_tbl td, #mim_snsr_tbl th, #mim_snsr_tbl td { font-size: 12px; padding: 0.15rem; }
+#mim_rst_tbl th, #mim_rst_tbl td, #mim_snsr_tbl th, #mim_snsr_tbl td { font-size: 13px; padding: 0.15rem; }
 #mim_rst_tbl th, #mim_snsr_tbl th { text-align: center; font-weight: 800; }
 </style>
 </head>
@@ -317,7 +317,12 @@ function fn_mim_getCurrSnsrState() {
             case 'NORMAL': leftDivStyle = 'background-color: #00B050; color: #fff; border: 2px solid #2F528F;'; break;
           }
 
-          html += '<td><div style="' + leftDivStyle + '">' + d[lIdx].SNSRNICK + '&nbsp;&nbsp;' + d[lIdx].SNSRID + '</div></td>';
+          html += '<td>'
+               +    '<div class="d-flex justify-content-between pl-1 pr-1" style="' + leftDivStyle + '">'
+               +      '<span>' + d[lIdx].SNSRNICK + '</span>'
+               +      '<span>' + d[lIdx].SNSRID + '</span>'
+               +    '</div>'
+               +  '</td>';
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
           if (i == 0)
@@ -334,7 +339,12 @@ function fn_mim_getCurrSnsrState() {
               case 'NORMAL': rightDivStyle = 'background-color: #00B050; color: #fff; border: 2px solid #2F528F;'; break;
             }
 
-            html += '<td><div style="' + rightDivStyle + '">' + d[rIdx].SNSRNICK + '&nbsp;&nbsp;' + d[rIdx].SNSRID + '</div></td>';
+            html += '<td>'
+                 +    '<div class="d-flex justify-content-between pl-1 pr-1" style="' + rightDivStyle + '">'
+                 +      '<span>' + d[rIdx].SNSRNICK + '</span>'
+                 +      '<span>' + d[rIdx].SNSRID + '</span>'
+                 +    '</div>'
+                 +  '</td>';
           } else {
             html += '<td style="background-color: #fff;"></td>';
           }
