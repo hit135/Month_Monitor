@@ -16,9 +16,9 @@
 
 #mim_panel_snsr_legend { font-size: 18px; }
 .mim_panel_snsr_legend_rect { padding: 12px; border: 2px solid #2F528F; }
-#mim_panel_snsr_state_tbl { font-size: 18px; border: 2px solid #2F528F; }
+#mim_panel_snsr_state_tbl { font-size: 15px; border: 2px solid #2F528F; }
 #mim_panel_snsr_state_tbl td { border: none; display: table-cell; text-align: center; vertical-align: middle; height: 100%; padding: 0.25rem; }
-#mim_panel_snsr_state_tbl div { padding: 0.8rem 0; }
+#mim_panel_snsr_state_tbl div { padding: 1.1rem 0; }
 
 .mim_snsr_info_title { font-weight: 800; font-size: 20px; }
 #mim_rst_tbl th, #mim_rst_tbl td, #mim_snsr_tbl th, #mim_snsr_tbl td { font-size: 12px; padding: 0.15rem; }
@@ -308,34 +308,33 @@ function fn_mim_getCurrSnsrState() {
         for (let i = 0 ; i < trLength; i++) {
           html += '<tr>';
 
+          let lIdx = 2 * i;
           let leftDivStyle = '';
-          switch (d[2 * i].STATE) {
-            case 'DANGER': leftDivStyle = 'background-color: #FF2F44; color: #fff;'; break;
-            case 'WARN': leftDivStyle = 'background-color: #FFBF87; color: #000;'; break;
-            case 'DISCONN': leftDivStyle = 'background-color: #a6a6a6; color: #000;'; break;
-            case 'NORMAL': leftDivStyle = 'background-color: #00B050; color: #fff;'; break;
+          switch (d[lIdx].STATE) {
+            case 'DANGER': leftDivStyle = 'background-color: #FF2F44; color: #fff; border: 2px solid #2F528F;'; break;
+            case 'WARN': leftDivStyle = 'background-color: #FFBF87; color: #000; border: 2px solid #2F528F;'; break;
+            case 'DISCONN': leftDivStyle = 'background-color: #a6a6a6; color: #000; border: 2px solid #2F528F;'; break;
+            case 'NORMAL': leftDivStyle = 'background-color: #00B050; color: #fff; border: 2px solid #2F528F;'; break;
           }
-          leftDivStyle += ' border: 2px solid #2F528F;';
 
-          html += '<td><div style="' + leftDivStyle + '">' + d[2 * i].SNSRID + '</div></td>';
+          html += '<td><div style="' + leftDivStyle + '">' + d[lIdx].SNSRNICK + '&nbsp;&nbsp;' + d[lIdx].SNSRID + '</div></td>';
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
           if (i == 0)
             html += '<td rowspan="' + trLength + '">분전반</td>';
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-          if (d[2 * i + 1] != null) {
+          let rIdx = 2 * i + 1;
+          if (d[rIdx] != null) {
             let rightDivStyle = '';
-            switch (d[2 * i + 1].STATE) {
-              case 'DANGER': rightDivStyle = 'background-color: #FF2F44; color: #fff;'; break;
-              case 'WARN': rightDivStyle = 'background-color: #FFBF87; color: #000;'; break;
-              case 'DISCONN': rightDivStyle = 'background-color: #a6a6a6; color: #000;'; break;
-              case 'NORMAL': rightDivStyle = 'background-color: #00B050; color: #fff;'; break;
+            switch (d[rIdx].STATE) {
+              case 'DANGER': rightDivStyle = 'background-color: #FF2F44; color: #fff; border: 2px solid #2F528F;'; break;
+              case 'WARN': rightDivStyle = 'background-color: #FFBF87; color: #000; border: 2px solid #2F528F;'; break;
+              case 'DISCONN': rightDivStyle = 'background-color: #a6a6a6; color: #000; border: 2px solid #2F528F;'; break;
+              case 'NORMAL': rightDivStyle = 'background-color: #00B050; color: #fff; border: 2px solid #2F528F;'; break;
             }
 
-            rightDivStyle += ' border: 2px solid #2F528F;';
-
-            html += '<td><div style="' + rightDivStyle + '">' + d[2 * i + 1].SNSRID + '</div></td>';
+            html += '<td><div style="' + rightDivStyle + '">' + d[rIdx].SNSRNICK + '&nbsp;&nbsp;' + d[rIdx].SNSRID + '</div></td>';
           } else {
             html += '<td style="background-color: #fff;"></td>';
           }
@@ -364,12 +363,12 @@ function fn_mim_getCurrSnsrInfo() {
              +      '<tr>'
              +        '<th>구분</th>'
              +        '<th>단상</th>'
-             +        '<th>IGO</th>'
-             +        '<th>IGR</th>'
-             +        '<th>IGC</th>'
-             +        '<th>전류</th>'
-             +        '<th>전압</th>'
-             +        '<th>전력량</th>'
+             +        '<th>IGO [mA]</th>'
+             +        '<th>IGR [mA]</th>'
+             +        '<th>IGC [mA]</th>'
+             +        '<th>전류 [A]</th>'
+             +        '<th>전압 [V]</th>'
+             +        '<th>전력량 [kWh]</th>'
              +      '</tr>'
              +    '</thead>'
              +    '<tbody>';
@@ -403,13 +402,13 @@ function fn_mim_getCurrSnsrInfo() {
              +      '<tr>'
              +        '<th>구분</th>'
              +        '<th>분기명</th>'
-             +        '<th>IGO</th>'
-             +        '<th>IGR</th>'
-             +        '<th>IGC</th>'
-             +        '<th>전류</th>'
-             +        '<th>전압</th>'
-             +        '<th>전력량</th>'
-             +        '<th>수신감도</th>'
+             +        '<th>IGO [mA]</th>'
+             +        '<th>IGR [mA]</th>'
+             +        '<th>IGC [mA]</th>'
+             +        '<th>전류 [A]</th>'
+             +        '<th>전압 [V]</th>'
+             +        '<th>전력량 [kWh]</th>'
+             +        '<th>수신감도 [dBm]</th>'
              +      '</tr>'
              +    '</thead>'
              +    '<tbody>';

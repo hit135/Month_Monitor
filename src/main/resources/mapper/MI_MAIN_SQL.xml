@@ -201,8 +201,10 @@
              WHERE
                  SNSRRCVTIME <![CDATA[<]]> CURDATE() AND SNSRRCVTIME > CURDATE() - INTERVAL 1 DAY
             ) A
-                LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
-                LEFT JOIN F_LEVEL_AREA C ON B.AREACODE = C.AREACODE
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.SNSRID = B.SNSRID
+                LEFT JOIN F_LEVEL_AREA C
+                    ON B.AREACODE = C.AREACODE
         WHERE
             B.DELYN = 'N'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) = '1N28'
@@ -218,8 +220,10 @@
             , COUNT(*) AS CNT
         FROM
             (SELECT SNSRID, SNSRRCVTIME FROM F_SENSOR_DATA WHERE SNSRRCVTIME > CURDATE()) A
-                LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
-                LEFT JOIN F_LEVEL_AREA C ON B.AREACODE = C.AREACODE
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.SNSRID = B.SNSRID
+                LEFT JOIN F_LEVEL_AREA C
+                    ON B.AREACODE = C.AREACODE
         WHERE
             B.DELYN = 'N'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) = '1N28'
@@ -247,8 +251,10 @@
                  REGDATE <![CDATA[<]]> CURDATE() AND REGDATE > CURDATE() - INTERVAL 1 DAY
                  AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
             ) A
-                LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
-                LEFT JOIN F_LEVEL_AREA C ON B.AREACODE = C.AREACODE
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.SNSRID = B.SNSRID
+                LEFT JOIN F_LEVEL_AREA C
+                    ON B.AREACODE = C.AREACODE
         WHERE
             B.DELYN = 'N'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) = '1N28'
@@ -271,8 +277,10 @@
                  REGDATE > CURDATE()
                  AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0
             ) A
-                LEFT JOIN F_SENSOR_INFO B ON A.SNSRID = B.SNSRID
-                LEFT JOIN F_LEVEL_AREA C ON B.AREACODE = C.AREACODE
+                LEFT JOIN F_SENSOR_INFO B
+                    ON A.SNSRID = B.SNSRID
+                LEFT JOIN F_LEVEL_AREA C
+                    ON B.AREACODE = C.AREACODE
         WHERE
             B.DELYN = 'N'
             AND CONCAT(C.AREALEVEL, C.DELYN, C.GUCODE) = '1N28'
@@ -287,7 +295,8 @@
     <select id="LIST_MIM_CURR_SNSR_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
-            I.SNSRID AS SNSRID
+            SUBSTR(I.SNSRID FROM -4) AS SNSRID
+            , I.SNSRNICK
             , (CASE
                    WHEN L.DANGERCNT > 0 THEN 'DANGER'
                    WHEN L.DANGERCNT = 0 AND L.WARNCNT > 0 THEN 'WARN'
@@ -296,15 +305,14 @@
                END) AS STATE
         FROM
             (SELECT
-                 A.SNSRID, A.STRCODE, A.DATARCVTIME
+                 A.SNSRID, A.STRCODE, A.SNSRNICK, A.DATARCVTIME
              FROM
                  F_SENSOR_INFO A
                      LEFT JOIN F_STORE S
                          ON A.STRCODE = S.STRCODE
              WHERE
                  A.DELYN = 'N'
-                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
-                 AND GRPCODE = '032'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN032'
             ) I
                 LEFT JOIN (SELECT
                                SNSRID
@@ -326,7 +334,7 @@
             , ROUND(SUM(A.SNSRIGO), 2) AS SNSRIGO
             , ROUND(SUM(A.SNSRIGR), 2) AS SNSRIGR
             , ROUND(SUM(A.SNSRIGC), 2) AS SNSRIGC
-            , ROUND(AVG(A.SNSRAMPERE), 2) AS SNSRAMPERE
+            , ROUND(SUM(A.SNSRAMPERE), 2) AS SNSRAMPERE
             , ROUND(AVG(A.SNSRVOLT), 2) AS SNSRVOLT
             , ROUND(SUM(A.SNSRKWH), 1) AS SNSRKWH
         FROM
@@ -341,10 +349,8 @@
              WHERE
                  D.ISSIMUL = 0
                  AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
-                 AND I.DELYN = 'N'
-                 AND I.RSTTYPE = 'R'
-                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
-                 AND S.GRPCODE = '032'
+                 AND CONCAT(I.DELYN, I.RSTTYPE) = 'NR'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN032'
               GROUP BY
                   I.SNSRSEQ
               ORDER BY
@@ -357,7 +363,7 @@
             , ROUND(SUM(A.SNSRIGO), 2) AS SNSRIGO
             , ROUND(SUM(A.SNSRIGR), 2) AS SNSRIGR
             , ROUND(SUM(A.SNSRIGC), 2) AS SNSRIGC
-            , ROUND(AVG(A.SNSRAMPERE), 2) AS SNSRAMPERE
+            , ROUND(SUM(A.SNSRAMPERE), 2) AS SNSRAMPERE
             , ROUND(AVG(A.SNSRVOLT), 2) AS SNSRVOLT
             , ROUND(SUM(A.SNSRKWH), 1) AS SNSRKWH
         FROM
@@ -372,10 +378,8 @@
              WHERE
                  D.ISSIMUL = 0
                  AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
-                 AND I.DELYN = 'N'
-                 AND I.RSTTYPE = 'S'
-                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
-                 AND S.GRPCODE = '032'
+                 AND CONCAT(I.DELYN, I.RSTTYPE) = 'NS'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN032'
              GROUP BY
                  I.SNSRSEQ
              ORDER BY
@@ -388,7 +392,7 @@
             , ROUND(SUM(A.SNSRIGO), 2) AS SNSRIGO
             , ROUND(SUM(A.SNSRIGR), 2) AS SNSRIGR
             , ROUND(SUM(A.SNSRIGC), 2) AS SNSRIGC
-            , ROUND(AVG(A.SNSRAMPERE), 2) AS SNSRAMPERE
+            , ROUND(SUM(A.SNSRAMPERE), 2) AS SNSRAMPERE
             , ROUND(AVG(A.SNSRVOLT), 2) AS SNSRVOLT
             , ROUND(SUM(A.SNSRKWH), 1) AS SNSRKWH
         FROM
@@ -403,10 +407,8 @@
              WHERE
                  D.ISSIMUL = 0
                  AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
-                 AND I.DELYN = 'N'
-                 AND I.RSTTYPE = 'T'
-                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
-                 AND S.GRPCODE = '032'
+                 AND CONCAT(I.DELYN, I.RSTTYPE) = 'NT'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN032'
              GROUP BY
                  I.SNSRSEQ
              ORDER BY
@@ -419,7 +421,7 @@
             , ROUND(SUM(A.SNSRIGO), 2) AS SNSRIGO
             , ROUND(SUM(A.SNSRIGR), 2) AS SNSRIGR
             , ROUND(SUM(A.SNSRIGC), 2) AS SNSRIGC
-            , ROUND(AVG(A.SNSRAMPERE), 2) AS SNSRAMPERE
+            , ROUND(SUM(A.SNSRAMPERE), 2) AS SNSRAMPERE
             , ROUND(AVG(A.SNSRVOLT), 2) AS SNSRVOLT
             , ROUND(SUM(A.SNSRKWH), 1) AS SNSRKWH
         FROM
@@ -435,8 +437,7 @@
                  D.ISSIMUL = 0
                  AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
                  AND I.DELYN = 'N'
-                 AND CONCAT(S.USEYN, S.DELYN) = 'YN'
-                 AND S.GRPCODE = '032'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN032'
              GROUP BY
                  I.SNSRSEQ
              ORDER BY
@@ -463,8 +464,7 @@
             D.ISSIMUL = 0
             AND D.DSEQ = (SELECT MAX(DSEQ) FROM F_SENSOR_DATA WHERE SNSRID = D.SNSRID)
             AND I.DELYN = 'N'
-            AND CONCAT(S.USEYN, S.DELYN) = 'YN'
-            AND S.GRPCODE = '032'
+            AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN032'
         GROUP BY
             I.SNSRSEQ
         ORDER BY
