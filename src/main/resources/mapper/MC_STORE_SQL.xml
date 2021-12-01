@@ -67,7 +67,7 @@
             , A.SNSRID
             , A.SNSRNICK
             , A.SNSRMGPS
-            , D.DATACNT
+            , COALESCE(D.DATACNT, 0) AS DATACNT
             , B.STRPOSLAT
             , B.STRPOSLON
             , (CASE
@@ -181,7 +181,7 @@
 
     <select id="LIST_MCST_DATA_LOG" parameterType="map" resultType="map">
         SELECT
-            A.DSEQ
+            DISTINCT A.DSEQ
             , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
             , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d') AS REGDATE
             , A.SNSRID
@@ -213,7 +213,7 @@
         FROM
             ${tblSensorData} A
                 LEFT JOIN ${tblSensorLog} B
-                    ON A.SNSRID = B.SNSRID
+                    ON A.DSEQ = B.DSEQ
                 LEFT JOIN F_SENSOR_INFO C
                     ON A.SNSRID = C.SNSRID
                 LEFT JOIN F_STORE D
@@ -221,7 +221,6 @@
         WHERE
             CONCAT(C.DELYN, C.STRCODE) LIKE 'NFS_STR_%'
             AND CONCAT(D.USEYN, D.DELYN, D.GRPCODE) = 'YN042'
-            AND A.DSEQ BETWEEN CAST(B.DSEQ AS SIGNED) - 5 AND B.DSEQ + 5
             <choose>
                 <when test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(regdt)">
                 AND A.SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND CONCAT(#{regdt}, ' 23:59:59')

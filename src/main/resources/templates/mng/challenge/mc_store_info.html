@@ -454,6 +454,8 @@
       $('#contextRoot').val() + '/mng/areaSensorListAjax',
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
       function (d) {
+        console.log(d);
+
         $('.store-info-sensor-list').html('');
 
         for (let i = 0; i < d.length; i++) {
