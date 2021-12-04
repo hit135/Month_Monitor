@@ -245,6 +245,8 @@
             AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
             AND C.AREACODE = #{areacode}
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(strcode)">AND A.STRCODE = #{strcode}</if>
+        GROUP BY
+            A.SNSRID
         ORDER BY
             DANGER DESC, WARN DESC, CON DESC, SNSRID
     </select>
