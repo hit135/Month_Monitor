@@ -251,23 +251,18 @@ public class SYSSimulController {
     @RequestMapping(value = "/sendSimulSpPush")
     @ResponseBody
     public HashMap<String, Object> sendSimulSpPush(HttpServletRequest req, @RequestBody HashMap<String, Object> param) {
-        HashMap<String, Object> prm = new HashMap<String, Object>();
-        HashMap<String, Object> ret = new HashMap<String, Object>();
+        HashMap<String, Object> prm = new HashMap<>();
+        HashMap<String, Object> ret = new HashMap<>();
+
+        String apiKey = "NCSA3RKT687MGISV";
+        String apiSecret = "AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN";
+        String userid = "admin";
+        String frominfo = "0424715215";
+        String targetUrl = "https://msg.purplebook.io/api/messages/v4/send";
+        String pfId = "KA01PF211129011921158mUHJ1CKs80J";
+        String templateId = "KA01TP211205121652592hslit5Dd84G";
 
         try {
-            String apiKey = "NCSA3RKT687MGISV";
-            String apiSecret = "AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN";
-            String salt = UUID.randomUUID().toString().replaceAll("-", "");
-            String date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split("\\[")[0];
-
-            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-
-            String signature = new String(Hex.encodeHex(sha256_HMAC.doFinal((date + salt).getBytes(StandardCharsets.UTF_8))));
-            String auth = "HMAC-SHA256 ApiKey=" + apiKey + ", Date=" + date + ", salt=" + salt + ", signature=" + signature;
-            String targetUrl = "https://msg.purplebook.io/api/messages/v4/send";
-
             StringBuffer msg_text = new StringBuffer();
             msg_text.append("[전기화재예방] 전기 위험발생안내\\n\\n");
             msg_text.append("■ 시장명: 도마큰시장\\n\\n");
@@ -277,12 +272,8 @@ public class SYSSimulController {
             msg_text.append("누전(IGO) 수치가 40mA 이상 발생(전기설비기술기준상 1mA이하가 적합합니다.)\\n\\n");
             msg_text.append("■ 조치방법:\\n");
             msg_text.append("상점내 전기설비에 대해 전기전문가에게 점검받을 것을 권장합니다.\\n\\n");
-            msg_text.append("■ 링크:\\n");
-            msg_text.append("http://1.223.40.19:30080/store/rpt?strCode=FS_STR_0000000000306");
 
-            String userid = "admin";
             String toinfo = (String) param.get("toinfo");
-            String frominfo = "0424715215";
 
             StringBuffer parameters = new StringBuffer();
             parameters.append("{\"message\":{");
@@ -291,25 +282,38 @@ public class SYSSimulController {
             parameters.append("\"text\":\"" + msg_text + "\",");
             parameters.append("\"type\":\"ATA\",");
             parameters.append("\"kakaoOptions\":{");
-            parameters.append("\"pfId\":\"KA01PF211129011921158mUHJ1CKs80J\",");
-            parameters.append("\"templateId\":\"KA01TP211129013758537es9X3C3kylP\",");
-            parameters.append("\"disableSms\":\"false\"");
+            parameters.append("\"pfId\":\"" + pfId + "\",");
+            parameters.append("\"templateId\":\"" + templateId + "\",");
+            parameters.append("\"buttons\":[{");
+            parameters.append("\"buttonName\": \"자세히보기\",");
+            parameters.append("\"buttonType\": \"WL\",");
+            parameters.append("\"linkPc\": \"http://1.223.40.19:30080/store/rpt?strCode=FS_STR_0000000000306\",");
+            parameters.append("\"linkMo\": \"http://1.223.40.19:30080/store/rpt?strCode=FS_STR_0000000000306\"}]");
             parameters.append("}}}");
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             URL url = new URL(targetUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Authorization", auth);
-            con.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+            String salt = UUID.randomUUID().toString().replaceAll("-", "");
+            String date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split("\\[")[0];
 
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            sha256_HMAC.init(new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+            String signature = new String(Hex.encodeHex(sha256_HMAC.doFinal((date + salt).getBytes(StandardCharsets.UTF_8))));
+
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Authorization", "HMAC-SHA256 ApiKey=" + apiKey + ", Date=" + date + ", salt=" + salt + ", signature=" + signature);
+            con.setRequestProperty("Content-Type", "application/json;charset=utf-8");
             con.setDoOutput(true);
+
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             System.out.println("Parameters : " + parameters);
+
             OutputStreamWriter osw = new OutputStreamWriter(wr);
             osw.write(parameters.toString(), 0, parameters.length());
-            //wr.writeBytes(parameters);
             osw.close();
+
             wr.flush();
             wr.close();
 
@@ -325,6 +329,7 @@ public class SYSSimulController {
             in.close();
 
             ret.put("result", response.toString());
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             prm.put("snsrseq", req.getParameter("snsrseq"));
             prm.put("pushmsg", parameters.toString());
