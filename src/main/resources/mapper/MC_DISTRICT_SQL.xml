@@ -68,37 +68,12 @@
     </select>
 
     <select id="LIST_MCD_CURR_GU_MAP_EVENT_STAT" parameterType="map" resultType="map">
-        <![CDATA[
         SELECT
-            I.GUCODE
-            , I.SNSRCNT
-            , I.DISCONNCNT AS DISCONNCNT
-            , COALESCE(L.DANGERCNT, 0) AS DANGERCNT
-            , COALESCE(L.WARNINGCNT, 0) AS WARNINGCNT
+            GUCODE, SNSRCNT, SNSRDISNCNT AS DISCONNCNT, DANGERCNT AS DANGERCNT, WARNCNT AS WARNINGCNT
         FROM
-            (SELECT
-                 GUCODE
-                 , COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
-                 , COUNT(DISTINCT CASE WHEN DATADISN = 1 THEN SNSRSEQ END) AS DISCONNCNT
-             FROM
-                 V_ALL_SENSOR_MAP
-             WHERE
-                 GRPGUCODE LIKE '042|30%'
-             GROUP BY
-                 GUCODE
-            ) I
-                LEFT JOIN (SELECT
-                               GUCODE
-                               , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
-                               , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
-                           FROM
-                               V_TODAY_SENSOR_LOG_MAP
-                           WHERE
-                               GRPGUCODE LIKE '042|30%'
-                           GROUP BY
-                               GUCODE) L
-                    ON I.GUCODE = L.GUCODE
-        ]]>
+            V_ALL_GU_MAP
+        WHERE
+            GRPGUCODE LIKE '042|30%'
     </select>
 
     <select id="LIST_MCD_MONTHLY_GU_EVENT_COMP_STAT" parameterType="map" resultType="map">
