@@ -192,7 +192,6 @@
 
     <!-- 시장 내 상점 현황 (경고, 주의, 끊김, 센서) -->
     <select id="LIST_MCM_AREA_STORE" parameterType="map" resultType="map">
-        <![CDATA[
         SELECT
             AREACODE
             , STRCODE
@@ -208,52 +207,27 @@
             AND AREACODE = #{areacode}
         ORDER BY
             DANGER DESC, WARN DESC, CON DESC, STRNAME
-        ]]>
     </select>
 
     <!-- 시장 내 센서 현황 (경고, 주의, 끊김, 점검) -->
     <select id="LIST_MCM_AREA_SENSOR" parameterType="map" resultType="map">
         SELECT
             ROW_NUMBER() OVER () AS ROWNUM
-            , B.STRCODE
-            , B.STRNAME
-            , A.SNSRID
-            , TRIM(LEADING '0' FROM A.SNSRID) AS SNSRIDTRIM
-            , A.SNSRNICK
-            , COALESCE(SUM(D.ISDANGER), 0) AS DANGER
-            , COALESCE(SUM(D.ISWARN), 0) AS WARN
-            , COUNT(DISTINCT CASE WHEN A.DATARCVTIME <![CDATA[<]]> NOW() - INTERVAL 1 HOUR THEN A.SNSRSEQ END) AS CON
-            , E.CHK
+            , STRCODE
+            , STRNAME
+            , SNSRID
+            , TRIM(LEADING '0' FROM SNSRID) AS SNSRIDTRIM
+            , SNSRNICK
+            , DANGERCNT AS DANGER
+            , WARNCNT AS WARN
+            , ISDISCONN AS CON
+            , CHK
         FROM
-            F_SENSOR_INFO A
-                LEFT JOIN F_STORE B
-                    ON A.STRCODE = B.STRCODE
-                LEFT JOIN F_LEVEL_AREA C
-                    ON B.AREACODE = C.AREACODE
-                LEFT JOIN (SELECT
-                                SNSRSEQ, REGDATE, ISDANGER, ISWARN
-                            FROM
-                                V_TODAY_SENSOR_LOG
-                            WHERE
-                                ISALM = 1) D
-                    ON A.SNSRSEQ = D.SNSRSEQ
-                LEFT JOIN (SELECT
-                               SNSRID, COUNT(*) AS CHK
-                           FROM
-                               F_SENSOR_CHECK
-                           WHERE
-                               CHECKSTAT = 'ING'
-                           GROUP BY
-                               SNSRID) E
-                    ON A.SNSRID = E.SNSRID
+            V_TODAY_SENSOR
         WHERE
-            CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
-            AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
-            AND C.AREACODE = #{areacode}
-            <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(strcode)">AND A.STRCODE = #{strcode}</if>
-        GROUP BY
-            A.SNSRID
+            GRPGUCODE LIKE '042|30%'
+            AND AREACODE = #{areacode}
+            AND STRCODE = #{strcode}
         ORDER BY
             DANGER DESC, WARN DESC, CON DESC, SNSRID
     </select>
@@ -370,112 +344,39 @@
     <select id="LIST_MCM_AREA_DATA_CHART_WEEK" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
-            '1' AS TYPE,
-             SDATE AS RCVTIME,
-             DAYOFWEEK(SDATE) AS WEEK,
-             IFNULL(SUM(SNSRKWHDAILY), 0) AS CNT
+            (CASE
+                 WHEN SDATE <= CURDATE() - INTERVAL (DAYOFWEEK(CURDATE())) DAY THEN '1'
+                 ELSE '2'
+             END) AS TYPE
+            , DATE_FORMAT(SDATE, '%Y-%m-%d') AS RCVTIME
+            , DAYOFWEEK(SDATE) AS WEEK
+            , SUM(SNSRKWHDAILY) AS CNT
         FROM
-            F_CRN_AREA_ELEC_DAILY_STAT
+            V_2WEEKS_LEVELAREA_KWH
         WHERE
-            SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
-                  AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
-            AND GUCODE LIKE '30%'
-            AND AREACODE = #{areacode}
+            AREACODE =  #{areacode}
         GROUP BY
             SDATE, AREACODE
-
-        UNION
-
-        SELECT
-            '2' AS TYPE,
-            SDATE AS RCVTIME,
-            DAYOFWEEK(SDATE) AS WEEK,
-            IFNULL(SUM(SNSRKWHDAILY), 0) AS CNT
-        FROM
-            F_CRN_AREA_ELEC_DAILY_STAT
-        WHERE
-            SDATE >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
-            AND GUCODE LIKE '30%'
-            AND AREACODE = #{areacode}
-        GROUP BY
-            SDATE, AREACODE
-
-       UNION
-
-       SELECT
-           '2' AS TYPE
-           , DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s') AS RCVTIME
-           , DAYOFWEEK(CURDATE()) AS WEEK
-           , IFNULL(SUM(USEKWH), 0) AS CNT
-       FROM
-           F_CRN_AREA_KWH_TODAY_STAT
-       WHERE
-           GUCODE LIKE '30%'
-           AND AREACODE = #{areacode}
-       ORDER BY
-           TYPE, RCVTIME
-       ]]>
+        ]]>
     </select>
 
     <!-- 시장별 주간 경보 발생 추이 -->
     <select id="LIST_MCM_AREA_LOG_CHART_WEEK" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
-            '1' AS TYPE
-            , DATE_FORMAT(A.REGDATE, '%Y-%m-%d') AS RCVTIME
-            , DAYOFWEEK(A.REGDATE) AS WEEK
-            , COUNT(*) AS CNT
+            (CASE
+                 WHEN DATETIME <= CURDATE() - INTERVAL (DAYOFWEEK(CURDATE())) DAY THEN '1'
+                 ELSE '2'
+             END) AS TYPE
+            , DATE_FORMAT(DATETIME, '%Y-%m-%d') AS RCVTIME
+            , DAYOFWEEK(DATETIME) AS WEEK
+            , SUM(EVENTCNT) AS CNT
         FROM
-            (SELECT
-                 S.SNSRID, S.REGDATE
-             FROM
-                 (SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG_2021
-                  UNION ALL SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG) S
-             WHERE
-                 S.REGDATE > CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
-                 AND S.REGDATE < CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
-                 AND INSTR(S.ALM, '2') > 0
-            ) A
-                LEFT JOIN F_SENSOR_INFO B
-                    ON A.SNSRID = B.SNSRID
-                LEFT JOIN F_LEVEL_AREA C
-                    ON B.AREACODE = C.AREACODE
+            V_2WEEKS_LEVELAREA_EVT
         WHERE
-            CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
-            AND C.AREACODE = #{areacode}
+            AREACODE =  #{areacode}
         GROUP BY
-            DATE(A.REGDATE)
-
-        UNION
-
-        SELECT
-            '2' AS TYPE
-            , DATE_FORMAT(A.REGDATE, '%Y-%m-%d') AS RCVTUNE
-            , DAYOFWEEK(A.REGDATE) AS WEEK
-            , COUNT(*) AS CNT
-        FROM
-            (SELECT
-                 S.SNSRID, S.REGDATE
-             FROM
-                 (SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG_2021
-                  UNION ALL SELECT SNSRID, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALM FROM F_SENSOR_LOG) S
-             WHERE
-                 S.REGDATE > CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
-                 AND INSTR(S.ALM, '2') > 0
-            ) A
-                LEFT JOIN F_SENSOR_INFO B
-                    ON A.SNSRID = B.SNSRID
-                LEFT JOIN F_LEVEL_AREA C
-                    ON B.AREACODE = C.AREACODE
-        WHERE
-            CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(C.AREALEVEL, C.USEYN, C.DELYN, C.GUCODE) LIKE '1YN30%'
-            AND C.AREACODE = #{areacode}
-        GROUP BY
-            DATE(A.REGDATE)
-        ORDER BY
-            TYPE, RCVTIME
+            DATETIME, AREACODE
         ]]>
     </select>
 

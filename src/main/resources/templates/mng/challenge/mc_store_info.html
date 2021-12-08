@@ -425,14 +425,15 @@
 
           if (d.sensor.length > 0) {
             for (let i = 0; i < d.sensor.length; i++) {
-              //var lot = d[i].SNSRMGPS.split(',');
-              //var pos = new naver.maps.LatLng(lot[0], lot[1]);
               let pos = new naver.maps.LatLng(d.sensor[i].STRPOSLAT, d.sensor[i].STRPOSLON);
               if (i == 0)
                 map.setCenter(pos);
 
               marker.push(new naver.maps.Marker({
-                map: map, title: d.sensor[i].SNSRNICK, position: pos, zIndex: markZindex[d.sensor[i].STATE],
+                map: map,
+                title: d.sensor[i].SNSRNICK,
+                position: pos,
+                zIndex: markZindex[d.sensor[i].STATE],
                 icon: {
                   url: $('#contextRoot').val() + markImg[d.sensor[i].STATE][0],
                   size: new naver.maps.Size(26, 35),
@@ -441,8 +442,6 @@
                   anchor: new naver.maps.Point(13, 35)
                 }
               }));
-
-              //$('.store-sensor-cont').append('<p>' + markImg[d[i].STATE][1] + ' ' + d[i].PANELNAME + ' >' + d[i].SNSRNICK + ' (' + d[i].SNSRID + ')</p>');
           }}
         }
     });
@@ -454,8 +453,6 @@
       $('#contextRoot').val() + '/mng/areaSensorListAjax',
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
       function (d) {
-        console.log(d);
-
         $('.store-info-sensor-list').html('');
 
         for (let i = 0; i < d.length; i++) {

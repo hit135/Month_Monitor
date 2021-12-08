@@ -63,51 +63,27 @@
 
     <select id="LIST_MCST_SENSOR_STATE" parameterType="map" resultType="map">
         SELECT
-            A.PANELNAME
-            , A.SNSRID
-            , A.SNSRNICK
-            , A.SNSRMGPS
-            , COALESCE(D.DATACNT, 0) AS DATACNT
-            , B.STRPOSLAT
-            , B.STRPOSLON
+            V.PANELNAME
+            , V.SNSRID
+            , V.SNSRNICK
+            , S.STRPOSLAT
+            , S.STRPOSLON
             , (CASE
-                   WHEN C.STATE IS NOT NULL THEN C.STATE
-                   WHEN C.STATE IS NULL AND D.DATACNT > 0 THEN 'NORMAL'
-                   ELSE 'DISCON'
+                   WHEN DANGERCNT > 0 THEN 'WARNING'
+                   WHEN WARNCNT > 0 THEN 'CAUTION'
+                   WHEN ISDISCONN > 0 THEN 'DISCON'
+                   ELSE 'NORMAL'
                END) AS STATE
         FROM
-            F_SENSOR_INFO A
-                LEFT JOIN F_STORE B
-                    ON A.STRCODE = B.STRCODE
-                LEFT JOIN (SELECT
-                               SNSRID
-                               , (CASE
-                                      WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN 'WARNING'
-                                      WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '1') > 0 THEN 'CAUTION'
-                                  END) AS STATE
-                           FROM
-                               F_SENSOR_LOG
-                           WHERE
-                               REGDATE > CURDATE()
-                           GROUP BY
-                               SNSRID) C
-                    ON A.SNSRID = C.SNSRID
-                LEFT JOIN (SELECT
-                               SNSRID, COUNT(*) AS DATACNT
-                           FROM
-                               F_SENSOR_DATA
-                           WHERE
-                               SNSRRCVTIME > NOW() - INTERVAL 1 HOUR
-                           GROUP BY
-                               SNSRID) D
-                    ON A.SNSRID = D.SNSRID
+            V_TODAY_SENSOR V
+                LEFT JOIN F_STORE S
+                    ON V.STRCODE = S.STRCODE
         WHERE
-            CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
-            AND CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
-            AND B.AREACODE = #{areacode}
-            AND B.STRCODE = #{strcode}
+            V.GRPGUCODE LIKE '042|30%'
+            AND V.AREACODE = #{areacode}
+            AND V.STRCODE = #{strcode}
         ORDER BY
-            6 DESC, D.DATACNT DESC, A.PANELNAME, A.SNSRNICK
+            4 DESC, V.PANELNAME, V.SNSRNICK
     </select>
 
     <select id="SELECT_MCST_EVENT_TABLE_INFO" parameterType="map" resultType="map">
@@ -181,10 +157,9 @@
 
     <select id="LIST_MCST_DATA_LOG" parameterType="map" resultType="map">
         SELECT
-            DISTINCT A.DSEQ
+            DISTINCT A.SNSRID
             , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
             , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d') AS REGDATE
-            , A.SNSRID
             , A.SNSRKWH
             , A.SNSRVOLT
             , A.SNSRWATT
@@ -213,7 +188,8 @@
         FROM
             ${tblSensorData} A
                 LEFT JOIN ${tblSensorLog} B
-                    ON A.DSEQ = B.DSEQ
+                    ON A.SNSRID = B.SNSRID
+                    AND A.SNSRRCVTIME = B.REGDATE
                 LEFT JOIN F_SENSOR_INFO C
                     ON A.SNSRID = C.SNSRID
                 LEFT JOIN F_STORE D
@@ -254,7 +230,7 @@
             A.CNT + B.CNT + C.CNT
         FROM
             (SELECT
-                 COUNT(DSEQ) AS CNT
+                 COUNT(*) AS CNT
              FROM
                  F_SENSOR_DATA
              WHERE
@@ -262,7 +238,7 @@
                  AND SNSRID = #{snsrid}) A
             ,
             (SELECT
-                 COUNT(DSEQ) AS CNT
+                 COUNT(*) AS CNT
              FROM
                  F_SENSOR_DATA_2021
              WHERE
@@ -270,7 +246,7 @@
                  AND SNSRID = #{snsrid}) B
             ,
             (SELECT
-                 COUNT(DSEQ) AS CNT
+                 COUNT(*) AS CNT
              FROM
                  F_SENSOR_DATA_2020
              WHERE
@@ -280,8 +256,7 @@
 
     <select id="LIST_MCST_DATA_LOG_TOTAL" parameterType="map" resultType="map">
         (SELECT
-             DSEQ
-             , DATE_FORMAT(SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+             DATE_FORMAT(SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
              , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , SNSRWATT
@@ -300,8 +275,7 @@
         UNION ALL
 
         (SELECT
-             DSEQ
-             , DATE_FORMAT(SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+             DATE_FORMAT(SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
              , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , SNSRWATT
