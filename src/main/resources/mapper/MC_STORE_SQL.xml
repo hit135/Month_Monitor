@@ -22,7 +22,7 @@
             , SNSRID
             , MAX(OCALM + IGOALM + IGRALM) AS ALMCNT
         FROM
-            V_ALL_SENSOR_LOG_MAP
+            V_THIS_MON_SENSOR_LOG
         WHERE
             CONCAT(GRPCODE, GUCODE) LIKE '04230%'
             AND AREACODE = #{areacode}
@@ -325,7 +325,7 @@
             A.CNT + B.CNT + C.CNT
         FROM
             (SELECT
-                 COUNT(LSEQ) AS CNT
+                 COUNT(*) AS CNT
              FROM
                  F_SENSOR_LOG
              WHERE
@@ -340,7 +340,7 @@
                      </choose>) A
             ,
             (SELECT
-                 COUNT(LSEQ) AS CNT
+                 COUNT(*) AS CNT
              FROM
                  F_SENSOR_LOG_2021
              WHERE
@@ -355,7 +355,7 @@
                      </choose>) B
             ,
             (SELECT
-                 COUNT(LSEQ) AS CNT
+                 COUNT(*) AS CNT
              FROM
                  F_SENSOR_LOG_2020
              WHERE
@@ -372,9 +372,7 @@
 
     <select id="LIST_MCST_DATA_LOG_EVENT" parameterType="map" resultType="map">
         (SELECT
-             DSEQ
-             , LSEQ
-             , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+             DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
              , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , LCAUSE
@@ -402,9 +400,7 @@
         UNION ALL
 
         (SELECT
-             DSEQ
-             , LSEQ
-             , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+             DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
              , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , LCAUSE
@@ -432,9 +428,7 @@
         UNION ALL
 
         (SELECT
-             DSEQ
-             , LSEQ
-             , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+             DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
              , SNSRID
              , SUBSTRING(SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
              , LCAUSE

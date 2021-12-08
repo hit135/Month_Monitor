@@ -19,7 +19,7 @@
         SELECT
             COUNT(LSEQ)
         FROM
-            V_ALL_SENSOR_LOG_MAP
+            V_THIS_MON_SENSOR_LOG
         WHERE
             REGDATE BETWEEN CONCAT(#{regDate}, ' 00:00:00') AND CONCAT(#{regDate}, ' 23:59:59')
             AND (OCALM + IGOALM + IGRALM) > 0
@@ -42,7 +42,7 @@
             , DATE_FORMAT(REGDATE, '%Y-%m-%d %H:%i:%s') AS regDate
             , LCAUSE AS lCause
         FROM
-            V_ALL_SENSOR_LOG_MAP
+            V_THIS_MON_SENSOR_LOG
         WHERE
             REGDATE BETWEEN CONCAT(#{regDate}, ' 00:00:00') AND CONCAT(#{regDate}, ' 23:59:59')
             AND (OCALM + IGOALM + IGRALM) > 0
@@ -129,7 +129,7 @@
             , I.SIGO1V AS sigo1V
             , I.SIGR1V AS sigr1V
         FROM
-            V_ALL_SENSOR_LOG_MAP V
+            V_THIS_MON_SENSOR_LOG V
                 LEFT JOIN F_SENSOR_DATA D
                     ON V.DSEQ = D.DSEQ
                 LEFT JOIN F_SENSOR_INFO I

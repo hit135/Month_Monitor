@@ -18,7 +18,7 @@
                  , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
                  , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
              FROM
-                 V_ALL_SENSOR_LOG_MAP
+                 V_THIS_MON_SENSOR_LOG
              WHERE
                  GRPGUCODE LIKE '042|30%'
                  AND REGDATE > CURDATE() - INTERVAL 1 DAY
@@ -30,12 +30,12 @@
                  , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
                  , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
              FROM
-                 V_TODAY_SENSOR_LOG_MAP
+                 V_TODAY_SENSOR_LOG
              WHERE
                  GRPGUCODE LIKE '042|30%'
             ) B
             ,
-            (SELECT COUNT(*) AS SNSRCNT FROM V_ALL_SENSOR_MAP WHERE GRPGUCODE LIKE '042|30%') I
+            (SELECT COUNT(*) AS SNSRCNT FROM V_TODAY_SENSOR WHERE GRPGUCODE LIKE '042|30%') I
         ]]>
     </select>
 
@@ -51,7 +51,7 @@
                  COUNT(DISTINCT STRCODE) AS STRCNT
                  , COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
              FROM
-                 V_ALL_SENSOR_MAP
+                 V_TODAY_SENSOR
              WHERE
                  GRPGUCODE LIKE '042|30%'
             ) V
@@ -61,7 +61,7 @@
                  , COUNT(DISTINCT CASE WHEN ISDANGER = 0 AND ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
                  , COUNT(DISTINCT CASE WHEN ISALM = 0 AND DISCONN = 1 THEN SNSRSEQ END) AS DISCONNCNT
              FROM
-                 V_TODAY_SENSOR_LOG_MAP
+                 V_TODAY_SENSOR_LOG
              WHERE
                  GRPGUCODE LIKE '042|30%'
             ) L
@@ -71,7 +71,7 @@
         SELECT
             GUCODE, SNSRCNT, SNSRDISNCNT AS DISCONNCNT, DANGERCNT AS DANGERCNT, WARNCNT AS WARNINGCNT
         FROM
-            V_ALL_GU_MAP
+            V_TODAY_GU
         WHERE
             GRPGUCODE LIKE '042|30%'
     </select>
@@ -128,7 +128,7 @@
                          SELECT
                              GUCODE, COALESCE(SUM(ISALM), 0) AS EVENTCNT
                          FROM
-                             V_TODAY_SENSOR_LOG_MAP
+                             V_TODAY_SENSOR_LOG
                          WHERE
                              GRPGUCODE LIKE '042|30%'
                          GROUP BY
@@ -162,7 +162,7 @@
                  , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
                  , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
              FROM
-                 V_TODAY_SENSOR_LOG_MAP
+                 V_TODAY_SENSOR_LOG
              WHERE
                  GRPGUCODE LIKE '042|30%'
                  AND AREACODE != 'AREA_000001'
@@ -174,7 +174,7 @@
                                , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
                                , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
                            FROM
-                               V_ALL_SENSOR_LOG_MAP
+                               V_THIS_MON_SENSOR_LOG
                            WHERE
                                GRPGUCODE LIKE '042|30%'
                                AND REGDATE > CURDATE() - INTERVAL 1 DAY
@@ -203,7 +203,7 @@
                  , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
                  , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
              FROM
-                  V_TODAY_SENSOR_LOG_MAP
+                  V_TODAY_SENSOR_LOG
              WHERE
                   GRPGUCODE LIKE '042|30%'
                   AND AREACODE != 'AREA_000001'
@@ -215,7 +215,7 @@
                                , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
                                , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
                            FROM
-                               V_ALL_SENSOR_LOG_MAP
+                               V_THIS_MON_SENSOR_LOG
                            WHERE
                                GRPGUCODE LIKE '042|30%'
                                AND REGDATE > CURDATE() - INTERVAL 1 DAY
@@ -275,9 +275,9 @@
         FROM
             (SELECT
                  COUNT(DISTINCT STRCODE) AS STRCNT
-                 ,  COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
+                 , COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
              FROM
-                 V_ALL_SENSOR_MAP
+                 V_TODAY_SENSOR
              WHERE
                  CONCAT(GRPCODE, GUCODE) LIKE '04230%'
             ) V
@@ -449,7 +449,7 @@
                  (SELECT
                       DISTINCT GUCODE, GUNAME, AREACODE, AREANAME
                   FROM
-                      V_ALL_SENSOR_MAP
+                      V_TODAY_SENSOR
                   WHERE
                       GRPGUCODE LIKE '042|30%'
                       AND AREACODE != 'AREA_000001'

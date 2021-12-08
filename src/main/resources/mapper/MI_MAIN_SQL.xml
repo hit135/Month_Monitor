@@ -18,7 +18,7 @@
             (SELECT
                  SUM(SNSRCNT) AS TOTAL, SUM(SNSRDISNCNT) AS DISCON
              FROM
-                 V_ALL_AREA_MAP
+                 V_TODAY_AREA
              WHERE
                  GRPGUCODE = '032|28'
             ) A
@@ -46,7 +46,7 @@
                  , COALESCE(SUM(ISWARN), 0) AS COUNTWARN
                  , COALESCE(SUM(ISDANGER), 0) AS COUNTDANGER
              FROM
-                 V_TODAY_SENSOR_LOG_MAP
+                 V_TODAY_SENSOR_LOG
              WHERE
                  GRPGUCODE = '032|28'
             ) A
@@ -75,7 +75,7 @@
             , NULL AS UPCODE
             , SUM(DANGERCNT) * 10000 + SUM(WARNCNT) AS ORDERNUM
         FROM
-            V_ALL_AREA_MAP
+            V_TODAY_AREA
         WHERE
             GRPGUCODE = '032|28'
         GROUP BY
@@ -95,7 +95,7 @@
             , GUCODE AS UPCODE
             , 0 - (DANGERCNT * 10000 + WARNCNT) AS ORDERNUM
         FROM
-            V_ALL_AREA_MAP
+            V_TODAY_AREA
         WHERE
             GRPGUCODE = '032|28'
         ORDER BY
@@ -154,7 +154,7 @@
                  (SELECT
                       AREACODE, AREANAME, STRCODE, SNSRNICK, SNSRSEQ, DSEQ, LSEQ, ISDANGER, ISWARN
                   FROM
-                      V_TODAY_SENSOR_LOG_MAP
+                      V_TODAY_SENSOR_LOG
                   WHERE
                       GRPGUCODE = '032|28'
                  ) A
