@@ -151,13 +151,14 @@
                                                        FROM
                                                            F_SENSOR_DATA
                                                        WHERE
-                                                           SNSRSEQ = A.SNSRSEQ
+                                                           SNSRRCVTIME > CURDATE()
+                                                           AND SNSRID = A.SNSRID
                                                            AND REGDATE = A.REGDATE
                                                            AND SNSRIGO > 50) THEN 1 ELSE 0 END)
                     END) AS CNT
              FROM
                  (SELECT
-                      AREACODE, AREANAME, STRCODE, SNSRNICK, SNSRSEQ, REGDATE, ISDANGER, ISWARN
+                      AREACODE, AREANAME, STRCODE, SNSRNICK, SNSRSEQ, SNSRID, REGDATE, ISDANGER, ISWARN
                   FROM
                       V_TODAY_SENSOR_LOG
                   WHERE
