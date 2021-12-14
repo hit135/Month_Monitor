@@ -295,8 +295,8 @@ public class MCMainController {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
 
-            rtn.put("log", mcMainRepo.LIST_MCM_AREA_LOG_CHART(prm));
-            rtn.put("data", mcMainRepo.LIST_MCM_AREA_DATA_CHART(prm));
+            rtn.put("log", mcMainRepo.LIST_MCM_2DAYS_AREA_LOG_CHART(prm));
+            rtn.put("data", mcMainRepo.LIST_MCM_2DAYS_AREA_DATA_CHART(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -321,8 +321,8 @@ public class MCMainController {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("areacode", req.getParameter("areacode"));
 
-            rtn.put("log", mcMainRepo.LIST_MCM_AREA_LOG_CHART_WEEK(prm));
-            rtn.put("data", mcMainRepo.LIST_MCM_AREA_DATA_CHART_WEEK(prm));
+            rtn.put("log", mcMainRepo.LIST_MCM_2WEEKS_AREA_LOG_CHART(prm));
+            rtn.put("data", mcMainRepo.LIST_MCM_2WEEKS_AREA_DATA_CHART(prm));
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

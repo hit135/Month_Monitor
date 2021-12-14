@@ -472,7 +472,7 @@
     </select>
 
     <!-- 시장별 어제/오늘 데이터 추이 -->
-    <select id="LIST_MCM_AREA_DATA_CHART" parameterType="map" resultType="map">
+    <select id="LIST_MCM_2DAYS_AREA_DATA_CHART" parameterType="map" resultType="map">
         SELECT
             '1' AS TYPE
             , CONCAT(SUBSTR(DATE_FORMAT(A.SNSRRCVTIME, '%H:%i'), 1, 4), '0') AS RCVTIME
@@ -480,10 +480,11 @@
         FROM
             (SELECT
                  SNSRID, SNSRRCVTIME
-             FROM <choose>
-                      <when test="day == 1">F_SENSOR_DATA_2021</when>
-                      <otherwise>F_SENSOR_DATA</otherwise>
-                  </choose>
+             FROM
+                 <choose>
+                     <when test="day == 1">F_SENSOR_DATA_2021</when>
+                     <otherwise>F_SENSOR_DATA</otherwise>
+                 </choose>
              WHERE
                  SNSRRCVTIME > CURDATE() - INTERVAL 1 DAY
                  AND SNSRRCVTIME <![CDATA[<]]> CURDATE()
@@ -524,7 +525,7 @@
     </select>
 
     <!-- 시장별 어제/오늘 경보 발생 추이 -->
-    <select id="LIST_MCM_AREA_LOG_CHART" parameterType="map" resultType="map">
+    <select id="LIST_MCM_2DAYS_AREA_LOG_CHART" parameterType="map" resultType="map">
         SELECT
             '1' AS TYPE
             , CONCAT(SUBSTR(DATE_FORMAT(A.REGDATE, '%H:%i'), 1, 4), '0') AS RCVTIME
@@ -585,7 +586,7 @@
     </select>
 
     <!-- 시장별 주간 데이터 추이 -->
-    <select id="LIST_MCM_AREA_DATA_CHART_WEEK" parameterType="map" resultType="map">
+    <select id="LIST_MCM_2WEEKS_AREA_DATA_CHART" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             (CASE
@@ -605,7 +606,7 @@
     </select>
 
     <!-- 시장별 주간 경보 발생 추이 -->
-    <select id="LIST_MCM_AREA_LOG_CHART_WEEK" parameterType="map" resultType="map">
+    <select id="LIST_MCM_2WEEKS_AREA_LOG_CHART" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             (CASE
