@@ -450,7 +450,7 @@
   // 센서 목록
   function fn_mcsti_getStoreInfoSensorList() {
     $.post(
-      $('#contextRoot').val() + '/mng/areaSensorListAjax',
+      $('#contextRoot').val() + '/mng/todayAreaSensorStateAjax',
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
       function (d) {
         $('.store-info-sensor-list').html('');

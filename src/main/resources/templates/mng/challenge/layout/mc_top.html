@@ -80,7 +80,7 @@ $(function () {
 });
 
 function fn_mclt_initTop() {
-  fn_mclt_getSensorCount();
+  fn_mclt_getTodayTotalState();
 
   $.template(
     'top-search-result',
@@ -105,12 +105,13 @@ function fn_mclt_initTop() {
 }
 
 function fn_mclt_refreshTop() {
-  fn_mclt_getSensorCount();
+  fn_mclt_getTodayTotalState();
 }
 
-function fn_mclt_getSensorCount() {
+// 금일 종합 현황
+function fn_mclt_getTodayTotalState() {
   $.post(
-    $('#contextRoot').val() + '/mng/sensorCountAjax',
+    $('#contextRoot').val() + '/mng/todayTotalStateAjax',
     {},
     function (d) {
       for (let i = 0; i < d.length; i++)

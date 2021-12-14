@@ -121,7 +121,7 @@
 
   function fn_mcstc_getStoreSensor() {
     $.post(
-      $('#contextRoot').val() + '/mng/areaSensorListAjax',
+      $('#contextRoot').val() + '/mng/todayAreaSensorStateAjax',
       { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
       function(d) {
         $('.store-chart-sensor-list').html('');

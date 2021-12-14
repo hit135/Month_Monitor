@@ -96,20 +96,20 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmSensorCount
+     * @Method Name : mcmTodayTotalState
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
-     * @Method 설명 : 종합 현황 조회 (전체, 경고, 주의, 끊김)
+     * @Method 설명 : 오늘 종합 현황 조회 (전체, 경고, 주의, 끊김)
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/sensorCountAjax")
+    @RequestMapping(value = "/todayTotalStateAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmSensorCount(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmTodayTotalState(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mcMainRepo.LIST_MCM_SENSOR_CNT(prm);
+            return mcMainRepo.LIST_MCM_TODAY_TOTAL_STATE(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -118,20 +118,20 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmAreaList
+     * @Method Name : mcmTodayGuAreaState
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
-     * @Method 설명 : 구별, 시장별 센서 현황 조회 (상점, 센서, 경고, 주의, 끊김)
+     * @Method 설명 : 오늘 구별, 시장별 센서 현황 조회 (상점, 센서, 경고, 주의, 끊김)
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/areaListAjax")
+    @RequestMapping(value = "/todayGuAreaStateAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmAreaList(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmTodayGuAreaState(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mcMainRepo.LIST_MCM_AREA(prm);
+            return mcMainRepo.LIST_MCM_TODAY_GU_AREA_STATE(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -162,20 +162,20 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmSensorList
+     * @Method Name : mcmAbnormalSensorList
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
-     * @Method 설명 : 상태이상 센서 목록 조회
+     * @Method 설명 : 오늘 상태이상 센서 목록 조회
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/sensorListAjax")
+    @RequestMapping(value = "/todayAbnormalSensorListAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmSensorList(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmTodayAbnormalSensorList(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
-            return mcMainRepo.LIST_MCM_SENSOR(prm);
+            return mcMainRepo.LIST_MCM_TODAY_ABNORMAL_SENSOR(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -184,44 +184,21 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmAreaSensorCount
+     * @Method Name : mcmTodayAreaState
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
-     * @Method 설명 : 시장 현황 조회 (전체, 경고, 주의, 끊김)
+     * @Method 설명 : 오늘 시장 현황 조회 (전체, 경고, 주의, 끊김)
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/areaSensorCountAjax")
+    @RequestMapping(value = "/todayAreaStateAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcmAreaSensorCount(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
-        try {
-            prm.put("areacode", req.getParameter("areacode"));
-            return mcMainRepo.LIST_MCM_AREA_SENSOR_CNT(prm);
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return null;
-    }
-
-    /**
-     * @Method Name : mcmAreaStoreList
-     * @작성일 : 2021-07-09
-     * @작성자 : jjm
-     * @변경이력 :
-     * @Method 설명 : 시장 내 상점 현황 조회 (경고, 주의, 끊김, 센서)
-     * @return List<HashMap<String, Object>>
-     */
-    @RequestMapping(value = "/areaStoreListAjax")
-    @ResponseBody
-    public List<HashMap<String, Object>> mcmAreaStoreList(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmTodayAreaState(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
-            return mcMainRepo.LIST_MCM_AREA_STORE(prm);
+            return mcMainRepo.LIST_MCM_TODAY_AREA_STATE(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -230,23 +207,46 @@ public class MCMainController {
     }
 
     /**
-     * @Method Name : mcmAreaSensorList
+     * @Method Name : mcmTodayAreaStoreState
      * @작성일 : 2021-07-09
      * @작성자 : jjm
      * @변경이력 :
-     * @Method 설명 : 시장 내 센서 현황 조회 (경고, 주의, 끊김, 점검)
+     * @Method 설명 : 오늘 시장 내 상점 현황 조회 (경고, 주의, 끊김, 센서)
      * @return List<HashMap<String, Object>>
      */
-    @RequestMapping(value = "/areaSensorListAjax")
+    @RequestMapping(value = "/todayAreaStoreStateAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mcmAreaSensorList(HttpServletRequest req) throws Exception {
+    public List<HashMap<String, Object>> mcmTodayAreaStoreState(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            return mcMainRepo.LIST_MCM_TODAY_AREA_STORE_STATE(prm);
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * @Method Name : mcmTodayAreaSensorState
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 오늘 시장 내 센서 현황 조회 (경고, 주의, 끊김, 점검)
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/todayAreaSensorStateAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> mcmTodayAreaSensorState(HttpServletRequest req) throws Exception {
         HashMap<String, Object> prm = new HashMap<>();
 
         try {
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("strcode", req.getParameter("strcode"));
 
-            return mcMainRepo.LIST_MCM_AREA_SENSOR(prm);
+            return mcMainRepo.LIST_MCM_TODAY_AREA_SENSOR_STATE(prm);
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

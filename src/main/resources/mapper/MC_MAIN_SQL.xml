@@ -3,8 +3,8 @@
 
 <mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCMainRepo">
 
-    <!-- 종합 현황 (전체, 경고, 주의, 끊김) -->
-    <select id="LIST_MCM_SENSOR_CNT" parameterType="map" resultType="map">
+    <!-- 오늘 종합 현황 (전체, 경고, 주의, 끊김) -->
+    <select id="LIST_MCM_TODAY_TOTAL_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             'TODAY' TERM
@@ -46,20 +46,29 @@
                END) AS CNT
         FROM
             (SELECT
-                 COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS TODAYWARN
-                 , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS TODAYDANGER
-                 , COALESCE(SUM(ISWARN), 0) AS COUNTWARN
-                 , COALESCE(SUM(ISDANGER), 0) AS COUNTDANGER
+                 COUNT(DISTINCT CASE WHEN INSTR(CONCAT(L.OCALM, L.IGOALM, L.IGRALM), '2') > 0 THEN I.SNSRSEQ END) AS TODAYDANGER
+                 , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(L.OCALM, L.IGOALM, L.IGRALM), '1') > 0 THEN I.SNSRSEQ END) AS TODAYWARN
+                 , SUM(CASE WHEN INSTR(CONCAT(L.OCALM, L.IGOALM, L.IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS COUNTDANGER
+                 , SUM(CASE WHEN INSTR(CONCAT(L.OCALM, L.IGOALM, L.IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS COUNTWARN
              FROM
-                 V_TODAY_SENSOR_LOG
+                 F_SENSOR_LOG L
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON L.SNSRSEQ = I.SNSRSEQ
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
              WHERE
-                 GRPGUCODE LIKE '042|30%'
-                 AND STRCODE != 'FS_STR_0000000001859'
+                 L.REGDATE > CURDATE()
+                 AND L.OCALM + L.IGOALM + L.IGRALM > 0
+                 AND L.ISSIMUL = 0
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND S.STRCODE != 'FS_STR_0000000001859'
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) A
-                CROSS JOIN (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
-                            UNION ALL SELECT 'COUNT', 'WARN', 4
-                            UNION ALL SELECT 'TODAY', 'DANGER', 5
-                            UNION ALL SELECT 'COUNT', 'DANGER', 6) B
+            ,
+            (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
+             UNION ALL SELECT 'COUNT', 'WARN', 4
+             UNION ALL SELECT 'TODAY', 'DANGER', 5
+             UNION ALL SELECT 'COUNT', 'DANGER', 6) B
         GROUP BY
             B.TERM, B.TYPE
         ORDER BY
@@ -67,8 +76,8 @@
         ]]>
     </select>
 
-    <!-- 구별, 시장별 센서 현황 (상점, 센서, 경고, 주의, 끊김) -->
-    <select id="LIST_MCM_AREA" parameterType="map" resultType="map">
+    <!-- 오늘 구별, 시장별 센서 현황 (상점, 센서, 경고, 주의, 끊김) -->
+    <select id="LIST_MCM_TODAY_GU_AREA_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             1 AS LEVEL
@@ -111,9 +120,9 @@
                                ) S
                          ON A.AREACODE = S.AREACODE
                      LEFT JOIN (SELECT
-                                    A.STRCODE, A.SNSRSEQ, A.DATARCVTIME, B.DANGERSNSRCNT, B.WARNSNSRCNT
+                                    I1.STRCODE, I1.SNSRSEQ, I1.DATARCVTIME, I2.DANGERSNSRCNT, I2.WARNSNSRCNT
                                 FROM
-                                    F_SENSOR_INFO A
+                                    F_SENSOR_INFO I1
                                         LEFT JOIN (SELECT
                                                        SNSRSEQ
                                                        , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
@@ -126,12 +135,12 @@
                                                        AND ISSIMUL = 0
                                                    GROUP BY
                                                        SNSRSEQ
-                                                  ) B
-                                            ON A.SNSRSEQ = B.SNSRSEQ
+                                                  ) I2
+                                            ON I1.SNSRSEQ = I2.SNSRSEQ
                                 WHERE
-                                    A.DELYN = 'N'
+                                    CONCAT(I1.DELYN, I1.STRCODE) LIKE 'NFS_STR_%'
                                 GROUP BY
-                                    A.SNSRSEQ
+                                    I1.SNSRSEQ
                                ) I
                          ON S.STRCODE = I.STRCODE
              WHERE
@@ -176,9 +185,9 @@
                                ) S
                          ON A.AREACODE = S.AREACODE
                      LEFT JOIN (SELECT
-                                    A.STRCODE, A.SNSRSEQ, A.DATARCVTIME, B.DANGERSNSRCNT, B.WARNSNSRCNT
+                                    I1.STRCODE, I1.SNSRSEQ, I1.DATARCVTIME, I2.DANGERSNSRCNT, I2.WARNSNSRCNT
                                 FROM
-                                    F_SENSOR_INFO A
+                                    F_SENSOR_INFO I1
                                         LEFT JOIN (SELECT
                                                        SNSRSEQ
                                                        , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
@@ -191,12 +200,12 @@
                                                        AND ISSIMUL = 0
                                                    GROUP BY
                                                        SNSRSEQ
-                                                  ) B
-                                            ON A.SNSRSEQ = B.SNSRSEQ
+                                                  ) I2
+                                            ON I1.SNSRSEQ = I2.SNSRSEQ
                                 WHERE
-                                    A.DELYN = 'N'
+                                    CONCAT(I1.DELYN, I1.STRCODE) LIKE 'NFS_STR_%'
                                 GROUP BY
-                                    A.SNSRSEQ
+                                    I1.SNSRSEQ
                                ) I
                          ON S.STRCODE = I.STRCODE
              WHERE
@@ -239,46 +248,73 @@
             A.STATE, A.CNT DESC
     </select>
 
-    <!-- 상태이상 센서 목록 -->
-    <select id="LIST_MCM_SENSOR" parameterType="map" resultType="map">
-        <![CDATA[
+    <!-- 오늘 상태이상 센서 목록 -->
+    <select id="LIST_MCM_TODAY_ABNORMAL_SENSOR" parameterType="map" resultType="map">
         SELECT
             S.AREACODE, S.AREANAME, S.STRCODE, S.SNSRSEQ, S.SNSRNICK, S.STATE, S.CNT
         FROM
             (SELECT
                  A.AREACODE
                  , A.AREANAME
-                 , A.STRCODE
-                 , A.SNSRSEQ
-                 , A.SNSRNICK
+                 , S.STRCODE
+                 , I.SNSRSEQ
+                 , I.SNSRNICK
                  , B.STATE
                  , (CASE
-                        WHEN B.STATE = 'DANGER' THEN COALESCE(SUM(A.ISDANGER), 0)
-                        WHEN B.STATE = 'WARN' THEN COALESCE(SUM(A.ISWARN), 0)
+                        WHEN B.STATE = 'DANGER' THEN COALESCE(L.DANGERCNT, 0)
+                        WHEN B.STATE = 'WARN' THEN COALESCE(L.WARNCNT, 0)
+                        WHEN B.STATE = 'BROKEN' THEN COALESCE(D.BROKENCNT, 0)
                     END) AS CNT
              FROM
-                 (SELECT
-                      AREACODE, AREANAME, STRCODE, SNSRNICK, SNSRSEQ, SNSRID, REGDATE, ISDANGER, ISWARN
-                  FROM
-                      V_TODAY_SENSOR_LOG
-                  WHERE
-                      GRPGUCODE LIKE '042|30%'
-                 ) A
-                     CROSS JOIN (SELECT 'DANGER' AS STATE
-                                 UNION ALL SELECT 'WARN'
-                                 UNION ALL SELECT 'BROKEN') B
-             GROUP BY
-                 A.AREACODE, A.STRCODE, A.SNSRSEQ, B.STATE
+                 F_SENSOR_INFO I
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+                     LEFT JOIN F_LEVEL_AREA A
+                         ON S.AREACODE = A.AREACODE
+                     LEFT JOIN (SELECT
+                                    SNSRSEQ, COUNT(*) AS BROKENCNT
+                                FROM
+                                    F_SENSOR_DATA
+                                WHERE
+                                    SNSRRCVTIME > CURDATE()
+                                    AND SNSRIGO > 50
+                                    AND ISSIMUL = 0
+                                GROUP BY
+                                    SNSRSEQ
+                               ) D
+                         ON I.SNSRSEQ = D.SNSRSEQ
+                     LEFT JOIN (SELECT
+                                    SNSRSEQ
+                                    , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                                    , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARNCNT
+                                FROM
+                                    F_SENSOR_LOG
+                                WHERE
+                                    REGDATE > CURDATE()
+                                    AND OCALM + IGOALM + IGRALM > 0
+                                    AND ISSIMUL = 0
+                                GROUP BY
+                                    SNSRSEQ
+                               ) L
+                         ON I.SNSRSEQ = L.SNSRSEQ
+                 ,
+                 (SELECT 'DANGER' AS STATE
+                  UNION ALL SELECT 'WARN'
+                  UNION ALL SELECT 'BROKEN') B
+             WHERE
+                 CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND S.STRCODE != 'FS_STR_0000000001859'
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) S
         WHERE
             S.CNT > 0
         ORDER BY
             S.STATE, S.CNT DESC
-        ]]>
     </select>
 
-    <!-- 시장 현황 (전체, 경고, 주의, 끊김) -->
-    <select id="LIST_MCM_AREA_SENSOR_CNT" parameterType="map" resultType="map">
+    <!-- 오늘 시장 현황 (전체, 경고, 주의, 끊김) -->
+    <select id="LIST_MCM_TODAY_AREA_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             A.AREACODE
@@ -299,9 +335,9 @@
                           ) S
                     ON A.AREACODE = S.AREACODE
                 LEFT JOIN (SELECT
-                               A.STRCODE, A.SNSRSEQ, A.DATARCVTIME, B.DANGERCNT, B.WARNCNT
+                               I1.STRCODE, I1.SNSRSEQ, I1.DATARCVTIME, I2.DANGERCNT, I2.WARNCNT
                            FROM
-                               F_SENSOR_INFO A
+                               F_SENSOR_INFO I1
                                    LEFT JOIN (SELECT
                                                   SNSRSEQ
                                                   , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
@@ -314,12 +350,12 @@
                                                   AND ISSIMUL = 0
                                               GROUP BY
                                                   SNSRSEQ
-                                             ) B
-                                       ON A.SNSRSEQ = B.SNSRSEQ
+                                             ) I2
+                                       ON I1.SNSRSEQ = I2.SNSRSEQ
                            WHERE
-                               DELYN = 'N'
+                               CONCAT(I1.DELYN, I1.STRCODE) LIKE 'NFS_STR_%'
                            GROUP BY
-                               SNSRSEQ
+                               I1.SNSRSEQ
                           ) I
                     ON S.STRCODE = I.STRCODE
         WHERE
@@ -328,8 +364,8 @@
         ]]>
     </select>
 
-    <!-- 시장 내 상점 현황 (경고, 주의, 끊김, 센서) -->
-    <select id="LIST_MCM_AREA_STORE" parameterType="map" resultType="map">
+    <!-- 오늘 시장 내 상점 현황 (경고, 주의, 끊김, 센서) -->
+    <select id="LIST_MCM_TODAY_AREA_STORE_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             A.AREACODE
@@ -344,9 +380,9 @@
                 LEFT JOIN F_LEVEL_AREA A
                     ON S.AREACODE = A.AREACODE
                 LEFT JOIN (SELECT
-                               A.STRCODE, A.SNSRSEQ, A.DATARCVTIME, B.DANGERCNT, B.WARNCNT
+                               I1.STRCODE, I1.SNSRSEQ, I1.DATARCVTIME, I2.DANGERCNT, I2.WARNCNT
                            FROM
-                               F_SENSOR_INFO A
+                               F_SENSOR_INFO I1
                                    LEFT JOIN (SELECT
                                                   SNSRSEQ
                                                   , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
@@ -359,12 +395,13 @@
                                                   AND ISSIMUL = 0
                                               GROUP BY
                                                   SNSRSEQ
-                                             ) B
-                                       ON A.SNSRSEQ = B.SNSRSEQ
+                                             ) I2
+                                       ON I1.SNSRSEQ = I2.SNSRSEQ
                            WHERE
-                               DELYN = 'N'
+                               CONCAT(I1.DELYN, I1.STRCODE) LIKE 'NFS_STR_%'
                            GROUP BY
-                               SNSRSEQ) I
+                               I1.SNSRSEQ
+                          ) I
                     ON S.STRCODE = I.STRCODE
         WHERE
             CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
@@ -378,8 +415,8 @@
         ]]>
     </select>
 
-    <!-- 시장 내 센서 현황 (경고, 주의, 끊김, 점검) -->
-    <select id="LIST_MCM_AREA_SENSOR" parameterType="map" resultType="map">
+    <!-- 오늘 시장 내 센서 현황 (경고, 주의, 끊김, 점검) -->
+    <select id="LIST_MCM_TODAY_AREA_SENSOR_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
             ROW_NUMBER() OVER () AS ROWNUM

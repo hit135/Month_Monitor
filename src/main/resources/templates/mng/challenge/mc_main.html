@@ -209,7 +209,7 @@ function fn_mcm_initMainAreaList() {
 
   // 구별, 시장별 센서 현황
   $.post(
-    $('#contextRoot').val() + '/mng/areaListAjax',
+    $('#contextRoot').val() + '/mng/todayGuAreaStateAjax',
     {},
     function (d) {
       if (d) {
@@ -275,7 +275,7 @@ function fn_mcm_toggleCenterCont() {
 // 시장 현황 목록 갱신 조회
 function fn_mcm_updateMainAreaList(/*id*/) {
   $.post(
-    $('#contextRoot').val() + '/mng/areaListAjax',
+    $('#contextRoot').val() + '/mng/todayGuAreaStateAjax',
     {},
     function (d) {
       if (d) {
@@ -471,15 +471,15 @@ function fn_mcm_onAreaLv2(code, strcode, snsrid) {
     $('.left .area-lv2').removeClass('on');
     $('.left .area-lv2[data-code="' + code + '"]').addClass('on');
 
-    fn_mcm_getAreaSensorCount(code);
-    fn_mcm_getAreaStoreList(code, strcode, snsrid);
+    fn_mcm_getTodayAreaState(code);
+    fn_mcm_getTodayAreaStoreState(code, strcode, snsrid);
   }
 }
 
-// 상점 화면 시장 내 센서 상태 조회 (전체, 경고, 주의, 끊김)
-function fn_mcm_getAreaSensorCount(code) {
+// 오늘 상점 화면 시장 내 센서 상태 조회 (전체, 경고, 주의, 끊김)
+function fn_mcm_getTodayAreaState(code) {
   $.post(
-    $('#contextRoot').val() + '/mng/areaSensorCountAjax',
+    $('#contextRoot').val() + '/mng/todayAreaStateAjax',
     { areacode: code },
     function (d) {
       if (d) {
@@ -494,13 +494,13 @@ function fn_mcm_getAreaSensorCount(code) {
 }
 
 // 시장 내 상점 목록 조회
-function fn_mcm_getAreaStoreList(code, strcode, snsrid) {
+function fn_mcm_getTodayAreaStoreState(code, strcode, snsrid) {
   let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
   if (strcode)
     on_strcode = strcode;
 
   $.post(
-    $('#contextRoot').val() + '/mng/areaStoreListAjax',
+    $('#contextRoot').val() + '/mng/todayAreaStoreStateAjax',
     { areacode: code },
     function (d) {
       $('.center-left-sensor-list').html('');
@@ -556,8 +556,8 @@ function fn_mcm_clickAreaLv2(code) {
   window.center_name = 'store';
 
   fn_mcm_toggleCenterCont();
-  fn_mcm_getAreaSensorCount(code);
-  fn_mcm_getAreaStoreList(code);
+  fn_mcm_getTodayAreaState(code);
+  fn_mcm_getTodayAreaStoreState(code);
 }
 
 // 경고 / 주의 / 고장에서 성점 선택

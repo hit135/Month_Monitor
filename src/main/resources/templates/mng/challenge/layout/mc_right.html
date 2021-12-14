@@ -41,7 +41,7 @@ function fn_mclr_refreshRight() {
 
 function fn_mclr_getRightSensorList() {
   $.post(
-    $('#contextRoot').val() + '/mng/sensorListAjax',
+    $('#contextRoot').val() + '/mng/todayAbnormalSensorListAjax',
     {},
     function (d) {
       $('.list-sensor').html('');
