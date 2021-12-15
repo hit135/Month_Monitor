@@ -141,14 +141,7 @@
             , COALESCE(A.EVENTCNT, 0) AS THATEVENTCNT
             , COALESCE(B.EVENTCNT, 0) AS THISEVENTCNT
         FROM
-            (SELECT
-                 DISTINCT GUCODE
-             FROM
-                 F_GUCODE
-             WHERE
-                 CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%'
-                 AND GUCODE != '30200'
-            ) L
+            (SELECT GUCODE FROM F_GUCODE WHERE CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%') L
                 LEFT JOIN (SELECT
                                GUCODE
                                , COALESCE(SUM(TOTOCALM) + SUM(TOTIGALM), 0) AS EVENTCNT
@@ -158,7 +151,6 @@
                                GUCODE LIKE '30%'
                                AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
                                AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
-                               AND GUCODE != '30200'
                                AND STRCODE != 'FS_STR_0000000001859'
                            GROUP BY
                                GUCODE
@@ -176,7 +168,6 @@
                                 WHERE
                                     GUCODE LIKE '30%'
                                     AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
-                                    AND GUCODE != '30200'
                                     AND STRCODE != 'FS_STR_0000000001859'
                                 GROUP BY
                                     GUCODE
@@ -251,7 +242,7 @@
                      LEFT JOIN F_GUCODE G
                          ON A.GUCODE = G.GUCODE
              WHERE
-                 G.USEYN = 'Y'
+                 CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
                  AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                  AND A.AREACODE != 'AREA_000001'
                  AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
@@ -285,7 +276,7 @@
                                    LEFT JOIN F_GUCODE G
                                        ON A.GUCODE = G.GUCODE
                            WHERE
-                               G.USEYN = 'Y'
+                               CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
                                AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                                AND A.AREACODE != 'AREA_000001'
                                AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
@@ -330,7 +321,7 @@
                       LEFT JOIN F_GUCODE G
                           ON A.GUCODE = G.GUCODE
              WHERE
-                 G.USEYN = 'Y'
+                 CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
                  AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                  AND A.AREACODE != 'AREA_000001'
                  AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
@@ -362,7 +353,7 @@
                                    LEFT JOIN F_GUCODE G
                                        ON A.GUCODE = G.GUCODE
                            WHERE
-                               G.USEYN = 'Y'
+                               CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
                                AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                                AND A.AREACODE != 'AREA_000001'
                                AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
@@ -386,17 +377,20 @@
             (SELECT
                  SUM(SNSRKWHDAILY) AS USEKWH
              FROM
-                 F_CRN_AREA_ELEC_DAILY_STAT
+                 F_ELEC_SENSOR_STAT
              WHERE
                  GUCODE LIKE '30%'
-                 AND SDATE = CURDATE() - INTERVAL 1 DAY) A
+                 AND STRCODE != 'FS_STR_0000000001859'
+                 AND SDATE = CURDATE() - INTERVAL 1 DAY
+            ) A
             ,
             (SELECT
                  SUM(SNSRKWHDAILY) AS USEKWH
              FROM
-                 F_CRN_AREA_ELEC_DAILY_STAT
+                 F_ELEC_SENSOR_STAT
              WHERE
                  GUCODE LIKE '30%'
+                 AND STRCODE != 'FS_STR_0000000001859'
                  AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
                            AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
             ) B
@@ -404,9 +398,10 @@
             (SELECT
                  SUM(SNSRKWHDAILY) AS USEKWH
              FROM
-                 F_CRN_AREA_ELEC_DAILY_STAT
+                 F_ELEC_SENSOR_STAT
              WHERE
                  GUCODE LIKE '30%'
+                 AND STRCODE != 'FS_STR_0000000001859'
                  AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
                  AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
             ) C
@@ -414,6 +409,7 @@
     </select>
 
     <select id="SELECT_MCD_CURR_KWH_STAT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
             V.STRCNT
             , V.SNSRCNT
@@ -422,30 +418,36 @@
             , (B.USEKWH / A.USEKWH) * 100 AS USEPER
         FROM
             (SELECT
-                 COUNT(DISTINCT STRCODE) AS STRCNT
-                 , COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
+                 COUNT(DISTINCT I.STRCODE) AS STRCNT
+                 , COUNT(DISTINCT I.SNSRSEQ) AS SNSRCNT
              FROM
-                 V_TODAY_SENSOR
+                 (SELECT SNSRSEQ, STRCODE FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
              WHERE
-                 CONCAT(GRPCODE, GUCODE) LIKE '04230%'
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND S.STRCODE != 'FS_STR_0000000001859'
             ) V
             ,
             (SELECT
                  SUM(SNSRKWHDAILY) AS USEKWH
              FROM
-                 F_CRN_AREA_ELEC_DAILY_STAT
+                 F_ELEC_SENSOR_STAT
              WHERE
                  GUCODE LIKE '30%'
+                 AND STRCODE != 'FS_STR_0000000001859'
                  AND SDATE = CURDATE() - INTERVAL 1 DAY
             ) A
             ,
             (SELECT
                  SUM(USEKWH) AS USEKWH
              FROM
-                 F_CRN_AREA_KWH_TODAY_STAT
+                 F_CRN_SNSR_KWH_TODAY_STAT
              WHERE
                  GUCODE LIKE '30%'
+                 AND STRCODE != 'FS_STR_0000000001859'
             ) B
+        ]]>
     </select>
 
     <select id="LIST_MCD_GU_MAP_KWH_STAT" parameterType="map" resultType="map">
@@ -454,55 +456,47 @@
             , COALESCE(A.USEKWH, 0) AS THATWEEKUSEKWH
             , COALESCE(B.USEKWH, 0) AS THISWEEKUSEKWH
         FROM
-            (SELECT
-                 DISTINCT GUCODE
-             FROM
-                 F_GUCODE
-             WHERE
-                 CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%'
-            ) L
-                LEFT JOIN
-                    (SELECT
-                         GUCODE, SUM(SNSRKWHDAILY) AS USEKWH
-                     FROM
-                         F_CRN_AREA_ELEC_DAILY_STAT
-                     WHERE
-                         GUCODE LIKE '30%'
-                         AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
-                                   AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
-                     GROUP BY
-                         GUCODE
-                    ) A
-                        ON L.GUCODE = A.GUCODE
-                LEFT JOIN
-                    (SELECT
-                         SS.GUCODE, COALESCE(SUM(USEKWH), 0) AS USEKWH
-                     FROM
-                         (SELECT
-                              GUCODE, SUM(SNSRKWHDAILY) AS USEKWH
-                          FROM
-                              F_CRN_AREA_ELEC_DAILY_STAT
-                          WHERE
-                              GUCODE LIKE '30%'
-                              AND SDATE >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
-                          GROUP BY
-                              GUCODE
+            (SELECT GUCODE FROM F_GUCODE WHERE CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%') L
+                LEFT JOIN (SELECT
+                               GUCODE, SUM(SNSRKWHDAILY) AS USEKWH
+                           FROM
+                               F_ELEC_SENSOR_STAT
+                           WHERE
+                               GUCODE LIKE '30%'
+                               AND STRCODE != 'FS_STR_0000000001859'
+                               AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
+                                         AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
+                           GROUP BY
+                               GUCODE) A
+                    ON L.GUCODE = A.GUCODE
+                LEFT JOIN (SELECT
+                               SS.GUCODE, COALESCE(SUM(USEKWH), 0) AS USEKWH
+                           FROM
+                               (SELECT
+                                    GUCODE, SUM(SNSRKWHDAILY) AS USEKWH
+                                FROM
+                                    F_ELEC_SENSOR_STAT
+                                WHERE
+                                    GUCODE LIKE '30%'
+                                    AND STRCODE != 'FS_STR_0000000001859'
+                                    AND SDATE >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
+                                GROUP BY
+                                    GUCODE
 
-                          UNION ALL
+                                UNION ALL
 
-                          SELECT
-                              GUCODE, SUM(USEKWH) AS USEKWH
-                          FROM
-                              F_CRN_AREA_KWH_TODAY_STAT
-                          WHERE
-                              GUCODE LIKE '30%'
-                              AND DATETIME > CURDATE()
-                          GROUP BY
-                              GUCODE) SS
-                     GROUP BY
-                         SS.GUCODE
-                    ) B
-                        ON L.GUCODE = B.GUCODE
+                                SELECT
+                                    GUCODE, SUM(USEKWH) AS USEKWH
+                                FROM
+                                    F_CRN_SNSR_KWH_TODAY_STAT
+                                WHERE
+                                    GUCODE LIKE '30%'
+                                    AND STRCODE != 'FS_STR_0000000001859'
+                                GROUP BY
+                                    GUCODE) SS
+                           GROUP BY
+                               SS.GUCODE) B
+                    ON L.GUCODE = B.GUCODE
         ORDER BY
             L.GUCODE
     </select>
@@ -515,58 +509,47 @@
             , B.USEKWH AS THISMONTHUSEKWH
             , (B.USEKWH / A.USEKWH) * 100 AS USEPER
         FROM
-            (SELECT
-                 DISTINCT GUCODE, AREACODE
-             FROM
-                 F_LEVEL_AREA
-             WHERE
-                 CONCAT(AREALEVEL, USEYN, DELYN, GUCODE) LIKE '1YN30%'
-                 AND GUCODE != '30200'
-            ) L
-                LEFT JOIN
-                    (SELECT
-                         GUCODE, SUM(SNSRKWHDAILY) AS USEKWH
-                     FROM
-                         F_CRN_AREA_ELEC_DAILY_STAT
-                     WHERE
-                         GUCODE LIKE '30%'
-                         AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
-                         AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
-                         AND GUCODE != '30200'
-                     GROUP BY
-                         GUCODE
-                    ) A
-                        ON L.GUCODE = A.GUCODE
-                LEFT JOIN
-                    (SELECT
-                         SS.GUCODE, COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
-                     FROM
-                         (SELECT
-                              GUCODE, SUM(SNSRKWHDAILY) AS USEKWH
-                          FROM
-                              F_CRN_AREA_ELEC_DAILY_STAT
-                          WHERE
-                              GUCODE LIKE '30%'
-                              AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
-                              AND GUCODE != '30200'
-                          GROUP BY
-                              GUCODE
+            (SELECT GUCODE, AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN, GUCODE) LIKE '1YN30%') L
+                LEFT JOIN (SELECT
+                               GUCODE, SUM(SNSRKWHDAILY) AS USEKWH
+                           FROM
+                               F_ELEC_SENSOR_STAT
+                           WHERE
+                               GUCODE LIKE '30%'
+                               AND STRCODE != 'FS_STR_0000000001859'
+                               AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                               AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
+                           GROUP BY
+                               GUCODE) A
+                    ON L.GUCODE = A.GUCODE
+                LEFT JOIN (SELECT
+                               SS.GUCODE, COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
+                           FROM
+                               (SELECT
+                                    GUCODE, SUM(SNSRKWHDAILY) AS USEKWH
+                                FROM
+                                    F_ELEC_SENSOR_STAT
+                                WHERE
+                                    GUCODE LIKE '30%'
+                                    AND STRCODE != 'FS_STR_0000000001859'
+                                    AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
+                                GROUP BY
+                                    GUCODE
 
-                          UNION ALL
+                                UNION ALL
 
-                          SELECT
-                              GUCODE, SUM(USEKWH) AS USEKWH
-                          FROM
-                              F_CRN_AREA_KWH_TODAY_STAT
-                          WHERE
-                              GUCODE LIKE '30%'
-                              AND DATETIME > CURDATE()
-                              AND GUCODE != '30200'
-                          GROUP BY
-                              GUCODE) SS
-                     GROUP BY SS.GUCODE
-                    ) B
-                        ON L.GUCODE = B.GUCODE
+                                SELECT
+                                    GUCODE, SUM(USEKWH) AS USEKWH
+                                FROM
+                                    F_CRN_SNSR_KWH_TODAY_STAT
+                                WHERE
+                                    GUCODE LIKE '30%'
+                                    AND STRCODE != 'FS_STR_0000000001859'
+                                GROUP BY
+                                    GUCODE) SS
+                           GROUP BY
+                               SS.GUCODE) B
+                    ON L.GUCODE = B.GUCODE
         ORDER BY
             L.GUCODE
         ]]>
@@ -595,62 +578,72 @@
                  , COALESCE(R.USEKWH, 0) AS USEKWH
              FROM
                  (SELECT
-                      DISTINCT GUCODE, GUNAME, AREACODE, AREANAME
+                      G.GUCODE, G.GUNAME, A.AREACODE, A.AREANAME
                   FROM
-                      V_TODAY_SENSOR
-                  WHERE
-                      GRPGUCODE LIKE '042|30%'
-                      AND AREACODE != 'AREA_000001'
+                      (SELECT
+                           GUCODE, GUNAME
+                       FROM
+                           F_GUCODE
+                       WHERE
+                           CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%'
+                      ) G
+                          LEFT JOIN (SELECT
+                                         GUCODE, AREACODE, AREANAME
+                                     FROM
+                                         F_LEVEL_AREA
+                                     WHERE
+                                         CONCAT(AREALEVEL, USEYN, DELYN, GUCODE) LIKE '1YN30%'
+                                         AND AREACODE != 'AREA_000001'
+                                    ) A
+                              ON A.GUCODE = G.GUCODE
                  ) L
-                    LEFT JOIN
-                        (SELECT
-                              AREACODE
-                              , SUM(SNSRKWHDAILY) AS USEKWH
-                         FROM
-                              F_CRN_AREA_ELEC_DAILY_STAT SS
-                         WHERE
-                              GUCODE LIKE '30%'
-                              AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
-                              AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
-                              AND AREACODE != 'AREA_000001'
-                         GROUP BY
-                              AREACODE
-                        ) R
-                            ON L.AREACODE = R.AREACODE
+                    LEFT JOIN (SELECT
+                                   AREACODE
+                                   , SUM(SNSRKWHDAILY) AS USEKWH
+                               FROM
+                                    F_ELEC_SENSOR_STAT SS
+                               WHERE
+                                    GUCODE LIKE '30%'
+                                    AND STRCODE != 'FS_STR_0000000001859'
+                                    AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                                    AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
+                                    AND AREACODE != 'AREA_000001'
+                               GROUP BY
+                                    AREACODE) R
+                        ON L.AREACODE = R.AREACODE
             ) A
-                LEFT JOIN
-                    (SELECT
-                         SS.AREACODE
-                         , COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
-                     FROM
-                         (SELECT
-                              AREACODE
-                              , SUM(SNSRKWHDAILY) AS USEKWH
-                          FROM
-                              F_CRN_AREA_ELEC_DAILY_STAT
-                          WHERE
-                              GUCODE LIKE '30%'
-                              AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
-                              AND AREACODE != 'AREA_000001'
-                          GROUP BY
-                              AREACODE
+                LEFT JOIN (SELECT
+                               SS.AREACODE
+                               , COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
+                           FROM
+                               (SELECT
+                                    AREACODE
+                                    , SUM(SNSRKWHDAILY) AS USEKWH
+                                FROM
+                                    F_ELEC_SENSOR_STAT
+                                WHERE
+                                    GUCODE LIKE '30%'
+                                    AND STRCODE != 'FS_STR_0000000001859'
+                                    AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
+                                    AND AREACODE != 'AREA_000001'
+                                GROUP BY
+                                    AREACODE
 
-                          UNION ALL
+                                UNION ALL
 
-                          SELECT
-                              AREACODE, SUM(USEKWH) AS USEKWH
-                          FROM
-                              F_CRN_AREA_KWH_TODAY_STAT
-                          WHERE
-                              GUCODE LIKE '30%'
-                              AND DATETIME > CURDATE()
-                              AND AREACODE != 'AREA_000001'
-                          GROUP BY
-                              AREACODE) SS
-                     GROUP BY
-                         SS.AREACODE
-                    ) B
-                        ON A.AREACODE = B.AREACODE
+                                SELECT
+                                    AREACODE, SUM(USEKWH) AS USEKWH
+                                FROM
+                                    F_CRN_SNSR_KWH_TODAY_STAT
+                                WHERE
+                                    GUCODE LIKE '30%'
+                                    AND STRCODE != 'FS_STR_0000000001859'
+                                    AND AREACODE != 'AREA_000001'
+                                GROUP BY
+                                    AREACODE) SS
+                           GROUP BY
+                               SS.AREACODE) B
+                    ON A.AREACODE = B.AREACODE
         ORDER BY
             A.GUCODE, COALESCE(B.USEKWH, 0) DESC
         ]]>

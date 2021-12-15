@@ -12,9 +12,8 @@
 
 <style>
 .ct-label { font-size: 1.4rem; fill: #fff; }
-
 .top-title { background-color: #4771d0; width: 33%; text-align: center; }
-.top-title-span { letter-spacing: 0.3rem; font-size: 2.5rem; font-weight: 400; }
+.top-title-span { letter-spacing: 0.3rem; font-size: 2.2rem; font-weight: 400; }
 
 .main-title { /*padding-bottom: 0.5vh;*/ border-bottom: 1px solid #ccc; }
 
@@ -528,8 +527,6 @@ function fn_mcds_getMonthlyGuEventCompStatAjax() {
       guNameLabel.push(guName);
       barEvnetList.push(Math.round(item.THISEVENTCNT * 100 / item.THATEVENTCNT));
     });
-
-    guNameLabel.push("유성구");
 
     let bar_ctx = document.getElementById('localEventChart').getContext('2d');
     let background_1 = bar_ctx.createLinearGradient(0, 0, 0, 310);

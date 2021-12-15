@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 
 <head>
-<title>fireSens</title>
+<title>FireSense 대전시 자치구별 전력사용현황</title>
 <th:block th:replace="mng/challenge/districtLayout/mc_d_header"></th:block>
 
 <link rel="stylesheet" media="screen, print" th:href="@{/fs/css/statistics/chart.css}" />
@@ -13,7 +13,7 @@
 <style>
 .ct-label { font-size: 1.4rem; fill: #fff; }
 .top-title { background-color: #4771d0; width: 33%; text-align: center; }
-.top-title-span { letter-spacing: 0.3rem; font-size: 2.5rem; font-weight: 400; }
+.top-title-span { letter-spacing: 0.3rem; font-size: 2.2rem; font-weight: 400; }
 
 .main-title {
   /*padding-bottom: 0.5vh;*/
@@ -430,8 +430,6 @@ function fn_mcdk_getCurrGuMonthKwhStat() {
       barKwhList.push(Math.round(item.THISMONTHUSEKWH / 1000));
       lineKwhPerList.push(Math.round(item.USEPER));
     });
-
-    guNameLabel.push("유성구");
 
     let bar_ctx = document.getElementById('localEventChart').getContext('2d');
     let background_1 = bar_ctx.createLinearGradient(0, 0, 0, 310);
