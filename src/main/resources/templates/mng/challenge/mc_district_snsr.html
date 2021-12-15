@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 
 <head>
-<title>fireSens</title>
+<title>FireSense 대전시 자치구별 전기위험현황</title>
 <th:block th:replace="mng/challenge/districtLayout/mc_d_header"></th:block>
 
 <link rel="stylesheet" media="screen, print" th:href="@{/fs/css/statistics/chart.css}" />
@@ -326,20 +326,20 @@ function fn_mcds_getCurrGuMapEventStat () {
   $.get(contextPath + '/district/currGuMapEventStat', function (d) {
     $.each(d, function (idx, item) {
       if (item.GUCODE === "30110")         // 동구
-        fn_mcds_drawPeityDonut(item.SNSRCNT, item.WARNINGCNT, item.DANGERCNT, item.DISCONNCNT, "donggu");
+        fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "donggu");
       else if (item.GUCODE === "30140")    // 중구
-        fn_mcds_drawPeityDonut(item.SNSRCNT, item.WARNINGCNT, item.DANGERCNT, item.DISCONNCNT, "junggu");
+        fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "junggu");
       else if (item.GUCODE === "30170")    // 서구
-        fn_mcds_drawPeityDonut(item.SNSRCNT, item.WARNINGCNT, item.DANGERCNT, item.DISCONNCNT, "seogu");
+        fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "seogu");
       else if (item.GUCODE === "30200")    // 유성구
-        fn_mcds_drawPeityDonut(item.SNSRCNT, item.WARNINGCNT, item.DANGERCNT, item.DISCONNCNT, "yuseonggu");
+        fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "yuseonggu");
       else if (item.GUCODE === "30230")    // 대덕구
-        fn_mcds_drawPeityDonut(item.SNSRCNT, item.WARNINGCNT, item.DANGERCNT, item.DISCONNCNT, "daedeokgu");
+        fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "daedeokgu");
     });
   });
 }
 
-function fn_mcds_drawPeityDonut(snsrCnt, warnCnt, dangerCnt, disconnectCnt, className) {
+function fn_mcds_drawPeityDonut(snsrCnt, disconnectCnt, className) {
   // let per = 10 * 100 / snsrCnt;
   let count = snsrCnt - disconnectCnt;
   $("#" + className).text(count.toString() + "/" + snsrCnt.toString());

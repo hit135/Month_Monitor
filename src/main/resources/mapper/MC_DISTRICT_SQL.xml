@@ -6,74 +6,132 @@
     <select id="SELECT_MCD_YESTERDAY_EVENT_COMP_STAT" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
-            I.SNSRCNT - A.ERRCNT AS YSNSRCNT
+            C.SNSRCNT - A.ERRCNT AS YSNSRCNT
             , A.DANGERCNT AS YDANGERCNT
             , A.WARNINGCNT AS YWARNINGCNT
-            , I.SNSRCNT - B.ERRCNT AS TSNSRCNT
+            , C.SNSRCNT - B.ERRCNT AS TSNSRCNT
             , B.DANGERCNT AS TDANGERCNT
             , B.WARNINGCNT AS TWARNINGCNT
         FROM
             (SELECT
-                 COUNT(DISTINCT CASE WHEN ISALM = 1 THEN SNSRSEQ END) AS ERRCNT
-                 , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
+                 COUNT(DISTINCT CASE WHEN L.ALMFLAG <> '000' THEN L.SNSRSEQ END) AS ERRCNT
+                 , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '2') > 0 THEN L.SNSRSEQ END) AS DANGERCNT
+                 , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '1') > 0 THEN L.SNSRSEQ END) AS WARNINGCNT
              FROM
-                 V_THIS_MON_SENSOR_LOG
+                 (SELECT
+                      SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                  FROM
+                      F_SENSOR_LOG
+                  WHERE
+                      REGDATE > CURDATE() - INTERVAL 1 DAY AND REGDATE < CURDATE()
+                 ) L
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON L.SNSRSEQ = I.SNSRSEQ
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
              WHERE
-                 GRPGUCODE LIKE '042|30%'
-                 AND REGDATE > CURDATE() - INTERVAL 1 DAY
-                 AND REGDATE < CURDATE()
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND S.STRCODE != 'FS_STR_0000000001859'
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) A
             ,
             (SELECT
-                 COUNT(DISTINCT CASE WHEN ISALM = 1 THEN SNSRSEQ END) AS ERRCNT
-                 , COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
+                 COUNT(DISTINCT CASE WHEN L.ALMFLAG <> '000' THEN L.SNSRSEQ END) AS ERRCNT
+                 , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '2') > 0 THEN L.SNSRSEQ END) AS DANGERCNT
+                 , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '1') > 0 THEN L.SNSRSEQ END) AS WARNINGCNT
              FROM
-                 V_TODAY_SENSOR_LOG
+                 (SELECT
+                      SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                  FROM
+                      F_SENSOR_LOG
+                  WHERE
+                      REGDATE > CURDATE()
+                 ) L
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON L.SNSRSEQ = I.SNSRSEQ
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
              WHERE
-                 GRPGUCODE LIKE '042|30%'
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND S.STRCODE != 'FS_STR_0000000001859'
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) B
             ,
-            (SELECT COUNT(*) AS SNSRCNT FROM V_TODAY_SENSOR WHERE GRPGUCODE LIKE '042|30%') I
+            (SELECT
+                 COUNT(I.SNSRID) AS SNSRCNT
+             FROM
+                 (SELECT STRCODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+             WHERE
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND S.STRCODE != 'FS_STR_0000000001859'
+            ) C
         ]]>
     </select>
 
     <select id="SELECT_MCD_TODAY_EVENT_STAT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
-            V.STRCNT
-            , V.SNSRCNT
-            , L.DANGERCNT
-            , L.WARNINGCNT
-            , L.DISCONNCNT
+            COUNT(DISTINCT I.STRCODE) AS STRCNT
+            , COUNT(DISTINCT I.SNSRSEQ) AS SNSRCNT
+            , SUM(I.DANGERSNSRCNT) AS DANGERCNT
+            , SUM(I.WARNSNSRCNT) AS WARNINGCNT
+            , SUM(I.DISCONNSNSRCNT) AS DISCONNCNT
         FROM
             (SELECT
-                 COUNT(DISTINCT STRCODE) AS STRCNT
-                 , COUNT(DISTINCT SNSRSEQ) AS SNSRCNT
+                 I1.STRCODE, I1.SNSRSEQ, I2.DANGERSNSRCNT, I2.WARNSNSRCNT, I2.DISCONNSNSRCNT
              FROM
-                 V_TODAY_SENSOR
-             WHERE
-                 GRPGUCODE LIKE '042|30%'
-            ) V
-            ,
-            (SELECT
-                 COUNT(DISTINCT CASE WHEN ISDANGER = 1 THEN SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN ISDANGER = 0 AND ISWARN = 1 THEN SNSRSEQ END) AS WARNINGCNT
-                 , COUNT(DISTINCT CASE WHEN ISALM = 0 AND DISCONN = 1 THEN SNSRSEQ END) AS DISCONNCNT
-             FROM
-                 V_TODAY_SENSOR_LOG
-             WHERE
-                 GRPGUCODE LIKE '042|30%'
-            ) L
+                 (SELECT STRCODE, SNSRSEQ, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I1
+                     LEFT JOIN (SELECT
+                                    SNSRSEQ
+                                    , (CASE WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN 1 ELSE 0 END) AS DANGERSNSRCNT
+                                    , (CASE WHEN INSTR(
+                                          CONCAT(
+                                              MAX(CASE WHEN OCALM = 2 THEN 0 ELSE OCALM END)
+                                              , MAX(CASE WHEN IGOALM = 2 THEN 0 ELSE IGOALM END)
+                                              , MAX(CASE WHEN IGRALM = 2 THEN 0 ELSE IGRALM END)
+                                          ), '1') > 0 THEN 1 ELSE 0 END) AS WARNSNSRCNT
+                                    , MAX(DISCONN) AS DISCONNSNSRCNT
+                                FROM
+                                    F_SENSOR_LOG
+                                WHERE
+                                    REGDATE > CURDATE()
+                                    AND ISSIMUL = 0
+                                GROUP BY
+                                    SNSRSEQ) I2
+                         ON I1.SNSRSEQ = I2.SNSRSEQ
+            ) I
+                LEFT JOIN F_STORE S
+                    ON I.STRCODE = S.STRCODE
+        WHERE
+            CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+            AND S.STRCODE != 'FS_STR_0000000001859'
+        ]]>
     </select>
 
     <select id="LIST_MCD_CURR_GU_MAP_EVENT_STAT" parameterType="map" resultType="map">
+        <![CDATA[
         SELECT
-            GUCODE, SNSRCNT, SNSRDISNCNT AS DISCONNCNT, DANGERCNT AS DANGERCNT, WARNCNT AS WARNINGCNT
+            A.GUCODE
+            , COUNT(DISTINCT I.SNSRSEQ) AS SNSRCNT
+            , COALESCE(COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRSEQ END), 0) AS DISCONNCNT
         FROM
-            V_TODAY_GU
-        WHERE
-            GRPGUCODE LIKE '042|30%'
+            (SELECT GUCODE, AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN, GUCODE) LIKE '1YN30%') A
+                LEFT JOIN (SELECT
+                               AREACODE, STRCODE, GRPCODE
+                           FROM
+                               F_STORE
+                           WHERE
+                               CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
+                               AND STRCODE != 'FS_STR_0000000001859'
+                          ) S
+                    ON A.AREACODE = S.AREACODE
+                LEFT JOIN (SELECT STRCODE, SNSRSEQ, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
+                    ON S.STRCODE = I.STRCODE
+        GROUP BY
+            A.GUCODE
+        ]]>
     </select>
 
     <select id="LIST_MCD_MONTHLY_GU_EVENT_COMP_STAT" parameterType="map" resultType="map">
@@ -91,51 +149,67 @@
                  CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%'
                  AND GUCODE != '30200'
             ) L
-                LEFT JOIN
-                    (SELECT
-                         GUCODE
-                         , COALESCE(SUM(TOTOCALM) + SUM(TOTIGALM), 0) AS EVENTCNT
-                     FROM
-                         F_CRN_AREA_ELEC_DAILY_STAT
-                     WHERE
-                         GUCODE LIKE '30%'
-                         AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
-                         AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
-                         AND GUCODE != '30200'
-                     GROUP BY
-                         GUCODE
-                    ) A
-                        ON L.GUCODE = A.GUCODE
-                LEFT JOIN
-                    (SELECT
-                         SS.GUCODE
-                         , COALESCE(SUM(SS.EVENTCNT), 0) AS EVENTCNT
-                     FROM
-                        (SELECT
-                             GUCODE
-                             , COALESCE(SUM(TOTOCALM) + SUM(TOTIGALM), 0) AS EVENTCNT
-                         FROM
-                             F_CRN_AREA_ELEC_DAILY_STAT
-                         WHERE
-                             GUCODE LIKE '30%'
-                             AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
-                             AND GUCODE != '30200'
-                         GROUP BY
-                             GUCODE
+                LEFT JOIN (SELECT
+                               GUCODE
+                               , COALESCE(SUM(TOTOCALM) + SUM(TOTIGALM), 0) AS EVENTCNT
+                           FROM
+                               F_ELEC_SENSOR_STAT
+                           WHERE
+                               GUCODE LIKE '30%'
+                               AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                               AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
+                               AND GUCODE != '30200'
+                               AND STRCODE != 'FS_STR_0000000001859'
+                           GROUP BY
+                               GUCODE
+                          ) A
+                              ON L.GUCODE = A.GUCODE
+                LEFT JOIN (SELECT
+                               SS.GUCODE
+                               , COALESCE(SUM(SS.EVENTCNT), 0) AS EVENTCNT
+                           FROM
+                               (SELECT
+                                    GUCODE
+                                    , COALESCE(SUM(TOTOCALM) + SUM(TOTIGALM), 0) AS EVENTCNT
+                                FROM
+                                    F_ELEC_SENSOR_STAT
+                                WHERE
+                                    GUCODE LIKE '30%'
+                                    AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
+                                    AND GUCODE != '30200'
+                                    AND STRCODE != 'FS_STR_0000000001859'
+                                GROUP BY
+                                    GUCODE
 
-                         UNION ALL
+                                UNION ALL
 
-                         SELECT
-                             GUCODE, COALESCE(SUM(ISALM), 0) AS EVENTCNT
-                         FROM
-                             V_TODAY_SENSOR_LOG
-                         WHERE
-                             GRPGUCODE LIKE '042|30%'
-                         GROUP BY
-                             GUCODE) SS
-                     GROUP BY SS.GUCODE
-                    ) B
-                        ON A.GUCODE = B.GUCODE
+                                SELECT
+                                    A.GUCODE, COALESCE(SUM(L.ISALM), 0) AS EVENTCNT
+                                FROM
+                                    (SELECT
+                                         SNSRSEQ
+                                         , (CASE WHEN CONCAT(OCALM, IGOALM, IGRALM) <> '000' THEN 1 ELSE 0 END) AS ISALM
+                                     FROM
+                                         F_SENSOR_LOG
+                                     WHERE
+                                         REGDATE > CURDATE()
+                                    ) L
+                                       LEFT JOIN F_SENSOR_INFO I
+                                           ON L.SNSRSEQ = I.SNSRSEQ
+                                       LEFT JOIN F_STORE S
+                                           ON I.STRCODE = S.STRCODE
+                                       LEFT JOIN F_LEVEL_AREA A
+                                           ON S.AREACODE = A.AREACODE
+                                WHERE
+                                    CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                                    AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                                    AND S.STRCODE != 'FS_STR_0000000001859'
+                                    AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                                GROUP BY
+                                    A.GUCODE) SS
+                           GROUP BY
+                               SS.GUCODE) B
+                    ON A.GUCODE = B.GUCODE
         ORDER BY
             L.GUCODE
         ]]>
@@ -150,38 +224,75 @@
             , R1.AREANAME
             , COALESCE(R1.DANGERCNT, 0) AS THISDANGERCNT
             , COALESCE(R1.WARNINGCNT, 0) AS THISWARNINGCNT
-            , RANK() OVER (ORDER BY (COALESCE(R1.DANGERCNT, 0) + COALESCE(R1.WARNINGCNT, 0)) DESC) AS 'RANK'
             , COALESCE(R2.DANGERCNT, 0) AS THATDANGERCNT
             , COALESCE(R2.WARNINGCNT, 0) AS THATWARNINGCNT
         FROM
             (SELECT
-                 GUCODE
-                 , GUNAME
-                 , AREACODE
-                 , AREANAME
-                 , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
-                 , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
+                 G.GUCODE
+                 , G.GUNAME
+                 , A.AREACODE
+                 , A.AREANAME
+                 , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                 , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
              FROM
-                 V_TODAY_SENSOR_LOG
+                 (SELECT
+                      SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                  FROM
+                      F_SENSOR_LOG
+                  WHERE
+                      REGDATE > CURDATE()
+                 ) L
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON L.SNSRSEQ = I.SNSRSEQ
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+                     LEFT JOIN F_LEVEL_AREA A
+                         ON S.AREACODE = A.AREACODE
+                     LEFT JOIN F_GUCODE G
+                         ON A.GUCODE = G.GUCODE
              WHERE
-                 GRPGUCODE LIKE '042|30%'
-                 AND AREACODE != 'AREA_000001'
+                 G.USEYN = 'Y'
+                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                 AND A.AREACODE != 'AREA_000001'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND S.STRCODE != 'FS_STR_0000000001859'
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
              GROUP BY
-                 AREACODE
+                 A.AREACODE
             ) R1
                 LEFT JOIN (SELECT
-                               AREACODE
-                               , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
-                               , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
+                               G.GUCODE
+                               , G.GUNAME
+                               , A.AREACODE
+                               , A.AREANAME
+                               , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                               , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
                            FROM
-                               V_THIS_MON_SENSOR_LOG
+                               (SELECT
+                                    SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                                FROM
+                                    F_SENSOR_LOG
+                                WHERE
+                                    REGDATE > CURDATE() - INTERVAL 1 DAY
+                                  AND REGDATE < CURDATE()
+                               ) L
+                                   LEFT JOIN F_SENSOR_INFO I
+                                       ON L.SNSRSEQ = I.SNSRSEQ
+                                   LEFT JOIN F_STORE S
+                                       ON I.STRCODE = S.STRCODE
+                                   LEFT JOIN F_LEVEL_AREA A
+                                       ON S.AREACODE = A.AREACODE
+                                   LEFT JOIN F_GUCODE G
+                                       ON A.GUCODE = G.GUCODE
                            WHERE
-                               GRPGUCODE LIKE '042|30%'
-                               AND REGDATE > CURDATE() - INTERVAL 1 DAY
-                               AND REGDATE < CURDATE()
-                               AND AREACODE != 'AREA_000001'
+                               G.USEYN = 'Y'
+                               AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                               AND A.AREACODE != 'AREA_000001'
+                               AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                               AND S.STRCODE != 'FS_STR_0000000001859'
+                               AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
                            GROUP BY
-                               AREACODE
+                               A.AREACODE
                           ) R2
                     ON R1.AREACODE = R2.AREACODE
         ]]>
@@ -198,31 +309,68 @@
             , COALESCE(R2.WARNINGCNT, 0) AS THATWARNINGCNT
         FROM
             (SELECT
-                 GUCODE
-                 , GUNAME
-                 , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
-                 , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
+                 G.GUCODE
+                 , G.GUNAME
+                 , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                 , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
              FROM
-                  V_TODAY_SENSOR_LOG
+                  (SELECT
+                       SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                   FROM
+                       F_SENSOR_LOG
+                   WHERE
+                       REGDATE > CURDATE()
+                  ) L
+                      LEFT JOIN F_SENSOR_INFO I
+                          ON L.SNSRSEQ = I.SNSRSEQ
+                      LEFT JOIN F_STORE S
+                          ON I.STRCODE = S.STRCODE
+                      LEFT JOIN F_LEVEL_AREA A
+                          ON S.AREACODE = A.AREACODE
+                      LEFT JOIN F_GUCODE G
+                          ON A.GUCODE = G.GUCODE
              WHERE
-                  GRPGUCODE LIKE '042|30%'
-                  AND AREACODE != 'AREA_000001'
+                 G.USEYN = 'Y'
+                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                 AND A.AREACODE != 'AREA_000001'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND S.STRCODE != 'FS_STR_0000000001859'
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
              GROUP BY
-                  GUCODE
+                 G.GUCODE
             ) R1
                 LEFT JOIN (SELECT
-                               GUCODE
-                               , COALESCE(SUM(ISDANGER), 0) AS DANGERCNT
-                               , COALESCE(SUM(ISWARN), 0) AS WARNINGCNT
+                               G.GUCODE
+                               , G.GUNAME
+                               , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                               , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
                            FROM
-                               V_THIS_MON_SENSOR_LOG
+                               (SELECT
+                                    SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                                FROM
+                                    F_SENSOR_LOG
+                                WHERE
+                                    REGDATE > CURDATE() - INTERVAL 1 DAY
+                                    AND REGDATE < CURDATE()
+                               ) L
+                                   LEFT JOIN F_SENSOR_INFO I
+                                       ON L.SNSRSEQ = I.SNSRSEQ
+                                   LEFT JOIN F_STORE S
+                                       ON I.STRCODE = S.STRCODE
+                                   LEFT JOIN F_LEVEL_AREA A
+                                       ON S.AREACODE = A.AREACODE
+                                   LEFT JOIN F_GUCODE G
+                                       ON A.GUCODE = G.GUCODE
                            WHERE
-                               GRPGUCODE LIKE '042|30%'
-                               AND REGDATE > CURDATE() - INTERVAL 1 DAY
-                               AND REGDATE < CURDATE()
-                               AND AREACODE != 'AREA_000001'
+                               G.USEYN = 'Y'
+                               AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                               AND A.AREACODE != 'AREA_000001'
+                               AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                               AND S.STRCODE != 'FS_STR_0000000001859'
+                               AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
                            GROUP BY
-                               GUCODE) R2
+                               G.GUCODE
+                          ) R2
                     ON R1.GUCODE = R2.GUCODE
         ]]>
     </select>
