@@ -3,8 +3,7 @@
 
 <mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCDistrictRepo">
 
-    <select id="SELECT_MCD_YESTERDAY_EVENT_COMP_STAT" parameterType="map" resultType="map">
-        <![CDATA[
+    <select id="SELECT_MCD_YESTERDAY_EVENT_COMP_STAT" resultType="map">
         SELECT
             C.SNSRCNT - A.ERRCNT AS YSNSRCNT
             , A.DANGERCNT AS YDANGERCNT
@@ -14,29 +13,19 @@
             , B.WARNINGCNT AS TWARNINGCNT
         FROM
             (SELECT
-                 COUNT(DISTINCT CASE WHEN L.ALMFLAG <> '000' THEN L.SNSRSEQ END) AS ERRCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '2') > 0 THEN L.SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '1') > 0 THEN L.SNSRSEQ END) AS WARNINGCNT
+                 COUNT(DISTINCT CASE WHEN EVENTCNT > 0 THEN SNSRSEQ END) AS ERRCNT
+                 , COUNT(DISTINCT CASE WHEN WARNINGCNT > 0 THEN SNSRSEQ END) AS DANGERCNT
+                 , COUNT(DISTINCT CASE WHEN DANGERCNT > 0 THEN SNSRSEQ END) AS WARNINGCNT
              FROM
-                 (SELECT
-                      SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
-                  FROM
-                      F_SENSOR_LOG
-                  WHERE
-                      REGDATE > CURDATE() - INTERVAL 1 DAY AND REGDATE < CURDATE()
-                 ) L
-                     LEFT JOIN F_SENSOR_INFO I
-                         ON L.SNSRSEQ = I.SNSRSEQ
-                     LEFT JOIN F_STORE S
-                         ON I.STRCODE = S.STRCODE
+                 F_CRN_SNSR_ELEC_EVT_STAT
              WHERE
-                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
-                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 DATETIME > CURDATE() - INTERVAL 1 DAY AND DATETIME <![CDATA[<]]> CURDATE()
+                 AND GUCODE LIKE '30%'
+                 AND STRCODE != 'FS_STR_0000000001859'
             ) A
             ,
             (SELECT
-                 COUNT(DISTINCT CASE WHEN L.ALMFLAG <> '000' THEN L.SNSRSEQ END) AS ERRCNT
+                 COUNT(DISTINCT CASE WHEN L.ALMFLAG != '000' THEN L.SNSRSEQ END) AS ERRCNT
                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '2') > 0 THEN L.SNSRSEQ END) AS DANGERCNT
                  , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '1') > 0 THEN L.SNSRSEQ END) AS WARNINGCNT
              FROM
@@ -67,10 +56,9 @@
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                  AND S.STRCODE != 'FS_STR_0000000001859'
             ) C
-        ]]>
     </select>
 
-    <select id="SELECT_MCD_TODAY_EVENT_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_MCD_TODAY_EVENT_STAT" resultType="map">
         <![CDATA[
         SELECT
             COUNT(DISTINCT I.STRCODE) AS STRCNT
@@ -110,7 +98,7 @@
         ]]>
     </select>
 
-    <select id="LIST_MCD_CURR_GU_MAP_EVENT_STAT" parameterType="map" resultType="map">
+    <select id="LIST_MCD_CURR_GU_MAP_EVENT_STAT" resultType="map">
         <![CDATA[
         SELECT
             A.GUCODE
@@ -134,7 +122,7 @@
         ]]>
     </select>
 
-    <select id="LIST_MCD_MONTHLY_GU_EVENT_COMP_STAT" parameterType="map" resultType="map">
+    <select id="LIST_MCD_MONTHLY_GU_EVENT_COMP_STAT" resultType="map">
         <![CDATA[
         SELECT
             L.GUCODE
@@ -206,7 +194,7 @@
         ]]>
     </select>
 
-    <select id="LIST_MCD_TODAY_GU_AREA_EVENT_COMP_RANK" parameterType="map" resultType="map">
+    <select id="LIST_MCD_TODAY_GU_AREA_EVENT_COMP_RANK" resultType="map">
         <![CDATA[
         SELECT
             R1.GUCODE
@@ -289,7 +277,7 @@
         ]]>
     </select>
 
-    <select id="LIST_MCD_TODAY_GU_EVENT" parameterType="map" resultType="map">
+    <select id="LIST_MCD_TODAY_GU_EVENT" resultType="map">
         <![CDATA[
         SELECT
             R1.GUCODE
@@ -367,7 +355,7 @@
     </select>
     <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <select id="SELECT_MCD_KWH_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_MCD_KWH_STAT" resultType="map">
         <![CDATA[
         SELECT
             A.USEKWH AS YESTERDAYUSEKWH
@@ -408,7 +396,7 @@
         ]]>
     </select>
 
-    <select id="SELECT_MCD_CURR_KWH_STAT" parameterType="map" resultType="map">
+    <select id="SELECT_MCD_CURR_KWH_STAT" resultType="map">
         <![CDATA[
         SELECT
             V.STRCNT
@@ -450,7 +438,7 @@
         ]]>
     </select>
 
-    <select id="LIST_MCD_GU_MAP_KWH_STAT" parameterType="map" resultType="map">
+    <select id="LIST_MCD_GU_MAP_KWH_STAT" resultType="map">
         SELECT
             L.GUCODE
             , COALESCE(A.USEKWH, 0) AS THATWEEKUSEKWH
@@ -501,7 +489,7 @@
             L.GUCODE
     </select>
 
-    <select id="LIST_MCD_GU_MONTH_KWH_STAT" parameterType="map" resultType="map">
+    <select id="LIST_MCD_GU_MONTH_KWH_STAT" resultType="map">
         <![CDATA[
         SELECT
             DISTINCT L.GUCODE
@@ -555,7 +543,7 @@
         ]]>
     </select>
 
-    <select id="LIST_MCD_GU_AREA_KWH_STAT" parameterType="map" resultType="map">
+    <select id="LIST_MCD_GU_AREA_KWH_STAT" resultType="map">
         <![CDATA[
         SELECT
             A.GUCODE

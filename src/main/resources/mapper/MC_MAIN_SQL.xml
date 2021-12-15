@@ -538,8 +538,8 @@
                  SNSRID, REGDATE
              FROM
                  <choose>
-                     <when test="day == 1">F_SENSOR_LOG_2021 A</when>
-                     <otherwise>F_SENSOR_LOG A</otherwise>
+                     <when test="day == 1">F_SENSOR_LOG_2021</when>
+                     <otherwise>F_SENSOR_LOG</otherwise>
                  </choose>
              WHERE
                  REGDATE > CURDATE() - INTERVAL 1 DAY
