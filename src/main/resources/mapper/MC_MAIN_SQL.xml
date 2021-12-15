@@ -740,18 +740,23 @@
     <!-- 상점 검색 목록 -->
     <select id="LIST_MCM_STORE_SEARCH" parameterType="map" resultType="map">
         SELECT
-            A.AREACODE, B.AREANAME, A.STRCODE, A.STRNAME
+            S.AREACODE, L.AREANAME, S.STRCODE, S.STRNAME
         FROM
-            F_STORE A
-                LEFT JOIN F_LEVEL_AREA B
-                    ON A.AREACODE = B.AREACODE
+            (SELECT
+                 AREACODE, STRCODE, STRNAME
+             FROM
+                 F_STORE
+             WHERE
+                 CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
+                 AND STRCODE != 'FS_STR_0000000001859'
+                 AND STRNAME LIKE CONCAT('%', #{search}, '%')
+            ) S
+                LEFT JOIN F_LEVEL_AREA L
+                    ON S.AREACODE = L.AREACODE
         WHERE
-            CONCAT(B.AREALEVEL, B.USEYN, B.DELYN, B.GUCODE) LIKE '1YN30%'
-            AND CONCAT(A.USEYN, A.DELYN, A.GRPCODE) = 'YN042'
-            AND A.STRCODE != 'FS_STR_0000000001859'
-            AND A.STRNAME LIKE CONCAT('%', #{search}, '%')
+            CONCAT(L.AREALEVEL, L.USEYN, L.DELYN, L.GUCODE) LIKE '1YN30%'
         ORDER BY
-            A.STRNAME
+            S.STRNAME
     </select>
 
 </mapper>
