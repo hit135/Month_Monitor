@@ -264,9 +264,11 @@
       $('#contextRoot').val() + '/mng/listStoreSensorData',
       prm,
       function(d) {
-        if (d && d.length > 0) {
-          if (!isinit) fn_mcstc_initDataset();
-          if (fn_mcstc_updateDataset(d)) fn_mcstc_setChart();
+        if (d && d.length > 0 && d[0] != null) {
+          if (!isinit)
+            fn_mcstc_initDataset();
+          if (fn_mcstc_updateDataset(d))
+            fn_mcstc_setChart();
         } else {
           if (!order)
             alert('no data');
