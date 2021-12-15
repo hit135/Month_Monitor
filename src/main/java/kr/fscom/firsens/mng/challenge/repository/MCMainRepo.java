@@ -38,9 +38,9 @@ public interface MCMainRepo {
 
     List<HashMap<String, Object>> LIST_MCM_2DAYS_AREA_DATA_CHART(Map<String, Object> param) throws Exception;        // 시장별 어제/오늘 데이터 추이
     List<HashMap<String, Object>> LIST_MCM_2DAYS_AREA_LOG_CHART(Map<String, Object> param) throws Exception;         // 시장별 어제/오늘 경보 발생 추이
+
     List<HashMap<String, Object>> LIST_MCM_2WEEKS_AREA_DATA_CHART(Map<String, Object> param) throws Exception;       // 시장별 주간 데이터 추이
     List<HashMap<String, Object>> LIST_MCM_2WEEKS_AREA_LOG_CHART(Map<String, Object> param) throws Exception;        // 시장별 주간 경보 발생 추이
-
     List<HashMap<String, Object>> LIST_MCM_AREA_MAP_SENSOR(Map<String, Object> param) throws Exception;              // 시장 지도 정보
 
     List<HashMap<String, Object>> LIST_MCM_STORE_SEARCH(Map<String, Object> param) throws Exception;                 // 상점 검색 목록

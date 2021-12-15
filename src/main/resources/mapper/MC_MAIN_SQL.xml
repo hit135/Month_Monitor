@@ -628,46 +628,52 @@
     <!-- 시장 지도 정보 -->
     <select id="LIST_MCM_AREA_MAP_SENSOR" parameterType="map" resultType="map">
         SELECT
-            B.STRCODE
-            , B.STRNAME
-            , A.SNSRID
-            , A.SNSRNICK
-            , B.STRPOSLAT
-            , B.STRPOSLON
+            S.STRCODE
+            , S.STRNAME
+            , I.SNSRID
+            , I.SNSRNICK
+            , S.STRPOSLAT
+            , S.STRPOSLON
             , (CASE
-                   WHEN C.DANGERCNT > 0 THEN 'danger'
-                   WHEN C.WARNCNT > 0 THEN 'warning'
-                   WHEN C.DATACNT > 0 THEN 'normal'
+                   WHEN D.DANGERCNT > 0 THEN 'danger'
+                   WHEN D.WARNCNT > 0 THEN 'warning'
+                   WHEN D.DATACNT > 0 THEN 'normal'
                    ELSE 'discon'
                END) AS STATE
         FROM
-            F_SENSOR_INFO A
-                LEFT JOIN F_STORE B
-                    ON A.STRCODE = B.STRCODE
+            F_SENSOR_INFO I
+                LEFT JOIN F_STORE S
+                    ON I.STRCODE = S.STRCODE
                 LEFT JOIN (SELECT
-                               C1.SNSRID
-                               , SUM(CASE WHEN C1.SNSRRCVTIME > NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS DATACNT
-                               , COALESCE(SUM(C2.ISDANGER), 0) AS DANGERCNT
-                               , COALESCE(SUM(C2.ISWARN), 0) AS WARNCNT
+                               D1.SNSRID
+                               , SUM(CASE WHEN D1.SNSRRCVTIME > NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS DATACNT
+                               , COALESCE(SUM(D2.ISDANGER), 0) AS DANGERCNT
+                               , COALESCE(SUM(D2.ISWARN), 0) AS WARNCNT
                            FROM
-                               (SELECT SNSRID, SNSRRCVTIME FROM F_SENSOR_DATA WHERE SNSRRCVTIME > CURDATE()) C1
+                               (SELECT SNSRID, SNSRRCVTIME FROM F_SENSOR_DATA WHERE SNSRRCVTIME > CURDATE()) D1
                                    LEFT JOIN (SELECT
-                                                  SNSRID, REGDATE, ISDANGER, ISWARN
+                                                  SNSRID
+                                                  , REGDATE
+                                                  , (CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS ISDANGER
+                                                  , (CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS ISWARN
                                               FROM
-                                                  V_TODAY_SENSOR_LOG
+                                                  F_SENSOR_LOG
                                               WHERE
-                                                  ISALM = 1) C2
-                                       ON C1.SNSRID = C2.SNSRID
-                                       AND C1.SNSRRCVTIME = C2.REGDATE
+                                                  REGDATE > CURDATE()
+                                                  AND OCALM + IGOALM + IGRALM > 0
+                                              ) D2
+                                       ON D1.SNSRID = D2.SNSRID
+                                       AND D1.SNSRRCVTIME = D2.REGDATE
                            GROUP BY
-                               C1.SNSRID) C
-                    ON A.SNSRID = C.SNSRID
+                               D1.SNSRID
+                          ) D
+                    ON I.SNSRID = D.SNSRID
         WHERE
-            CONCAT(B.USEYN, B.DELYN, B.GRPCODE) = 'YN042'
-            AND B.STRCODE != 'FS_STR_0000000001859'
-            AND CONCAT(A.DELYN, A.STRCODE) LIKE 'NFS_STR_%'
+            CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+            AND S.STRCODE != 'FS_STR_0000000001859'
+            AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
         ORDER BY
-            C.DANGERCNT DESC, C.WARNCNT DESC, C.DATACNT DESC, B.STRNAME
+            D.DANGERCNT DESC, D.WARNCNT DESC, D.DATACNT DESC, S.STRNAME
     </select>
 
     <!-- 상점 검색 목록 -->
