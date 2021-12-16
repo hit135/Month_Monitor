@@ -7,85 +7,79 @@
     <select id="LIST_MCM_TODAY_TOTAL_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
-            'TODAY' TERM
-            , B.TYPE
-            , B.ORDERNUM
-            , (CASE
-                   WHEN B.TYPE = 'TOTAL' THEN A.TOTAL
-                   WHEN B.TYPE = 'DISCON' THEN A.DISCON
-               END) AS CNT
-        FROM
-            (SELECT
-                 COUNT(DISTINCT I.SNSRSEQ) AS TOTAL
-                 , SUM(ISDISCONN) AS DISCON
-             FROM
-                 (SELECT
-                      SNSRSEQ
-                      , STRCODE
-                      , (CASE WHEN DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS ISDISCONN
-                  FROM
-                      F_SENSOR_INFO
-                  WHERE
-                      CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
-                      AND STRCODE != 'FS_STR_0000000001859'
-                 ) I
-                     LEFT JOIN F_STORE S
-                         ON I.STRCODE = S.STRCODE
-             WHERE
-                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            ) A
-            ,
-            (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM
-             UNION ALL SELECT 'DISCON', 2) B
-        GROUP BY
-            B.TYPE
-
-        UNION
-
-        SELECT
             B.TERM
             , B.TYPE
             , B.ORDERNUM
-            , (CASE
-                   WHEN CONCAT(B.TERM, '|', B.TYPE) = 'TODAY|WARN' THEN A.TODAYWARN
-                   WHEN CONCAT(B.TERM, '|', B.TYPE) = 'TODAY|DANGER' THEN A.TODAYDANGER
-                   WHEN CONCAT(B.TERM, '|', B.TYPE) = 'COUNT|WARN' THEN A.COUNTWARN
-                   WHEN CONCAT(B.TERM, '|', B.TYPE) = 'COUNT|DANGER' THEN A.COUNTDANGER
+            , (CASE CONCAT(B.TERM, '|', B.TYPE)
+                   WHEN 'TODAY|TOTAL' THEN A.TODAYTOTAL
+                   WHEN 'TODAY|DISCON' THEN A.TODAYDISCON
+                   WHEN 'TODAY|WARN' THEN A.TODAYWARN
+                   WHEN 'COUNT|WARN' THEN A.COUNTWARN
+                   WHEN 'TODAY|DANGER' THEN A.TODAYDANGER
+                   WHEN 'COUNT|DANGER' THEN A.COUNTDANGER
                END) AS CNT
         FROM
             (SELECT
-                 COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '2') > 0 THEN I.SNSRSEQ END) AS TODAYDANGER
-                 , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '1') > 0 THEN I.SNSRSEQ END) AS TODAYWARN
-                 , SUM(CASE WHEN INSTR(L.ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS COUNTDANGER
-                 , SUM(CASE WHEN INSTR(L.ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS COUNTWARN
+                 COUNT(DISTINCT I.SNSRSEQ) AS TODAYTOTAL
+                 , COALESCE(SUM(I.DISNSNSRCNT), 0) AS TODAYDISCON
+                 , COALESCE(SUM(I.WARNSNSRCNT), 0) AS TODAYWARN
+                 , COALESCE(SUM(I.WARNCNT), 0) AS COUNTWARN
+                 , COALESCE(SUM(I.DANGERSNSRCNT), 0) AS TODAYDANGER
+                 , COALESCE(SUM(I.DANGERCNT), 0) AS COUNTDANGER
              FROM
                  (SELECT
-                      SNSRSEQ, REGDATE, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                      I1.STRCODE
+                      , I1.SNSRSEQ
+                      , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
+                      , I2.DANGERSNSRCNT
+                      , I2.DANGERCNT
+                      , I2.WARNSNSRCNT
+                      , I2.WARNCNT
                   FROM
-                      F_SENSOR_LOG
-                  WHERE
-                      REGDATE > CURDATE()
-                      AND OCALM + IGOALM + IGRALM > 0
-                      AND ISSIMUL = 0
-                 ) L
-                     LEFT JOIN F_SENSOR_INFO I
-                         ON L.SNSRSEQ = I.SNSRSEQ
+                      (SELECT
+                           STRCODE, SNSRSEQ, DATARCVTIME
+                       FROM
+                           F_SENSOR_INFO
+                       WHERE
+                           CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                           AND STRCODE != 'FS_STR_0000000001859'
+                      ) I1
+                          LEFT JOIN (SELECT
+                                         SNSRSEQ
+                                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
+                                         , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
+                                         , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARNCNT
+                                     FROM
+                                         F_SENSOR_LOG
+                                     WHERE
+                                         REGDATE > CURDATE()
+                                         AND OCALM + IGOALM + IGRALM > 0
+                                         AND ISSIMUL = 0
+                                     GROUP BY
+                                         SNSRSEQ) I2
+                              ON I1.SNSRSEQ = I2.SNSRSEQ
+                 ) I
                      LEFT JOIN F_STORE S
                          ON I.STRCODE = S.STRCODE
+                     LEFT JOIN F_LEVEL_AREA A
+                         ON S.AREACODE = A.AREACODE
+                     LEFT JOIN F_GUCODE G
+                         ON A.GUCODE = G.GUCODE
              WHERE
-                 CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                 AND I.STRCODE != 'FS_STR_0000000001859'
-                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                 AND CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
             ) A
             ,
-            (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
+            (SELECT 'TODAY' AS TERM, 'TOTAL' AS TYPE, 1 AS ORDERNUM
+             UNION ALL SELECT 'TODAY', 'DISCON', 2
+             UNION ALL SELECT 'TODAY', 'WARN', 3
              UNION ALL SELECT 'COUNT', 'WARN', 4
              UNION ALL SELECT 'TODAY', 'DANGER', 5
              UNION ALL SELECT 'COUNT', 'DANGER', 6) B
-        GROUP BY
-            B.TERM, B.TYPE
         ORDER BY
-            ORDERNUM
+            B.ORDERNUM
         ]]>
     </select>
 
@@ -93,121 +87,75 @@
     <select id="LIST_MCM_TODAY_GU_AREA_STATE" parameterType="map" resultType="map">
         <![CDATA[
         SELECT
-            1 AS LEVEL
-            , S.GUCODE AS CODE
-            , S.GUNAME AS NAME
-            , S.SNSRCNT AS SENSOR
-            , S.STRCNT AS STORE
-            , S.DANGERSNSRCNT AS DANGER
-            , S.WARNSNSRCNT AS WARN
-            , S.SNSRDISNCNT AS DISCON
-            , NULL AS UPCODE
-            , S.DANGERSNSRCNT * 10000 + S.WARNSNSRCNT AS ORDERNUM
+            B.LEVEL
+            , (CASE B.LEVEL WHEN '1' THEN A.GUCODE WHEN '2' THEN A.AREACODE END) AS CODE
+            , (CASE B.LEVEL WHEN '1' THEN A.GUNAME WHEN '2' THEN A.AREANAME END) AS NAME
+            , COUNT(DISTINCT A.SNSRSEQ) AS SENSOR
+            , COUNT(DISTINCT A.STRCODE) AS STORE
+            , COALESCE(SUM(A.DANGERSNSRCNT), 0) AS DANGER
+            , COALESCE(SUM(A.WARNSNSRCNT), 0) AS WARN
+            , COALESCE(SUM(A.DISNSNSRCNT), 0) AS DISNSNSRCNT
+            , (CASE B.LEVEL WHEN '1' THEN NULL WHEN '2' THEN A.GUCODE END) AS UPCODE
+            , (CASE B.LEVEL
+                   WHEN '1' THEN COALESCE(SUM(A.DANGERSNSRCNT), 0) * 10000 + COALESCE(SUM(A.WARNSNSRCNT), 0)
+                   WHEN '2' THEN 0 - (COALESCE(SUM(A.DANGERSNSRCNT), 0) * 10000 + COALESCE(SUM(A.WARNSNSRCNT), 0))
+               END) AS ORDERNUM
         FROM
             (SELECT
-                 S.GRPCODE
-                 , G.GUCODE
+                 G.GUCODE
                  , G.GUNAME
-                 , COALESCE(COUNT(DISTINCT S.STRCODE), 0) AS STRCNT
-                 , COALESCE(COUNT(DISTINCT I.SNSRSEQ), 0) AS SNSRCNT
-                 , COALESCE(COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRSEQ END), 0) AS SNSRDISNCNT
-                 , COALESCE(SUM(I.DANGERSNSRCNT), 0) AS DANGERSNSRCNT
-                 , COALESCE(SUM(I.WARNSNSRCNT), 0) AS WARNSNSRCNT
-             FROM
-                 (SELECT GRPCODE, GUCODE, GUNAME FROM F_GUCODE WHERE CONCAT(USEYN, GRPCODE, GUCODE) LIKE 'Y04230%') G
-                     LEFT JOIN (SELECT
-                                    GUCODE, AREACODE
-                                FROM
-                                    F_LEVEL_AREA
-                                WHERE
-                                    CONCAT(AREALEVEL, USEYN, DELYN, GUCODE) LIKE '1YN30%') A
-                         ON G.GUCODE = A.GUCODE
-                     LEFT JOIN (SELECT
-                                    AREACODE, STRCODE, GRPCODE
-                                FROM
-                                    F_STORE
-                                WHERE
-                                    CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
-                                    AND STRCODE != 'FS_STR_0000000001859') S
-                         ON A.AREACODE = S.AREACODE
-                     LEFT JOIN (SELECT
-                                    I1.STRCODE, I1.SNSRSEQ, I1.DATARCVTIME, I2.DANGERSNSRCNT, I2.WARNSNSRCNT
-                                FROM
-                                    (SELECT STRCODE, SNSRSEQ, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I1
-                                        LEFT JOIN (SELECT
-                                                       SNSRSEQ
-                                                       , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
-                                                       , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
-                                                   FROM
-                                                       F_SENSOR_LOG
-                                                   WHERE
-                                                       REGDATE > CURDATE()
-                                                       AND OCALM + IGOALM + IGRALM > 0
-                                                       AND ISSIMUL = 0
-                                                   GROUP BY
-                                                       SNSRSEQ) I2
-                                            ON I1.SNSRSEQ = I2.SNSRSEQ
-                                GROUP BY
-                                    I1.SNSRSEQ) I
-                         ON S.STRCODE = I.STRCODE
-             GROUP BY
-                 G.GUCODE) S
-
-        UNION
-
-        SELECT
-            2 AS LEVEL
-            , S.AREACODE AS CODE
-            , S.AREANAME AS NAME
-            , S.SNSRCNT AS SENSOR
-            , S.STRCNT AS STORE
-            , S.DANGERSNSRCNT AS DANGER
-            , S.WARNSNSRCNT AS WARN
-            , S.SNSRDISNCNT AS DISCON
-            , S.GUCODE AS UPCODE
-            , 0 - (S.DANGERSNSRCNT * 10000 + S.WARNSNSRCNT) AS ORDERNUM
-        FROM
-            (SELECT
-                 A.GUCODE
                  , A.AREACODE
                  , A.AREANAME
-                 , COALESCE(COUNT(DISTINCT S.STRCODE), 0) AS STRCNT
-                 , COALESCE(COUNT(DISTINCT I.SNSRSEQ), 0) AS SNSRCNT
-                 , COALESCE(COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRSEQ END), 0) AS SNSRDISNCNT
-                 , COALESCE(SUM(I.DANGERSNSRCNT), 0) AS DANGERSNSRCNT
-                 , COALESCE(SUM(I.WARNSNSRCNT), 0) AS WARNSNSRCNT
+                 , I.STRCODE
+                 , I.SNSRSEQ
+                 , COALESCE(I.DANGERSNSRCNT, 0) AS DANGERSNSRCNT
+                 , COALESCE(I.WARNSNSRCNT, 0) AS WARNSNSRCNT
+                 , COALESCE(I.DISNSNSRCNT, 0) AS DISNSNSRCNT
              FROM
-                 (SELECT GUCODE, AREACODE, AREANAME FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN, GUCODE) LIKE '1YN30%') A
-                     LEFT JOIN (SELECT
-                                    AREACODE, STRCODE, GRPCODE
-                                FROM
-                                    F_STORE
-                                WHERE
-                                    CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
-                                    AND STRCODE != 'FS_STR_0000000001859') S
-                         ON A.AREACODE = S.AREACODE
-                     LEFT JOIN (SELECT
-                                    I1.STRCODE, I1.SNSRSEQ, I1.DATARCVTIME, I2.DANGERSNSRCNT, I2.WARNSNSRCNT
-                                FROM
-                                    (SELECT STRCODE, SNSRSEQ, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I1
-                                        LEFT JOIN (SELECT
-                                                       SNSRSEQ
-                                                       , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
-                                                       , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
-                                                   FROM
-                                                       F_SENSOR_LOG
-                                                   WHERE
-                                                       REGDATE > CURDATE()
-                                                       AND OCALM + IGOALM + IGRALM > 0
-                                                       AND ISSIMUL = 0
-                                                   GROUP BY
-                                                       SNSRSEQ) I2
-                                            ON I1.SNSRSEQ = I2.SNSRSEQ
-                                GROUP BY
-                                    I1.SNSRSEQ) I
-                         ON S.STRCODE = I.STRCODE
-             GROUP BY
-                 A.AREACODE) S
+                  (SELECT
+                       I1.STRCODE
+                       , I1.SNSRSEQ
+                       , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
+                       , I2.DANGERSNSRCNT
+                       , I2.WARNSNSRCNT
+                   FROM
+                       (SELECT
+                            STRCODE, SNSRSEQ, DATARCVTIME
+                        FROM
+                            F_SENSOR_INFO
+                        WHERE
+                            CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                          AND STRCODE != 'FS_STR_0000000001859'
+                       ) I1
+                           LEFT JOIN (SELECT
+                                          SNSRSEQ
+                                          , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
+                                          , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
+                                      FROM
+                                          F_SENSOR_LOG
+                                      WHERE
+                                          REGDATE > CURDATE()
+                                          AND OCALM + IGOALM + IGRALM > 0
+                                          AND ISSIMUL = 0
+                                      GROUP BY
+                                          SNSRSEQ) I2
+                               ON I1.SNSRSEQ = I2.SNSRSEQ
+                  ) I
+                      LEFT JOIN F_STORE S
+                          ON I.STRCODE = S.STRCODE
+                      LEFT JOIN F_LEVEL_AREA A
+                          ON S.AREACODE = A.AREACODE
+                      LEFT JOIN F_GUCODE G
+                          ON A.GUCODE = G.GUCODE
+             WHERE
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                 AND CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
+            ) A
+            ,
+            (SELECT '1' AS LEVEL UNION ALL SELECT '2') B
+        GROUP BY
+            CASE B.LEVEL WHEN '1' THEN A.GUCODE WHEN '2' THEN A.AREACODE END
         ORDER BY
             LEVEL, ORDERNUM DESC
         ]]>
