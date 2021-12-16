@@ -41,20 +41,26 @@
                      LEFT JOIN F_STORE S
                          ON I.STRCODE = S.STRCODE
              WHERE
-                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
+                 I.STRCODE != 'FS_STR_0000000001859'
                  AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
             ) B
             ,
             (SELECT
                  COUNT(I.SNSRID) AS SNSRCNT
              FROM
-                 (SELECT STRCODE, SNSRID FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
+                 (SELECT
+                      STRCODE, SNSRID
+                  FROM
+                      F_SENSOR_INFO
+                  WHERE
+                      CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                      AND STRCODE != 'FS_STR_0000000001859'
+                 ) I
                      LEFT JOIN F_STORE S
                          ON I.STRCODE = S.STRCODE
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
             ) C
     </select>
 
@@ -70,7 +76,14 @@
             (SELECT
                  I1.STRCODE, I1.SNSRSEQ, I2.DANGERSNSRCNT, I2.WARNSNSRCNT, I2.DISCONNSNSRCNT
              FROM
-                 (SELECT STRCODE, SNSRSEQ, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I1
+                 (SELECT
+                      STRCODE, SNSRSEQ, DATARCVTIME
+                  FROM
+                      F_SENSOR_INFO
+                  WHERE
+                      CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                      AND STRCODE != 'FS_STR_0000000001859'
+                 ) I1
                      LEFT JOIN (SELECT
                                     SNSRSEQ
                                     , (CASE WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN 1 ELSE 0 END) AS DANGERSNSRCNT
@@ -94,7 +107,6 @@
                     ON I.STRCODE = S.STRCODE
         WHERE
             CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
         ]]>
     </select>
 
@@ -180,10 +192,10 @@
                                        LEFT JOIN F_LEVEL_AREA A
                                            ON S.AREACODE = A.AREACODE
                                 WHERE
-                                    CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                                    CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                                    AND I.STRCODE != 'FS_STR_0000000001859'
+                                    AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                                     AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                                    AND S.STRCODE != 'FS_STR_0000000001859'
-                                    AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
                                 GROUP BY
                                     A.GUCODE) SS
                            GROUP BY
@@ -230,12 +242,12 @@
                      LEFT JOIN F_GUCODE G
                          ON A.GUCODE = G.GUCODE
              WHERE
-                 CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
+                 CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 AND I.STRCODE != 'FS_STR_0000000001859'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                  AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                  AND A.AREACODE != 'AREA_000001'
-                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
-                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 AND CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
              GROUP BY
                  A.AREACODE
             ) R1
@@ -264,12 +276,12 @@
                                    LEFT JOIN F_GUCODE G
                                        ON A.GUCODE = G.GUCODE
                            WHERE
-                               CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
+                               CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                               AND I.STRCODE != 'FS_STR_0000000001859'
+                               AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                                AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                                AND A.AREACODE != 'AREA_000001'
-                               AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                               AND S.STRCODE != 'FS_STR_0000000001859'
-                               AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                               AND CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
                            GROUP BY
                                A.AREACODE
                           ) R2
@@ -309,12 +321,12 @@
                       LEFT JOIN F_GUCODE G
                           ON A.GUCODE = G.GUCODE
              WHERE
-                 CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
+                 CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 AND I.STRCODE != 'FS_STR_0000000001859'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                  AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                  AND A.AREACODE != 'AREA_000001'
-                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
-                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 AND CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
              GROUP BY
                  G.GUCODE
             ) R1
@@ -341,12 +353,12 @@
                                    LEFT JOIN F_GUCODE G
                                        ON A.GUCODE = G.GUCODE
                            WHERE
-                               CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
+                               CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                               AND I.STRCODE != 'FS_STR_0000000001859'
+                               AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                                AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                                AND A.AREACODE != 'AREA_000001'
-                               AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                               AND S.STRCODE != 'FS_STR_0000000001859'
-                               AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                               AND CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
                            GROUP BY
                                G.GUCODE
                           ) R2

@@ -27,12 +27,12 @@
                       F_SENSOR_INFO
                   WHERE
                       CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                      AND STRCODE != 'FS_STR_0000000001859'
                  ) I
                      LEFT JOIN F_STORE S
                          ON I.STRCODE = S.STRCODE
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
             ) A
             ,
             (SELECT 'TOTAL' AS TYPE, 1 AS ORDERNUM
@@ -73,9 +73,9 @@
                      LEFT JOIN F_STORE S
                          ON I.STRCODE = S.STRCODE
              WHERE
-                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
-                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 AND I.STRCODE != 'FS_STR_0000000001859'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
             ) A
             ,
             (SELECT 'TODAY' AS TERM, 'WARN' AS TYPE, 3 AS ORDERNUM
@@ -216,30 +216,30 @@
     <!-- 점검내역 목록 -->
     <select id="LIST_MCM_CHECK_SENSOR" parameterType="map" resultType="map">
         SELECT
-            D.AREACODE, D.AREANAME, B.STRCODE, B.SNSRID, B.SNSRNICK, A.STATE, A.CNT
+            L.AREACODE, L.AREANAME, I.STRCODE, I.SNSRID, I.SNSRNICK, K.STATE, K.CNT
         FROM
             (SELECT
-                 A.SNSRID, 'CHECK' AS STATE, COUNT(*) AS CNT
+                 SNSRID, 'CHECK' AS STATE, COUNT(*) AS CNT
              FROM
-                 F_SENSOR_CHECK A
+                 F_SENSOR_CHECK
              WHERE
-                 A.CHECKSTAT = 'ING'
+                 CHECKSTAT = 'ING'
              GROUP BY
-                 A.SNSRID
-            ) A
-                LEFT JOIN F_SENSOR_INFO B
-                    ON A.SNSRID = B.SNSRID
-                LEFT JOIN F_STORE C
-                    ON B.STRCODE = C.STRCODE
-                LEFT JOIN F_LEVEL_AREA D
-                    ON C.AREACODE = D.AREACODE
+                 SNSRID
+            ) K
+                LEFT JOIN F_SENSOR_INFO I
+                    ON K.SNSRID = I.SNSRID
+                LEFT JOIN F_STORE S
+                    ON I.STRCODE = S.STRCODE
+                LEFT JOIN F_LEVEL_AREA L
+                    ON S.AREACODE = L.AREACODE
         WHERE
-            CONCAT(D.AREALEVEL, D.USEYN, D.DELYN, D.GUCODE) LIKE '1YN30%'
-            AND CONCAT(C.USEYN, C.DELYN, C.GRPCODE) = 'YN042'
-            AND C.STRCODE != 'FS_STR_0000000001859'
-            AND CONCAT(B.DELYN, B.STRCODE) LIKE 'NFS_STR_%'
+            I.STRCODE != 'FS_STR_0000000001859'
+            AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+            AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+            AND CONCAT(L.AREALEVEL, L.USEYN, L.DELYN, L.GUCODE) LIKE '1YN30%'
         ORDER BY
-            A.STATE, A.CNT DESC
+            K.STATE, K.CNT DESC
     </select>
 
     <!-- 오늘 상태이상 센서 목록 -->
@@ -260,7 +260,14 @@
                         WHEN B.STATE = 'BROKEN' THEN COALESCE(D.BROKENCNT, 0)
                     END) AS CNT
              FROM
-                 (SELECT STRCODE, SNSRSEQ, SNSRNICK FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
+                 (SELECT
+                      STRCODE, SNSRSEQ, SNSRNICK
+                  FROM
+                      F_SENSOR_INFO
+                  WHERE
+                      CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                      AND STRCODE != 'FS_STR_0000000001859'
+                 ) I
                      LEFT JOIN F_STORE S
                          ON I.STRCODE = S.STRCODE
                      LEFT JOIN F_LEVEL_AREA A
@@ -294,9 +301,8 @@
                   UNION ALL SELECT 'WARN'
                   UNION ALL SELECT 'BROKEN') B
              WHERE
-                 CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
-                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
             ) S
         WHERE
             S.CNT > 0
@@ -428,6 +434,7 @@
                  F_SENSOR_INFO
              WHERE
                  CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                 AND STRCODE != 'FS_STR_0000000001859'
                  AND STRCODE = #{strcode}
             ) I
                 LEFT JOIN (SELECT
@@ -457,9 +464,8 @@
                                SNSRID) E
                     ON I.SNSRID = E.SNSRID
         WHERE
-            CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
-            AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
+            CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+            AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
             AND A.AREACODE = #{areacode}
         GROUP BY
             I.SNSRID
@@ -494,8 +500,8 @@
                     ON S.AREACODE = A.AREACODE
         WHERE
             CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+            AND I.STRCODE != 'FS_STR_0000000001859'
             AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
             AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
             AND A.AREACODE = #{areacode}
         GROUP BY
@@ -517,8 +523,8 @@
                     ON S.AREACODE = A.AREACODE
         WHERE
             CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+            AND I.STRCODE != 'FS_STR_0000000001859'
             AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
             AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
             AND A.AREACODE = #{areacode}
         GROUP BY
@@ -554,8 +560,8 @@
                     ON S.AREACODE = A.AREACODE
        WHERE
            CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+           AND I.STRCODE != 'FS_STR_0000000001859'
            AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-           AND S.STRCODE != 'FS_STR_0000000001859'
            AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
            AND A.AREACODE = #{areacode}
        GROUP BY
@@ -584,8 +590,8 @@
                    ON S.AREACODE = A.AREACODE
        WHERE
            CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+           AND I.STRCODE != 'FS_STR_0000000001859'
            AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-           AND S.STRCODE != 'FS_STR_0000000001859'
            AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
            AND A.AREACODE = #{areacode}
        GROUP BY
@@ -675,8 +681,9 @@
                       LEFT JOIN F_STORE S
                           ON I.STRCODE = S.STRCODE
               WHERE
-                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                  AND S.STRCODE != 'FS_STR_0000000001859'
+                  CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                  AND I.STRCODE != 'FS_STR_0000000001859'
+                  AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                   AND S.AREACODE = #{areacode}
              GROUP BY
                   S.AREACODE
@@ -702,7 +709,14 @@
                    ELSE 'discon'
                END) AS STATE
         FROM
-            (SELECT STRCODE, SNSRID, SNSRNICK FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
+            (SELECT
+                 STRCODE, SNSRID, SNSRNICK
+             FROM
+                 F_SENSOR_INFO
+             WHERE
+                 CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                 AND STRCODE != 'FS_STR_0000000001859'
+            ) I
                 LEFT JOIN F_STORE S
                     ON I.STRCODE = S.STRCODE
                 LEFT JOIN (SELECT
@@ -729,7 +743,6 @@
                     ON I.SNSRID = D.SNSRID
         WHERE
             CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
         ORDER BY
             D.DANGERCNT DESC, D.WARNCNT DESC, D.DATACNT DESC, S.STRNAME
     </select>
