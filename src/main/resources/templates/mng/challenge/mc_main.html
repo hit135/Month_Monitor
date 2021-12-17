@@ -25,12 +25,13 @@
 
     <div class="center-store-cont">
       <div class="row center-top p-1">
-        <div class="area-name col-4"></div>
-        <div class="area-stat col-8">
-          전체<span class="total" style="color: #afd9ee;"></span> |
-          경고<span class="danger" style="color: #e082ae;"></span> |
-          주의<span class="warn" style="color: #dbc969;"></span> |
-          끊김<span class="discon" style="color: #dddddd;"></span>
+        <div class="area-name col-3"></div>
+        <div class="area-stat col-9">
+          <span>상점수</span><b class="store"></b>&nbsp;&nbsp;
+          [<span>센서수</span><b class="sensor"></b>&nbsp;/&nbsp;
+          <span>경고</span><b class="danger"></b>&nbsp;/&nbsp;
+          <span>주의</span><b class="warn"></b>&nbsp;/&nbsp;
+          <span>끊김</span><b class="discon"></b>]
         </div><!-- /.area-stat col-8 -->
       </div><!-- /.row -->
       <div class="row">
@@ -485,7 +486,8 @@ function fn_mcm_getTodayAreaState(code) {
       if (d) {
         $('.center .area-name').text(d[0].AREANAME);
 
-        $('.center .area-stat .total').text(d[0].TOTAL);
+        $('.center .area-stat .store').text(d[0].STORE);
+        $('.center .area-stat .sensor').text(d[0].SENSOR);
         $('.center .area-stat .danger').text(d[0].DANGER);
         $('.center .area-stat .warn').text(d[0].WARN);
         $('.center .area-stat .discon').text(d[0].DISCON);
