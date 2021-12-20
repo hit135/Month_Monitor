@@ -517,7 +517,7 @@ function fn_mcm_getTodayAreaStoreState(code, strcode, snsrid) {
         } else if (d[i].WARN > 0) {
           d[i].STATE = 'warn';
           d[i].CNT = d[i].WARN;
-        } else if (d[i].CON == 0) {
+        } else if (d[i].CON > 0) {
           d[i].STATE = 'discon';
         }
 

@@ -365,7 +365,7 @@
         GROUP BY
             S.STRCODE
         ORDER BY
-            DANGER DESC, WARN DESC, CON DESC, STRNAME
+            DANGER DESC, WARN DESC, CON, STRNAME
         ]]>
     </select>
 
