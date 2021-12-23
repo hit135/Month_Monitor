@@ -46,11 +46,11 @@
   <div class="card p-4 border-top-left-radius-0 border-top-right-radius-0">
     <div class="form-group">
       <label class="form-label" for="mcl_user_id">ID</label>
-      <input type="text" id="mcl_user_id" class="form-control" placeholder="아이디를 입력하세요." value="admin" />
+      <input type="text" id="mcl_user_id" class="form-control" placeholder="아이디를 입력하세요." value="" />
     </div>
     <div class="form-group">
       <label class="form-label" for="mcl_mem_pwd">비밀번호</label>
-      <input type="password" id="mcl_mem_pwd" class="form-control" placeholder="password" value="test@1212" />
+      <input type="password" id="mcl_mem_pwd" class="form-control" placeholder="password" value="" />
     </div>
     <button type="button" class="btn btn-success float-right mt-1" onclick="fn_mcl_loginAjax();">접속</button>
   </div><!-- /.card -->
@@ -98,7 +98,6 @@ function fn_mcl_selectRsaKey() {
 function fn_mcl_rsaEnc(value) {
   let rsa = new RSAKey();
   rsa.setPublic(MCL_RSA_PUBLIC_KEY_MODULUS, MCL_RSA_PUBLIC_KEY_EXPONENT);
-
   return rsa.encrypt(value);
 }
 
