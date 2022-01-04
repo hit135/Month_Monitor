@@ -164,12 +164,11 @@ public class SYSSimulController {
 
         try {
             String apiKey = "NCSA3RKT687MGISV";
-            String apiSecret = "AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN";
             String salt = UUID.randomUUID().toString().replaceAll("-", "");
             String date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split("\\[")[0];
 
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(String.valueOf(param.get("apiSecret")).getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             sha256_HMAC.init(secret_key);
 
             String signature = new String(Hex.encodeHex(sha256_HMAC.doFinal((date + salt).getBytes(StandardCharsets.UTF_8))));
@@ -270,12 +269,13 @@ public class SYSSimulController {
         HashMap<String, Object> ret = new HashMap<>();
 
         String apiKey = "NCSA3RKT687MGISV";
-        String apiSecret = "AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN";
         String userid = "admin";
         String frominfo = "0424715215";
         String targetUrl = "https://msg.purplebook.io/api/messages/v4/send";
         String pfId = "KA01PF211129011921158mUHJ1CKs80J";
         String templateId = "KA01TP211205121652592hslit5Dd84G";
+
+
 
         try {
             StringBuffer msg_text = new StringBuffer();
@@ -314,7 +314,7 @@ public class SYSSimulController {
             String date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split("\\[")[0];
 
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            sha256_HMAC.init(new SecretKeySpec(apiSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+            sha256_HMAC.init(new SecretKeySpec(String.valueOf(param.get("apiSecret")).getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
             String signature = new String(Hex.encodeHex(sha256_HMAC.doFinal((date + salt).getBytes(StandardCharsets.UTF_8))));
 
             con.setRequestMethod("POST");

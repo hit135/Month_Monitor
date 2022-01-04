@@ -8,6 +8,7 @@ const SimulSpMgr = () => {
   const clickSendSimulSpPush = () => {
     let map = {};
     map['toinfo'] = phoneNum;
+    map['apiSecret'] = 'AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN';
 
     sendSimulSpPush(map).then(resp => {
       if (resp.data['result'])

@@ -189,6 +189,7 @@ const SimulMgr = () => {
     let map = {};
     map['toinfo'] = phoneNum;
     map['msgText'] = document.getElementById("sendPreview").innerText;
+    map['apiSecret'] = "AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN";
 
     // let areaCode = document.getElementById("selectedAreaCode").innerText;
     // let strCode = document.getElementById("selectedStrCode").innerText;
