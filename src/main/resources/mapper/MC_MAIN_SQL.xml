@@ -30,7 +30,7 @@
                  (SELECT
                       I1.STRCODE
                       , I1.SNSRSEQ
-                      , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
+                      , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
                       , I2.DANGERSNSRCNT
                       , I2.DANGERCNT
                       , I2.WARNSNSRCNT
@@ -115,7 +115,7 @@
                   (SELECT
                        I1.STRCODE
                        , I1.SNSRSEQ
-                       , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
+                       , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
                        , I2.DANGERSNSRCNT
                        , I2.WARNSNSRCNT
                    FROM
@@ -281,7 +281,7 @@
                  (SELECT
                       I1.STRCODE
                       , I1.SNSRSEQ
-                      , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
+                      , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
                       , I2.DANGERSNSRCNT
                       , I2.WARNSNSRCNT
                   FROM
@@ -325,7 +325,7 @@
             , S.STRCODE
             , S.STRNAME
             , COALESCE(COUNT(DISTINCT I.SNSRSEQ), 0) AS SNSRCOUNT
-            , COALESCE(COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN I.SNSRSEQ END), 0) AS CON
+            , COALESCE(COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN I.SNSRSEQ END), 0) AS CON
             , COALESCE(SUM(I.DANGERCNT), 0) AS DANGER
             , COALESCE(SUM(I.WARNCNT), 0) AS WARN
         FROM
@@ -379,7 +379,7 @@
             , I.SNSRID
             , TRIM(LEADING '0' FROM I.SNSRID) AS SNSRIDTRIM
             , I.SNSRNICK
-            , (CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS CON
+            , (CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 1 ELSE 0 END) AS CON
             , COALESCE(L.DANGERCNT, 0) AS DANGER
             , COALESCE(L.WARNCNT, 0) AS WARN
             , COALESCE(E.CHK, 0) AS CHK

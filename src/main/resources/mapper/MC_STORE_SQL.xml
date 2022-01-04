@@ -100,7 +100,7 @@
             , (CASE
                    WHEN L.DANGERCNT > 0 THEN 'WARNING'
                    WHEN L.WARNCNT > 0 THEN 'CAUTION'
-                   WHEN I.DATARCVTIME < NOW() - INTERVAL 1 HOUR THEN 'DISCON'
+                   WHEN I.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 'DISCON'
                    ELSE 'NORMAL'
                END) AS STATE
         FROM

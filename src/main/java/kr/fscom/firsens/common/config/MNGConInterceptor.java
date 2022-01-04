@@ -46,38 +46,25 @@ public class MNGConInterceptor implements HandlerInterceptor {
         Cookie[] cookies = req.getCookies();
         boolean hasLoginCookie = false;
         boolean isValid = true;
-
         if (cookies != null && cookies.length > 0) {
-
-            for (Cookie cookie : cookies) {
-                if ("firssChalMNGLogin".equals(cookie.getName())) {
+            for (int i = 0; i < cookies.length; i++) {
+                if ("firssChalMNGLogin".equals(cookies[i].getName())) {
                     hasLoginCookie = true;
-
-                    // String[] StringArr = cookie.getValue().split("&");
-                    // Map<String, String> checkMap = new HashMap<>();
-
-                    // for (String arr : StringArr)
-                    //     checkMap.put(arr.split(":")[0], arr.split(":")[1]);
-
-                    // if (checkMap.get("firssChalMNGJwt") == null || !jjwtService.isUsable(checkMap.get("firssChalMNGJwt"))) {
-                    //     Cookie delCookie = new Cookie("firssChalMNGLogin", null);
-                    //     delCookie.setMaxAge(0);
-                    //     delCookie.setPath("/");
-                    //     delCookie.setSecure(true);
-                    //     resp.addCookie(delCookie);
-                        
-                    //     isValid = false;
-                    // }
+                    Map<String, String> checkMap = new HashMap<>();
+                    String[] StringArr = cookies[i].getValue().split("&");
+                    for (String arr : StringArr)
+                        checkMap.put(arr.split(":")[0], arr.split(":")[1]);
+                    if (checkMap.get("firssChalMNGJwt") == null || !jjwtService.isUsable(checkMap.get("firssChalMNGJwt"))) {
+                        commonCookie.deleteCookie(cookies[i], resp);
+                        isValid = false;
+                    }
                 }
             }
-
         } else {
             isValid = false;
         }
-
         if (!hasLoginCookie)
             isValid = false;
-
         if (!isValid) {
             resp.sendRedirect("/mng/loginPage");
             return false;
