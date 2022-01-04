@@ -186,7 +186,9 @@
             });
 
             window.addEventListener("test", null, opts);
-        } catch (e) {}
+        } catch (e) {
+            console.log(e);
+        }
         /* eslint-enable */
 
         return supportsPassive;

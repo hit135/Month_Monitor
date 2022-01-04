@@ -142,7 +142,7 @@ public class MCLoginController {
                     .stream()
                     .map(key -> key + ":" + cookieMap.get(key)).collect(Collectors.joining("&"));
 
-                commonCookie.createLoginCookie("firssChalMNGLogin", cookieMapString, 86400, resp);
+                commonCookie.createLoginCookie("firssChalMNGLogin", cookieMapString, resp);
                 result = true;
             }
         } catch (Exception e) {

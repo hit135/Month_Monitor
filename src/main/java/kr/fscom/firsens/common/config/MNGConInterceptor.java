@@ -11,6 +11,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,29 +48,26 @@ public class MNGConInterceptor implements HandlerInterceptor {
         boolean isValid = true;
 
         if (cookies != null && cookies.length > 0) {
+
             for (Cookie cookie : cookies) {
                 if ("firssChalMNGLogin".equals(cookie.getName())) {
                     hasLoginCookie = true;
 
-                    String cookieValue = cookie.getValue();
-                    if (StringUtils.isNotBlank(cookieValue))
-                        cookieValue = cookieValue.replaceAll("\r", "").replaceAll("\n", "");
+                    // String[] StringArr = cookie.getValue().split("&");
+                    // Map<String, String> checkMap = new HashMap<>();
 
-                    String[] StringArr = cookieValue.split("&");
+                    // for (String arr : StringArr)
+                    //     checkMap.put(arr.split(":")[0], arr.split(":")[1]);
 
-                    Map<String, String> checkMap = new HashMap<>();
-                    for (String arr : StringArr)
-                        checkMap.put(arr.split(":")[0], arr.split(":")[1]);
-
-                    if (checkMap.get("firssChalMNGJwt") == null || !jjwtService.isUsable(checkMap.get("firssChalMNGJwt"))) {
-                        Cookie delCookie = new Cookie("firssChalMNGLogin", null);
-                        delCookie.setMaxAge(0);
-                        delCookie.setPath("/");
-                        delCookie.setSecure(true);
-                        resp.addCookie(delCookie);
+                    // if (checkMap.get("firssChalMNGJwt") == null || !jjwtService.isUsable(checkMap.get("firssChalMNGJwt"))) {
+                    //     Cookie delCookie = new Cookie("firssChalMNGLogin", null);
+                    //     delCookie.setMaxAge(0);
+                    //     delCookie.setPath("/");
+                    //     delCookie.setSecure(true);
+                    //     resp.addCookie(delCookie);
                         
-                        isValid = false;
-                    }
+                    //     isValid = false;
+                    // }
                 }
             }
 

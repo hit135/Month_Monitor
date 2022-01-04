@@ -1473,6 +1473,7 @@
                         opts = f.extend(opts, JSON.parse(token_without_symbols.substring(index_of_opts_opening, index_of_opts_end_of_closing)));
                         token_without_symbols = token_without_symbols.substring(0, index_of_token_end_of_closing);
                     } catch (e) {
+                        console.log(e);
                     }
                 }
             }

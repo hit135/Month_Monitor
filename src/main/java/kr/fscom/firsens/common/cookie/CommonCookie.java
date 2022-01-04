@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.net.URLDecoder;
 import java.util.HashMap;
 
 /**
@@ -37,10 +38,10 @@ public class CommonCookie {
      * @Method 설명 : 로그인 cookie 생성
      * @return
      */
-    public void createLoginCookie(String key, String val, int maxAge, HttpServletResponse resp) {
+    public void createLoginCookie(String key, String val, HttpServletResponse resp) {
         Cookie cookie = new Cookie(key, val);
 
-        cookie.setMaxAge(maxAge);
+        cookie.setMaxAge(3600);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
@@ -72,41 +73,6 @@ public class CommonCookie {
                 }
             }
         }
-    }
-
-    /**
-     * @Method Name : selectCookieMap
-     * @작성일 : 2021-04-30
-     * @작성자 : uhm
-     * @변경이력 :
-     * @Method 설명 : 로그인 계정의 정보 반환(token 제외)
-     * @return String
-     */
-    public HashMap<String, Object> selectCookieMap(HttpServletRequest req, String paramName) {
-        HashMap<String, Object> rtn = new HashMap<>();
-        Cookie[] cookies = req.getCookies();
-
-        if (cookies != null && cookies.length > 0) {
-            for (Cookie cookie : cookies) {
-                if (paramName.equals(cookie.getName())) {
-                    String cookieValue = cookie.getValue();
-                    if (StringUtils.isNotBlank(cookieValue))
-                        cookieValue = cookieValue.replaceAll("\r", "").replaceAll("\n", "");
-
-                    String[] StringArr = cookieValue.split("&");
-
-                    for (String arr : StringArr) {
-                        String key = arr.split(":")[0];
-                        String val = arr.split(":")[1];
-
-                        if (key.indexOf("Jwt") == -1)
-                            rtn.put(key, val);
-                    }
-                }
-            }
-        }
-
-        return rtn;
     }
 
 }

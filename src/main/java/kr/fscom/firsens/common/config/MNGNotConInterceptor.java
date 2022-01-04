@@ -11,6 +11,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,28 +48,26 @@ public class MNGNotConInterceptor implements HandlerInterceptor {
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if ("firssChalMNGLogin".equals(cookie.getName())) {
-                    String cookieValue = cookie.getValue();
-                    if (StringUtils.isNotBlank(cookieValue))
-                        cookieValue = cookieValue.replaceAll("\r", "").replaceAll("\n", "");
+                    // String[] StringArr = cookie.getValue().split("&");
 
-                    String[] StringArr = cookieValue.split("&");
+                    // Map<String, String> checkMap = new HashMap<>();
+                    // for (String arr : StringArr)
+                    //     checkMap.put(arr.split(":")[0], arr.split(":")[1]);
 
-                    Map<String, String> checkMap = new HashMap<>();
-                    for (String arr : StringArr)
-                        checkMap.put(arr.split(":")[0], arr.split(":")[1]);
+                    // if (checkMap.get("firssChalMNGJwt") != null && jjwtService.isUsable(checkMap.get("firssChalMNGJwt"))) {
+                    //     resp.sendRedirect("/mng/main");
+                    //     return false;
+                    // } else {    // 로그인 정보 없음
+                    //     Cookie delCookie = new Cookie("firssChalMNGLogin", null);
+                    //     delCookie.setMaxAge(0);
+                    //     delCookie.setPath("/");
+                    //     delCookie.setSecure(true);
+                    //     resp.addCookie(delCookie);
 
-                    if (checkMap.get("firssChalMNGJwt") != null && jjwtService.isUsable(checkMap.get("firssChalMNGJwt"))) {
-                        resp.sendRedirect("/mng/main");
-                        return false;
-                    } else {    // 로그인 정보 없음
-                        Cookie delCookie = new Cookie("firssChalMNGLogin", null);
-                        delCookie.setMaxAge(0);
-                        delCookie.setPath("/");
-                        delCookie.setSecure(true);
-                        resp.addCookie(delCookie);
+                    //     return true;
+                    // }
 
-                        return true;
-                    }
+                    return false;
                 }
             }
         }
