@@ -61,10 +61,12 @@ public class RSA {
     public static boolean dec(PrivateKey privateKey, String encString) throws Exception {
         boolean result = false;
 
-        if (privateKey == null)
-            throw new RuntimeException("암호화 비밀키 정보를 찾을 수 없습니다.");
-
         try {
+            if (privateKey == null) {
+                LOG.error("암호화 비밀키 정보를 찾을 수 없습니다.");
+                return false;
+            }
+
             decryptRsa(privateKey, encString);
             result = true;
         } catch (NullPointerException | UnsupportedEncodingException e) {

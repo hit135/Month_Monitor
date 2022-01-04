@@ -2,6 +2,8 @@ package kr.fscom.firsens.common.config;
 
 import kr.fscom.firsens.common.cookie.CommonCookie;
 import kr.fscom.firsens.common.jwt.JjwtService;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -44,21 +46,32 @@ public class MNGConInterceptor implements HandlerInterceptor {
         boolean isValid = true;
 
         if (cookies != null && cookies.length > 0) {
-            for (int i = 0; i < cookies.length; i++) {
-                if ("firssChalMNGLogin".equals(cookies[i].getName())) {
+            for (Cookie cookie : cookies) {
+                if ("firssChalMNGLogin".equals(cookie.getName())) {
                     hasLoginCookie = true;
-                    Map<String, String> checkMap = new HashMap<>();
-                    String[] StringArr = cookies[i].getValue().split("&");
 
+                    String cookieValue = cookie.getValue();
+                    if (StringUtils.isNotBlank(cookieValue))
+                        cookieValue = cookieValue.replaceAll("\r", "").replaceAll("\n", "");
+
+                    String[] StringArr = cookieValue.split("&");
+
+                    Map<String, String> checkMap = new HashMap<>();
                     for (String arr : StringArr)
                         checkMap.put(arr.split(":")[0], arr.split(":")[1]);
 
                     if (checkMap.get("firssChalMNGJwt") == null || !jjwtService.isUsable(checkMap.get("firssChalMNGJwt"))) {
-                        commonCookie.deleteCookie(cookies[i], resp);
+                        Cookie delCookie = new Cookie("firssChalMNGLogin", null);
+                        delCookie.setMaxAge(0);
+                        delCookie.setPath("/");
+                        delCookie.setSecure(true);
+                        resp.addCookie(delCookie);
+                        
                         isValid = false;
                     }
                 }
             }
+
         } else {
             isValid = false;
         }

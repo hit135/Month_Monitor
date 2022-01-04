@@ -3,6 +3,9 @@ package kr.fscom.firsens.common.cookie;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.util.HashMap;
 
 /**
@@ -34,11 +37,10 @@ public class CommonCookie {
      * @Method 설명 : 로그인 cookie 생성
      * @return
      */
-    public void createLoginCookie(String key, String val, HttpServletResponse resp) {
+    public void createLoginCookie(String key, String val, int maxAge, HttpServletResponse resp) {
         Cookie cookie = new Cookie(key, val);
-        
-        cookie.setMaxAge(3600);
-        
+
+        cookie.setMaxAge(maxAge);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
@@ -58,30 +60,18 @@ public class CommonCookie {
         Cookie[] cookies = req.getCookies();
 
         if (cookies != null && cookies.length > 0) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (paramName.equals(cookies[i].getName())) {
-                    cookies[i].setMaxAge(0);
-                    cookies[i].setPath("/");
+            for (Cookie cookie : cookies) {
+                if (paramName.equals(cookie.getName())) {
+                    Cookie delCookie = new Cookie(paramName, null);
+                    delCookie.setMaxAge(0);
+                    delCookie.setPath("/");
+                    delCookie.setSecure(true);
+                    resp.addCookie(delCookie);
 
-                    resp.addCookie(cookies[i]);
                     break;
                 }
             }
         }
-    }
-
-    /**
-     * @Method Name : deleteCookie
-     * @작성일 : 2021-04-28
-     * @작성자 : uhm
-     * @변경이력 :
-     * @Method 설명 : 단일 cookie 제거
-     * @return
-     */
-    public void deleteCookie(Cookie cookie, HttpServletResponse resp) {
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        resp.addCookie(cookie);
     }
 
     /**
@@ -97,9 +87,13 @@ public class CommonCookie {
         Cookie[] cookies = req.getCookies();
 
         if (cookies != null && cookies.length > 0) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (paramName.equals(cookies[i].getName())) {
-                    String[] StringArr = cookies[i].getValue().split("&");
+            for (Cookie cookie : cookies) {
+                if (paramName.equals(cookie.getName())) {
+                    String cookieValue = cookie.getValue();
+                    if (StringUtils.isNotBlank(cookieValue))
+                        cookieValue = cookieValue.replaceAll("\r", "").replaceAll("\n", "");
+
+                    String[] StringArr = cookieValue.split("&");
 
                     for (String arr : StringArr) {
                         String key = arr.split(":")[0];

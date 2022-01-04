@@ -2,6 +2,8 @@ package kr.fscom.firsens.common.config;
 
 import kr.fscom.firsens.common.cookie.CommonCookie;
 import kr.fscom.firsens.common.jwt.JjwtService;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -42,11 +44,15 @@ public class MNGNotConInterceptor implements HandlerInterceptor {
         Cookie[] cookies = req.getCookies();
 
         if (cookies != null && cookies.length > 0) {
-            for (int i = 0; i < cookies.length; i++) {
-                if ("firssChalMNGLogin".equals(cookies[i].getName())) {
-                    Map<String, String> checkMap = new HashMap<>();
-                    String[] StringArr = cookies[i].getValue().split("&");
+            for (Cookie cookie : cookies) {
+                if ("firssChalMNGLogin".equals(cookie.getName())) {
+                    String cookieValue = cookie.getValue();
+                    if (StringUtils.isNotBlank(cookieValue))
+                        cookieValue = cookieValue.replaceAll("\r", "").replaceAll("\n", "");
 
+                    String[] StringArr = cookieValue.split("&");
+
+                    Map<String, String> checkMap = new HashMap<>();
                     for (String arr : StringArr)
                         checkMap.put(arr.split(":")[0], arr.split(":")[1]);
 
@@ -54,7 +60,12 @@ public class MNGNotConInterceptor implements HandlerInterceptor {
                         resp.sendRedirect("/mng/main");
                         return false;
                     } else {    // 로그인 정보 없음
-                        commonCookie.deleteCookie(cookies[i], resp);
+                        Cookie delCookie = new Cookie("firssChalMNGLogin", null);
+                        delCookie.setMaxAge(0);
+                        delCookie.setPath("/");
+                        delCookie.setSecure(true);
+                        resp.addCookie(delCookie);
+
                         return true;
                     }
                 }
