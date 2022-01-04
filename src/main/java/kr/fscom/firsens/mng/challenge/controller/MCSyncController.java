@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,6 +74,10 @@ public class MCSyncController {
             }
 
             return mcSyncRepo.LIST_MCSY_DATA_CNT(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -95,6 +101,10 @@ public class MCSyncController {
             }
 
             return mcSyncRepo.LIST_MCSY_SENSOR_DATA_CNT(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -113,6 +123,10 @@ public class MCSyncController {
             mcSyncRepo.INSERT_MCSY_SENSOR_CHECK(prm);
 
             return "success";
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

@@ -56,6 +56,8 @@ public class JjwtServiceImpl implements JjwtService {
                       .setSubject(subject).claim(key, data)
                       .signWith(SignatureAlgorithm.HS256, this.generateKey())
                       .compact();
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage()); 
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -81,6 +83,8 @@ public class JjwtServiceImpl implements JjwtService {
                                                 .parseClaimsJws(jwt)
                                                 .getBody()
                                                 .get("member");
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage()); 
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -102,6 +106,8 @@ public class JjwtServiceImpl implements JjwtService {
 
         try {
             userId = (String) getJwtContent(jwt).get("userId");
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage()); 
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -149,7 +155,7 @@ public class JjwtServiceImpl implements JjwtService {
             key = SALT.getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
             if (log.isInfoEnabled()) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             } else {
                 log.error("Making JWT Key Error ::: {}", e.getMessage());
             }

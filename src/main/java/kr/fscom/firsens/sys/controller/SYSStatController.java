@@ -2,19 +2,27 @@ package kr.fscom.firsens.sys.controller;
 
 import kr.fscom.firsens.sys.repository.SYSStatRepo;
 import org.apache.commons.lang.StringUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
+
+import java.sql.SQLException;
 import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api")
 public class SYSStatController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SYSStatController.class);
     private final SYSStatRepo sysStatRepo;
 
     @Autowired
@@ -29,7 +37,14 @@ public class SYSStatController {
         try {
             rtn.put("resultList", type.equals("guCode") ? sysStatRepo.LIST_TYPE_GUCODE() : sysStatRepo.LIST_TYPE_AREACODE());
             rtn.put("result", "success");
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+            rtn.put("result", "fail");
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+            rtn.put("result", "fail");
         } catch (Exception ex) {
+            LOG.debug(ex.getMessage());
             rtn.put("result", "fail");
         }
 
@@ -78,17 +93,17 @@ public class SYSStatController {
                     paramMap.put("endDate", quarter[0] + "-03");
                     rtn.put("startDate", quarter[0] + "년 01월");
                     rtn.put("endDate", quarter[0] + "년 03월");
-                } else if(quarter[1].equals("04")) {
+                } else if (quarter[1].equals("04")) {
                     paramMap.put("startDate", quarter[0] + "-04");
                     paramMap.put("endDate", quarter[0] + "-06");
                     rtn.put("startDate", quarter[0] + "년 04월");
                     rtn.put("endDate", quarter[0] + "년 06월");
-                } else if(quarter[1].equals("07")) {
+                } else if (quarter[1].equals("07")) {
                     paramMap.put("startDate", quarter[0] + "-07");
                     paramMap.put("endDate", quarter[0] + "-09");
                     rtn.put("startDate", quarter[0] + "년 07월");
                     rtn.put("endDate", quarter[0] + "년 09월");
-                } else if(quarter[1].equals("10")) {
+                } else if (quarter[1].equals("10")) {
                     paramMap.put("startDate", quarter[0] + "-10");
                     paramMap.put("endDate", quarter[0] + "-12");
                     rtn.put("startDate", quarter[0] + "년 10월");
@@ -117,7 +132,14 @@ public class SYSStatController {
             }
 
             rtn.put("result", "success");
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+            rtn.put("result", "fail");
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+            rtn.put("result", "fail");
+        } catch (Exception ex) {
+            LOG.debug(ex.getMessage());
             rtn.put("result", "fail");
         }
 
@@ -201,7 +223,14 @@ public class SYSStatController {
             }
 
             rtn.put("result", "success");
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+            rtn.put("result", "fail");
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+            rtn.put("result", "fail");
+        } catch (Exception ex) {
+            LOG.debug(ex.getMessage());
             rtn.put("result", "fail");
         }
 
