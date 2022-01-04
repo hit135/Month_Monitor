@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +83,10 @@ public class MCStoreController {
             mav.addObject("prm_strcode", strcode);
             mav.addObject("prm_snsrid", snsrid);
             mav.addObject("naverMap", "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization");
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -109,6 +114,10 @@ public class MCStoreController {
 
             rtn.put("store", mcStoreRepo.SELECT_MCST_STORE_INFO(prm));
             rtn.put("sensor", mcStoreRepo.LIST_MCST_SENSOR_STATE(prm));
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -144,6 +153,10 @@ public class MCStoreController {
             mav.addObject("prm_snsrid", snsrid);
             mav.addObject("prm_regdate", req.getParameter("regdate"));
             mav.addObject("prm_checktype", req.getParameter("checktype"));
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -182,6 +195,10 @@ public class MCStoreController {
             mav.addObject("prm_snsrid", snsrid);
             mav.addObject("prm_regdate", req.getParameter("regdate"));
             mav.addObject("prm_almtype", req.getParameter("almtype"));
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -239,7 +256,7 @@ public class MCStoreController {
             String order = req.getParameter("order");
             String dtsize = req.getParameter("dtsize");
 
-            if (regdt.length() == 7)
+            if (regdt != null && regdt.length() == 7)
                 regdt += "-01";
 
             prm.put("order", "desc".equals(order) ? "DESC" : "ASC");
@@ -260,6 +277,10 @@ public class MCStoreController {
             prm.put("dtsize", dtsize);
 
             return mcStoreRepo.LIST_MCST_STORE_SENSOR_DATA(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -299,6 +320,10 @@ public class MCStoreController {
             prm.put("regdt", req.getParameter("regdt"));
 
             return mcStoreRepo.LIST_MCST_DATA_LOG(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -334,6 +359,10 @@ public class MCStoreController {
             prm.put("snsrid", req.getParameter("snsrid"));
 
             return mcStoreRepo.SELECT_MCST_SENSOR_USEKWH_MONTH(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -390,6 +419,10 @@ public class MCStoreController {
             }
 
             result = true;
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         } finally {
@@ -422,6 +455,10 @@ public class MCStoreController {
 
             rtn.put("threedays", mcStoreRepo.LIST_MCST_LOG_3DAYS_STAT(prm));
             rtn.put("week", mcStoreRepo.LIST_MCST_LOG_WEEK_STAT(prm));
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -446,6 +483,10 @@ public class MCStoreController {
             prm.put("snsrid", req.getParameter("snsrid"));
             mcStoreRepo.INSERT_MCST_SENSOR_CHECK(prm);
             return "success";
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -470,6 +511,10 @@ public class MCStoreController {
             prm.put("snsrid", req.getParameter("snsrid"));
             mcStoreRepo.UPDATE_MCST_SENSOR_CHECK(prm);
             return "success";
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -489,6 +534,10 @@ public class MCStoreController {
             List<HashMap<String, Object>> store = mcStoreRepo.LIST_MCST_STORE_INFO(prm);
             ret[0] = (String) store.get(0).get("AREACODE");
             ret[1] = (String) store.get(0).get("STRCODE");
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -505,6 +554,10 @@ public class MCStoreController {
 
             List<HashMap<String, Object>> sensor = mcStoreRepo.LIST_MCST_SENSOR_EVT_CNT(prm);
             return (String) sensor.get(0).get("SNSRID");
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

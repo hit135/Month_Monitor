@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -46,6 +47,10 @@ public class SYSSimulController {
         try {
             resultList = sysSimulRepo.LIST_SYS_SIMULRAREA();
             result = true;
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         } finally {
@@ -240,6 +245,14 @@ public class SYSSimulController {
             prm.put("pushRslt", "Y");
 
             sysSimulRepo.INSERT_SYS_PUSH(prm);
+        } catch (NullPointerException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
         } catch (Exception e) {
             LOG.debug("sendPushAjax: " + e.getMessage());
         }
@@ -340,6 +353,14 @@ public class SYSSimulController {
             prm.put("pushRslt", "Y");
 
             sysSimulRepo.INSERT_SYS_PUSH(prm);
+        } catch (NullPointerException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
         } catch (Exception e) {
             LOG.debug("sendPushAjax: " + e.getMessage());
         }

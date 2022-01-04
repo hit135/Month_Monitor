@@ -74,7 +74,7 @@ public class SYSInsprController {
             resultList = sysInsprRepo.LIST_SYS_INSPECTORS(param);
             resultCnt = sysInsprRepo.CNT_SYS_INSPECTORS(param);
             result = true;
-        }  catch (SQLException ex) {
+        } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 점검자 목록 조회 요청 SQL 오류 : {}", ex.getMessage());
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 점검자 목록 조회 요청 오류 : {}", ex.getMessage());
@@ -96,6 +96,8 @@ public class SYSInsprController {
         try {
             dupChk = sysInsprRepo.CNT_SYS_DUPCHK_INSPID(param) > 0;
             result = true;
+        } catch (SQLException e) {
+            LOG.error(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         } finally {
@@ -116,6 +118,8 @@ public class SYSInsprController {
             int ins = sysInsprRepo.INSERT_SYS_INSPECTOR(param);
 
             result = true;
+        } catch (SQLException e) {
+            LOG.error(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -133,6 +137,8 @@ public class SYSInsprController {
             inspId = inspId.replaceFirst(".$","");
             resultData = sysInsprRepo.SELECT_SYS_INSPECTOR(inspId);
             result = true;
+        } catch (SQLException e) {
+            LOG.error(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         } finally {
@@ -155,6 +161,8 @@ public class SYSInsprController {
 
             int upd = sysInsprRepo.UPDATE_SYS_INSPECTOR(param);
             result = true;
+        } catch (SQLException e) {
+            LOG.error(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

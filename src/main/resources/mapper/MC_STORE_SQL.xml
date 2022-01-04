@@ -183,7 +183,12 @@
                 LEFT JOIN (SELECT
                                SNSRID, SNSRRCVTIME, SNSRKWH, SNSRWATT, SNSRVOLT, SNSRAMPERE, SNSRHZ, SNSRPF, SNSRIGO, SNSRIGR, SNSRIGC, SNSRREG
                            FROM
-                               ${tblSensorData}
+                               <choose>
+                                   <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
+                                   <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
+                                   <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
+                                   <otherwise>F_SENSOR_DATA</otherwise>
+                               </choose>
                            WHERE
                                SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND
                                <choose>
@@ -197,7 +202,10 @@
         GROUP BY
             1
         ORDER BY
-            1 ${order}
+            1 <choose>
+                  <when test='"asc".equals(order)'>ASC</when>
+                  <when test='"desc".equals(order)'>DESC</when>
+              </choose>
     </select>
 
     <select id="LIST_MCST_DATA_LOG" parameterType="map" resultType="map">
@@ -234,7 +242,12 @@
             (SELECT
                   SNSRID, SNSRRCVTIME, SNSRKWH, SNSRVOLT, SNSRWATT, SNSRAMPERE, SNSRHZ, SNSRPF, SNSRREG, SNSRRSSI, SNSRIGR, SNSRIGO, SNSRIGC
              FROM
-                  ${tblSensorData}
+                 <choose>
+                     <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
+                     <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
+                     <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
+                     <otherwise>F_SENSOR_DATA</otherwise>
+                 </choose>
              WHERE
                   SNSRRCVTIME
                   <choose>
@@ -249,7 +262,13 @@
                       AND SNSRID = #{snsrid}
                   </if>
             ) D
-                LEFT JOIN ${tblSensorLog} L
+                LEFT JOIN  
+                    <choose>
+                        <when test='"F_SENSOR_LOG_2022".equals(tblSensorLog)'>F_SENSOR_LOG_2022</when>
+                        <when test='"F_SENSOR_LOG_2021".equals(tblSensorLog)'>F_SENSOR_LOG_2021</when>
+                        <when test='"F_SENSOR_LOG_2020".equals(tblSensorLog)'>F_SENSOR_LOG_2020</when>
+                        <otherwise>F_SENSOR_LOG</otherwise>
+                    </choose> L
                     ON D.SNSRID = L.SNSRID
                     AND D.SNSRRCVTIME = L.REGDATE
                 LEFT JOIN F_SENSOR_INFO I
@@ -273,7 +292,12 @@
             (SELECT
                  SNSRSEQ, SNSRKWH
              FROM
-                 ${tblSensorData}
+                 <choose>
+                     <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
+                     <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
+                     <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
+                     <otherwise>F_SENSOR_DATA</otherwise>
+                 </choose>
              WHERE
                  SNSRRCVTIME BETWEEN CONCAT(DATE_FORMAT(#{regdt}, '%Y-%m'), '-01 00:00:00')
                              AND CONCAT(LAST_DAY(#{regdt}), ' 23:59:59')

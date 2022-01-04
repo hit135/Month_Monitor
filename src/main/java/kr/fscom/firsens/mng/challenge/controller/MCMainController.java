@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.sql.SQLException;
 import java.time.ZoneId;
 
 import java.util.Date;
@@ -66,6 +67,8 @@ public class MCMainController {
 
         try {
             mav.addObject("naverMap", "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization");
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -88,6 +91,8 @@ public class MCMainController {
         try {
             mav.addObject("prm_panel_index", req.getParameter("panel_index"));
             mav.addObject("prm_areacode", req.getParameter("areacode"));
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -110,6 +115,10 @@ public class MCMainController {
 
         try {
             return mcMainRepo.LIST_MCM_TODAY_TOTAL_STATE(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -132,6 +141,10 @@ public class MCMainController {
 
         try {
             return mcMainRepo.LIST_MCM_TODAY_GU_AREA_STATE(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -154,6 +167,10 @@ public class MCMainController {
 
         try {
             return mcMainRepo.LIST_MCM_CHECK_SENSOR(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -176,6 +193,10 @@ public class MCMainController {
 
         try {
             return mcMainRepo.LIST_MCM_TODAY_ABNORMAL_SENSOR(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -199,6 +220,10 @@ public class MCMainController {
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mcMainRepo.LIST_MCM_TODAY_AREA_STATE(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -222,6 +247,10 @@ public class MCMainController {
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mcMainRepo.LIST_MCM_TODAY_AREA_STORE_STATE(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -247,6 +276,10 @@ public class MCMainController {
             prm.put("strcode", req.getParameter("strcode"));
 
             return mcMainRepo.LIST_MCM_TODAY_AREA_SENSOR_STATE(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -270,6 +303,10 @@ public class MCMainController {
         try {
             prm.put("search", req.getParameter("search"));
             return mcMainRepo.LIST_MCM_STORE_SEARCH(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -297,6 +334,10 @@ public class MCMainController {
 
             rtn.put("log", mcMainRepo.LIST_MCM_2DAYS_AREA_LOG_CHART(prm));
             rtn.put("data", mcMainRepo.LIST_MCM_2DAYS_AREA_DATA_CHART(prm));
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -323,6 +364,10 @@ public class MCMainController {
 
             rtn.put("log", mcMainRepo.LIST_MCM_2WEEKS_AREA_LOG_CHART(prm));
             rtn.put("data", mcMainRepo.LIST_MCM_2WEEKS_AREA_DATA_CHART(prm));
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -346,6 +391,10 @@ public class MCMainController {
         try {
             prm.put("areacode", req.getParameter("areacode"));
             return mcMainRepo.LIST_MCM_AREA_MAP_SENSOR(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }

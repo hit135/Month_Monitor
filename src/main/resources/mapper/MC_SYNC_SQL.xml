@@ -4,7 +4,6 @@
 <mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCSyncRepo">
 
     <select id="LIST_MCSY_DATA_CNT" parameterType="map" resultType="map">
-        <![CDATA[
         SELECT
             DATE(A.DATE) AS DATE
             , IFNULL(B.SNSRCNT, 0) AS SNSRCNT
@@ -30,7 +29,12 @@
                          , COUNT(DISTINCT SNSRID) AS SNSRCNT
                          , COUNT(*) AS CNT
                      FROM
-                         ${tblSensorData}
+                         <choose>
+                            <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
+                            <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
+                            <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
+                            <otherwise>F_SENSOR_DATA</otherwise>
+                         </choose>
                      WHERE
                          SNSRRCVTIME BETWEEN CONCAT(#{regdt}, '-01') AND LAST_DAY(CONCAT(#{regdt}, '-01'))
                      GROUP BY
@@ -39,7 +43,6 @@
                         ON A.DATE = B.DATE
         ORDER BY
             A.DATE
-        ]]>
     </select>
 
     <select id="LIST_MCSY_SENSOR_DATA_CNT" parameterType="map" resultType="map">
@@ -61,7 +64,12 @@
                     (SELECT
                          SNSRID, COUNT(*) AS CNT
                      FROM
-                         ${tblSensorData}
+                         <choose>
+                             <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
+                             <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
+                             <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
+                             <otherwise>F_SENSOR_DATA</otherwise>
+                         </choose>
                      WHERE
                          SNSRRCVTIME BETWEEN #{regdt} AND #{regdt} + INTERVAL 1 DAY
                      GROUP BY
@@ -72,7 +80,12 @@
                     (SELECT
                          SNSRID, COUNT(*) AS CNT
                      FROM
-                         ${tblSensorData}
+                         <choose>
+                             <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
+                             <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
+                             <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
+                             <otherwise>F_SENSOR_DATA</otherwise>
+                        </choose>
                      WHERE
                          SNSRRCVTIME BETWEEN #{regdt} - INTERVAL 1 DAY AND #{regdt}
                      GROUP BY
@@ -83,7 +96,12 @@
                     (SELECT
                          SNSRID, COUNT(*) AS CNT
                      FROM
-                         ${tblSensorData}
+                         <choose>
+                             <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
+                             <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
+                             <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
+                             <otherwise>F_SENSOR_DATA</otherwise>
+                         </choose>
                      WHERE
                          SNSRRCVTIME BETWEEN #{regdt} - INTERVAL 2 DAY AND #{regdt} - INTERVAL 1 DAY
                      GROUP BY

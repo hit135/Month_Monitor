@@ -36,9 +36,12 @@ public class CommonCookie {
      */
     public void createLoginCookie(String key, String val, HttpServletResponse resp) {
         Cookie cookie = new Cookie(key, val);
-        cookie.setMaxAge(2147483647);
+        
+        cookie.setMaxAge(3600);
+        
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+        cookie.setSecure(true);
 
         resp.addCookie(cookie);
     }
@@ -59,6 +62,7 @@ public class CommonCookie {
                 if (paramName.equals(cookies[i].getName())) {
                     cookies[i].setMaxAge(0);
                     cookies[i].setPath("/");
+
                     resp.addCookie(cookies[i]);
                     break;
                 }
