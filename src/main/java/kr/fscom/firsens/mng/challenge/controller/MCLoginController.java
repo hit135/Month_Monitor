@@ -1,13 +1,5 @@
 package kr.fscom.firsens.mng.challenge.controller;
 
-import kr.fscom.firsens.common.keycrypt.KeyEncrypt;
-import kr.fscom.firsens.common.keycrypt.RSA;
-
-import kr.fscom.firsens.mng.challenge.repository.MCLoginRepo;
-
-import kr.fscom.firsens.common.cookie.CommonCookie;
-import kr.fscom.firsens.common.jwt.JjwtService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.security.PrivateKey;
-
 import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+
+import kr.fscom.firsens.common.keycrypt.KeyEncrypt;
+import kr.fscom.firsens.common.keycrypt.RSA;
+import kr.fscom.firsens.common.session.IPCheck;
+import kr.fscom.firsens.common.jwt.JjwtService;
+
+import kr.fscom.firsens.mng.challenge.repository.MCLoginRepo;
 
 /**
  * 로그인
@@ -50,7 +46,7 @@ public class MCLoginController {
     private static final Logger LOG = LoggerFactory.getLogger(MCLoginController.class);
     private final MCLoginRepo mcLoginRepo;
 
-    CommonCookie commonCookie = new CommonCookie();
+    IPCheck ipCheck = new IPCheck();
 
     @Autowired
     public MCLoginController(MCLoginRepo mcLoginRepo) {
@@ -132,17 +128,12 @@ public class MCLoginController {
             if (loginResult != null) {
                 int upd = mcLoginRepo.UPDATE_MCL_MEMRSNTDATE(new HashMap<String, Object>() {{ put("userId", userId); }});
 
-                Map<String, String> cookieMap = new HashMap<String, String>() {{
+                session.setAttribute(ipCheck.getUserIp(), new HashMap<String, String>() {{
                     put("userId", userId);
-                    put("firssChalMNGJwt", jjwtService.createToken("member", loginResult, "user"));
-                }};
+                    put("loginType", "firssChalMNGLogin");
+                    put("jwt", jjwtService.createToken("member", loginResult, "user"));
+                }});
 
-                String cookieMapString = cookieMap
-                    .keySet()
-                    .stream()
-                    .map(key -> key + ":" + cookieMap.get(key)).collect(Collectors.joining("&"));
-
-                commonCookie.createLoginCookie("firssChalMNGLogin", cookieMapString, resp);
                 result = true;
             }
         } catch (Exception e) {
@@ -164,7 +155,7 @@ public class MCLoginController {
      */
     @GetMapping("/logout")
     public ModelAndView mcLogout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        commonCookie.deleteAllLoginCookie(req, resp, "firssChalMNGLogin");
+        req.removeAttribute(ipCheck.getUserIp());
         return new ModelAndView("redirect:/mng/main");
     }
 

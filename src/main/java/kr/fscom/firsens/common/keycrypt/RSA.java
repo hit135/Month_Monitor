@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.util.StringUtils;
 
+import lombok.Data;
+
 import javax.crypto.Cipher;
 import java.io.UnsupportedEncodingException;
 
@@ -25,6 +27,7 @@ import java.security.spec.RSAPublicKeySpec;
  * @since 2019.05.16.
  */
 
+@Data
 public class RSA {
 
     private static final Logger LOG = LoggerFactory.getLogger(RSA.class);
@@ -118,13 +121,5 @@ public class RSA {
 
         return bytes;
     }
-
-    public String getPublicKeyModulus() { return publicKeyModulus; }
-    public String getPublicKeyExponent() { return publicKeyExponent; }
-    public PrivateKey getPrivateKey() { return privateKey; }
-
-    public void setPublicKeyModulus(String publicKeyModulus) { this.publicKeyModulus = publicKeyModulus; }
-    public void setPublicKeyExponent(String publicKeyExponent) { this.publicKeyExponent = publicKeyExponent; }
-    public void setPrivateKey(PrivateKey privateKey) { this.privateKey = privateKey; }
 
 }

@@ -1,6 +1,5 @@
 package kr.fscom.firsens.sys.controller;
 
-import kr.fscom.firsens.common.cookie.CommonCookie;
 import kr.fscom.firsens.sys.repository.SYSSimulRepo;
 
 import org.apache.commons.codec.binary.Hex;
@@ -37,8 +36,6 @@ public class SYSSimulController {
     public SYSSimulController(SYSSimulRepo sysSimulRepo) {
         this.sysSimulRepo = sysSimulRepo;
     }
-
-    CommonCookie commonCookie = new CommonCookie();
 
     @PostMapping("/listSimulArea")
     public HashMap<String, Object> listPageSimulArea() throws Exception {

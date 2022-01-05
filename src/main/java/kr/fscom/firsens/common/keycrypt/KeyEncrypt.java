@@ -20,11 +20,8 @@ public class KeyEncrypt {
             sh.update(salt.getBytes());
             
             StringBuffer sb = new StringBuffer();
-            for (byte i : sh.digest(passWd.getBytes(Charset.forName("UTf-8")))) {
-                String hex = Integer.toString((i & 0xff) + 0x100, 16);
-                String ap = hex.substring(1);
-                sb.append(ap);
-            }
+            for (byte i : sh.digest(passWd.getBytes(Charset.forName("UTf-8")))) 
+                sb.append(Integer.toString((i & 0xff) + 0x100, 16).substring(1));
 
             sha = sb.toString();
         } catch (NoSuchAlgorithmException | NullPointerException e) {

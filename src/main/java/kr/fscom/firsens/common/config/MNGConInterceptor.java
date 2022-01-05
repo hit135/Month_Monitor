@@ -1,20 +1,21 @@
 package kr.fscom.firsens.common.config;
 
-import kr.fscom.firsens.common.cookie.CommonCookie;
-import kr.fscom.firsens.common.jwt.JjwtService;
+import org.apache.commons.collections.MapUtils;
 
-import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.Map;
+
+import kr.fscom.firsens.common.jwt.JjwtService;
+import kr.fscom.firsens.common.session.IPCheck;
 
 /**
  * 관리웹 Interceptor
@@ -36,42 +37,39 @@ import java.util.Map;
 @Component
 public class MNGConInterceptor implements HandlerInterceptor {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MNGConInterceptor.class);
+
+    IPCheck ipCheck = new IPCheck();
+
     @Autowired
     private JjwtService jjwtService;
 
-    CommonCookie commonCookie = new CommonCookie();
-
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) throws Exception {
-        Cookie[] cookies = req.getCookies();
-        boolean hasLoginCookie = false;
-        boolean isValid = true;
-        if (cookies != null && cookies.length > 0) {
-            for (int i = 0; i < cookies.length; i++) {
-                if ("firssChalMNGLogin".equals(cookies[i].getName())) {
-                    hasLoginCookie = true;
-                    Map<String, String> checkMap = new HashMap<>();
-                    String[] StringArr = cookies[i].getValue().split("&");
-                    for (String arr : StringArr)
-                        checkMap.put(arr.split(":")[0], arr.split(":")[1]);
-                    if (checkMap.get("firssChalMNGJwt") == null || !jjwtService.isUsable(checkMap.get("firssChalMNGJwt"))) {
-                        commonCookie.deleteCookie(cookies[i], resp);
-                        isValid = false;
-                    }
+        HashMap<String, Object> sessionMap = new HashMap<>();
+
+        try {
+            sessionMap = (HashMap<String, Object>) req.getSession().getAttribute(ipCheck.getUserIp());
+            if (MapUtils.isNotEmpty(sessionMap)) {
+                if ("firssChalMNGLogin".equals(sessionMap.get("loginType")) && jjwtService.isUsable((String) sessionMap.get("jwt"))) {
+                    return true;
+                } else {
+                    req.getSession().removeAttribute(ipCheck.getUserIp());
+                    resp.sendRedirect("/mng/loginPage");
+                    return false;
                 }
+            } else {
+                resp.sendRedirect("/mng/loginPage");
+                return false;
             }
-        } else {
-            isValid = false;
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
         }
-        if (!hasLoginCookie)
-            isValid = false;
-        if (!isValid) {
-            resp.sendRedirect("/mng/loginPage");
-            return false;
-        } else {
-            req.setAttribute("loginCheck", true);
-            return true;
-        }
+
+        resp.sendRedirect("/mng/loginPage");
+        return false;
     }
 
 }

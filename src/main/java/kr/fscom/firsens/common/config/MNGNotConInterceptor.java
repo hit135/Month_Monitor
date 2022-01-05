@@ -1,20 +1,21 @@
 package kr.fscom.firsens.common.config;
 
-import kr.fscom.firsens.common.cookie.CommonCookie;
-import kr.fscom.firsens.common.jwt.JjwtService;
+import org.apache.commons.collections.MapUtils;
 
-import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.Map;
+
+import kr.fscom.firsens.common.jwt.JjwtService;
+import kr.fscom.firsens.common.session.IPCheck;
 
 /**
  * 관리웹 로그인 여부 Interceptor
@@ -36,32 +37,36 @@ import java.util.Map;
 @Component
 public class MNGNotConInterceptor implements HandlerInterceptor {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MNGNotConInterceptor.class);
+
+    IPCheck ipCheck = new IPCheck();
+
     @Autowired
     private JjwtService jjwtService;
 
-    CommonCookie commonCookie = new CommonCookie();
-
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) throws Exception {
-        Cookie[] cookies = req.getCookies();
-        if (cookies != null && cookies.length > 0) {
-            for (int i = 0; i < cookies.length; i++) {
-                if ("firssChalMNGLogin".equals(cookies[i].getName())) {
-                    Map<String, String> checkMap = new HashMap<>();
-                    String[] StringArr = cookies[i].getValue().split("&");
-                    for (String arr : StringArr)
-                        checkMap.put(arr.split(":")[0], arr.split(":")[1]);
-                    if (checkMap.get("firssChalMNGJwt") != null && jjwtService.isUsable(checkMap.get("firssChalMNGJwt"))) {
-                        resp.sendRedirect("/mng/main");
-                        return false;
-                    } else {    // 로그인 정보 없음
-                        commonCookie.deleteCookie(cookies[i], resp);
-                        return true;
-                    }
-                }
+        HashMap<String, Object> sessionMap = new HashMap<>();
+
+        try {
+            sessionMap = (HashMap<String, Object>) req.getSession().getAttribute(ipCheck.getUserIp());
+            if (MapUtils.isNotEmpty(sessionMap)) {
+                if ("firssChalMNGLogin".equals(sessionMap.get("loginType")) && jjwtService.isUsable((String) sessionMap.get("jwt"))) {
+                    return false;
+                } else {
+                    req.getSession().removeAttribute(ipCheck.getUserIp());
+                    return true;
+                } 
+            } else {
+                return true;
             }
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
         }
-        return true;
+
+        return false;
     }
 
 }

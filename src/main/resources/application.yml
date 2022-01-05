@@ -30,6 +30,9 @@ spring:
       platform: mariadb
 server:
   port: 8081
+  servlet:
+    session:
+      timeout: 86400
 mybatis:
   type-aliases-package: kr.fscom.firsens.sys.domain
   mapper-locations: classpath:mapper/**/*.xml
@@ -66,6 +69,9 @@ spring:
       platform: mariadb
 server:
   port: 8081
+  servlet:
+    session:
+      timeout: 86400
 logging:
   file:
     name: app
