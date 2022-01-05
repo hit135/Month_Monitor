@@ -122,5 +122,10 @@ function fn_mcl_loginAjax() {
     fn_mcl_selectRsaKey();
   });
 }
+
+$('#mcl_user_id, #mcl_mem_pwd').on('keydown', function (e) {
+  if (e.keyCode == 13)
+    fn_mcl_loginAjax();
+});
 </script>
 </html>

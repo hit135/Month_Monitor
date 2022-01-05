@@ -155,7 +155,7 @@ public class MCLoginController {
      */
     @GetMapping("/logout")
     public ModelAndView mcLogout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        req.removeAttribute(ipCheck.getUserIp());
+        req.getSession().removeAttribute(ipCheck.getUserIp());
         return new ModelAndView("redirect:/mng/main");
     }
 
