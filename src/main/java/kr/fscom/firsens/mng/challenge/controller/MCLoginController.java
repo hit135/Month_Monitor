@@ -128,8 +128,9 @@ public class MCLoginController {
             if (loginResult != null) {
                 int upd = mcLoginRepo.UPDATE_MCL_MEMRSNTDATE(new HashMap<String, Object>() {{ put("userId", userId); }});
 
-                session.setAttribute(ipCheck.getUserIp(), new HashMap<String, String>() {{
+                session.setAttribute("MNG_" + ipCheck.getUserIp(), new HashMap<String, String>() {{
                     put("userId", userId);
+                    put("userIp", ipCheck.getUserIp());
                     put("loginType", "firssChalMNGLogin");
                     put("jwt", jjwtService.createToken("member", loginResult, "user"));
                 }});
@@ -155,7 +156,7 @@ public class MCLoginController {
      */
     @GetMapping("/logout")
     public ModelAndView mcLogout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        req.getSession().removeAttribute(ipCheck.getUserIp());
+        req.getSession().removeAttribute("MNG_" + ipCheck.getUserIp());
         return new ModelAndView("redirect:/mng/main");
     }
 

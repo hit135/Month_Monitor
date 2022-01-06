@@ -13,7 +13,6 @@
                  F_STORE
              WHERE
                  CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
-                 AND STRCODE != 'FS_STR_0000000001859'
             ) S
                 LEFT JOIN (SELECT
                                STRCODE, SNSRID
@@ -47,7 +46,6 @@
                     ON I.SNSRID = L.SNSRID
         WHERE
             CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
             AND S.AREACODE = #{areacode}
         GROUP BY
             S.AREACODE, I.SNSRID
@@ -81,7 +79,6 @@
                  F_STORE
              WHERE
                  CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
-                 AND STRCODE != 'FS_STR_0000000001859'
                  AND AREACODE = #{areacode}
                  AND STRCODE = #{strcode}
             ) S
@@ -128,7 +125,6 @@
                     ON I.SNSRSEQ = L.SNSRSEQ
         WHERE
             CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
             AND S.AREACODE = #{areacode}
         ORDER BY
             4 DESC, I.PANELNAME, I.SNSRNICK
@@ -198,7 +194,6 @@
                     ON I.SNSRID = D.SNSRID
         WHERE
             CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
         GROUP BY
             1
         ORDER BY
@@ -277,7 +272,6 @@
                     ON I.STRCODE = S.STRCODE
         WHERE
             CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
             AND S.AREACODE = #{areacode}
             AND S.STRCODE = #{strcode}
             AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
@@ -309,7 +303,6 @@
                     ON I.STRCODE = S.STRCODE
         WHERE
             CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.STRCODE != 'FS_STR_0000000001859'
             AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
     </select>
     <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -336,7 +329,6 @@
                          ON I.STRCODE = S.STRCODE
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
                  AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) A
             ,
@@ -357,7 +349,6 @@
                          ON I.STRCODE = S.STRCODE
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
                  AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) B
             ,
@@ -378,7 +369,6 @@
                          ON I.STRCODE = S.STRCODE
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
                  AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) B
         ]]>
@@ -408,7 +398,6 @@
                      ON I.STRCODE = S.STRCODE
          WHERE
              CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-             AND S.STRCODE != 'FS_STR_0000000001859'
              AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
          ORDER BY
              D.SNSRRCVTIME DESC
@@ -439,7 +428,6 @@
                      ON I.STRCODE = S.STRCODE
          WHERE
              CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-             AND S.STRCODE != 'FS_STR_0000000001859'
              AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
          ORDER BY
              D.SNSRRCVTIME DESC
@@ -470,7 +458,6 @@
                      ON I.STRCODE = S.STRCODE
          WHERE
              CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-             AND S.STRCODE != 'FS_STR_0000000001859'
              AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
          ORDER BY
              D.SNSRRCVTIME DESC
@@ -509,7 +496,6 @@
                          ON I.STRCODE = S.STRCODE
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
                  AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) A
             ,
@@ -537,7 +523,6 @@
                          ON I.STRCODE = S.STRCODE
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
                  AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) B
             ,
@@ -565,7 +550,6 @@
                          ON I.STRCODE = S.STRCODE
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
                  AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) C
     </select>
@@ -602,7 +586,6 @@
                      ON I.STRCODE = S.STRCODE
          WHERE
              CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-             AND S.STRCODE != 'FS_STR_0000000001859'
              AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
          ORDER BY
              L.REGDATE DESC
@@ -642,7 +625,6 @@
                      ON I.STRCODE = S.STRCODE
          WHERE
              CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-             AND S.STRCODE != 'FS_STR_0000000001859'
              AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
          ORDER BY
              L.REGDATE DESC
@@ -682,7 +664,6 @@
                      ON I.STRCODE = S.STRCODE
          WHERE
              CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-             AND S.STRCODE != 'FS_STR_0000000001859'
              AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
          ORDER BY
              L.REGDATE DESC
@@ -708,7 +689,6 @@
                                F_CRN_SNSR_ELEC_EVT_STAT
                            WHERE
                                GUCODE LIKE '30%'
-                               AND STRCODE != 'FS_STR_0000000001859'
                                AND AREACODE = #{areacode}
                                AND STRCODE = #{strcode}
                                AND SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})
@@ -738,7 +718,6 @@
                                F_CRN_SNSR_ELEC_EVT_STAT
                            WHERE
                                GUCODE LIKE '30%'
-                               AND STRCODE != 'FS_STR_0000000001859'
                                AND AREACODE = #{areacode}
                                AND STRCODE = #{strcode}
                                AND SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})

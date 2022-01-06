@@ -21,7 +21,6 @@
              WHERE
                  DATETIME > CURDATE() - INTERVAL 1 DAY AND DATETIME <![CDATA[<]]> CURDATE()
                  AND GUCODE LIKE '30%'
-                 AND STRCODE != 'FS_STR_0000000001859'
             ) A
             ,
             (SELECT
@@ -41,8 +40,7 @@
                      LEFT JOIN F_STORE S
                          ON I.STRCODE = S.STRCODE
              WHERE
-                 I.STRCODE != 'FS_STR_0000000001859'
-                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
                  AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
             ) B
             ,
@@ -55,7 +53,6 @@
                       F_SENSOR_INFO
                   WHERE
                       CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
-                      AND STRCODE != 'FS_STR_0000000001859'
                  ) I
                      LEFT JOIN F_STORE S
                          ON I.STRCODE = S.STRCODE
@@ -82,7 +79,6 @@
                       F_SENSOR_INFO
                   WHERE
                       CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
-                      AND STRCODE != 'FS_STR_0000000001859'
                  ) I1
                      LEFT JOIN (SELECT
                                     SNSRSEQ
@@ -124,7 +120,6 @@
                                F_STORE
                            WHERE
                                CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
-                               AND STRCODE != 'FS_STR_0000000001859'
                           ) S
                     ON A.AREACODE = S.AREACODE
                 LEFT JOIN (SELECT STRCODE, SNSRSEQ, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
@@ -151,7 +146,6 @@
                                GUCODE LIKE '30%'
                                AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
                                AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
-                               AND STRCODE != 'FS_STR_0000000001859'
                            GROUP BY
                                GUCODE
                           ) A
@@ -168,7 +162,6 @@
                                 WHERE
                                     GUCODE LIKE '30%'
                                     AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
-                                    AND STRCODE != 'FS_STR_0000000001859'
                                 GROUP BY
                                     GUCODE
 
@@ -193,7 +186,6 @@
                                            ON S.AREACODE = A.AREACODE
                                 WHERE
                                     CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                                    AND I.STRCODE != 'FS_STR_0000000001859'
                                     AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                                     AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                                 GROUP BY
@@ -243,7 +235,6 @@
                          ON A.GUCODE = G.GUCODE
              WHERE
                  CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                 AND I.STRCODE != 'FS_STR_0000000001859'
                  AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                  AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                  AND A.AREACODE != 'AREA_000001'
@@ -277,7 +268,6 @@
                                        ON A.GUCODE = G.GUCODE
                            WHERE
                                CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                               AND I.STRCODE != 'FS_STR_0000000001859'
                                AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                                AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                                AND A.AREACODE != 'AREA_000001'
@@ -322,7 +312,6 @@
                           ON A.GUCODE = G.GUCODE
              WHERE
                  CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                 AND I.STRCODE != 'FS_STR_0000000001859'
                  AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                  AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                  AND A.AREACODE != 'AREA_000001'
@@ -354,7 +343,6 @@
                                        ON A.GUCODE = G.GUCODE
                            WHERE
                                CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                               AND I.STRCODE != 'FS_STR_0000000001859'
                                AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                                AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
                                AND A.AREACODE != 'AREA_000001'
@@ -380,7 +368,6 @@
                  F_ELEC_SENSOR_STAT
              WHERE
                  GUCODE LIKE '30%'
-                 AND STRCODE != 'FS_STR_0000000001859'
                  AND SDATE = CURDATE() - INTERVAL 1 DAY
             ) A
             ,
@@ -390,7 +377,6 @@
                  F_ELEC_SENSOR_STAT
              WHERE
                  GUCODE LIKE '30%'
-                 AND STRCODE != 'FS_STR_0000000001859'
                  AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
                            AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
             ) B
@@ -401,7 +387,6 @@
                  F_ELEC_SENSOR_STAT
              WHERE
                  GUCODE LIKE '30%'
-                 AND STRCODE != 'FS_STR_0000000001859'
                  AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
                  AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
             ) C
@@ -426,7 +411,6 @@
                          ON I.STRCODE = S.STRCODE
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND S.STRCODE != 'FS_STR_0000000001859'
             ) V
             ,
             (SELECT
@@ -435,7 +419,6 @@
                  F_ELEC_SENSOR_STAT
              WHERE
                  GUCODE LIKE '30%'
-                 AND STRCODE != 'FS_STR_0000000001859'
                  AND SDATE = CURDATE() - INTERVAL 1 DAY
             ) A
             ,
@@ -445,7 +428,6 @@
                  F_CRN_SNSR_KWH_TODAY_STAT
              WHERE
                  GUCODE LIKE '30%'
-                 AND STRCODE != 'FS_STR_0000000001859'
             ) B
         ]]>
     </select>
@@ -463,7 +445,6 @@
                                F_ELEC_SENSOR_STAT
                            WHERE
                                GUCODE LIKE '30%'
-                               AND STRCODE != 'FS_STR_0000000001859'
                                AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
                                          AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
                            GROUP BY
@@ -478,7 +459,6 @@
                                     F_ELEC_SENSOR_STAT
                                 WHERE
                                     GUCODE LIKE '30%'
-                                    AND STRCODE != 'FS_STR_0000000001859'
                                     AND SDATE >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
                                 GROUP BY
                                     GUCODE
@@ -491,7 +471,6 @@
                                     F_CRN_SNSR_KWH_TODAY_STAT
                                 WHERE
                                     GUCODE LIKE '30%'
-                                    AND STRCODE != 'FS_STR_0000000001859'
                                 GROUP BY
                                     GUCODE) SS
                            GROUP BY
@@ -516,7 +495,6 @@
                                F_ELEC_SENSOR_STAT
                            WHERE
                                GUCODE LIKE '30%'
-                               AND STRCODE != 'FS_STR_0000000001859'
                                AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
                                AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
                            GROUP BY
@@ -531,7 +509,6 @@
                                     F_ELEC_SENSOR_STAT
                                 WHERE
                                     GUCODE LIKE '30%'
-                                    AND STRCODE != 'FS_STR_0000000001859'
                                     AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
                                 GROUP BY
                                     GUCODE
@@ -544,7 +521,6 @@
                                     F_CRN_SNSR_KWH_TODAY_STAT
                                 WHERE
                                     GUCODE LIKE '30%'
-                                    AND STRCODE != 'FS_STR_0000000001859'
                                 GROUP BY
                                     GUCODE) SS
                            GROUP BY
@@ -604,7 +580,6 @@
                                     F_ELEC_SENSOR_STAT SS
                                WHERE
                                     GUCODE LIKE '30%'
-                                    AND STRCODE != 'FS_STR_0000000001859'
                                     AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
                                     AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
                                     AND AREACODE != 'AREA_000001'
@@ -623,7 +598,6 @@
                                     F_ELEC_SENSOR_STAT
                                 WHERE
                                     GUCODE LIKE '30%'
-                                    AND STRCODE != 'FS_STR_0000000001859'
                                     AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
                                     AND AREACODE != 'AREA_000001'
                                 GROUP BY
@@ -637,7 +611,6 @@
                                     F_CRN_SNSR_KWH_TODAY_STAT
                                 WHERE
                                     GUCODE LIKE '30%'
-                                    AND STRCODE != 'FS_STR_0000000001859'
                                     AND AREACODE != 'AREA_000001'
                                 GROUP BY
                                     AREACODE) SS

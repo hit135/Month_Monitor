@@ -49,12 +49,14 @@ public class MNGNotConInterceptor implements HandlerInterceptor {
         HashMap<String, Object> sessionMap = new HashMap<>();
 
         try {
-            sessionMap = (HashMap<String, Object>) req.getSession().getAttribute(ipCheck.getUserIp());
+            String sessionName = "MNG_" + ipCheck.getUserIp();
+
+            sessionMap = (HashMap<String, Object>) req.getSession().getAttribute(sessionName);
             if (MapUtils.isNotEmpty(sessionMap)) {
                 if ("firssChalMNGLogin".equals(sessionMap.get("loginType")) && jjwtService.isUsable((String) sessionMap.get("jwt"))) {
                     return false;
                 } else {
-                    req.getSession().removeAttribute(ipCheck.getUserIp());
+                    req.getSession().removeAttribute(sessionName);
                     return true;
                 } 
             } else {
