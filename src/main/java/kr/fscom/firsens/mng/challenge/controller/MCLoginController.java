@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.security.PrivateKey;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import kr.fscom.firsens.common.keycrypt.KeyEncrypt;
@@ -91,6 +92,8 @@ public class MCLoginController {
             session.setAttribute("__rsaPrivateKey__", rsa.getPrivateKey());
 
             result = true;
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         } finally {
@@ -137,6 +140,10 @@ public class MCLoginController {
 
                 result = true;
             }
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         } finally {
