@@ -94,7 +94,35 @@ public class MCStoreController {
         return mav;
     }
 
-  /**
+    /**
+     * @Method Name : mcstTodayAreaState
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 오늘 시장 현황 조회 (전체, 경고, 주의, 끊김)
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/todayAreaStateAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> mcstTodayAreaState(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            return mcStoreRepo.LIST_MCST_TODAY_AREA_STATE(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
+
+   /**
      * @Method Name : mcstTodayAreaStoreState
      * @작성일 : 2021-07-09
      * @작성자 : jjm

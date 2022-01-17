@@ -254,64 +254,6 @@
             S.STATE, S.CNT DESC
     </select>
 
-    <!-- 오늘 시장 현황 (전체, 경고, 주의, 끊김) -->
-    <select id="LIST_MCM_TODAY_AREA_STATE" parameterType="map" resultType="map">
-        <![CDATA[
-        SELECT
-             A.AREANAME
-             , COUNT(DISTINCT A.SNSRSEQ) AS SENSOR
-             , COUNT(DISTINCT A.STRCODE) AS STORE
-             , COALESCE(SUM(A.DANGERSNSRCNT), 0) AS DANGER
-             , COALESCE(SUM(A.WARNSNSRCNT), 0) AS WARN
-             , COALESCE(SUM(A.DISNSNSRCNT), 0) AS DISCON
-        FROM
-            (SELECT
-                 A.AREACODE
-                 , A.AREANAME
-                 , I.STRCODE
-                 , I.SNSRSEQ
-                 , COALESCE(I.DANGERSNSRCNT, 0) AS DANGERSNSRCNT
-                 , COALESCE(I.WARNSNSRCNT, 0) AS WARNSNSRCNT
-                 , COALESCE(I.DISNSNSRCNT, 0) AS DISNSNSRCNT
-             FROM
-                 (SELECT
-                      I1.STRCODE
-                      , I1.SNSRSEQ
-                      , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
-                      , I2.DANGERSNSRCNT
-                      , I2.WARNSNSRCNT
-                  FROM
-                      (SELECT
-                           STRCODE, SNSRSEQ, DATARCVTIME
-                       FROM
-                           F_SENSOR_INFO
-                       WHERE
-                           CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
-                      ) I1
-                          LEFT JOIN (SELECT
-                                         SNSRSEQ
-                                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
-                                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
-                                     FROM
-                                         F_SENSOR_LOG
-                                     WHERE
-                                         REGDATE > CURDATE()
-                                         AND OCALM + IGOALM + IGRALM > 0
-                                         AND ISSIMUL = 0
-                                     GROUP BY
-                                         SNSRSEQ) I2
-                              ON I1.SNSRSEQ = I2.SNSRSEQ
-                 ) I
-                     LEFT JOIN F_STORE S
-                         ON I.STRCODE = S.STRCODE
-                     LEFT JOIN F_LEVEL_AREA A
-                         ON S.AREACODE = A.AREACODE
-             WHERE
-                 S.AREACODE = #{areacode}
-            ) A
-        ]]>
-    </select>
-
     <!-- 시장별 어제/오늘 데이터 추이 -->
     <select id="LIST_MCM_2DAYS_AREA_DATA_CHART" parameterType="map" resultType="map">
         SELECT
