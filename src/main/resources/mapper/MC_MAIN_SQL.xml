@@ -661,7 +661,7 @@
                     ON I.STRCODE = S.STRCODE
                 LEFT JOIN (SELECT
                                D1.SNSRID
-                               , SUM(CASE WHEN D1.SNSRRCVTIME > NOW() - INTERVAL 1 HOUR THEN 1 ELSE 0 END) AS DATACNT
+                               , SUM(CASE WHEN D1.SNSRRCVTIME > NOW() - INTERVAL 24 HOUR THEN 1 ELSE 0 END) AS DATACNT
                                , COALESCE(SUM(D2.ISDANGER), 0) AS DANGERCNT
                                , COALESCE(SUM(D2.ISWARN), 0) AS WARNCNT
                            FROM

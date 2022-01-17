@@ -49,6 +49,15 @@ function fn_mcll_initLeft() {
   fn_mcll_getCheckSensorList();
 }
 
+// 왼쪽 시장 목록 선택
+function fn_mcm_clickAreaLv2(code) {
+  window.center_name = 'store';
+
+  fn_mcm_toggleCenterCont();
+  fn_mcm_getTodayAreaState(code);
+  fn_mcm_getTodayAreaStoreState(code);
+}
+
 function fn_mcll_refreshLeft() {
   fn_mcll_getCheckSensorList();
 }
