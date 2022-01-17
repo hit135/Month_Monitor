@@ -24,7 +24,8 @@ function fn_mclr_initRight() {
   $.template(
     'right-sensor',
     '<p class="right-sensor" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-code="{{html SNSRID}}">' +
-      '{{html AREANAME}}_{{html SNSRNICK}} ({{html CNT}})' +
+      '{{html AREANAME}}_{{html SNSRNICK}} ' + 
+      '<span style="color: red;">({{html CNT}})</span>' +
     '</p>'
   );
 

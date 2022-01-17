@@ -465,6 +465,7 @@ function fn_mcm_setChartWeek(title, target, data, colors) {
     window['chart-' + target_id].render().then(function () {});
   }
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 상점 정보 refresh
 function fn_mcm_onAreaLv2(code, strcode, snsrid) {
@@ -632,6 +633,7 @@ function fn_mcm_setMapMarker(target, data) {
       }));
   }}
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 let refreshTime = window.setInterval(function () {
   if (new Date().getMinutes() % 10 === 2)

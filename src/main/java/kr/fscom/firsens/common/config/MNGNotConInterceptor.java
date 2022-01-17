@@ -54,6 +54,7 @@ public class MNGNotConInterceptor implements HandlerInterceptor {
             sessionMap = (HashMap<String, Object>) req.getSession().getAttribute(sessionName);
             if (MapUtils.isNotEmpty(sessionMap)) {
                 if ("firssChalMNGLogin".equals(sessionMap.get("loginType")) && jjwtService.isUsable((String) sessionMap.get("jwt"))) {
+                    resp.sendRedirect("/mng/main");
                     return false;
                 } else {
                     req.getSession().removeAttribute(sessionName);
