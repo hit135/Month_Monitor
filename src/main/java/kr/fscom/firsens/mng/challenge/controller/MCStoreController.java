@@ -94,6 +94,89 @@ public class MCStoreController {
         return mav;
     }
 
+  /**
+     * @Method Name : mcstTodayAreaStoreState
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 오늘 시장 내 상점 현황 조회 (경고, 주의, 끊김, 센서)
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/todayAreaStoreStateAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> mcstTodayAreaStoreState(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            return mcStoreRepo.LIST_MCST_TODAY_AREA_STORE_STATE(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * @Method Name : mcstTodayAreaSensorState
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 오늘 시장 내 센서 현황 조회 (경고, 주의, 끊김, 점검)
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/todayAreaSensorStateAjax")
+    @ResponseBody
+    public List<HashMap<String,Object>> mcstTodayAreaSensorState(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            prm.put("areacode", req.getParameter("areacode"));
+            prm.put("strcode", req.getParameter("strcode"));
+
+            return mcStoreRepo.LIST_MCST_TODAY_AREA_SENSOR_STATE(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * @Method Name : mcstStoreSearch
+     * @작성일 : 2021-07-15
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 상점 검색 목록 조회
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/storeSearchAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> mcstStoreSearch(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> prm = new HashMap<>();
+
+        try {
+            prm.put("search", req.getParameter("search"));
+            return mcStoreRepo.LIST_MCST_STORE_SEARCH(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
     /**
      * @Method Name : mcstStoreInfoAjax
      * @작성일 : 2021-07-09

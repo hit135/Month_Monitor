@@ -27,6 +27,10 @@ import java.util.Map;
 @Repository
 public interface MCStoreRepo {
 
+    List<HashMap<String, Object>> LIST_MCST_TODAY_AREA_STORE_STATE(Map<String, Object> param) throws Exception;       // 오늘 시장 내 상점 현황 (경고, 주의, 끊김, 센서)
+    List<HashMap<String, Object>> LIST_MCST_TODAY_AREA_SENSOR_STATE(Map<String, Object> param) throws Exception;      // 오늘 시장 내 센서 현황 (경고, 주의, 끊김, 점검)
+    List<HashMap<String, Object>> LIST_MCST_STORE_SEARCH(Map<String, Object> param) throws Exception;                 // 상점 검색 목록
+
     List<HashMap<String, Object>> LIST_MCST_STORE_INFO(Map<String, Object> param) throws Exception;          // 상점 정보
     List<HashMap<String, Object>> LIST_MCST_SENSOR_EVT_CNT(Map<String, Object> param) throws Exception;      // 상점 로그 정보
 
