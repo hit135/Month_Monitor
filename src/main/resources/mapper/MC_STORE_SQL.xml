@@ -38,17 +38,17 @@
                         CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
                     ) I1
                         LEFT JOIN (SELECT
-                                        SNSRSEQ
-                                        , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
-                                        , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
-                                    FROM
-                                        F_SENSOR_LOG
-                                    WHERE
-                                        REGDATE > CURDATE()
-                                        AND OCALM + IGOALM + IGRALM > 0
-                                        AND ISSIMUL = 0
-                                    GROUP BY
-                                        SNSRSEQ) I2
+                                       SNSRSEQ
+                                       , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
+                                       , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
+                                   FROM
+                                       F_SENSOR_LOG
+                                   WHERE
+                                       REGDATE > CURDATE()
+                                       AND OCALM + IGOALM + IGRALM > 0
+                                       AND ISSIMUL = 0
+                                   GROUP BY
+                                       SNSRSEQ) I2
                             ON I1.SNSRSEQ = I2.SNSRSEQ
                 ) I
                     LEFT JOIN F_STORE S

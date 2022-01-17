@@ -252,14 +252,12 @@
 
   <script th:inline="javascript">
   $(function () {
-    fn_mcsti_initStoreInfo();
-  });
-
-  function fn_mcsti_initStoreInfo() {
     $.template(
       'store-info-sensor',
       '<div class="form-inline">' +
-        '<p class="mb-0 mr-1"><input type="radio" name="snsr-radio-btn" value="{{html SNSRID}}" /></p>' +
+        '<p class="mb-0 mr-1">' +
+          '<input type="radio" name="snsr-radio-btn" value="{{html SNSRID}}" />' +
+        '</p>' +
         '<p class="store-info-check {{html CHECK}}">' +
           '<span class="btn-check-start" data-snsrid="{{html SNSRID}}">점검</span>' +
           '<span class="btn-check-end" data-snsrid="{{html SNSRID}}">점검중</span>' +
@@ -322,7 +320,7 @@
 
     fn_mcsti_getStoreInfo();
     fn_mcsti_getStoreInfoSensorList();
-  }
+  });
 
   function fn_mcsti_checkNobtnDatalog(snsrId) {
     $("input:radio[name='snsr-radio-btn']:input[value='" + snsrId + "']").prop('checked', true);
