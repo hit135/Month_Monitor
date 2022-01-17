@@ -91,7 +91,7 @@ function fn_mclt_initTop() {
   $('.top-search button').on('click', fn_mclt_searchStore);
 
   $('.top-search-result').on('click', 'p', function () {
-    fn_mcm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
+    fn_mclr_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
     $('.top-search-result').html('');
   });
 

@@ -17,10 +17,6 @@
 
 <script type="text/javascript">
 $(function () {
-  fn_mclr_initRight();
-});
-
-function fn_mclr_initRight() {
   $.template(
     'right-sensor',
     '<p class="right-sensor" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-code="{{html SNSRID}}">' +
@@ -30,15 +26,11 @@ function fn_mclr_initRight() {
   );
 
   $('.list-sensor').on('click', 'p', function () {
-    fn_mcm_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
+    fn_mclr_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
   });
 
   fn_mclr_getRightSensorList();
-}
-
-function fn_mclr_refreshRight() {
-  fn_mclr_getRightSensorList();
-}
+});
 
 function fn_mclr_getRightSensorList() {
   $.post(
@@ -54,5 +46,17 @@ function fn_mclr_getRightSensorList() {
       $('.sensors-WARN .cnt').text('(' + $('.sensors-WARN .list-sensor p').length + ')');
       $('.sensors-BROKEN .cnt').text('(' + $('.sensors-BROKEN .list-sensor p').length + ')');
   });
+}
+
+// 경고 / 주의 / 고장에서 상점 선택
+function fn_mclr_clickRightSensor(code, strcode, snsrid) {
+  window.center_name = 'store';
+
+  fn_mcm_toggleCenterCont();
+  fn_mcst_onAreaLv2(code, strcode, snsrid);
+}
+
+function fn_mclr_refreshRight() {
+  fn_mclr_getRightSensorList();
 }
 </script>
