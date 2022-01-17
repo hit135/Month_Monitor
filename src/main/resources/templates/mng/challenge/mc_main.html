@@ -196,17 +196,17 @@ function fn_mcm_init() {
 }
 
 function fn_mcm_initMainAreaList() {
+  $('.center-main-cont .sortable-grid').html('');
+  $('.list-area').html('');
+
   // main
   window.min_category = [];
-  $('.center-main-cont .sortable-grid').html('');
-
   for (let i = 0; i < 24; i++)
     for (let j = 0; j < 6; j++)
       window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
 
   // side
   window.left_area_lv2_on_code = $('.left .area-lv2.on').attr('data-code');
-  $('.list-area').html('');
 
   // 구별, 시장별 센서 현황
   $.post(

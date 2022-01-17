@@ -30,17 +30,17 @@
                            FROM
                                (SELECT STRCODE, SNSRSEQ, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I1
                                    LEFT JOIN (SELECT
-                                                   SNSRSEQ
-                                                   , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
-                                                   , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARNCNT
-                                               FROM
-                                                   F_SENSOR_LOG
-                                               WHERE
-                                                   REGDATE > CURDATE()
-                                                   AND OCALM + IGOALM + IGRALM > 0
-                                                   AND ISSIMUL = 0
-                                               GROUP BY
-                                                   SNSRSEQ) I2
+                                                  SNSRSEQ
+                                                  , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                                                  , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARNCNT
+                                              FROM
+                                                  F_SENSOR_LOG
+                                              WHERE
+                                                  REGDATE > CURDATE()
+                                                  AND OCALM + IGOALM + IGRALM > 0
+                                                  AND ISSIMUL = 0
+                                              GROUP BY
+                                                  SNSRSEQ) I2
                                        ON I1.SNSRSEQ = I2.SNSRSEQ
                            GROUP BY
                                I1.SNSRSEQ) I
