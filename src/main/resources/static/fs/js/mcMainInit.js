@@ -139,8 +139,8 @@ function fn_mcmi_initClickEvent() {
   });
 
   // 시장 내 왼쪽 상점 목록 선택
-  $('.center-left-sensor-list').on('click', 'p', function () {
-    $('.center-left-sensor-list p.on').removeClass('on');
+  $('.center-left-store-list').on('click', 'p', function () {
+    $('.center-left-store-list p.on').removeClass('on');
     $(this).addClass('on');
 
     $('.center-cont-top .store-name').text($(this).attr('data-strname'));

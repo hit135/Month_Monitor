@@ -26999,7 +26999,7 @@ function rgb2hex(rgb) {
 				var jsonSettings = JSON.parse(self.storage.getKeySettings);
 
 				if (myapp_config.debugState)
-					console.log("Panel settings loaded: " + self.storage.getKeySettings)
+					// console.log("Panel settings loaded: " + self.storage.getKeySettings)
 
 				/**
 				 * Loop the data and hide/show the panels and set the inputs in

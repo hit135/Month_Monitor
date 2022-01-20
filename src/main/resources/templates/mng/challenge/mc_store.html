@@ -12,7 +12,11 @@
     </div><!-- /.row -->
     <div class="row">
       <div class="center-left col-md-3 col-12">
-        <div class="center-left-sensor-list"></div>
+        <div class="btn-group w-100">
+          <button type="button" class="btn btn-sm btn-info ceter-left-store-btn" style="font-size: 13px; font-weight: bold;">경보 누적 수</button>
+          <button type="button" class="btn btn-sm btn-secondary ceter-left-store-btn" style="font-size: 13px; font-weight: bold;">경보 센서 수</button>
+        </div>
+        <div class="center-left-store-list"></div>
       </div><!-- /.col-md-3 -->
       <div class="center-cont col-md-9 col-12">
         <div class="row center-cont-top">
@@ -61,7 +65,7 @@
 
   // 시장 내 상점 목록 조회
   function fn_mcst_getTodayAreaStoreState(code, strcode, snsrid) {
-    let on_strcode = $('.center-left-sensor-list p.on').attr('data-strcode');
+    let on_strcode = $('.center-left-store-list p.on').attr('data-strcode');
     if (strcode)
       on_strcode = strcode;
 
@@ -69,7 +73,7 @@
       $('#contextRoot').val() + '/mng/todayAreaStoreStateAjax',
       { areacode: code },
       function (d) {
-        $('.center-left-sensor-list').html('');
+        $('.center-left-store-list').html('');
 
         for (let i = 0; i < d.length; i++) {
           d[i].CNT = 0;
@@ -85,17 +89,17 @@
             d[i].STATE = 'discon';
           }
 
-          $('.center-left-sensor-list').append($.tmpl('center-left-store', d[i]));
+          $('.center-left-store-list').append($.tmpl('center-left-store', d[i]));
         }
 
-        let on_obj = $('.center-left-sensor-list p[data-strcode="' + on_strcode + '"]')[0];
+        let on_obj = $('.center-left-store-list p[data-strcode="' + on_strcode + '"]')[0];
         if (!on_obj)
-          on_obj = $('.center-left-sensor-list p')[0];
+          on_obj = $('.center-left-store-list p')[0];
 
         $(on_obj).addClass('on');
         $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
 
-        if ($('#prm_strcode').val() != $('.center-left-sensor-list p.on').attr('data-strcode'))
+        if ($('#prm_strcode').val() != $('.center-left-store-list p.on').attr('data-strcode'))
           fn_mcst_clickContPage(snsrid ? { snsrid: snsrid } : null);
     });
   }
@@ -103,8 +107,8 @@
   // 상점 목록 선택
   function fn_mcst_clickContPage(p) {
     let prm = (p) ?
-      p : { areacode: $('.center-left-sensor-list p.on').attr('data-areacode'),
-        strcode: $('.center-left-sensor-list p.on').attr('data-strcode') };
+      p : { areacode: $('.center-left-store-list p.on').attr('data-areacode'),
+        strcode: $('.center-left-store-list p.on').attr('data-strcode') };
 
     $.post(
       $('#contextRoot').val() + '/mng/store' + $('.center-cont-top-btn.on').attr('data-page'),

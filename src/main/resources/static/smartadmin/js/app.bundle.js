@@ -244,9 +244,11 @@ var myapp_config = {
 				                                    	.attr('aria-expanded', false)
 				                                    	.find("b:first")
 				                                    	.html(opts.closedSign);
-
+													
+													/*
 				                                    if (myapp_config.debugState)
 				                                        console.log("nav item closed")    
+													*/
 				                                });
 				                            }
 				                        }
@@ -267,8 +269,10 @@ var myapp_config = {
 				                    	.find("b:first").delay(opts.speed)
 				                    	.html(opts.closedSign);  
 
+									/*
 				                    if (myapp_config.debugState)
 				                        console.log("nav item closed")
+									*/
 				                });
 				            } else {
 				                $(this).parent().find("ul:first").slideDown(opts.speed, opts.animate, function() {
@@ -280,16 +284,16 @@ var myapp_config = {
 				                    	.find("b:first").delay(opts.speed)
 				                    	.html(opts.openedSign);
 
+									/*
 				                    if (myapp_config.debugState)
 				                        console.log("nav item opened");
-
+									*/
 				                });
 				            }
 				        }
 				    });    
 
 				} else {
-				    
 				    if (myapp_config.debugState)
 				        console.log(self.get(0) + " this menu already exists");       
 				}
@@ -2185,15 +2189,17 @@ $(window).on("blur focus", function(e) {
             case "blur":
                 myapp_config.root_.toggleClass("blur") 
 
+				/*
                 if (myapp_config.debugState)
-                console.log("blur");
-            
+                	console.log("blur");
+            	*/
                 break;
             case "focus":
                 myapp_config.root_.toggleClass("blur")
+				/*
                 if (myapp_config.debugState)
-
-                console.log("focused");
+                	console.log("focused");
+				*/
 
                 break;
         }

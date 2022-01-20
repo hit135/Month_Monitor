@@ -52,7 +52,49 @@ public class MCStoreController {
 
     @Value("${globals.naver.clientId}")
     private String naverClientId;
-    
+
+    // 센서 타깃 영역코드와 상점코드 조회
+    private String[] getAreaStoreCode(String snsrid) throws Exception {
+        String[] ret = new String[2];
+
+        try {
+            HashMap<String, Object> prm = new HashMap<>();
+            prm.put("snsrid", snsrid);
+
+            HashMap<String, Object> store = mcStoreRepo.SELECT_ONE_MCST_STORE_INFO(prm);
+            ret[0] = (String) store.get("AREACODE");
+            ret[1] = (String) store.get("STRCODE");
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return ret;
+    }
+
+    // 영역, 상점 첫번째 센서ID 조회
+    private String getSensorCode(String areacode, String strcode) throws Exception {
+        try {
+            HashMap<String, Object> prm = new HashMap<>();
+            prm.put("areacode", areacode);
+            prm.put("strcode", strcode);
+
+            return (String) mcStoreRepo.SELECT_ONE_MCST_SENSOR_EVT_CNT(prm).get("SNSRID");
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * @Method Name : mcstStoreInfoPage
      * @작성일 : 2021-07-09
@@ -622,49 +664,6 @@ public class MCStoreController {
             prm.put("snsrid", req.getParameter("snsrid"));
             mcStoreRepo.UPDATE_MCST_SENSOR_CHECK(prm);
             return "success";
-        } catch (NullPointerException e) {
-            LOG.debug(e.getMessage());
-        } catch (SQLException e) {
-            LOG.debug(e.getMessage());
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return null;
-    }
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // 센서 타깃 영역코드와 상점코드 조회
-    private String[] getAreaStoreCode(String snsrid) throws Exception {
-        String[] ret = new String[2];
-
-        try {
-            HashMap<String, Object> prm = new HashMap<>();
-            prm.put("snsrid", snsrid);
-
-            List<HashMap<String, Object>> store = mcStoreRepo.LIST_MCST_STORE_INFO(prm);
-            ret[0] = (String) store.get(0).get("AREACODE");
-            ret[1] = (String) store.get(0).get("STRCODE");
-        } catch (NullPointerException e) {
-            LOG.debug(e.getMessage());
-        } catch (SQLException e) {
-            LOG.debug(e.getMessage());
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return ret;
-    }
-
-    // 영역, 상점 첫번째 센서ID 조회
-    private String getSensorCode(String areacode, String strcode) throws Exception {
-        try {
-            HashMap<String, Object> prm = new HashMap<>();
-            prm.put("areacode", areacode);
-            prm.put("strcode", strcode);
-
-            List<HashMap<String, Object>> sensor = mcStoreRepo.LIST_MCST_SENSOR_EVT_CNT(prm);
-            return (String) sensor.get(0).get("SNSRID");
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {

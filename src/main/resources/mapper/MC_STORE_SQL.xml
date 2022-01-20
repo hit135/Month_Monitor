@@ -3,6 +3,61 @@
 
 <mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCStoreRepo">
 
+    <select id="SELECT_ONE_MCST_STORE_INFO" parameterType="map" resultType="map">
+        SELECT
+            S.AREACODE, S.STRCODE, S.STRNAME, S.STRADDR, S.STRTEL, S.STROWNTEL, S.STRPOSLAT, S.STRPOSLON
+        FROM
+            (SELECT
+                 AREACODE, STRCODE, STRNAME, STRADDR, STRTEL, STROWNTEL, STRPOSLAT, STRPOSLON
+             FROM
+                 F_STORE
+             WHERE
+                 CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
+            ) S
+                LEFT JOIN (SELECT
+                               STRCODE, SNSRID
+                           FROM
+                               F_SENSOR_INFO
+                           WHERE
+                               CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                          ) I
+                    ON S.STRCODE = I.STRCODE
+        WHERE
+            I.SNSRID = #{snsrid}
+        LIMIT
+            1
+    </select>
+
+    <select id="SELECT_ONE_MCST_SENSOR_EVT_CNT" parameterType="map" resultType="map">
+        SELECT
+            S.AREACODE
+            , I.SNSRID
+            , MAX(L.OCALM + L.IGOALM + L.IGRALM) AS ALMCNT
+        FROM
+            (SELECT
+                 STRCODE, SNSRID
+             FROM
+                 F_SENSOR_INFO
+             WHERE
+                 CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                 AND STRCODE = #{strcode}
+             ) I
+                LEFT JOIN F_STORE S
+                    ON I.STRCODE = S.STRCODE
+                LEFT JOIN F_SENSOR_LOG L
+                    ON I.SNSRID = L.SNSRID
+        WHERE
+            CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+            AND S.AREACODE = #{areacode}
+        GROUP BY
+            S.AREACODE, I.SNSRID
+        ORDER BY
+            3 DESC, I.SNSRID
+        LIMIT
+            1
+    </select>
+    <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
     <!-- 오늘 시장 현황 (전체, 경고, 주의, 끊김) -->
     <select id="LIST_MCST_TODAY_AREA_STATE" parameterType="map" resultType="map">
         <![CDATA[
@@ -192,57 +247,6 @@
         ORDER BY
             S.STRNAME
     </select>
-
-    <select id="LIST_MCST_STORE_INFO" parameterType="map" resultType="map">
-        SELECT
-            S.AREACODE, S.STRCODE, S.STRNAME, S.STRADDR, S.STRTEL, S.STROWNTEL, S.STRPOSLAT, S.STRPOSLON
-        FROM
-            (SELECT
-                 AREACODE, STRCODE, STRNAME, STRADDR, STRTEL, STROWNTEL, STRPOSLAT, STRPOSLON
-             FROM
-                 F_STORE
-             WHERE
-                 CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
-            ) S
-                LEFT JOIN (SELECT
-                               STRCODE, SNSRID
-                           FROM
-                               F_SENSOR_INFO
-                           WHERE
-                               CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
-                          ) I
-                    ON S.STRCODE = I.STRCODE
-        WHERE
-            I.SNSRID = #{snsrid}
-    </select>
-
-    <select id="LIST_MCST_SENSOR_EVT_CNT" parameterType="map" resultType="map">
-        SELECT
-            S.AREACODE
-            , I.SNSRID
-            , MAX(L.OCALM + L.IGOALM + L.IGRALM) AS ALMCNT
-        FROM
-            (SELECT
-                 STRCODE, SNSRID
-             FROM
-                 F_SENSOR_INFO
-             WHERE
-                 CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
-                 AND STRCODE = #{strcode}
-             ) I
-                LEFT JOIN F_STORE S
-                    ON I.STRCODE = S.STRCODE
-                LEFT JOIN F_SENSOR_LOG L
-                    ON I.SNSRID = L.SNSRID
-        WHERE
-            CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND S.AREACODE = #{areacode}
-        GROUP BY
-            S.AREACODE, I.SNSRID
-        ORDER BY
-            3 DESC, I.SNSRID
-    </select>
-    <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <select id="SELECT_MCST_STORE_INFO" parameterType="map" resultType="map">
         SELECT

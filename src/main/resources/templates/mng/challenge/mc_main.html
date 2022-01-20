@@ -108,7 +108,6 @@ $(function () {
 
 // 오늘 센서 전체 현황, 점검센서 목록, 경고/주의/고장 센서 목록 조회
 function fn_mcm_initTodayState() {
-  $('.list-area').html('');
   $('.left-list-sensor').html('');
   $('.list-sensor').html('');
 
@@ -146,6 +145,7 @@ function fn_mcm_initTodayState() {
 // 구/시장별 센서상태 현황
 function fn_mcm_initMainAreaList() {
   $('.center-main-cont .sortable-grid').html('');
+  $('.list-area').html('');
 
   // side
   window.left_area_lv2_on_code = $('.left .area-lv2.on').attr('data-code');
@@ -228,6 +228,7 @@ function fn_mcm_updateMainAreaList(/*id*/) {
           fn_mcm_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', '')/*, id*/);
   }});
 }
+
 // 시장 현황 목록 화면 구성
 function fn_mcm_setMainArea(i/*, id*/) {
   let panel_id = 'panel-' + i;

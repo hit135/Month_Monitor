@@ -190,9 +190,7 @@
   $(function () {
     $('#regdt').val(fn_mcmi_dateToString(new Date()).slice(0, 10));
 
-    // $('.store-info #check-total').on('click', fn_mcsti_checkDataLog);
-    // $('.store-info #check-danger').on('click', fn_mcsti_checkDataLog);
-    // $('.store-info #check-warn').on('click', fn_mcsti_checkDataLog);
+ 
     fn_mcsti_getStoreInfo();
     fn_mcsti_getStoreInfoSensorList();
   });
