@@ -17,31 +17,6 @@
 
 <script type="text/javascript">
 $(function () {
-  $.template(
-    'left-area',
-    '<p class="area-lv{{html LEVEL}}" data-code="{{html CODE}}">' +
-      '<span class="name">{{html NAME}}</span><span class="danger">{{html DANGER}}</span><span class="warn">{{html WARN}}</span>' +
-    '</p>'
-  );
-
-  $.template(
-    'left-check-sensor',
-    '<p class="left-check-sensor" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-code="{{html SNSRID}}">' +
-      '{{html AREANAME}}_{{html SNSRNICK}} ({{html CNT}})' +
-    '</p>'
-  );
-
-  $('.left').on('click', '.area-lv2', function () {
-    $('.left .area-lv2.on').removeClass('on');
-    $(this).addClass('on');
-
-    fn_mcll_clickAreaLv2($(this).attr('data-code'));
-  });
-
-  $('.left-list-sensor').on('click', 'p', function () {
-    fn_mclr_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
-  });
-
   fn_mcll_getCheckSensorList();
 });
 

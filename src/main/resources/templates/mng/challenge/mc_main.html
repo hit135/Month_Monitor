@@ -86,75 +86,28 @@
 
 <script th:src="@{/fs/js/polyfill.min.js}"></script>
 <script th:src="@{/fs/js/apexcharts.js}"></script>
+<script th:src="@{/fs/js/mcMainInit.js}"></script>
 
 <script type="text/javascript" th:src="${naverMap}"></script>
 
 <script type="text/javascript">
+var window.min_category = [];
+
 $(function () {
-  $.template(
-    'center-left-store',
-    '<p class="{{html STATE}}" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-strname="{{html STRNAME}}">' +
-      '({{html SNSRCOUNT}}) {{html STRNAME}} <span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span>' +
-    '</p>'
-  );
+  fn_mcme_initTimer();
+  fn_mcme_initTemplate();
+  fn_mcme_initClickEvent();
+
+  for (let i = 0; i < 24; i++)
+    for (let j = 0; j < 6; j++)
+      window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
 
   fn_mcm_initMainAreaList();
-
-  // Main Page 버튼
-  $('.center-main-btn').on('click', function () {
-    window.center_name = 'main';
-    fn_mcm_toggleCenterCont();
-  });
-
-  // 시장 현황 패널 열고 닫기
-  $('.center-main-cont').on('click', '.js-panel-collapse', function () {
-    let id = '#' + $(this).attr('data-id');
-
-    if ($(this).hasClass('on')) {
-      $(this).removeClass('on');
-      $(id + ' .panel-container').removeClass('show');
-    } else {
-      $(this).addClass('on');
-      $(id + ' .panel-container').addClass('show');
-
-      fn_mcm_updateMainAreaList(id);
-    }
-  });
-
-  // 시장 현황 패널 전체 화면
-  $('.center-main-cont').on('click', '.js-panel-fullscreen', function () {
-    let id = '#' + $(this).attr('data-id');
-
-    if ($(this).hasClass('on')) {
-      $(this).removeClass('on');
-      $(id).removeClass('panel-fullscreen');
-    } else {
-      $(this).addClass('on');
-      $(id).addClass('panel-fullscreen');
-
-      fn_mcm_updateMainAreaList();
-      fn_mcm_getMainAreaWeek();
-    }
-  });
-
-  // 시장 현황 패널 전체 화면 차트 / 지도
-  $('.center-main-cont').on('click', '.center-main-cont-top-btn', function () {
-    $('.panel.panel-fullscreen .center-main-cont-top-btn.on').removeClass('on');
-    $(this).addClass('on');
-
-    fn_mcm_tapCenterMainPage();
-  });
 });
 
 function fn_mcm_initMainAreaList() {
   $('.center-main-cont .sortable-grid').html('');
   $('.list-area').html('');
-
-  // main
-  window.min_category = [];
-  for (let i = 0; i < 24; i++)
-    for (let j = 0; j < 6; j++)
-      window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
 
   // side
   window.left_area_lv2_on_code = $('.left .area-lv2.on').attr('data-code');
@@ -490,11 +443,6 @@ function fn_mcm_setMapMarker(target, data) {
   }}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-let refreshTime = window.setInterval(function () {
-  if (new Date().getMinutes() % 10 === 2)
-    fn_mcm_refresh();
-}, 60 * 1000);
 
 function fn_mcm_refresh() {
   fn_mclt_refreshTop();

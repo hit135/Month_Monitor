@@ -30,25 +30,6 @@
   </div><!-- /.center-store-cont (시장 내 상점정보) -->
 
   <script type="text/javascript">
-  $(function () {
-    // 시장 내 왼쪽 상점 목록 선택
-    $('.center-left-sensor-list').on('click', 'p', function () {
-      $('.center-left-sensor-list p.on').removeClass('on');
-      $(this).addClass('on');
-
-      $('.center-cont-top .store-name').text($(this).attr('data-strname'));
-      fn_mcst_clickContPage();
-    });
-
-    // 시장 정보 위 기본정보 / 경보이력 / 분석차트 선택
-    $('.center-cont-top').on('click', '.center-cont-top-btn', function () {
-      $('.center-cont-top-btn.on').removeClass('on');
-      $(this).addClass('on');
-
-      fn_mcst_clickContPage();
-    });
-  });
-
   // 상점 정보 refresh
   function fn_mcst_onAreaLv2(code, strcode, snsrid) {
     if (code) {

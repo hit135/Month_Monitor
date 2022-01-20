@@ -81,27 +81,6 @@ $(function () {
 
 function fn_mclt_initTop() {
   fn_mclt_getTodayTotalState();
-
-  $.template(
-    'top-search-result',
-    '<p data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}">{{html STRNAME}} [{{html AREANAME}}]</p>'
-  );
-
-  $('.top-search-text').on('keyup', fn_mclt_searchStore);
-  $('.top-search button').on('click', fn_mclt_searchStore);
-
-  $('.top-search-result').on('click', 'p', function () {
-    fn_mclr_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
-    $('.top-search-result').html('');
-  });
-
-  setInterval(function () {
-    let w = ['일', '월', '화', '수', '목', '금', '토'];
-    let now_str = fn_mclt_dateToString(new Date());
-
-    $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
-    $('.top-time').text(now_str.substring(11));
-  }, 1000);
 }
 
 function fn_mclt_refreshTop() {

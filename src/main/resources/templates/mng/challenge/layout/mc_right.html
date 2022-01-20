@@ -17,18 +17,6 @@
 
 <script type="text/javascript">
 $(function () {
-  $.template(
-    'right-sensor',
-    '<p class="right-sensor" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-code="{{html SNSRID}}">' +
-      '{{html AREANAME}}_{{html SNSRNICK}} ' + 
-      '<span style="color: red;">({{html CNT}})</span>' +
-    '</p>'
-  );
-
-  $('.list-sensor').on('click', 'p', function () {
-    fn_mclr_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
-  });
-
   fn_mclr_getRightSensorList();
 });
 
