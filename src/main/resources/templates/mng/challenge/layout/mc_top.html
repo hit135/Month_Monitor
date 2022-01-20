@@ -73,15 +73,3 @@
     <img th:src="@{/fs/img/logo-fs.png}" style="width:55px; margin-left:20px;" alt="fs" />
   </div><!-- /.col-md-2 col-12 d-md-block d-none -->
 </div>
-
-<script type="text/javascript">
-function fn_mclt_searchStore() {
-  $.post(
-    $('#contextRoot').val() + '/mng/storeSearchAjax',
-    { search: $('.top-search-text').val() },
-    function (d) {
-      $('.top-search-result').html('');
-      $('.top-search-result').append($.tmpl('top-search-result', d));
-  });
-}
-</script>

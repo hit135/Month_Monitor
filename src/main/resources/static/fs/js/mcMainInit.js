@@ -67,18 +67,18 @@ function fn_mcmi_initTemplate() {
 
 function fn_mcmi_initClickEvent() {
   // 화면 위 상점 검색
-  $('.top-search-text').on('keyup', fn_mclt_searchStore);
-  $('.top-search button').on('click', fn_mclt_searchStore);
+  $('.top-search-text').on('keyup', fn_mcmi_searchStore);
+  $('.top-search button').on('click', fn_mcmi_searchStore);
 
   $('.top-search-result').on('click', 'p', function () {
-    fn_mclr_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
+    fn_mcmi_clickCheckSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
     $('.top-search-result').html('');
   });
 
   // Main Page 버튼
   $('.center-main-btn').on('click', function () {
     window.center_name = 'main';
-    fn_mcm_toggleCenterCont();
+    fn_mcmi_toggleCenterCont();
   });
 
   // 시장 현황 패널 열고 닫기
@@ -125,17 +125,17 @@ function fn_mcmi_initClickEvent() {
     $('.left .area-lv2.on').removeClass('on');
     $(this).addClass('on');
 
-    fn_mcll_clickAreaLv2($(this).attr('data-code'));
+    fn_mcmi_clickAreaLv2($(this).attr('data-code'));
   });
 
   // 점검 센서 선택
   $('.left-list-sensor').on('click', 'p', function () {
-    fn_mclr_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
+    fn_mcmi_clickCheckSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
   });
 
   // 경고/주의/고장 센서 선택
   $('.list-sensor').on('click', 'p', function () {
-    fn_mclr_clickRightSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
+    fn_mcmi_clickCheckSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
   });
 
   // 시장 내 왼쪽 상점 목록 선택
@@ -194,6 +194,7 @@ function fn_mcmi_initClickEvent() {
   });
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function fn_mcmi_initTimer() {
   setInterval(function () {
     let w = ['일', '월', '화', '수', '목', '금', '토'];
@@ -205,10 +206,75 @@ function fn_mcmi_initTimer() {
 
   window.refreshTime = window.setInterval(function () {
     if (new Date().getMinutes() % 10 === 2)
-      fn_mcm_refresh();
+      fn_mcmi_refresh();
   }, 60 * 1000);  
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 상점 검색
+function fn_mcmi_searchStore() {
+  $.post(
+    $('#contextRoot').val() + '/mng/storeSearchAjax',
+    { search: $('.top-search-text').val() },
+    function (d) {
+      $('.top-search-result').html('');
+      $('.top-search-result').append($.tmpl('top-search-result', d));
+  });
+}
+
+// 왼쪽 시장 목록 선택
+function fn_mcmi_clickAreaLv2(code) {
+  window.center_name = 'store';
+
+  fn_mcmi_toggleCenterCont();
+  fn_mcst_getTodayAreaState(code);
+  fn_mcst_getTodayAreaStoreState(code);
+}
+
+// 점검 / 경고 / 주의 / 고장에서 상점 선택
+function fn_mcmi_clickCheckSensor(code, strcode, snsrid) {
+  window.center_name = 'store';
+
+  fn_mcmi_toggleCenterCont();
+  fn_mcst_onAreaLv2(code, strcode, snsrid);
+}
+
+// 메인/상점 정보 화면 toggle
+function fn_mcmi_toggleCenterCont() {
+  if (window.center_name == 'main') {
+    $('.center-main-cont').show();
+    $('.center-store-cont').hide();
+  } else {
+    $('.center-main-cont').hide();
+    $('.center-store-cont').show();
+  }
+}
+
+// 관리 화면 이동
+function fn_mcmi_movePageAdm(type) {
+  location.href = ((location.hostname === "localhost") ? "http://localhost:3000/#/" : "http://1.223.40.19:30081/adm#/") + type;
+  // http://1.223.40.19:30081/adm#/area
+}
+
+// 로그아웃
+function fn_mcmi_logout() {
+  location.href = $('#contextRoot').val() + '/mng/logout';
+}
+
+// 새로고침
+function fn_mcmi_refresh() {
+  fn_mcm_initTodayState();
+
+  if (window.center_name == 'main') {
+    fn_mcm_updateMainAreaList();
+    fn_mcm_getMainAreaWeek();
+  } else {
+    fn_mcsti_refreshStoreInfo();
+    setTimeout(function () { fn_mcst_onAreaLv2(window.left_area_lv2_on_code); }, 800);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function fn_mcmi_dateToString(d) {
   return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
     ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
