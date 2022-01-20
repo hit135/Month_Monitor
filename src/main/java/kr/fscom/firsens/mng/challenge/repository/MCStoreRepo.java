@@ -29,6 +29,7 @@ public interface MCStoreRepo {
 
     HashMap<String, Object> SELECT_ONE_MCST_STORE_INFO(Map<String, Object> param) throws Exception;          // 상점 정보
     HashMap<String, Object> SELECT_ONE_MCST_SENSOR_EVT_CNT(Map<String, Object> param) throws Exception;      // 상점 로그 정보
+    HashMap<String, Object> SELECT_MCST_EVENT_TABLE_INFO(Map<String, Object> param) throws Exception;        // LOG 테이블 질의
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     List<HashMap<String, Object>> LIST_MCST_TODAY_AREA_STATE(Map<String, Object> param) throws Exception;             // 오늘 시장 현황 (전체, 경고, 주의, 끊김)
@@ -39,9 +40,9 @@ public interface MCStoreRepo {
     HashMap<String, Object> SELECT_MCST_STORE_INFO(Map<String, Object> param) throws Exception;              // 상점 기본 정보
     List<HashMap<String, Object>> LIST_MCST_SENSOR_STATE(Map<String, Object> param) throws Exception;        // 상점 내 센서 상태 목록
 
-    HashMap<String, Object> SELECT_MCST_EVENT_TABLE_INFO(Map<String, Object> param) throws Exception;        // LOG 테이블 질의
     List<HashMap<String, Object>> LIST_MCST_STORE_SENSOR_DATA(Map<String, Object> param) throws Exception;   // 센서 데이터 (수신시간, 조회기간 내 측정 데이터 평균치)
     List<HashMap<String, Object>> LIST_MCST_DATA_LOG(Map<String, Object> param) throws Exception;            // 센서 데이터 및 경보 목록
+    HashMap<String, Object> SELECT_MCST_LATEST_DATA(Map<String, Object> param) throws Exception;             // 최근 센서 기본정보 조회
     float SELECT_MCST_SENSOR_USEKWH_MONTH(Map<String, Object> param) throws Exception;                       // 센서 사용전력량
 
     int CNT_DATA_LOG_TOTAL(Map<String, Object> param) throws Exception;                                      // 센서 데이터 및 모든 이벤트 목록 갯수

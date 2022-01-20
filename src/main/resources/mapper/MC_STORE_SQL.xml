@@ -56,6 +56,20 @@
         LIMIT
             1
     </select>
+
+    <select id="SELECT_MCST_EVENT_TABLE_INFO" parameterType="map" resultType="map">
+        SELECT
+            A.BACKUPYEAR, MIN(A.MINDATE) AS MINDATE, MAX(A.MAXDATE) AS MAXDATE
+        FROM
+            (SELECT '' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG
+             UNION
+             SELECT '_2021' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2021
+             UNION
+             SELECT '_2020' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2020
+            ) A
+        WHERE
+            #{regdt} BETWEEN A.MINDATE AND A.MAXDATE
+    </select>
     <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <!-- 오늘 시장 현황 (전체, 경고, 주의, 끊김) -->
@@ -127,6 +141,8 @@
             , COALESCE(COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN I.SNSRSEQ END), 0) AS CON
             , COALESCE(SUM(I.DANGERCNT), 0) AS DANGER
             , COALESCE(SUM(I.WARNCNT), 0) AS WARN
+            , COALESCE(SUM(I.DANGERSNSRCNT), 0) AS DANGERSNSRCNT
+            , COALESCE(SUM(I.WARNSNSRCNT), 0) AS WARNSNSRCNT
         FROM
             (SELECT
                 AREACODE, STRCODE, STRNAME
@@ -139,13 +155,21 @@
                 LEFT JOIN F_LEVEL_AREA A
                     ON S.AREACODE = A.AREACODE
                 LEFT JOIN (SELECT
-                               I1.STRCODE, I1.SNSRSEQ, I1.DATARCVTIME, I2.DANGERCNT, I2.WARNCNT
+                               I1.STRCODE
+                               , I1.SNSRSEQ
+                               , I1.DATARCVTIME
+                               , I2.DANGERCNT
+                               , I2.WARNCNT
+                               , I2.DANGERSNSRCNT
+                               , I2.WARNSNSRCNT 
                            FROM
                                (SELECT STRCODE, SNSRSEQ, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I1
                                    LEFT JOIN (SELECT
                                                   SNSRSEQ
                                                   , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                                                  , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
                                                   , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARNCNT
+                                                  , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
                                               FROM
                                                   F_SENSOR_LOG
                                               WHERE
@@ -326,20 +350,6 @@
     </select>
     <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <select id="SELECT_MCST_EVENT_TABLE_INFO" parameterType="map" resultType="map">
-        SELECT
-            A.BACKUPYEAR, MIN(A.MINDATE) AS MINDATE, MAX(A.MAXDATE) AS MAXDATE
-        FROM
-            (SELECT '' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG
-             UNION
-             SELECT '_2021' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2021
-             UNION
-             SELECT '_2020' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2020
-            ) A
-        WHERE
-            #{regdt} BETWEEN A.MINDATE AND A.MAXDATE
-    </select>
-
     <select id="LIST_MCST_STORE_SENSOR_DATA" parameterType="map" resultType="map">
         SELECT
             <choose>
@@ -471,6 +481,52 @@
             AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
         ORDER BY
             D.SNSRRCVTIME DESC
+    </select>
+
+    <select id="SELECT_MCST_LATEST_DATA" parameterType="map" resultType="map">
+        SELECT 
+            A.SNSRID
+            , DATE_FORMAT(A.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS DATARCVTIME
+            , A.SNSRKWH
+            , A.SNSRVOLT
+            , A.SNSRWATT
+            , A.SNSRAMPERE
+            , A.SNSRHZ
+            , A.SNSRPF
+            , A.SNSRREG
+            , A.SNSRRSSI
+            , A.SNSRIGR
+            , A.SNSRIGO
+            , A.SNSRIGC
+            , 0 AS USEKWH
+        FROM 
+            (SELECT
+                SNSRID
+                , SNSRRCVTIME
+                , SNSRKWH
+                , SNSRVOLT
+                , SNSRWATT
+                , SNSRAMPERE
+                , SNSRHZ
+                , SNSRPF
+                , SNSRREG
+                , SNSRRSSI
+                , SNSRIGR
+                , SNSRIGO
+                , SNSRIGC
+            FROM
+                (SELECT * FROM F_SENSOR_DATA 
+                 UNION ALL 
+                 SELECT * FROM F_SENSOR_DATA_2022
+                 UNION ALL 
+                 SELECT * FROM F_SENSOR_DATA_2021) D
+            WHERE
+                ISSIMUL = 0
+                AND SNSRID = #{snsrid}
+            ORDER BY
+                SNSRRCVTIME DESC
+            LIMIT
+                1) A
     </select>
 
     <select id="SELECT_MCST_SENSOR_USEKWH_MONTH" parameterType="map" resultType="float">

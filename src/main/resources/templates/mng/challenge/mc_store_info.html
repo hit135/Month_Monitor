@@ -304,13 +304,6 @@
         $('.store-info-sensor-list').html('');
 
         for (let i = 0; i < d.length; i++) {
-          if (d[i].DANGER > 0)
-            d[i].STATE = 'danger';
-          else if (d[i].WARN > 0)
-            d[i].STATE = 'warn';
-          else if (d[i].CON == 0)
-            d[i].STATE = 'discon';
-
           if (d[i].CHK > 0)
             d[i].CHECK = 'CHECKING';
 
@@ -339,11 +332,6 @@
 
         if (d != null && d.length > 0) {
           for (let i = 0; i < d.length; i++) {
-            // d[i]['DATALOG'] = '전력: ' + d[i]['SNSRWATT'] + 'kW | 전류: ' + d[i]['SNSRAMPERE'] + 'mA | 누설전류: ' + d[i]['SNSRIGO'] + 'mA';
-
-            // if (d[i]['STATE'])
-            //   d[i]['DATALOG'] = d[i]['LCAUSE'];
-
             $('.store-datalog-list').append($.tmpl('datalog', d[i]));
 
             if (i == 0) {
@@ -374,6 +362,24 @@
           }
         } else {
           $('.store-datalog-list').html('데이터가 없습니다');
+
+          $.post(
+            $('#contextRoot').val() + '/mng/latestSnsrInfoAjax',
+            { snsrid: $("input:radio[name='snsr-radio-btn']:checked").val() },
+            function (d) {
+              $(".store-datalog-meta .kw td span:first").text(d ? d.SNSRWATT : '-');
+              $(".store-datalog-meta .vo td span:first").text(d ? d.SNSRVOLT : '-');
+              $(".store-datalog-meta .am td span:first").text(d ? d.SNSRAMPERE : '-');
+              $(".store-datalog-meta .hz td span:first").text(d ? d.SNSRHZ : '-');
+              $(".store-datalog-meta .igo td span:first").text(d ? d.SNSRIGO : '-');
+              $(".store-datalog-meta .igr td span:first").text(d ? d.SNSRIGR : '-');
+              $(".store-datalog-meta .igc td span:first").text(d ? d.SNSRIGC : '-');
+              $(".store-datalog-meta .meg td span:first").text(d ? d.SNSRREG : '-');
+              $(".store-datalog-meta .kwh td span:first").text(d ? d.SNSRKWH : '-');
+              $(".store-datalog-meta .dbm td span:first").text(d ? d.SNSRRSSI : '-');
+              $(".store-datalog-meta .datarcvtime td span:first").text(d ? d.DATARCVTIME : '-');
+              $(".store-datalog-meta .monkwh td span").text(d ? d.USEKWH : '-');
+          });
         }
 
         $('.store-datalog-list p').show();

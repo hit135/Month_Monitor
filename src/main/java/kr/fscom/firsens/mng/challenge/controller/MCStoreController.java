@@ -146,11 +146,9 @@ public class MCStoreController {
      */
     @RequestMapping(value = "/todayAreaStateAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcstTodayAreaState(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
+    public List<HashMap<String, Object>> mcstTodayAreaState(
+            HttpServletRequest req, @RequestParam HashMap<String, Object> prm) throws Exception {
         try {
-            prm.put("areacode", req.getParameter("areacode"));
             return mcStoreRepo.LIST_MCST_TODAY_AREA_STATE(prm);
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
@@ -174,11 +172,9 @@ public class MCStoreController {
      */
     @RequestMapping(value = "/todayAreaStoreStateAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcstTodayAreaStoreState(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
+    public List<HashMap<String, Object>> mcstTodayAreaStoreState(
+            HttpServletRequest req, @RequestParam HashMap<String, Object> prm) throws Exception {
         try {
-            prm.put("areacode", req.getParameter("areacode"));
             return mcStoreRepo.LIST_MCST_TODAY_AREA_STORE_STATE(prm);
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
@@ -201,13 +197,9 @@ public class MCStoreController {
      */
     @RequestMapping(value = "/todayAreaSensorStateAjax")
     @ResponseBody
-    public List<HashMap<String,Object>> mcstTodayAreaSensorState(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
+    public List<HashMap<String,Object>> mcstTodayAreaSensorState(
+            HttpServletRequest req, @RequestParam HashMap<String, Object> prm) throws Exception {
         try {
-            prm.put("areacode", req.getParameter("areacode"));
-            prm.put("strcode", req.getParameter("strcode"));
-
             return mcStoreRepo.LIST_MCST_TODAY_AREA_SENSOR_STATE(prm);
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
@@ -230,11 +222,9 @@ public class MCStoreController {
      */
     @RequestMapping(value = "/storeSearchAjax")
     @ResponseBody
-    public List<HashMap<String, Object>> mcstStoreSearch(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
+    public List<HashMap<String, Object>> mcstStoreSearch(
+            HttpServletRequest req, @RequestParam HashMap<String, Object> prm) throws Exception {
         try {
-            prm.put("search", req.getParameter("search"));
             return mcStoreRepo.LIST_MCST_STORE_SEARCH(prm);
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
@@ -257,14 +247,11 @@ public class MCStoreController {
      */
     @RequestMapping(value = "/storeInfoAjax")
     @ResponseBody
-    public HashMap<String, Object> mcstStoreInfoAjax(HttpServletRequest req) throws Exception {
+    public HashMap<String, Object> mcstStoreInfoAjax(
+            HttpServletRequest req, @RequestParam HashMap<String, Object> prm) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
-            HashMap<String, Object> prm = new HashMap<>();
-            prm.put("areacode", req.getParameter("areacode"));
-            prm.put("strcode", req.getParameter("strcode"));
-
             rtn.put("store", mcStoreRepo.SELECT_MCST_STORE_INFO(prm));
             rtn.put("sensor", mcStoreRepo.LIST_MCST_SENSOR_STATE(prm));
         } catch (NullPointerException e) {
@@ -485,6 +472,31 @@ public class MCStoreController {
     }
 
     /**
+     * @Method Name : mcstLatestSnsrInfo
+     * @작성일 : 2022-01-20
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 최근 기본정보 조회
+     * @return HashMap<String, Object>
+     */
+    @RequestMapping(value = "/latestSnsrInfoAjax")
+    @ResponseBody
+    public HashMap<String, Object> mcstLatestSnsrInfo(
+            HttpServletRequest req, @RequestParam HashMap<String, Object> prm) throws Exception {      
+        try {
+            return mcStoreRepo.SELECT_MCST_LATEST_DATA(prm);
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
      * @Method Name : mcstSensorUsekwhMonthAjax
      * @작성일 : 2021-07-13
      * @작성자 : uhm
@@ -597,15 +609,11 @@ public class MCStoreController {
      */
     @RequestMapping(value = "/logStatAjax")
     @ResponseBody
-    public HashMap<String, Object> mcstLog3daysAndWeekStatAjax(HttpServletRequest req) throws Exception {
+    public HashMap<String, Object> mcstLog3daysAndWeekStatAjax(
+            HttpServletRequest req, @RequestParam HashMap<String, Object> prm) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
-            HashMap<String, Object> prm = new HashMap<>();
-            prm.put("areacode", req.getParameter("areacode"));
-            prm.put("strcode", req.getParameter("strcode"));
-            prm.put("snsrid", req.getParameter("snsrid"));
-
             rtn.put("threedays", mcStoreRepo.LIST_MCST_LOG_3DAYS_STAT(prm));
             rtn.put("week", mcStoreRepo.LIST_MCST_LOG_WEEK_STAT(prm));
         } catch (NullPointerException e) {
@@ -629,11 +637,9 @@ public class MCStoreController {
      */
     @RequestMapping(value = "/startCheckAjax")
     @ResponseBody
-    public String mcstStartCheckAjax(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
+    public String mcstStartCheckAjax(
+            HttpServletRequest req, @RequestParam HashMap<String, Object> prm) throws Exception {
         try {
-            prm.put("snsrid", req.getParameter("snsrid"));
             mcStoreRepo.INSERT_MCST_SENSOR_CHECK(prm);
             return "success";
         } catch (NullPointerException e) {
@@ -657,11 +663,9 @@ public class MCStoreController {
      */
     @RequestMapping(value = "/endCheckAjax")
     @ResponseBody
-    public String mcstEndCheckAjax(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
+    public String mcstEndCheckAjax(
+            HttpServletRequest req, @RequestParam HashMap<String, Object> prm) throws Exception {
         try {
-            prm.put("snsrid", req.getParameter("snsrid"));
             mcStoreRepo.UPDATE_MCST_SENSOR_CHECK(prm);
             return "success";
         } catch (NullPointerException e) {

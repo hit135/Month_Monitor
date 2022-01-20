@@ -77,16 +77,18 @@
 
         for (let i = 0; i < d.length; i++) {
           d[i].CNT = 0;
+          d[i].CNT2 = 0;
+          d[i].CNT3 = 0;
 
           if (d[i].DANGER > 0) {
             d[i].STATE = 'danger';
             d[i].CNT = d[i].DANGER;
-            d[i].CNT2 = d[i].WARN;
           } else if (d[i].WARN > 0) {
             d[i].STATE = 'warn';
-            d[i].CNT = d[i].WARN;
+            d[i].CNT2 = d[i].WARN;
           } else if (d[i].CON > 0) {
             d[i].STATE = 'discon';
+            d[i].CNT3 = d[i].CON;
           }
 
           $('.center-left-store-list').append($.tmpl('center-left-store', d[i]));

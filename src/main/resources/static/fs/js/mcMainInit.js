@@ -33,8 +33,15 @@ function fn_mcmi_initTemplate() {
   // 상점 목록
   $.template(
     'center-left-store',
-    '<p class="{{html STATE}}" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-strname="{{html STRNAME}}">' +
-      '({{html SNSRCOUNT}}) {{html STRNAME}} <span class="cnt2">{{html CNT2}}</span><span>{{html CNT}}</span>' +
+    '<p class="{{html STATE}} d-flex justify-content-between" data-areacode="{{html AREACODE}}" data-strcode="{{html STRCODE}}" data-strname="{{html STRNAME}}">' +
+      '<span>' + 
+        '<span class="snsrCnt">{{html SNSRCOUNT}}</span> {{html STRNAME}} ' +
+      '</span>' + 
+      '<span>' + 
+        '{{if CNT > 0}}<span class="dangerCnt">{{html CNT}}</span>{{/if}}' +
+        '{{if CNT2 > 0}}<span class="warnCnt">{{html CNT2}}</span>{{/if}}' +
+        '{{if CNT3 > 0}}<span class="disnCnt">{{html CNT3}}</span>{{/if}}' +
+      '</span>' +
     '</p>'
   );
 
