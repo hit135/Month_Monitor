@@ -13,8 +13,8 @@
     <div class="row">
       <div class="center-left col-md-3 col-12">
         <div class="btn-group w-100">
-          <button type="button" class="btn btn-sm btn-info ceter-left-store-btn" style="font-size: 13px; font-weight: bold;">경보 누적 수</button>
-          <button type="button" class="btn btn-sm btn-secondary ceter-left-store-btn" style="font-size: 13px; font-weight: bold;">경보 센서 수</button>
+          <button type="button" class="btn btn-sm btn-info center-left-store-btn" style="font-size: 13px; font-weight: bold;">경보 누적 수</button>
+          <button type="button" class="btn btn-sm btn-secondary center-left-store-btn" style="font-size: 13px; font-weight: bold;">경보 센서 수</button>
         </div>
         <div class="center-left-store-list"></div>
       </div><!-- /.col-md-3 -->
@@ -82,10 +82,18 @@
 
           if (d[i].DANGER > 0) {
             d[i].STATE = 'danger';
-            d[i].CNT = d[i].DANGER;
+
+            if (window.dangerCntType == '경보 누적 수')
+              d[i].CNT = d[i].DANGER;
+            else if (window.dangerCntType == '경보 센서 수')
+              d[i].CNT = d[i].DANGERSNSRCNT;
           } else if (d[i].WARN > 0) {
             d[i].STATE = 'warn';
-            d[i].CNT2 = d[i].WARN;
+
+            if (window.dangerCntType == '경보 누적 수')
+              d[i].CNT2 = d[i].WARN;
+            else if (window.dangerCntType == '경보 센서 수')
+              d[i].CNT2 = d[i].WARNSNSRCNT;
           } else if (d[i].CON > 0) {
             d[i].STATE = 'discon';
             d[i].CNT3 = d[i].CON;

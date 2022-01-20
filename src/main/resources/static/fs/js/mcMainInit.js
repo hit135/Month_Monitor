@@ -145,6 +145,13 @@ function fn_mcmi_initClickEvent() {
     fn_mcmi_clickCheckSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
   });
 
+  $(".center-left-store-btn").on("click", function () {
+    if (window.dangerCntType != $(this).text()) {
+      window.dangerCntType = $(this).text();
+      fn_mcmi_clickAreaLv2();
+    }
+  });
+
   // 시장 내 왼쪽 상점 목록 선택
   $('.center-left-store-list').on('click', 'p', function () {
     $('.center-left-store-list p.on').removeClass('on');
@@ -234,6 +241,8 @@ function fn_mcmi_clickAreaLv2(code) {
   window.center_name = 'store';
 
   fn_mcmi_toggleCenterCont();
+  window.dangerCntType = $(".center-left-store-btn.btn-info").text();
+
   fn_mcst_getTodayAreaState(code);
   fn_mcst_getTodayAreaStoreState(code);
 }

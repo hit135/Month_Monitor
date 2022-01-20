@@ -205,6 +205,12 @@
             , COALESCE(L.DANGERCNT, 0) AS DANGER
             , COALESCE(L.WARNCNT, 0) AS WARN
             , COALESCE(E.CHK, 0) AS CHK
+            , (CASE
+                   WHEN L.DANGERCNT > 0 THEN 'danger'
+                   WHEN L.WARNCNT > 0 THEN 'warn'
+                   WHEN I.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 'discon'
+                   ELSE ''
+               END) AS STATE
         FROM
             (SELECT
                 STRCODE, SNSRID, SNSRSEQ, SNSRNICK, DATARCVTIME
