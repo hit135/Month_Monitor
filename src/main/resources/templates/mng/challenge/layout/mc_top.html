@@ -75,34 +75,6 @@
 </div>
 
 <script type="text/javascript">
-$(function () {
-  fn_mclt_initTop();
-});
-
-function fn_mclt_initTop() {
-  fn_mclt_getTodayTotalState();
-}
-
-function fn_mclt_refreshTop() {
-  fn_mclt_getTodayTotalState();
-}
-
-// 금일 종합 현황
-function fn_mclt_getTodayTotalState() {
-  $.post(
-    $('#contextRoot').val() + '/mng/todayTotalStateAjax',
-    {},
-    function (d) {
-      for (let i = 0; i < d.length; i++)
-        $('.COUNT-' + d[i].TERM + d[i].TYPE).text(d[i].CNT);
-  });
-}
-
-function fn_mclt_dateToString(d) {
-  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
-    ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
-}
-
 function fn_mclt_searchStore() {
   $.post(
     $('#contextRoot').val() + '/mng/storeSearchAjax',

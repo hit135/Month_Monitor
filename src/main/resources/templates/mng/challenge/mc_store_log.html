@@ -109,7 +109,7 @@
   function fn_mcstl_initStoreDataLog() {
     let regdate = $('#prm_regdate').val();
     if (!regdate)
-      regdate = fn_mclt_dateToString(new Date()).slice(0, 10);
+      regdate = fn_mcmi_dateToString(new Date()).slice(0, 10);
 
     $('.store-log #regdt').val(regdate);
 

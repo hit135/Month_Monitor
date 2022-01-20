@@ -91,28 +91,64 @@
 <script type="text/javascript" th:src="${naverMap}"></script>
 
 <script type="text/javascript">
-var window.min_category = [];
+window.min_category = [];
 
 $(function () {
-  fn_mcme_initTimer();
-  fn_mcme_initTemplate();
-  fn_mcme_initClickEvent();
+  fn_mcmi_initTimer();
+  fn_mcmi_initTemplate();
+  fn_mcmi_initClickEvent();
 
   for (let i = 0; i < 24; i++)
     for (let j = 0; j < 6; j++)
       window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
 
+  fn_mcm_initTodayState();
   fn_mcm_initMainAreaList();
 });
 
+function fn_mcm_initTodayState() {
+  $('.list-area').html('');
+  $('.left-list-sensor').html('');
+  $('.list-sensor').html('');
+
+  $.post(
+    $('#contextRoot').val() + '/mng/todayTotalStateAjax',
+    {},
+    function (d) {
+      if (d) {
+        // 오늘 센서 전체 현황
+        if (d.total) 
+          for (let i = 0; i < d.total.length; i++) 
+            $('.COUNT-' + d.total[i].TERM + d.total[i].TYPE).text(d.total[i].CNT);
+
+        // 점검센서 
+        if (d.check) {
+          for (let i = 0; i < d.check.length; i++)
+            $('.sensors-' + d.check[i].STATE + ' .left-list-sensor').append($.tmpl('left-check-sensor', d.check[i]));
+
+          $('.sensors-CHECK .cnt').text('(' + $('.sensors-CHECK .left-list-sensor p').length + ')');
+        }
+
+        // 경고/주의/고장
+        if (d.abnormal) {
+          for (let i = 0; i < d.abnormal.length; i++)
+            $('.sensors-' + d.abnormal[i].STATE + ' .list-sensor').append($.tmpl('right-sensor', d.abnormal[i]));
+
+          $('.sensors-DANGER .cnt').text('(' + $('.sensors-DANGER .list-sensor p').length + ')');
+          $('.sensors-WARN .cnt').text('(' + $('.sensors-WARN .list-sensor p').length + ')');
+          $('.sensors-BROKEN .cnt').text('(' + $('.sensors-BROKEN .list-sensor p').length + ')');
+        }
+      }
+  });
+}
+
+// 구/시장별 현황
 function fn_mcm_initMainAreaList() {
   $('.center-main-cont .sortable-grid').html('');
-  $('.list-area').html('');
 
   // side
   window.left_area_lv2_on_code = $('.left .area-lv2.on').attr('data-code');
 
-  // 구별, 시장별 센서 현황
   $.post(
     $('#contextRoot').val() + '/mng/todayGuAreaStateAjax',
     {},
@@ -162,7 +198,8 @@ function fn_mcm_initMainAreaList() {
                 for (let i = 0; i < show_panel.length; i++)
                   fn_mcm_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', '')/*, id*/);
             });
-      }}}
+        }}
+      }
   });
 }
 
@@ -201,7 +238,6 @@ function fn_mcm_updateMainAreaList(/*id*/) {
           fn_mcm_setMainArea($(show_panel[i]).attr('data-id').replace('panel-', '')/*, id*/);
   }});
 }
-
 // 시장 현황 목록 화면 구성
 function fn_mcm_setMainArea(i/*, id*/) {
   let panel_id = 'panel-' + i;
@@ -213,27 +249,15 @@ function fn_mcm_setMainArea(i/*, id*/) {
   $('#' + panel_id + ' .center-main-area-count-warn').text(window.area[window.areaIndex[i]].WARN);
   $('#' + panel_id + ' .center-main-area-count-discon').text(window.area[window.areaIndex[i]].DISCON);
 
-  // if (typeof id === 'undefined') {
-    if ($('#' + panel_id).hasClass('panel-fullscreen') || $('#' + panel_id + ' .panel-container').hasClass('show')) {
-      $.post(
-        $('#contextRoot').val() + '/mng/mainAreaDataAndLogChartAjax',
-        { areacode: i },
-        function (resu) {
-          fn_mcm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
-          fn_mcm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
-      });
-    }
-  // } else {
-  //   if ($('#' + panel_id).hasClass('panel-fullscreen') && panel_id === id.replace("#", "")
-  //       || $('#' + panel_id + ' .panel-container').hasClass('show') && panel_id === id.replace("#", "")) {
-  //     $.post(
-  //       $('#contextRoot').val() + '/mng/mainAreaDataAndLogChartAjax',
-  //       { areacode: i },
-  //       function (resu) {
-  //         fn_mcm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
-  //         fn_mcm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
-  //     });
-  // }}
+  if ($('#' + panel_id).hasClass('panel-fullscreen') || $('#' + panel_id + ' .panel-container').hasClass('show')) {
+    $.post(
+      $('#contextRoot').val() + '/mng/mainAreaDataAndLogChartAjax',
+      { areacode: i },
+      function (resu) {
+        fn_mcm_setChart('데이터 수신 현황', '#' + panel_id + ' .center-main-data-chart', resu.data, ['#99ccff','#003399']);
+        fn_mcm_setChart('경보 발생 현황', '#' + panel_id + ' .center-main-log-chart', resu.log, ['#ff9966','#cc3300']);
+    });
+  }
 }
 
 // 시장 데이터 수신 현황 및 경보 발생 현황 차트 (어제/오늘)
@@ -262,7 +286,7 @@ function fn_mcm_setChart(title, target, data, colors) {
 
   let series = [{ name: '어제', data: [] }, { name:'오늘', data: [] }];
   let j = 0;
-  let now_time = fn_mclt_dateToString(new Date()).slice(11, 15) + '0';
+  let now_time = fn_mcmi_dateToString(new Date()).slice(11, 15) + '0';
 
   for (let i = 0; i < window.min_category.length; i++)
     if (j < data.length && data[j].TYPE == '1' && data[j].RCVTIME == window.min_category[i])
@@ -445,9 +469,7 @@ function fn_mcm_setMapMarker(target, data) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function fn_mcm_refresh() {
-  fn_mclt_refreshTop();
-  fn_mcll_refreshLeft();
-  fn_mclr_refreshRight();
+  fn_mcm_initTodayState();
 
   if (window.center_name == 'main') {
     fn_mcm_updateMainAreaList();

@@ -76,6 +76,59 @@ public class MCMainController {
         return mav;
     }
 
+    
+    /**
+     * @Method Name : mcmTodayTotalState
+     * @작성일 : 2021-07-09
+     * @작성자 : jjm
+     * @변경이력 :
+     * @Method 설명 : 오늘 종합 현황 조회 (전체, 경고, 주의, 끊김)
+     * @return HashMap<String, Object>
+     */
+    @RequestMapping(value = "/todayTotalStateAjax")
+    @ResponseBody
+    public HashMap<String, Object> mcmTodayTotalState(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+
+        try {
+            rtn.put("total", mcMainRepo.LIST_MCM_TODAY_TOTAL_STATE());           // 오늘 센서 현황 조회 (전체, 경고, 주의, 끊김)
+            rtn.put("check", mcMainRepo.LIST_MCM_CHECK_SENSOR());                // 점검내역 목록
+            rtn.put("abnormal", mcMainRepo.LIST_MCM_TODAY_ABNORMAL_SENSOR());    // 오늘 상태이상 센서 목록
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return rtn;
+    }
+
+   /**
+    * @Method Name : mcmTodayGuAreaState
+    * @작성일 : 2021-07-09
+    * @작성자 : jjm
+    * @변경이력 :
+    * @Method 설명 : 오늘 구별, 시장별 센서 현황 조회 (상점, 센서, 경고, 주의, 끊김)
+    * @return List<HashMap<String, Object>>
+    */
+   @RequestMapping(value = "/todayGuAreaStateAjax")
+   @ResponseBody
+   public List<HashMap<String, Object>> mcmTodayGuAreaState(HttpServletRequest req) throws Exception {
+       try {
+           return mcMainRepo.LIST_MCM_TODAY_GU_AREA_STATE();
+       } catch (NullPointerException e) {
+           LOG.debug(e.getMessage());
+       } catch (SQLException e) {
+           LOG.debug(e.getMessage());
+       } catch (Exception e) {
+           LOG.debug(e.getMessage());
+       }
+
+       return null;
+   }
+
     /**
      * @Method Name : mcmArea
      * @작성일 : 2021-07-29
@@ -98,110 +151,6 @@ public class MCMainController {
         }
 
         return mav;
-    }
-
-    /**
-     * @Method Name : mcmTodayTotalState
-     * @작성일 : 2021-07-09
-     * @작성자 : jjm
-     * @변경이력 :
-     * @Method 설명 : 오늘 종합 현황 조회 (전체, 경고, 주의, 끊김)
-     * @return List<HashMap<String, Object>>
-     */
-    @RequestMapping(value = "/todayTotalStateAjax")
-    @ResponseBody
-    public List<HashMap<String, Object>> mcmTodayTotalState(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
-        try {
-            return mcMainRepo.LIST_MCM_TODAY_TOTAL_STATE(prm);
-        } catch (NullPointerException e) {
-            LOG.debug(e.getMessage());
-        } catch (SQLException e) {
-            LOG.debug(e.getMessage());
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return null;
-    }
-
-    /**
-     * @Method Name : mcmTodayGuAreaState
-     * @작성일 : 2021-07-09
-     * @작성자 : jjm
-     * @변경이력 :
-     * @Method 설명 : 오늘 구별, 시장별 센서 현황 조회 (상점, 센서, 경고, 주의, 끊김)
-     * @return List<HashMap<String, Object>>
-     */
-    @RequestMapping(value = "/todayGuAreaStateAjax")
-    @ResponseBody
-    public List<HashMap<String, Object>> mcmTodayGuAreaState(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
-        try {
-            return mcMainRepo.LIST_MCM_TODAY_GU_AREA_STATE(prm);
-        } catch (NullPointerException e) {
-            LOG.debug(e.getMessage());
-        } catch (SQLException e) {
-            LOG.debug(e.getMessage());
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return null;
-    }
-
-    /**
-     * @Method Name : mcmCheckSensorList
-     * @작성일 : 2021-07-15
-     * @작성자 : jjm
-     * @변경이력 :
-     * @Method 설명 : 점검내역 목록 조회
-     * @return List<HashMap<String, Object>>
-     */
-    @RequestMapping(value = "/checkSensorListAjax")
-    @ResponseBody
-    public List<HashMap<String, Object>> mcmCheckSensorList(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
-        try {
-            return mcMainRepo.LIST_MCM_CHECK_SENSOR(prm);
-        } catch (NullPointerException e) {
-            LOG.debug(e.getMessage());
-        } catch (SQLException e) {
-            LOG.debug(e.getMessage());
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return null;
-    }
-
-    /**
-     * @Method Name : mcmAbnormalSensorList
-     * @작성일 : 2021-07-09
-     * @작성자 : jjm
-     * @변경이력 :
-     * @Method 설명 : 오늘 상태이상 센서 목록 조회
-     * @return List<HashMap<String, Object>>
-     */
-    @RequestMapping(value = "/todayAbnormalSensorListAjax")
-    @ResponseBody
-    public List<HashMap<String, Object>> mcmTodayAbnormalSensorList(HttpServletRequest req) throws Exception {
-        HashMap<String, Object> prm = new HashMap<>();
-
-        try {
-            return mcMainRepo.LIST_MCM_TODAY_ABNORMAL_SENSOR(prm);
-        } catch (NullPointerException e) {
-            LOG.debug(e.getMessage());
-        } catch (SQLException e) {
-            LOG.debug(e.getMessage());
-        } catch (Exception e) {
-            LOG.debug(e.getMessage());
-        }
-
-        return null;
     }
 
     /**

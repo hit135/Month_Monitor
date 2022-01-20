@@ -74,10 +74,10 @@
     $('#termtype').on('change', function(d) {
       if (this.value == 'm') {
         $('#regdt').prop('type', 'month');
-        $('#regdt').val(fn_mclt_dateToString(new Date()).slice(0, 7));
+        $('#regdt').val(fn_mcmi_dateToString(new Date()).slice(0, 7));
       } else {
         $('#regdt').prop('type', 'date');
-        $('#regdt').val(fn_mclt_dateToString(new Date()).slice(0, 10));
+        $('#regdt').val(fn_mcmi_dateToString(new Date()).slice(0, 10));
       }
 
       fn_mcstc_getStoreSensorData();
@@ -113,7 +113,7 @@
       $('[name=dataname][value="IGC"]').prop('checked', true);
     }
 
-    $('#regdt').val(fn_mclt_dateToString(new Date()).slice(0, 10));
+    $('#regdt').val(fn_mcmi_dateToString(new Date()).slice(0, 10));
     fn_mcstc_getStoreSensor();
   }
 
@@ -156,7 +156,7 @@
         }
 
         now.setDate(now.getDate());
-        fn_mcstc_getStoreSensorData('d', fn_mclt_dateToString(now).slice(0, 10), 1);
+        fn_mcstc_getStoreSensorData('d', fn_mcmi_dateToString(now).slice(0, 10), 1);
     });
   }
 
@@ -351,7 +351,7 @@
         dt.setMonth(dt.getMonth() + 1);
     }
 
-    let regdt = fn_mclt_dateToString(dt).slice(0, 10);
+    let regdt = fn_mcmi_dateToString(dt).slice(0, 10);
 
     if (termtype == 'm')
       regdt = regdt.slice(0, 7);

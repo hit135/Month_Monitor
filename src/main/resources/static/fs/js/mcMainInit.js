@@ -1,4 +1,4 @@
-function fn_mcme_initTemplate() {
+function fn_mcmi_initTemplate() {
   // 화면 위
   $.template(
     'top-search-result',
@@ -65,7 +65,7 @@ function fn_mcme_initTemplate() {
   );
 }
 
-function fn_mcme_initClickEvent() {
+function fn_mcmi_initClickEvent() {
   // 화면 위 상점 검색
   $('.top-search-text').on('keyup', fn_mclt_searchStore);
   $('.top-search button').on('click', fn_mclt_searchStore);
@@ -91,7 +91,7 @@ function fn_mcme_initClickEvent() {
     } else {
       $(this).addClass('on');
       $(id + ' .panel-container').addClass('show');
-
+      
       fn_mcm_updateMainAreaList(id);
     }
   });
@@ -194,10 +194,10 @@ function fn_mcme_initClickEvent() {
   });
 }
 
-function fn_mcme_initTimer() {
+function fn_mcmi_initTimer() {
   setInterval(function () {
     let w = ['일', '월', '화', '수', '목', '금', '토'];
-    let now_str = fn_mclt_dateToString(new Date());
+    let now_str = fn_mcmi_dateToString(new Date());
 
     $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
     $('.top-time').text(now_str.substring(11));
@@ -207,4 +207,9 @@ function fn_mcme_initTimer() {
     if (new Date().getMinutes() % 10 === 2)
       fn_mcm_refresh();
   }, 60 * 1000);  
+}
+
+function fn_mcmi_dateToString(d) {
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
+    ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
 }

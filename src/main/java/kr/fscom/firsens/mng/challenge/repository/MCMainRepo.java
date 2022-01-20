@@ -27,16 +27,16 @@ import java.util.Map;
 @Repository
 public interface MCMainRepo {
 
-    List<HashMap<String, Object>> LIST_MCM_TODAY_TOTAL_STATE(Map<String, Object> param) throws Exception;            // 오늘 종합 현황 (전체, 경고, 주의, 끊김)
-    List<HashMap<String, Object>> LIST_MCM_TODAY_GU_AREA_STATE(Map<String, Object> param) throws Exception;          // 오늘 구별, 시장별 현황 (상점, 센서, 경고, 주의, 끊김)
-    List<HashMap<String, Object>> LIST_MCM_CHECK_SENSOR(Map<String, Object> param) throws Exception;                 // 점검내역 목록
-    List<HashMap<String, Object>> LIST_MCM_TODAY_ABNORMAL_SENSOR(Map<String, Object> param) throws Exception;        // 오늘 상태이상 센서 목록
+    List<HashMap<String, Object>> LIST_MCM_TODAY_TOTAL_STATE() throws Exception;                                    // 오늘 종합 현황 (전체, 경고, 주의, 끊김)
+    List<HashMap<String, Object>> LIST_MCM_TODAY_GU_AREA_STATE() throws Exception;                                  // 오늘 구별, 시장별 현황 (상점, 센서, 경고, 주의, 끊김)
+    List<HashMap<String, Object>> LIST_MCM_CHECK_SENSOR() throws Exception;                                         // 점검내역 목록
+    List<HashMap<String, Object>> LIST_MCM_TODAY_ABNORMAL_SENSOR() throws Exception;                                // 오늘 상태이상 센서 목록
 
-    List<HashMap<String, Object>> LIST_MCM_2DAYS_AREA_DATA_CHART(Map<String, Object> param) throws Exception;        // 시장별 어제/오늘 데이터 추이
-    List<HashMap<String, Object>> LIST_MCM_2DAYS_AREA_LOG_CHART(Map<String, Object> param) throws Exception;         // 시장별 어제/오늘 경보 발생 추이
+    List<HashMap<String, Object>> LIST_MCM_2DAYS_AREA_DATA_CHART(Map<String, Object> param) throws Exception;       // 시장별 어제/오늘 데이터 추이
+    List<HashMap<String, Object>> LIST_MCM_2DAYS_AREA_LOG_CHART(Map<String, Object> param) throws Exception;        // 시장별 어제/오늘 경보 발생 추이
 
-    List<HashMap<String, Object>> LIST_MCM_2WEEKS_AREA_DATA_CHART(Map<String, Object> param) throws Exception;       // 시장별 주간 데이터 추이
-    List<HashMap<String, Object>> LIST_MCM_2WEEKS_AREA_LOG_CHART(Map<String, Object> param) throws Exception;        // 시장별 주간 경보 발생 추이
-    List<HashMap<String, Object>> LIST_MCM_AREA_MAP_SENSOR(Map<String, Object> param) throws Exception;              // 시장 지도 정보
+    List<HashMap<String, Object>> LIST_MCM_2WEEKS_AREA_DATA_CHART(Map<String, Object> param) throws Exception;      // 시장별 주간 데이터 추이
+    List<HashMap<String, Object>> LIST_MCM_2WEEKS_AREA_LOG_CHART(Map<String, Object> param) throws Exception;       // 시장별 주간 경보 발생 추이
+    List<HashMap<String, Object>> LIST_MCM_AREA_MAP_SENSOR(Map<String, Object> param) throws Exception;             // 시장 지도 정보
 
 }
