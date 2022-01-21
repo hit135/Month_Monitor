@@ -98,8 +98,14 @@
           $('.center-left-store-list').append($.tmpl('center-left-store', d[i]));
         }
      
-        let on_obj = $('.center-left-store-list p')[0];
-        window.selected_strcode = $(on_obj).attr('data-strcode');
+        let on_obj = '';
+        if (!window.selected_strcode) {
+          on_obj = $('.center-left-store-list p')[0];
+          window.selected_strcode = $(on_obj).attr('data-strcode');
+        } else {
+          on_obj = $('.center-left-store-list p[data-strcode="' + window.selected_strcode + '"]')[0];
+        }
+
         $(on_obj).addClass('on');
         $('.center-cont-top .store-name').text($(on_obj).attr('data-strname'));
 

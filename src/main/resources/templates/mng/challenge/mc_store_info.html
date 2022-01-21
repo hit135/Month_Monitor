@@ -307,9 +307,12 @@
           $('.store-info-sensor-list').append($.tmpl('store-info-sensor', d[i]));
         }
 
-        $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
-        window.selected_snsrid = $("input:radio[name='snsr-radio-btn']:checked").val()
-        $("input:radio[name='snsr-radio-btn']").on('change', function () { fn_mcsti_refreshStoreInfo(); });
+        if (!window.selected_snsrid) {
+          $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
+          window.selected_snsrid = $("input:radio[name='snsr-radio-btn']:checked").val();
+        } else {
+          $("input:radio[name='snsr-radio-btn'][value='" + window.selected_snsrid + "']").prop('checked', true);
+        }
 
         fn_mcsti_refreshStoreInfo();
     });

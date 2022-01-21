@@ -86,7 +86,7 @@ function fn_mcmi_initTemplate() {
         '<span class="btn-check-start" data-snsrid="{{html SNSRID}}">점검</span>' +
         '<span class="btn-check-end" data-snsrid="{{html SNSRID}}">점검중</span>' +
       '</p>' +
-      '<p class="nobtn-datalog {{html STATE}}" data-snsrid="{{html SNSRID}}" data-checktype="{{html STATE}}" onclick="fn_mcsti_checkNobtnDatalog(\'${SNSRID}\')">>' +
+      '<p class="nobtn-datalog {{html STATE}}" data-snsrid="{{html SNSRID}}" data-checktype="{{html STATE}}" onclick="fn_mcsti_checkNobtnDatalog(\'${SNSRID}\')">' +
         '{{html SNSRNICK}} ({{html SNSRIDTRIM}})' +
       '</p>' +
     '</div>'
@@ -213,6 +213,7 @@ function fn_mcmi_initClickEvent() {
     $(this).addClass('on');
 
     window.selected_strcode = $(this).attr('data-strcode');
+    window.selected_snsrid = '';
     $('.center-cont-top .store-name').text($(this).attr('data-strname'));
 
     fn_mcst_clickContPage();
