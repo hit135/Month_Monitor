@@ -83,14 +83,18 @@
               d[i].CNT = d[i].DANGER;
             else if (window.store_danger_cnt_type == '경보 센서 수')
               d[i].CNT = d[i].DANGERSNSRCNT;
-          } else if (d[i].WARN > 0) {
+          } 
+          
+          if (d[i].WARN > 0) {
             d[i].STATE = 'warn';
 
             if (window.store_danger_cnt_type == '경보 누적 수')
               d[i].CNT2 = d[i].WARN;
             else if (window.store_danger_cnt_type == '경보 센서 수')
               d[i].CNT2 = d[i].WARNSNSRCNT;
-          } else if (d[i].CON > 0) {
+          } 
+          
+          if (d[i].CON > 0) {
             d[i].STATE = 'discon';
             d[i].CNT3 = d[i].CON;
           }
