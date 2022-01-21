@@ -185,7 +185,6 @@
   <script th:inline="javascript">
   $(function () {
     $('#regdt').val(fn_mcmi_dateToString(new Date()).slice(0, 10));
-
  
     fn_mcsti_getStoreInfo();
     fn_mcsti_getStoreInfoSensorList();
@@ -209,7 +208,10 @@
   function fn_mcsti_getStoreInfo() {
     $.post(
       $('#contextRoot').val() + '/mng/storeInfoAjax',
-      { areacode: window.selected_areacode, strcode: window.selected_strcode },
+      { 
+        areacode: window.selected_areacode,
+        strcode: window.selected_strcode
+      },
       function (d) {
         if (d.store) {
           $('.store-meta .store-name-cont').html(d.store.STRNAME);

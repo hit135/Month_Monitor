@@ -65,12 +65,12 @@
 
   // 시장 내 상점 목록 조회
   function fn_mcst_getTodayAreaStoreState() {
+    $('.center-left-store-list').html('');
+
     $.post(
       $('#contextRoot').val() + '/mng/todayAreaStoreStateAjax',
       { areacode: window.selected_areacode },
       function (d) {
-        $('.center-left-store-list').html('');
-
         for (let i = 0; i < d.length; i++) {
           d[i].CNT = 0;
           d[i].CNT2 = 0;
@@ -119,11 +119,13 @@
 
   // 상점 목록 선택
   function fn_mcst_clickContPage() {
-    let prm = { areacode: window.selected_areacode, strcode: window.selected_strcode };
 
     $.post(
       $('#contextRoot').val() + '/mng/store' + $('.center-cont-top-btn.on').attr('data-page'),
-      prm,
+      { 
+        areacode: window.selected_areacode,
+        strcode: window.selected_strcode 
+      },
       function (d) {
         let $temp = $('<div>');
         $temp.html(d);

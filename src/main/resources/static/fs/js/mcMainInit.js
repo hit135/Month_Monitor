@@ -120,6 +120,7 @@ function fn_mcmi_initClickEvent() {
   // Main Page 버튼
   $('.center-main-btn').on('click', function () {
     $('.left .area-lv2').removeClass('on');
+    $('.center-left-sensor-list p.on').removeClass('on');
 
     window.selected_areacode = '';
     window.selected_strcode = '';
@@ -176,6 +177,7 @@ function fn_mcmi_initClickEvent() {
     window.selected_areacode = $(this).attr('data-code');
     window.selected_strcode = '';
     window.selected_snsrid = '';
+
     fn_mcmi_clickAreaLv2();
   });
 
@@ -197,16 +199,6 @@ function fn_mcmi_initClickEvent() {
     fn_mcmi_clickCheckSensor();
   });
 
-  $(".center-left-store-btn").on("click", function () {
-    if (window.store_danger_cnt_type != $(this).text()) {
-      $(".btn-info.center-left-store-btn").removeClass("btn-info").addClass("btn-secondary");
-      $(this).removeClass("btn-secondary").addClass("btn-info");
-
-      window.store_danger_cnt_type = $(this).text();
-      fn_mcmi_clickAreaLv2();
-    }
-  });
-
   // 시장 내 왼쪽 상점 목록 선택
   $('.center-left-store-list').on('click', 'p', function () {
     $('.center-left-store-list p.on').removeClass('on');
@@ -217,6 +209,16 @@ function fn_mcmi_initClickEvent() {
     $('.center-cont-top .store-name').text($(this).attr('data-strname'));
 
     fn_mcst_clickContPage();
+  });
+
+  $(".center-left-store-btn").on("click", function () {
+    if (window.store_danger_cnt_type != $(this).text()) {
+      $(".btn-info.center-left-store-btn").removeClass("btn-info").addClass("btn-secondary");
+      $(this).removeClass("btn-secondary").addClass("btn-info");
+
+      window.store_danger_cnt_type = $(this).text();
+      fn_mcmi_clickAreaLv2();
+    }
   });
 
   // 시장 정보 위 기본정보 / 경보이력 / 분석차트 선택
