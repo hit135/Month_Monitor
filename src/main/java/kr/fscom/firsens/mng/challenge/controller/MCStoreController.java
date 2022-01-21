@@ -108,26 +108,8 @@ public class MCStoreController {
         ModelAndView mav = new ModelAndView("mng/challenge/mc_store_info");
 
         try {
-            String areacode = req.getParameter("areacode");
-            String strcode = req.getParameter("strcode");
-            String snsrid = req.getParameter("snsrid");
-
-            if (StringUtils.isEmptyOrWhitespace(strcode)) {
-                String[] code = getAreaStoreCode(snsrid);
-                areacode = code[0];
-                strcode = code[1];
-            }
-
-            if (StringUtils.isEmptyOrWhitespace(snsrid))
-                snsrid = getSensorCode(areacode, strcode);
-
-            mav.addObject("prm_areacode", areacode);
-            mav.addObject("prm_strcode", strcode);
-            mav.addObject("prm_snsrid", snsrid);
             mav.addObject("naverMap", "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=" + naverClientId + "&submodules=visualization");
         } catch (NullPointerException e) {
-            LOG.debug(e.getMessage());
-        } catch (SQLException e) {
             LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());

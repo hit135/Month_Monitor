@@ -1,3 +1,33 @@
+window.min_category = [];
+window.refresh_time = '';
+
+window.center_name = 'main';
+window.area = [];
+window.areaIndex = {};
+window.lv1cnt = 0;
+
+window.selected_areacode = '';
+window.selected_strcode = '';
+window.selected_snsrid = '';
+window.store_danger_cnt_type = '경보 누적 수';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function fn_mcmi_initTimer() {
+  setInterval(function () {
+    let w = ['일', '월', '화', '수', '목', '금', '토'];
+    let now_str = fn_mcmi_dateToString(new Date());
+
+    $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
+    $('.top-time').text(now_str.substring(11));
+  }, 1000);
+
+  window.refresh_time = window.setInterval(function () {
+    if (new Date().getMinutes() % 10 === 2)
+      fn_mcmi_refresh();
+  }, 60 * 1000);  
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 function fn_mcmi_initTemplate() {
   // 화면 위
   $.template(
@@ -56,7 +86,7 @@ function fn_mcmi_initTemplate() {
         '<span class="btn-check-start" data-snsrid="{{html SNSRID}}">점검</span>' +
         '<span class="btn-check-end" data-snsrid="{{html SNSRID}}">점검중</span>' +
       '</p>' +
-      '<p class="nobtn-datalog {{html STATE}}" data-snsrid="{{html SNSRID}}" data-checktype="{{html STATE}}" onclick="fn_mcsti_checkNobtnDatalog(\'${SNSRID}\')">' +
+      '<p class="nobtn-datalog {{html STATE}}" data-snsrid="{{html SNSRID}}" data-checktype="{{html STATE}}" onclick="fn_mcsti_checkNobtnDatalog(\'${SNSRID}\')">>' +
         '{{html SNSRNICK}} ({{html SNSRIDTRIM}})' +
       '</p>' +
     '</div>'
@@ -71,6 +101,7 @@ function fn_mcmi_initTemplate() {
     '</p>'
   );
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function fn_mcmi_initClickEvent() {
   // 화면 위 상점 검색
@@ -78,13 +109,23 @@ function fn_mcmi_initClickEvent() {
   $('.top-search button').on('click', fn_mcmi_searchStore);
 
   $('.top-search-result').on('click', 'p', function () {
-    fn_mcmi_clickCheckSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
+    window.selected_areacode = $(this).attr('data-areacode');
+    window.selected_strcode = $(this).attr('data-strcode');
+    window.selected_snsrid = '';
+
+    fn_mcmi_clickCheckSensor();
     $('.top-search-result').html('');
   });
 
   // Main Page 버튼
   $('.center-main-btn').on('click', function () {
+    $('.left .area-lv2').removeClass('on');
+
+    window.selected_areacode = '';
+    window.selected_strcode = '';
+    window.selected_snsrid = '';
     window.center_name = 'main';
+
     fn_mcmi_toggleCenterCont();
   });
 
@@ -99,7 +140,7 @@ function fn_mcmi_initClickEvent() {
       $(this).addClass('on');
       $(id + ' .panel-container').addClass('show');
       
-      fn_mcm_updateMainAreaList(id);
+      fn_mcm_updateMainAreaList();
     }
   });
 
@@ -132,22 +173,36 @@ function fn_mcmi_initClickEvent() {
     $('.left .area-lv2.on').removeClass('on');
     $(this).addClass('on');
 
-    fn_mcmi_clickAreaLv2($(this).attr('data-code'));
+    window.selected_areacode = $(this).attr('data-code');
+    window.selected_strcode = '';
+    window.selected_snsrid = '';
+    fn_mcmi_clickAreaLv2();
   });
 
   // 점검 센서 선택
   $('.left-list-sensor').on('click', 'p', function () {
-    fn_mcmi_clickCheckSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'));
+    window.selected_areacode = $(this).attr('data-areacode');
+    window.selected_strcode = $(this).attr('data-strcode');
+    window.selected_snsrid = $(this).attr('data-code');
+
+    fn_mcmi_clickCheckSensor();
   });
 
   // 경고/주의/고장 센서 선택
   $('.list-sensor').on('click', 'p', function () {
-    fn_mcmi_clickCheckSensor($(this).attr('data-areacode'), $(this).attr('data-strcode'), $(this).attr('data-code'));
+    window.selected_areacode = $(this).attr('data-areacode');
+    window.selected_strcode = $(this).attr('data-strcode');
+    window.selected_snsrid = $(this).attr('data-code');
+
+    fn_mcmi_clickCheckSensor();
   });
 
   $(".center-left-store-btn").on("click", function () {
-    if (window.dangerCntType != $(this).text()) {
-      window.dangerCntType = $(this).text();
+    if (window.store_danger_cnt_type != $(this).text()) {
+      $(".btn-info.center-left-store-btn").removeClass("btn-info").addClass("btn-secondary");
+      $(this).removeClass("btn-secondary").addClass("btn-info");
+
+      window.store_danger_cnt_type = $(this).text();
       fn_mcmi_clickAreaLv2();
     }
   });
@@ -157,7 +212,9 @@ function fn_mcmi_initClickEvent() {
     $('.center-left-store-list p.on').removeClass('on');
     $(this).addClass('on');
 
+    window.selected_strcode = $(this).attr('data-strcode');
     $('.center-cont-top .store-name').text($(this).attr('data-strname'));
+
     fn_mcst_clickContPage();
   });
 
@@ -168,6 +225,7 @@ function fn_mcmi_initClickEvent() {
 
     fn_mcst_clickContPage();
   });
+
 
   // 점검 등록
   $('.store-info').on('click', '.btn-check-start', function () {
@@ -207,24 +265,15 @@ function fn_mcmi_initClickEvent() {
     }
   });
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function fn_mcmi_initTimer() {
-  setInterval(function () {
-    let w = ['일', '월', '화', '수', '목', '금', '토'];
-    let now_str = fn_mcmi_dateToString(new Date());
-
-    $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
-    $('.top-time').text(now_str.substring(11));
-  }, 1000);
-
-  window.refreshTime = window.setInterval(function () {
-    if (new Date().getMinutes() % 10 === 2)
-      fn_mcmi_refresh();
-  }, 60 * 1000);  
+function fn_mcmi_initMinCategory() {
+  for (let i = 0; i < 24; i++)
+    for (let j = 0; j < 6; j++)
+      window.min_category.push(('0' + i).slice(-2) + ':' + (j + '0'));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // 상점 검색
 function fn_mcmi_searchStore() {
   $.post(
@@ -237,22 +286,19 @@ function fn_mcmi_searchStore() {
 }
 
 // 왼쪽 시장 목록 선택
-function fn_mcmi_clickAreaLv2(code) {
+function fn_mcmi_clickAreaLv2() {
   window.center_name = 'store';
 
   fn_mcmi_toggleCenterCont();
-  window.dangerCntType = $(".center-left-store-btn.btn-info").text();
-
-  fn_mcst_getTodayAreaState(code);
-  fn_mcst_getTodayAreaStoreState(code);
+  fn_mcst_getTodayAreaState();
+  fn_mcst_getTodayAreaStoreState();
 }
 
 // 점검 / 경고 / 주의 / 고장에서 상점 선택
-function fn_mcmi_clickCheckSensor(code, strcode, snsrid) {
+function fn_mcmi_clickCheckSensor() {
   window.center_name = 'store';
-
   fn_mcmi_toggleCenterCont();
-  fn_mcst_onAreaLv2(code, strcode, snsrid);
+  fn_mcst_onAreaLv2();
 }
 
 // 메인/상점 정보 화면 toggle
@@ -286,7 +332,7 @@ function fn_mcmi_refresh() {
     fn_mcm_getMainAreaWeek();
   } else {
     fn_mcsti_refreshStoreInfo();
-    setTimeout(function () { fn_mcst_onAreaLv2(window.left_area_lv2_on_code); }, 800);
+    setTimeout(function () { fn_mcst_onAreaLv2(); }, 800);
   }
 }
 

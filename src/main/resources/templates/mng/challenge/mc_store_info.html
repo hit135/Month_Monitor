@@ -2,10 +2,6 @@
 <input id="contextRoot" type="hidden" th:value="${#httpServletRequest.getContextPath()}" />
 
 <div class="sub-cont w-100">
-  <input id="prm_areacode" type="hidden" th:value="${prm_areacode}" />
-  <input id="prm_strcode" type="hidden" th:value="${prm_strcode}" />
-  <input id="prm_snsrid" type="hidden" th:value="${prm_snsrid}" />
-
   <div class="row store-info">
     <div class="col-md-4 col-12">
       <div class="store-map" style="width: 100%; height: 240px; background: #ddd;"></div>
@@ -195,8 +191,9 @@
     fn_mcsti_getStoreInfoSensorList();
   });
 
-  function fn_mcsti_checkNobtnDatalog(snsrId) {
-    $("input:radio[name='snsr-radio-btn']:input[value='" + snsrId + "']").prop('checked', true);
+  function fn_mcsti_checkNobtnDatalog(snsrid) {
+    window.selected_snsrid = snsrid;
+    $("input:radio[name='snsr-radio-btn']:input[value='" + snsrid + "']").prop('checked', true);
     fn_mcsti_refreshStoreInfo();
   }
 
@@ -212,7 +209,7 @@
   function fn_mcsti_getStoreInfo() {
     $.post(
       $('#contextRoot').val() + '/mng/storeInfoAjax',
-      { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
+      { areacode: window.selected_areacode, strcode: window.selected_strcode },
       function (d) {
         if (d.store) {
           $('.store-meta .store-name-cont').html(d.store.STRNAME);
@@ -297,12 +294,12 @@
 
   // 센서 목록
   function fn_mcsti_getStoreInfoSensorList() {
+    $('.store-info-sensor-list').html('');
+
     $.post(
       $('#contextRoot').val() + '/mng/todayAreaSensorStateAjax',
-      { areacode: $('#prm_areacode').val(), strcode: $('#prm_strcode').val() },
+      { areacode: window.selected_areacode, strcode: window.selected_strcode },
       function (d) {
-        $('.store-info-sensor-list').html('');
-
         for (let i = 0; i < d.length; i++) {
           if (d[i].CHK > 0)
             d[i].CHECK = 'CHECKING';
@@ -311,6 +308,7 @@
         }
 
         $("input:radio[name='snsr-radio-btn']:first").prop('checked', true);
+        window.selected_snsrid = $("input:radio[name='snsr-radio-btn']:checked").val()
         $("input:radio[name='snsr-radio-btn']").on('change', function () { fn_mcsti_refreshStoreInfo(); });
 
         fn_mcsti_refreshStoreInfo();
@@ -319,17 +317,17 @@
 
   // 측정 데이터 및 로그 정보
   function fn_mcsti_getDataLog() {
+    $('.store-datalog-list').html('');
+
     $.post(
       $('#contextRoot').val() + '/mng/dataLogListAjax',
       {
-        strcode: $('#prm_strcode').val(),
-        areacode: $('#prm_areacode').val(),
-        snsrid: $("input:radio[name='snsr-radio-btn']:checked").val(),
+        strcode: window.selected_strcode,
+        areacode: window.selected_areacode,
+        snsrid: window.selected_snsrid,
         regdt: $('.store-info #regdt').val()
       },
       function (d) {
-        $('.store-datalog-list').html('');
-
         if (d != null && d.length > 0) {
           for (let i = 0; i < d.length; i++) {
             $('.store-datalog-list').append($.tmpl('datalog', d[i]));
@@ -339,7 +337,7 @@
                 $.post(
                   $('#contextRoot').val() + '/mng/sensorUsekwhMonthAjax',
                   {
-                    snsrid: $("input:radio[name='snsr-radio-btn']:checked").val(),
+                    snsrid: window.selected_snsrid,
                     regdt: $('.store-info #regdt').val()
                   },
                   function (d) {
@@ -391,17 +389,19 @@
     $.post(
       $('#contextRoot').val() + '/mng/logStatAjax',
       {
-        strcode: $('#prm_strcode').val(),
-        areacode: $('#prm_areacode').val(),
-        snsrid: $("input:radio[name='snsr-radio-btn']:checked").val()
+        strcode: window.selected_strcode,
+        areacode: window.selected_areacode,
+        snsrid: window.selected_snsrid
       },
       function (d) {
         if (d.threedays) {
           let max = -1;
 
           for (let i = 0; i < d.threedays.length; i++) {
-            if (max < d.threedays[i].DANGER) max = d.threedays[i].DANGER;
-            if (max < d.threedays[i].WARN) max = d.threedays[i].WARN;
+            if (max < d.threedays[i].DANGER) 
+              max = d.threedays[i].DANGER;
+            if (max < d.threedays[i].WARN) 
+              max = d.threedays[i].WARN;
           }
 
           for (let i = 0; i < d.threedays.length; i++) {
@@ -423,8 +423,10 @@
           let max = -1;
 
           for (let i = 0; i < d.week.length; i++) {
-            if (max < d.week[i].DANGER) max = d.week[i].DANGER;
-            if (max < d.week[i].WARN) max = d.week[i].WARN;
+            if (max < d.week[i].DANGER) 
+              max = d.week[i].DANGER;
+            if (max < d.week[i].WARN) 
+              max = d.week[i].WARN;
           }
 
           for (let i = 0; i < d.week.length; i++) {
