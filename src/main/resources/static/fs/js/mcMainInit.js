@@ -120,7 +120,7 @@ function fn_mcmi_initClickEvent() {
   // Main Page 버튼
   $('.center-main-btn').on('click', function () {
     $('.left .area-lv2').removeClass('on');
-    $('.center-left-sensor-list p.on').removeClass('on');
+    $('.center-left-store-list p.on').removeClass('on');
 
     window.selected_areacode = '';
     window.selected_strcode = '';

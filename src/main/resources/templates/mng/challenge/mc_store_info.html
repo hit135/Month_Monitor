@@ -192,7 +192,7 @@
 
   function fn_mcsti_checkNobtnDatalog(snsrid) {
     window.selected_snsrid = snsrid;
-    $("input:radio[name='snsr-radio-btn']:input[value='" + snsrid + "']").prop('checked', true);
+    $("input:radio[name='snsr-radio-btn']:input[value='" + window.selected_snsrid + "']").prop('checked', true);
     fn_mcsti_refreshStoreInfo();
   }
 
