@@ -56,6 +56,7 @@ public class SYSSimulController {
 
         try {
             
+            
             result = true;
         } catch (Exception ex) {
             LOG.error("■■■■■■■■■■■■■■■ 시뮬레이션 미리보기 요청 오류 : {}", ex.getMessage());

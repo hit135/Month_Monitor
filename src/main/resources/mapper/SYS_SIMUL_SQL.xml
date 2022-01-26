@@ -3,27 +3,130 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSSimulRepo">
 
+    <select id="SELECT_SYS_MONTHLY_EVT_GRADE" parameterType="map" resultType="int">
+        SELECT
+            6 - ROUND(AVG(c.grad))
+        FROM 
+            (SELECT
+                 b.SNSRID
+                 , b.STRCODE
+                 , b.cnt
+                 , b.d1Cnt AS '1등급'
+                 , b.d2Cnt AS '2등급'
+                 , b.d3Cnt AS '3등급'
+                 , b.d4Cnt AS '4등급'
+                 , b.d5Cnt AS '5등급'
+                 , (b.d1Cnt + b.d2Cnt + b.d3Cnt) * 100 / b.cnt AS gd
+                 , (5 * b.d1Cnt / b.cnt) + (4 * b.d2Cnt / b.cnt) + (3 * b.d3Cnt / b.cnt) 
+                     + (2 * b.d4Cnt / b.cnt) + (1 * b.d5Cnt / b.cnt) AS grad
+                 , (SELECT 
+                        F_AREA.AREANAME
+                    FROM
+                        ifiresens_v2.F_SENSOR_INFO
+                            LEFT JOIN ifiresens_v2.F_AREA
+                                ON F_SENSOR_INFO.AREACODE = F_AREA.AREACODE
+                    WHERE
+                        SNSRID = b.SNSRID) AS AREANAME
+                 , (SELECT SNSRNICK FROM ifiresens_v2.F_SENSOR_INFO WHERE SNSRID = b.SNSRID) AS SNSRNICK
+             FROM
+                 (SELECT 
+                      a.SNSRID
+                      , a.STRCODE
+                      , COUNT(a.*) as cnt
+                      , COUNT(CASE WHEN a.grade = 'd0' THEN 1 END) AS d0Cnt
+                      , COUNT(CASE WHEN a.grade = 'd1' THEN 1 END) AS d1Cnt
+                      , COUNT(CASE WHEN a.grade = 'd2' THEN 1 END) AS d2Cnt
+                      , COUNT(CASE WHEN a.grade = 'd3' THEN 1 END) AS d3Cnt
+                      , COUNT(CASE WHEN a.grade = 'd4' THEN 1 END) AS d4Cnt
+                      , COUNT(CASE WHEN a.grade = 'd5' THEN 1 END) AS d5Cnt
+                  FROM 
+                      (SELECT
+                           SNSRID
+                           , STRCODE
+                           , EL_DANG
+                           <![CDATA[
+                           , (CASE
+                                   WHEN (EL_DANG >= 28) THEN 'd1'
+                                   WHEN (EL_DANG >= 15 and EL_DANG < 28) THEN 'd2'
+                                   WHEN (EL_DANG >= 5 and EL_DANG < 15) THEN 'd3'
+                                   WHEN (EL_DANG >= 0.7 and EL_DANG < 5) THEN 'd4'
+                                   WHEN (EL_DANG < 0.7) THEN 'd5'
+                                   ELSE 'd0'
+                               END) AS grade
+                           ]]>
+                       FROM
+                           <choose>
+                               <when test='"2020-03".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_03</when>
+                               <when test='"2020-04".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_04</when>
+                               <when test='"2020-05".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_05</when>
+                               <when test='"2020-06".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_06</when>
+                               <when test='"2020-07".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_07</when>
+                               <when test='"2020-08".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_08</when>
+                               <when test='"2020-09".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_09</when>
+                               <when test='"2020-10".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_10</when>
+                               <when test='"2020-11".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_11</when>
+                               <when test='"2020-12".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2020_12</when>
+                               <when test='"2021-01".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_01</when>
+                               <when test='"2021-02".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_02</when>
+                               <when test='"2021-03".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_03</when>
+                               <when test='"2021-04".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_04</when>
+                               <when test='"2021-05".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_05</when>
+                               <when test='"2021-06".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_06</when>
+                               <when test='"2021-07".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_07</when>
+                               <when test='"2021-08".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_08</when>
+                               <when test='"2021-09".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_09</when>
+                               <when test='"2021-10".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_10</when>
+                               <when test='"2021-11".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_11</when>
+                               <when test='"2021-12".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2021_12</when>
+                               <when test='"2022-01".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_01</when>
+                               <when test='"2022-02".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_02</when>
+                               <when test='"2022-03".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_03</when>
+                               <when test='"2022-04".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_04</when>
+                               <when test='"2022-03".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_03</when>
+                               <when test='"2022-04".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_04</when>
+                               <when test='"2022-05".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_05</when>
+                               <when test='"2022-06".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_06</when>
+                               <when test='"2022-07".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_07</when>
+                               <when test='"2022-08".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_08</when>
+                               <when test='"2022-09".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_09</when>
+                               <when test='"2022-10".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_10</when>
+                               <when test='"2022-11".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_11</when>
+                               <when test='"2022-12".equals(rptYearMonth)'>statistics_v2.F_STAT_HOUR_LOG_2022_12</when>
+                               <otherwise>statistics_v2.F_STAT_HOUR_LOG_2022_01</otherwise>
+                           </choose>
+                       WHERE 
+                           STRCODE = #{strCode}) a
+                  GROUP BY
+                      a.SNSRID) b
+            ) c
+    </select>
+
+    <select id="SELECT_SYS_MONTHLY_RPT" parameterType="map" resultType="map">
+
+    </select>
+
+
     <insert id="INSERT_SYS_PUSH" parameterType="map">
         INSERT INTO F_PUSH_LOG (
-               SNSRSEQ
-             , PUSHMSG
-             , PUSHSTIME
-             , USERID
-             , SENDRESULT
-             , RESENDSEQ
-             , TOINFO
-             , FROMINFO
-             , PUSHRSLT
+            SNSRSEQ
+            , PUSHMSG
+            , PUSHSTIME
+            , USERID
+            , SENDRESULT
+            , RESENDSEQ
+            , TOINFO
+            , FROMINFO
+            , PUSHRSLT
         ) VALUES (
-               #{snsrseq}
-             , #{pushmsg}
-             , NOW()
-             , #{userid}
-             , #{sendresult}
-             , #{resendseq}
-             , #{toinfo}
-             , #{frominfo}
-             , #{pushRslt}
+            #{snsrseq}
+            , #{pushmsg}
+            , NOW()
+            , #{userid}
+            , #{sendresult}
+            , #{resendseq}
+            , #{toinfo}
+            , #{frominfo}
+            , #{pushRslt}
         )
     </insert>
 

@@ -1,14 +1,34 @@
-import React, { lazy, useEffect, useState } from 'react';
-import { CCard, CCardBody, CCardHeader, CCol, CFormGroup, CInput, CLabel, CRow, CSelect, CSwitch } from "@coreui/react";
+import React, {useState} from 'react';
+import {CCard, CCardBody, CCardHeader, CCol, CRow} from "@coreui/react";
+import {getSimulPreview, sendSimulPush} from "../../agent/simul";
 
-import PageTableWidget from "../../widget/pageTableWidget";
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
-import { ko } from "date-fns/esm/locale";
-
-import { numCommaFormat } from "../../agent/commonIndex";
 
 const SimulMgr = () => {
+  const [rptYearMonth, setRptYearMonth] = useState('');
+  const [strCode, setStrCode] = useState('');
+  const [toinfo, setToinfo] = useState('');
+
+  const clickPreview = () => {
+    let map = { 'rptYearMonth': rptYearMonth, 'strCode': strCode, 'toinfo': toinfo };
+
+    getSimulPreview(map).then(r => {
+      if (r.data.result) {
+
+      } else {
+        alert("조회 도중 오류가 발생했습니다.");
+      }
+    });
+  };
+
+  const clickSend = () => {
+    let map = { 'rptYearMonth': rptYearMonth, 'strCode': strCode, 'toinfo': toinfo };
+
+    sendSimulPush(map).then(r => {
+      alert(r.data.result ? "발송되었습니다." : "발송 도중 오류가 발생했습니다.");
+    });
+  };
+
   return (
     <CRow>
       <CCol>
@@ -38,22 +58,22 @@ const SimulMgr = () => {
                 </div>
               </CCol>
               <CCol md={"6"}>
-                <h5>기간 년월</h5>
-                <input type={"text"} id="yearMonth" style={{ width: '100%' }} />
+                <h5>년월 입력</h5>
+                <input type={"text"} id="rptYearMonth" style={{ width: '100%' }} onchange={e => setRptYearMonth(e.target.value)} />
 
                 <div className={'mt-3'}>
                   <h5>상점 코드 입력</h5>
-                  <input type={"text"} id="strCode" style={{ width: '100%' }} />
+                  <input type={"text"} id="strCode" style={{ width: '100%' }} onchange={e => setStrCode(e.target.value)} />
                 </div>
 
                 <div className={'mt-3'}>
                   <h5>메시지 전송 연락처 입력</h5>
-                  <input type={"text"} id="toinfo" style={{ width: '100%' }} />
+                  <input type={"text"} id="toinfo" style={{ width: '100%' }} onchange={e => setToinfo(e.target.value)} />
                 </div>
 
                 <div className={'mt-3'}>
-                  <button className={'btn btn-custom-info'} id={"previewBtn"}>미리보기</button>
-                  <button className={'ml-2 btn btn-custom-info'} id={"sendBtn"}>전송</button>
+                  <button className={'btn btn-custom-info'} id={"previewBtn"} onclick={clickPreview}>미리보기</button>
+                  <button className={'ml-2 btn btn-custom-info'} id={"sendBtn"} onclick={clickSend}>전송</button>
                 </div>
               </CCol>
             </CRow>
