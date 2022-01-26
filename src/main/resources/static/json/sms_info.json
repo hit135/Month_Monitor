@@ -21,9 +21,9 @@
     "linkMo": "http://dev1.fscom.kr:30080/store/rpt?strCode=#{strCode}",
     "dataOutputStream": {
         "message": {
-            "to": "",
+            "to": "#{to}",
             "from": "0424715215",
-            "text": "",
+            "text": "#{text}",
             "type": "ATA",
             "kakaoOptions": {
                 "pfId": "KA01PF211129011921158mUHJ1CKs80J",
@@ -31,8 +31,8 @@
                 "buttons": {
                     "buttonName": "자세히보기",
                     "buttonType": "WL",
-                    "linkPc": "",
-                    "linkMo": ""
+                    "linkPc": "#{linkPc}",
+                    "linkMo": "#{linkMo}"
                 }
             }
         }

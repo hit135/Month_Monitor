@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.util.ResourceUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -19,11 +20,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 @RestController
 @RequestMapping("/api")
@@ -365,6 +371,59 @@ public class SYSSimulController {
         }
 
         return ret;
+    }
+
+    @RequestMapping(value = "/sendSimulSpPush2")
+    @ResponseBody
+    public void sendSimulSpPush2(HttpServletRequest req, @RequestBody HashMap<String, Object> param) {
+        try {
+            File file = ResourceUtils.getFile("classpath:static/json/sms_info.json");
+
+            JSONObject obj = 
+                (JSONObject) new JSONParser().parse(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+
+            System.out.println("targetUrl : " + (String) obj.get("targetUrl"));
+            System.out.println("apiKey : " + (String) obj.get("apiKey"));
+            System.out.println("apiSecret : " + (String) obj.get("apiSecret"));
+            System.out.println("userid : " + (String) obj.get("userid"));
+
+            String messageText1 = "";
+            JSONArray messageText1Arr = (JSONArray) obj.get("messageText1");
+            for (int i = 0; i < messageText1Arr.size(); i++) 
+                messageText1 += (String) messageText1Arr.get(i);
+
+            String linkPc = ((String) obj.get("linkPc")).replace("#{strCode}", "FS_STR_0000000001144");
+            String linkMo = ((String) obj.get("linkMo")).replace("#{strCode}", "FS_STR_0000000001144");
+
+            messageText1 = messageText1
+                .replace("#{상점명}", "엄마손반찬")
+                .replace("#{보고기간년월}", "22년 1월")
+                .replace("#{보고기간}", "2021.07.14 ~ 2021.07.28")
+                .replace("#{전기위험현황}", "안전한 상태입니다 그래도 전기화재에 주의하십시오.")
+                .replace("#{위험순위}", "120 위 / 130 개 상점")
+                .replace("#{과전류발생}", "0 회")
+                .replace("#{누전발생}", "0 회")
+                .replace("#{전력사용순위}", "23 위 / 130 개 상점")
+                .replace("#{일별평균전력사용량}", "12 kWh")
+                .replace("#{주별전력사용량}", "123 kWh")
+                .replace("#{전력사용상태}", "전주대비 전력소비가 많습니다.");
+
+            String dataOutputStream = ((JSONObject) obj.get("dataOutputStream")).toString();
+
+            dataOutputStream = dataOutputStream
+                .replace("#{to}", "01043833386")
+                .replace("#{text}", messageText1)
+                .replace("#{linkPc}", linkPc)
+                .replace("#{linkMo}", linkMo);
+
+            System.out.println(dataOutputStream);
+        } catch (NullPointerException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (Exception e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } 
     }
 
 }
