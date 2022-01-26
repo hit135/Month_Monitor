@@ -12,7 +12,6 @@ const _nav = [
   , { _tag: 'CSidebarNavItem', name: '보고서', to: '/stat', icon: <CIcon name="cil-chart-pie" customClasses="c-sidebar-nav-icon" /> }
   , { _tag: 'CSidebarNavItem', name: '센서갱신이력관리', to: '/snsru', icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" /> }
   , { _tag: 'CSidebarNavItem', name: '시뮬레이션', to: '/simul', icon: <CIcon name="cil-chart-pie" customClasses="c-sidebar-nav-icon" /> }
-  , { _tag: 'CSidebarNavItem', name: '시뮬레이션샘플', to: '/simulSp', icon: <CIcon name="cil-chart-pie" customClasses="c-sidebar-nav-icon" /> }
 ];
 
 export default _nav;

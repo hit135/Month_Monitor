@@ -3,6 +3,7 @@
     "apiKey": "NCSA3RKT687MGISV",
     "apiSecret": "AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN",
     "userid": "admin",
+    "frominto": "0424715215",
     "messageText1": [
         "[#{상점명} 전기위험 보고(#{보고기간년월})]\n", 
         "기간 : #{보고기간}\n\n", 

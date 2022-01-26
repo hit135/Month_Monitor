@@ -10,7 +10,6 @@ const Push = React.lazy(() => import('./views/push/pushMgr'));
 const Stat = React.lazy(() => import('./views/stat/statMgr'));
 const SensorUpd = React.lazy(() => import('./views/sensor/snsruMgr'));
 const Simul = React.lazy(() => import('./views/simul/simulMgr'));
-const SimulSp = React.lazy(() => import('./views/simul/simulSpMgr'));
 
 // const Toaster = React.lazy(() => import('./views/notifications/toaster/Toaster'));
 // const Tables = React.lazy(() => import('./views/base/tables/Tables'));
@@ -59,7 +58,6 @@ const routes = [
   , { path: '/stat', name: '통계', component: Stat }
   , { path: '/snsru', name: '센서갱신이력관리', component: SensorUpd }
   , { path: '/simul', name: '시뮬레이션', component: Simul }
-  , { path: '/simulSp', name: '시뮬레이션샘플', component: SimulSp }
 
 
 
