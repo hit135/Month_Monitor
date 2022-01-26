@@ -88,7 +88,7 @@ public class SYSSimulController {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             JSONObject obj = (JSONObject) new JSONParser().parse(
-                new InputStreamReader(new FileInputStream(ResourceUtils.getFile("classpath:static/json/sms_info.json")), "UTF-8")
+                new InputStreamReader(new FileInputStream(ResourceUtils.getFile("classpath:static/js/json/sms_info.json")), "UTF-8")
             );
 
             String messageText1 = "";
@@ -114,7 +114,7 @@ public class SYSSimulController {
 
             String dataOutputStream = ((JSONObject) obj.get("dataOutputStream")).toString();
             dataOutputStream = dataOutputStream
-                .replace("#{to}", (String) param.get("to"))
+                .replace("#{to}", (String) param.get("toinfo"))
                 .replace("#{text}", messageText1)
                 .replace("#{linkPc}", linkPc)
                 .replace("#{linkMo}", linkMo);
@@ -163,7 +163,7 @@ public class SYSSimulController {
             prm.put("pushmsg", dataOutputStream);
             prm.put("userid", (String) obj.get("userid"));
             prm.put("sendresult", responseCode + " " + response.toString());
-            prm.put("toinfo", (String) param.get("to"));
+            prm.put("toinfo", (String) param.get("toinfo"));
             prm.put("frominfo", (String) obj.get("frominfo"));
             prm.put("pushRslt", "Y");
 
