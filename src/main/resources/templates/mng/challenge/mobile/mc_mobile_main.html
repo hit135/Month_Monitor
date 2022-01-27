@@ -53,6 +53,14 @@
 #center-main-cont .panel-hdr .center-main-area-count-danger { font-size: 0.8rem; font-weight: bold; color: #e082ae; }
 #center-main-cont .panel-hdr .center-main-area-count-warn { font-size: 0.8rem; font-weight: bold; color: #dbc969; }
 #center-main-cont .panel-hdr .center-main-area-count-discon { font-size: 0.8rem; font-weight: bold; color: #dddddd; }
+
+.right .bg-danger, .right .bg-warning, .right .bg-secondary { 
+  text-align: center; color: #fff; padding: 3px; font-size: 0.9rem; font-weight: bold; text-shadow: 1px 1px 5px #000; margin-bottom: 0;
+}
+
+.right [class^=sensors] { margin-bottom: 8px; }
+.right .list-sensor { height: 115px; overflow-y: scroll;  padding: 5px 10px; }
+.right .list-sensor p { font-size: 0.7rem; margin-bottom: 2px; cursor: pointer; }
 </style>
 </head>
 
@@ -115,7 +123,7 @@
 <div class="mt-2">
   <div class="sortable-grid">
     <div id="center-main-cont">
-      <div id="panel-AREA_000014" class="panel panel-sortable" role="widget">
+      <div id="panel-AREA_000014" class="panel panel-sortable mb-1" role="widget">
         <div class="panel-hdr" role="heading">
           <div class="ui-sortable-handle w-100">
             <div class="center-main-area-title">오정농수산물도매시장</div>
@@ -127,9 +135,143 @@
               <span>끊김</span><span class="ml-1 center-main-area-count-discon">10</span>]
             </div><!-- /.center-main-area-count -->
           </div>
+        </div><!-- /.panel-hdr -->
+        <div class="panel-container collapse show" role="content" data-id="panel-AREA_000014">
+          <div class="center-main-page-chart on">
+            <div class="center-main-data-chart" style="height: 250px;"></div>
+            <div class="center-main-log-chart" style="height: 250px;"></div>
+          </div><!-- /.center-main-page-chart -->
         </div>
-      </div>
+      </div><!-- /.panel panel-sortable- -->
+      <div id="panel-AREA_000008" class="panel panel-sortable mb-1" role="widget">
+        <div class="panel-hdr" role="heading">
+          <div class="ui-sortable-handle w-100">
+            <div class="center-main-area-title">도마큰시장</div>
+            <div class="center-main-area-count">
+              <span>상점수</span><span class="ml-1 center-main-area-count-store">299</span>&nbsp;&nbsp;
+              [<span>센서수</span><span class="ml-1 center-main-area-count-sensor">617</span>&nbsp;/&nbsp;
+              <span>경고</span><span class="ml-1 center-main-area-count-danger">3</span>&nbsp;/&nbsp;
+              <span>주의</span><span class="ml-1 center-main-area-count-warn">7</span>&nbsp;/&nbsp;
+              <span>끊김</span><span class="ml-1 center-main-area-count-discon">41</span>]
+            </div><!-- /.center-main-area-count -->
+          </div>
+        </div><!-- /.panel-hdr -->
+        <div class="panel-container collapse" role="content" data-id="panel-AREA_000008">
+          <div class="center-main-page-chart on">
+            <div class="center-main-data-chart" style="height: 250px;"></div>
+            <div class="center-main-log-chart" style="height: 250px;"></div>
+          </div><!-- /.center-main-page-chart -->
+        </div>
+      </div><!-- /.panel panel-sortable- -->
+      <div id="panel-AREA_000011" class="panel panel-sortable mb-1" role="widget">
+        <div class="panel-hdr" role="heading">
+          <div class="ui-sortable-handle w-100">
+            <div class="center-main-area-title">산성시장</div>
+            <div class="center-main-area-count">
+              <span>상점수</span><span class="ml-1 center-main-area-count-store">57</span>&nbsp;&nbsp;
+              [<span>센서수</span><span class="ml-1 center-main-area-count-sensor">96</span>&nbsp;/&nbsp;
+              <span>경고</span><span class="ml-1 center-main-area-count-danger">2</span>&nbsp;/&nbsp;
+              <span>주의</span><span class="ml-1 center-main-area-count-warn">1</span>&nbsp;/&nbsp;
+              <span>끊김</span><span class="ml-1 center-main-area-count-discon">6</span>]
+            </div><!-- /.center-main-area-count -->
+          </div>
+        </div><!-- /.panel-hdr -->
+        <div class="panel-container collapse" role="content" data-id="panel-AREA_000011">
+          <div class="center-main-page-chart on">
+            <div class="center-main-data-chart" style="height: 250px;"></div>
+            <div class="center-main-log-chart" style="height: 250px;"></div>
+          </div><!-- /.center-main-page-chart -->
+        </div>
+      </div><!-- /.panel panel-sortable- -->
+    </div><!-- /#center-main-cont -->
+  </div><!-- /.sortable-grid -->
+</div>
 
+<div class="right mt-2">
+  <div class="sensors-DANGER" style="border: 1px solid #ff2f44;">
+    <div class="bg-danger">
+      <i class="fal fa-siren-on"></i> 경고 <span class="cnt">(23)</span>
+    </div>
+    <div class="list-sensor">
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001892" data-code="">오정농수산물도매시장_수산1동A2-146 <span style="color: red;">(107)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000005" data-strcode="FS_STR_0000000000751" data-code="">법동시장_신백축산 <span style="color: red;">(94)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000011" data-strcode="FS_STR_0000000001228" data-code="">산성시장_야채 <span style="color: red;">(90)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000000573" data-code="">도마큰시장_서울떡집1 <span style="color: red;">(86)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001917" data-code="">오정농수산물도매시장_수산2동A8-41-2 <span style="color: red;">(79)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000010" data-strcode="FS_STR_0000000001096" data-code="">태평시장_대락수산 <span style="color: red;">(76)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000011" data-strcode="FS_STR_0000000001218" data-code="">산성시장_산성야채 <span style="color: red;">(75)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000013" data-strcode="FS_STR_0000000001783" data-code="">중리시장_제일방앗간-1 <span style="color: red;">(74)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000013" data-strcode="FS_STR_0000000001966" data-code="">중리시장_3형제횟집R4-술창고 <span style="color: red;">(71)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000004" data-strcode="FS_STR_0000000000430" data-code="">역전시장_형제수산4 <span style="color: red;">(65)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000000627" data-code="">도마큰시장_오마니순대국 <span style="color: red;">(61)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000000570" data-code="">도마큰시장_서가네순대 <span style="color: red;">(42)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000004" data-strcode="FS_STR_0000000000419" data-code="">역전시장_탑구제샵8전열 <span style="color: red;">(21)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000012" data-strcode="FS_STR_0000000001383" data-code="">한민시장_한민떡방앗간 <span style="color: red;">(14)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000006" data-strcode="FS_STR_0000000000813" data-code="">문창시장_동창고무 <span style="color: red;">(8)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001443" data-code="">오정농수산물도매시장_복합동D12-DC327-1 <span style="color: red;">(7)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001931" data-code="">오정농수산물도매시장_건어물동A10-43 <span style="color: red;">(5)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000015" data-strcode="FS_STR_0000000001823" data-code="">송강시장_석이네즉석구이김 <span style="color: red;">(4)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000003" data-strcode="FS_STR_0000000000300" data-code="">대전중앙시장_금품공예2F <span style="color: red;">(4)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001490" data-code="">오정농수산물도매시장_복합동G14-DC154-1 <span style="color: red;">(2)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001504" data-code="">오정농수산물도매시장_복합동H2-DC170-2 <span style="color: red;">(2)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001471" data-code="">오정농수산물도매시장_복합동F20-DC222-2 <span style="color: red;">(2)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001510" data-code="">오정농수산물도매시장_복합동H8-DC90-2 <span style="color: red;">(2)</span></p>
+    </div>
+  </div>
+  <div class="sensors-WARN" style="border: 1px solid #ffbf87;">
+    <div class="bg-warning">
+      <i class="fal fa-exclamation-triangle"></i> 주의 <span class="cnt">(38)</span>
+    </div>
+    <div class="list-sensor">
+      <p class="right-sensor" data-areacode="AREA_000005" data-strcode="FS_STR_0000000000742" data-code="">법동시장_사용안함 <span style="color: red;">(142)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000000627" data-code="">도마큰시장_오마니순대국 <span style="color: red;">(104)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000001857" data-code="">도마큰시장_도마C1L5-전열2 <span style="color: red;">(84)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000000573" data-code="">도마큰시장_서울떡집1 <span style="color: red;">(82)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000001858" data-code="">도마큰시장_도마C1R3-전등4 <span style="color: red;">(81)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001909" data-code="">오정농수산물도매시장_수산1동A19-52 <span style="color: red;">(79)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000017" data-strcode="FS_STR_0000000002058" data-code="">역전지하상가_다모아1 <span style="color: red;">(73)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001473" data-code="">오정농수산물도매시장_복합동F23-DC157-2 <span style="color: red;">(72)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000012" data-strcode="FS_STR_0000000001977" data-code="">한민시장_한민C2L2-CCTV3 <span style="color: red;">(69)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000000570" data-code="">도마큰시장_서가네순대 <span style="color: red;">(49)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000013" data-strcode="FS_STR_0000000001966" data-code="">중리시장_3형제횟집R4-술창고 <span style="color: red;">(33)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001504" data-code="">오정농수산물도매시장_복합동H2-DC170-2 <span style="color: red;">(33)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000010" data-strcode="FS_STR_0000000001183" data-code="">태평시장_태평정육점 <span style="color: red;">(25)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000005" data-strcode="FS_STR_0000000000773" data-code="">법동시장_하나축산1 <span style="color: red;">(21)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001464" data-code="">오정농수산물도매시장_복합동E8-DC175-2 <span style="color: red;">(20)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000003" data-strcode="FS_STR_0000000002194" data-code="">대전중앙시장_코오롱침구 <span style="color: red;">(18)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000012" data-strcode="FS_STR_0000000001383" data-code="">한민시장_한민떡방앗간 <span style="color: red;">(17)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000015" data-strcode="FS_STR_0000000001823" data-code="">송강시장_석이네즉석구이김 <span style="color: red;">(16)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001471" data-code="">오정농수산물도매시장_복합동F20-DC222-2 <span style="color: red;">(13)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000003" data-strcode="FS_STR_0000000000306" data-code="">대전중앙시장_옥천주단2 <span style="color: red;">(11)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000004" data-strcode="FS_STR_0000000000434" data-code="">역전시장_흥일상회3 <span style="color: red;">(10)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000011" data-strcode="FS_STR_0000000001228" data-code="">산성시장_야채 <span style="color: red;">(8)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000000724" data-code="">도마큰시장_황금당 <span style="color: red;">(8)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001428" data-code="">오정농수산물도매시장_복합동C11-DC50-2 <span style="color: red;">(7)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001448" data-code="">오정농수산물도매시장_복합동D18-DC14-2 <span style="color: red;">(6)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000008" data-strcode="FS_STR_0000000000451" data-code="">도마큰시장_계룡상회닭집 <span style="color: red;">(6)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000003" data-strcode="FS_STR_0000000000300" data-code="">대전중앙시장_금품공예2F <span style="color: red;">(6)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001490" data-code="">오정농수산물도매시장_복합동G14-DC154-1 <span style="color: red;">(6)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001450" data-code="">오정농수산물도매시장_복합동D5-DC239-1 <span style="color: red;">(4)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000010" data-strcode="FS_STR_0000000001142" data-code="">태평시장_양지정육점 <span style="color: red;">(4)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000003" data-strcode="FS_STR_0000000000236" data-code="">대전중앙시장_도매구제 <span style="color: red;">(3)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000003" data-strcode="FS_STR_0000000000227" data-code="">대전중앙시장_이태원구제 <span style="color: red;">(3)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001892" data-code="">오정농수산물도매시장_수산1동A2-146 <span style="color: red;">(3)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000006" data-strcode="FS_STR_0000000000816" data-code="">문창시장_리치헤어 <span style="color: red;">(2)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000006" data-strcode="FS_STR_0000000000803" data-code="">문창시장_달봉한과 <span style="color: red;">(2)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001491" data-code="">오정농수산물도매시장_복합동G16-DC42-1 <span style="color: red;">(2)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001444" data-code="">오정농수산물도매시장_복합동D13-DC198-1 <span style="color: red;">(2)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001510" data-code="">오정농수산물도매시장_복합동H8-DC90-2 <span style="color: red;">(2)</span></p>
+    </div>
+  </div>
+  <div class="sensors-BROKEN" style="border: 1px solid #6c757d;">
+    <h3 class="bg-secondary">
+      <i class="fal fa-sensor-alert"></i> 고장 <span class="cnt">(4)</span>
+    </h3>
+    <div class="list-sensor">
+      <p class="right-sensor" data-areacode="AREA_000014" data-strcode="FS_STR_0000000001892" data-code="">오정농수산물도매시장_수산1동A2-146 <span style="color: red;">(90)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000013" data-strcode="FS_STR_0000000001783" data-code="">중리시장_제일방앗간-1 <span style="color: red;">(73)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000004" data-strcode="FS_STR_0000000000419" data-code="">역전시장_탑구제샵8전열 <span style="color: red;">(21)</span></p>
+      <p class="right-sensor" data-areacode="AREA_000006" data-strcode="FS_STR_0000000000813" data-code="">문창시장_동창고무 <span style="color: red;">(7)</span></p>
     </div>
   </div>
 </div>
