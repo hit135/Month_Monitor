@@ -34,10 +34,25 @@
 
 .top .sensor-stat { text-shadow: 1px 1px 5px #000; color: #fff; }
 
-.count-label { font-size: 1rem; }
-.COUNT-TODAYTOTAL, .COUNT-TODAYDANGER { font-size: 1.1rem; }
-.count-total { font-size: 0.85rem; margin-left: 0.25rem !important; }
-.count-label-i { font-size: 3rem; top: 10px; }
+.count-label { font-size: 0.9rem; }
+.COUNT-TODAYTOTAL, .COUNT-TODAYDANGER, .COUNT-TODAYWARN, .COUNT-TODAYDISCON { font-size: 1.05rem; }
+.count-total { font-size: 0.8rem; margin-left: 0.25rem !important; }
+.count-label-i { font-size: 3rem; top: 7px; }
+.count-label-i2 { font-size: 2.5rem; top: 10px; }
+
+#center-main-cont .panel-hdr { background: #2b559b; }
+#center-main-cont .panel-hdr * { color: #ffffff; }
+#center-main-cont .center-main-area-title { font-size: 0.85rem; font-weight: bold; }
+#center-main-cont .center-main-area-count { font-size: 0.7rem; }
+
+#center-main-cont .panel-hdr .center-main-area-count-store, 
+#center-main-cont .panel-hdr .center-main-area-count-sensor {
+  font-size: 0.8rem; font-weight: bold; color: #afd9ee; 
+}
+
+#center-main-cont .panel-hdr .center-main-area-count-danger { font-size: 0.8rem; font-weight: bold; color: #e082ae; }
+#center-main-cont .panel-hdr .center-main-area-count-warn { font-size: 0.8rem; font-weight: bold; color: #dbc969; }
+#center-main-cont .panel-hdr .center-main-area-count-discon { font-size: 0.8rem; font-weight: bold; color: #dddddd; }
 </style>
 </head>
 
@@ -71,10 +86,53 @@
           </div><!-- /.d-flex justify-content-center align-items-center -->
         </div><!-- /.m-0 p-1 fw-500 -->
         <i class="fal fa-siren-on position-absolute opacity-15 count-label-i" style="left: 5px;"></i>
-      </div><!-- /.bg-primary rounded overflow-hidden text-center -->
+      </div><!-- /.bg-danger rounded overflow-hidden text-center -->
+    </div><!-- /.col-6 pl-0 -->
+    <div class="col-6 pr-0">
+      <div class="bg-warning rounded overflow-hidden text-center">
+        <div class="m-0 p-1 fw-500">
+          <div class="count-label">주의</div>
+          <div class="d-flex justify-content-center align-items-center">
+            <span class="COUNT-TODAYWARN">22</span>
+            <span class="count-total">(발생 <span class="COUNT-COUNTWARN">770</span>)</span>
+          </div><!-- /.d-flex justify-content-center align-items-center -->
+        </div><!-- /.m-0 p-1 fw-500 -->
+        <i class="fal fa-exclamation-triangle position-absolute opacity-15 count-label-i2" style="left: 15px;"></i>
+      </div><!-- /.bg-warning rounded overflow-hidden text-center -->
+    </div><!-- /.col-6 pr-0 -->
+    <div class="col-6 pl-0">
+      <div class="bg-secondary rounded overflow-hidden text-center">
+        <div class="m-0 p-1 fw-500">
+          <div class="count-label">끊김</div>
+          <span class="COUNT-TODAYDISCON">22</span>
+        </div><!-- /.m-0 p-1 fw-500 -->
+        <i class="fal fa-wifi-slash position-absolute opacity-15 count-label-i2" style="left: 5px;"></i>
+      </div><!-- /.bg-secondary rounded overflow-hidden text-center -->
     </div><!-- /.col-6 pl-0 -->
   </div><!-- /.row sensor-stat -->
 </div><!-- /.top -->
+
+<div class="mt-2">
+  <div class="sortable-grid">
+    <div id="center-main-cont">
+      <div id="panel-AREA_000014" class="panel panel-sortable" role="widget">
+        <div class="panel-hdr" role="heading">
+          <div class="ui-sortable-handle w-100">
+            <div class="center-main-area-title">오정농수산물도매시장</div>
+            <div class="center-main-area-count">
+              <span>상점수</span><span class="ml-1 center-main-area-count-store">318</span>&nbsp;&nbsp;
+              [<span>센서수</span><span class="ml-1 center-main-area-count-sensor">670</span>&nbsp;/&nbsp;
+              <span>경고</span><span class="ml-1 center-main-area-count-danger">8</span>&nbsp;/&nbsp;
+              <span>주의</span><span class="ml-1 center-main-area-count-warn">12</span>&nbsp;/&nbsp;
+              <span>끊김</span><span class="ml-1 center-main-area-count-discon">10</span>]
+            </div><!-- /.center-main-area-count -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <script th:src="@{/fs/js/polyfill.min.js}"></script>
 <script th:src="@{/fs/js/apexcharts.js}"></script>
