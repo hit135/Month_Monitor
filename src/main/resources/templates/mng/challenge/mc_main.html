@@ -113,7 +113,7 @@ function fn_mcm_initTodayState() {
         // 오늘 센서 전체 현황
         if (d.total) 
           for (let i = 0; i < d.total.length; i++) 
-            $('.COUNT-' + d.total[i].TERM + d.total[i].TYPE).text(d.total[i].CNT);
+            $('.COUNT-' + d.total[i].TERM + d.total[i].TYPE).text(fn_mcmi_numberWithCommas(d.total[i].CNT));
 
         // 점검센서 
         if (d.check) {
