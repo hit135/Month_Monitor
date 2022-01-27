@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @author : jjm
  * @version 1.0
- * @FileName : MMainController
+ * @FileName : MCMainController
  * @see <pre>
  * << 개정이력(Modification Information) >>
  *
