@@ -26,11 +26,55 @@
 <!-- base javascript -->
 <script type="text/javascript" th:src="@{/fs/js/jquery.js}"></script>
 <link rel="stylesheet" th:href="@{/fs/css/custom.css}" />
+
+<style>
+#top-title { font-weight: 900; font-size: 1.45rem; color: #0b3251; text-shadow: 1px 1px 3px #000; text-align: center; }  
+#top-date, #top-time { font-size: 0.9rem; }
+#today-sensor-text { font-weight: 900; font-size: 0.9rem; text-align: center; margin-top: 10px; border-bottom: 2px solid #000; }
+
+.top .sensor-stat { text-shadow: 1px 1px 5px #000; color: #fff; }
+
+.count-label { font-size: 1rem; }
+.COUNT-TODAYTOTAL, .COUNT-TODAYDANGER { font-size: 1.1rem; }
+.count-total { font-size: 0.85rem; margin-left: 0.25rem !important; }
+.count-label-i { font-size: 3rem; top: 10px; }
+</style>
 </head>
 
-<body class="mod-bg-1 mod-nav-link">
+<body class="mod-bg-1 mod-nav-link mt-2 ml-2 mr-2">
+<div class="top">
+  <div id="top-title">firesens 전체 관제</div>
+  <div class="mt-1 text-right">
+    <span id="top-date">2022-01-27 (목)</span>
+    <span id="top-time">10:16:16</span>
+  </div>
 
+  <div id="today-sensor-text">오늘 센서 현황</div>
 
+  <div class="row sensor-stat mt-1">
+    <div class="col-6 pr-0">
+      <div class="bg-primary rounded overflow-hidden text-center">
+        <div class="m-0 p-1 fw-500">
+          <div class="count-label">전체</div>
+          <div class="COUNT-TODAYTOTAL">4,256</div>
+        </div><!-- /.m-0 p-1 fw-500 -->
+        <i class="fal fa-sensor position-absolute opacity-15 count-label-i" style="left: 15px;"></i>
+      </div><!-- /.bg-primary rounded overflow-hidden text-center -->
+    </div><!-- /.col-6 pr-0 -->
+    <div class="col-6 pl-0">
+      <div class="bg-danger rounded overflow-hidden text-center">
+        <div class="m-0 p-1 fw-500">
+          <div class="count-label">경고</div>
+          <div class="d-flex justify-content-center align-items-center">
+            <span class="COUNT-TODAYDANGER">22</span>
+            <span class="count-total">(발생 <span class="COUNT-COUNTDANGER">770</span>)</span>
+          </div><!-- /.d-flex justify-content-center align-items-center -->
+        </div><!-- /.m-0 p-1 fw-500 -->
+        <i class="fal fa-siren-on position-absolute opacity-15 count-label-i" style="left: 5px;"></i>
+      </div><!-- /.bg-primary rounded overflow-hidden text-center -->
+    </div><!-- /.col-6 pl-0 -->
+  </div><!-- /.row sensor-stat -->
+</div><!-- /.top -->
 
 <script th:src="@{/fs/js/polyfill.min.js}"></script>
 <script th:src="@{/fs/js/apexcharts.js}"></script>
