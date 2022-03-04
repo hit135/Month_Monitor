@@ -509,7 +509,7 @@
                                     F_ELEC_SENSOR_STAT
                                 WHERE
                                     GUCODE LIKE '30%'
-                                    AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
+                                    AND SDATE > DATE_FORMAT(CURDATE(), '-%m')
                                 GROUP BY
                                     GUCODE
 

@@ -63,6 +63,8 @@
         FROM
             (SELECT '' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG
              UNION
+             SELECT '_2022' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2022
+             UNION
              SELECT '_2021' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2021
              UNION
              SELECT '_2020' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2020
@@ -398,7 +400,7 @@
                            WHERE
                                SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND
                                <choose>
-                                   <when test='termtype == "m"'>CONCAT(LAST_DAY(#{regdt}, ' 23:59:59'))</when>
+                                   <when test='termtype == "m"'>CONCAT(LAST_DAY(#{regdt}), ' 23:59:59')</when>
                                    <otherwise>CONCAT(#{regdt}, ' 23:59:59')</otherwise>
                                </choose>) D
                     ON I.SNSRID = D.SNSRID
