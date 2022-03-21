@@ -17,7 +17,7 @@
         "*전력사용\n", 
         "순위 : #{전력사용순위}\n",
         "일별평균전력사용량 : #{일별평균전력사용량}\n", 
-        "전력사용량총합 : #{전력사용량총합}\n\n", 
+        "전력사용량총합: #{전력사용량총합}\n\n", 
         "※ #{전력사용상태}"
     ],
     "linkPc": "http://dev1.fscom.kr:30080/store/rpt?strCode=#{strCode}",
@@ -32,7 +32,7 @@
                 "pfId": "KA01PF211129011921158mUHJ1CKs80J",
                 "templateId": "KA01TP220315093404464YeG7uC0RS4r",
                 "buttons": {
-                    "buttonName": "자세히보기",
+                    "buttonName": "상세보기",
                     "buttonType": "WL",
                     "linkPc": "#{linkPc}",
                     "linkMo": "#{linkMo}"
