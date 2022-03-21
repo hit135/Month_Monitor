@@ -3,6 +3,7 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSSimulRepo">
 
+    <!--
     <select id="SELECT_SYS_MONTHLY_EVT_GRADE" parameterType="map" resultType="int">
         SELECT
             6 - ROUND(AVG(c.grad))
@@ -218,5 +219,6 @@
             , #{pushRslt}
         )
     </insert>
+    -->
 
 </mapper>
