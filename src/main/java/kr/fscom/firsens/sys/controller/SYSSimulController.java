@@ -184,4 +184,106 @@ public class SYSSimulController {
         return ret;
     }
 
+    @RequestMapping(value = "/sendAreaPush")
+    @ResponseBody
+    public void sendAreaPush(HttpServletRequest req) throws Exception {
+        try {
+            List<HashMap<String, Object>> listArea = sysSimulRepo.LIST_SYS_AREA_PUSH();
+            for (int i = 0; i < listArea.size(); i++) {
+                HashMap<String, Object> item = listArea.get(i);
+
+                JSONObject obj = (JSONObject) new JSONParser().parse(
+                    new InputStreamReader(new FileInputStream(ResourceUtils.getFile("classpath:static/js/json/sms_info.json")), "UTF-8")
+                );
+
+                String messageText1 = "";
+                JSONArray messageText1Arr = (JSONArray) obj.get("messageText1");
+                for (int j = 0; i < messageText1Arr.size(); j++) 
+                    messageText1 += (String) messageText1Arr.get(j);
+
+                String linkPc = ((String) obj.get("linkPc")).replace("#{strCode}", (String) item.get("strCode"));
+                String linkMo = ((String) obj.get("linkMo")).replace("#{strCode}", (String) item.get("strCode"));
+
+                messageText1 = messageText1
+                    .replace("#{상점명}", "엄마손반찬")
+                    .replace("#{보고기간년월}", "22년 3월")
+                    .replace("#{보고기간}", "2022.03.01 ~ 2022.03.20")
+                    .replace("#{전기위험현황}", "안전한 상태입니다 그래도 전기화재에 주의하십시오.")
+                    .replace("#{위험순위}", "120 위 / 130 개 상점")
+                    .replace("#{과전류발생}", "0 회")
+                    .replace("#{누전발생}", "0 회")
+                    .replace("#{전력사용순위}", "23 위 / 130 개 상점")
+                    .replace("#{일별평균전력사용량}", "12 kWh")
+                    .replace("#{주별전력사용량}", "123 kWh")
+                    .replace("#{전력사용상태}", "전주대비 전력소비가 적습니다.");
+
+                String dataOutputStream = ((JSONObject) obj.get("dataOutputStream")).toString();
+                dataOutputStream = dataOutputStream
+                    .replace("#{to}", (String) item.get("toinfo"))
+                    .replace("#{text}", messageText1)
+                    .replace("#{linkPc}", linkPc)
+                    .replace("#{linkMo}", linkMo);
+
+                URL url = new URL((String) obj.get("targetUrl"));
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+                String salt = UUID.randomUUID().toString().replaceAll("-", "");
+                String date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toString().split("\\[")[0];
+
+                Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+                sha256_HMAC.init(new SecretKeySpec(String.valueOf(obj.get("apiSecret")).getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+
+                String signature = new String(Hex.encodeHex(sha256_HMAC.doFinal((date + salt).getBytes(StandardCharsets.UTF_8))));
+
+                con.setRequestMethod("POST");
+                con.setRequestProperty("Authorization", "HMAC-SHA256 ApiKey=" + (String) obj.get("apiKey") + ", Date=" + date + ", salt=" + salt + ", signature=" + signature);
+                con.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+                con.setDoOutput(true);
+
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                System.out.println("Parameters : " + dataOutputStream);
+
+                OutputStreamWriter osw = new OutputStreamWriter(wr);
+                osw.write(dataOutputStream, 0, dataOutputStream.length());
+                osw.close();
+
+                wr.flush();
+                wr.close();
+
+                int responseCode = con.getResponseCode();
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                String line;
+                StringBuffer response = new StringBuffer();
+
+                while ((line = in.readLine()) != null)
+                    response.append(line);
+
+                in.close();
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                HashMap<String, Object> prm = new HashMap<String, Object>();
+                prm.put("snsrseq", req.getParameter("snsrseq"));
+                prm.put("pushmsg", dataOutputStream);
+                prm.put("userid", (String) obj.get("userid"));
+                prm.put("sendresult", responseCode + " " + response.toString());
+                prm.put("toinfo", (String) item.get("toinfo"));
+                prm.put("frominfo", (String) obj.get("frominfo"));
+                prm.put("pushRslt", "Y");
+
+                sysSimulRepo.INSERT_SYS_PUSH(prm);
+            }
+        } catch (NullPointerException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        } catch (Exception e) {
+            LOG.debug("sendPushAjax: " + e.getMessage());
+        }
+    }
+
 }

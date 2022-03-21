@@ -105,6 +105,95 @@
         
     </select>
 
+    <select id="LIST_SYS_AREA_PUSH" resultType="map">
+        SELECT 
+            C.STRCNT AS strCnt
+            , S.STRCODE AS strCode
+            , S.STRNAME AS strName
+            , S.STROWNTEL AS strOwnTel
+            , K.USEKWH AS useKwh
+            , K.USEKWHRANK AS useKwhRank
+            , E.ELECGRAD AS elecGrad
+            , E.ELECRANK AS elecRank
+        FROM
+            (SELECT STRCODE, STRNAME, STROWNTEL FROM ifiresens_v2.F_STORE WHERE AREACODE = 'AREA_000010' AND USEYN = 'Y') S
+                LEFT JOIN (SELECT
+                               ROW_NUMBER() OVER (ORDER BY K1.USEKWH DESC) AS USEKWHRANK
+                               , K1.STRCODE
+                               , K1.USEKWH
+                           FROM 
+                               (SELECT 
+                                    STRCODE
+                                    , SUM(SNSRKWHDAILY) AS USEKWH
+                                FROM 
+                                    ifiresens_v2.F_ELEC_SENSOR_STAT
+                                WHERE
+                                    AREACODE = 'AREA_000010'
+                                    AND SDATE BETWEEN '2022-03-01' AND '2022-03-20'
+                                GROUP BY
+                                    STRCODE) K1
+                           ) K
+                    ON S.STRCODE = K.STRCODE
+                LEFT JOIN (SELECT 
+                               d.STRCODE
+                               , d.ELECGRAD
+                               , ROW_NUMBER() OVER (ORDER BY d.ELECGRAD2 DESC) AS ELECRANK
+                           FROM 
+                               (SELECT
+                                    c.STRCODE
+                                    , MIN(c.grad) AS ELECGRAD
+                                    , MAX(c.grad2) AS ELECGRAD2
+                                FROM 
+                                    (SELECT
+                                         b.SNSRID
+                                         , b.STRCODE
+                                         , b.cnt
+                                         , d1Cnt AS '1등급'
+                                         , d2Cnt AS '2등급'
+                                         , d3Cnt AS '3등급'
+                                         , d4Cnt AS '4등급'
+                                         , d5Cnt AS '5등급'
+                                         , ((b.d1Cnt + b.d2Cnt + b.d3Cnt) * 100 / b.cnt) AS gd
+                                         , (6 - ROUND((5 * d1Cnt / b.cnt) + (4 * d2Cnt / b.cnt) + (3 * d3Cnt / b.cnt) + (2 * d4Cnt / b.cnt) + (1 * d5Cnt / b.cnt))) AS grad
+                                         , (5 * d1Cnt / b.cnt) + (4 * d2Cnt / b.cnt) + (3 * d3Cnt / b.cnt) + (2 * d4Cnt / b.cnt) + (1 * d5Cnt / b.cnt) AS grad2
+                                     FROM
+                                         (SELECT
+                                              a.SNSRID
+                                              , a.STRCODE
+                                              , COUNT(*) AS cnt
+                                              , COUNT(CASE WHEN a.grade = 'd0' THEN 1 END) AS d0Cnt
+                                              , COUNT(CASE WHEN a.grade = 'd1' THEN 1 END) AS d1Cnt
+                                              , COUNT(CASE WHEN a.grade = 'd2' THEN 1 END) AS d2Cnt
+                                              , COUNT(CASE WHEN a.grade = 'd3' THEN 1 END) AS d3Cnt
+                                              , COUNT(CASE WHEN a.grade = 'd4' THEN 1 END) AS d4Cnt
+                                              , COUNT(CASE WHEN a.grade = 'd5' THEN 1 END) AS d5Cnt
+                                          FROM 
+                                              (SELECT
+                                                   SNSRID
+                                                   , STRCODE
+                                                   , EL_DANG
+                                                   , (CASE
+                                                          WHEN (EL_DANG >= 28) THEN 'd1'
+                                                          WHEN (EL_DANG >= 15 AND EL_DANG < 28) THEN 'd2'
+                                                          WHEN (EL_DANG >= 5 AND EL_DANG < 15) THEN 'd3'
+                                                          WHEN (EL_DANG >= 0.7 AND EL_DANG < 5) THEN 'd4'
+                                                          WHEN (EL_DANG < 0.7) THEN 'd5'
+                                                          ELSE 'd0'
+                                                      END) AS grade
+                                               FROM
+                                                   statistics_v2.F_STAT_HOUR_LOG_2022_03
+                                               WHERE 
+                                                   AREACODE = 'AREA_000010'
+                                                   AND DATETM BETWEEN '2022030100' AND '2022032023') a
+                                      GROUP BY
+                                          a.SNSRID) b) c
+                           GROUP BY 
+                               c.STRCODE) d
+            ) E
+                ON S.STRCODE = E.STRCODE
+            , (SELECT COUNT(*) AS STRCNT FROM ifiresens_v2.F_STORE WHERE AREACODE = 'AREA_000010' AND USEYN = 'Y') C
+    </select>
+
 
     <insert id="INSERT_SYS_PUSH" parameterType="map">
         INSERT INTO F_PUSH_LOG (
