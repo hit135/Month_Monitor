@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -101,9 +102,11 @@ public class SYSSimulController {
                 message.setTo("01043833386");
                 message.setKakaoOptions(kakaoOption);
 
-                System.out.println("===========================================");
-                System.out.println(message);
-                System.out.println("===========================================");
+                System.out.println("========================================================================");
+                for (Map.Entry entry : message.getKakaoOptions().getVariables().entrySet())
+                    System.out.println(entry);
+                System.out.println("========================================================================");
+                
                 messageList.add(message);
             }
 
