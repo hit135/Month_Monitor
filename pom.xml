@@ -108,7 +108,8 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.12.1</version>
+        <version>1.12.1
+        </version>
         <configuration>
           <workingDirectory>frontend</workingDirectory>
           <installDirectory>target</installDirectory>
@@ -154,7 +155,7 @@
             <configuration>
               <target>
                 <copy todir="${project.build.directory}/classes/public">
-                  <fileset dir="${project.basedir}/frontend/build"/>
+                  <fileset dir="${project.basedir}/frontend/build" />
                 </copy>
              </target>
             </configuration>

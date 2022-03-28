@@ -11,16 +11,14 @@ import {
   getStatInfo,
   storeChartComp,
   areaTotalWarningComp,
-  areaTotalChartStatComp
-  ,
+  areaTotalChartStatComp,
   levelAreaStatComp,
   levelStoreStatComp,
   areaKwhStatComp,
   areaKwhStatYearComp,
   strKwhStatComp,
   getStatInfoList,
-  areaTotalChartStatComp2
-  ,
+  areaTotalChartStatComp2,
   storePrintChartComp,
   strKwhListComp,
 } from "../../agent/stat";
