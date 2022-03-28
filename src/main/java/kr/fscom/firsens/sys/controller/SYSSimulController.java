@@ -3,9 +3,7 @@ package kr.fscom.firsens.sys.controller;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.*;
 import net.nurigo.sdk.message.request.MultipleMessageSendingRequest;
-import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.MultipleMessageSentResponse;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +18,25 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import kr.fscom.firsens.common.config.MNGSmsEnvironment;
 import kr.fscom.firsens.sys.repository.SYSSimulRepo;
+
+/**
+ * SMS 시뮬레이션
+ *
+ * @author : uhm
+ * @version 1.0
+ * @FileName : SYSSimulController
+ * @see <pre>
+ * << 개정이력(Modification Information) >>
+ *
+ *   수정일        수정자     수정내용
+ *   -----------   --------   ---------------------------
+ *   2021-08-17    uhm        최초 생성
+ *
+ * </pre>
+ * @since : 2021-09-17
+ */
 
 @RestController
 @RequestMapping("/api")
@@ -32,9 +48,14 @@ public class SYSSimulController {
     private final DefaultMessageService messageService;
 
     @Autowired
+    public MNGSmsEnvironment env;
+
+    @Autowired
     public SYSSimulController(SYSSimulRepo sysSimulRepo) {
         this.sysSimulRepo = sysSimulRepo;
-        this.messageService = NurigoApp.INSTANCE.initialize("NCSA3RKT687MGISV", "AQM1UJSJHCUVPZFXMNW5G3BZG8HBTITN", "https://api.solapi.com");
+
+        this.messageService =  
+            NurigoApp.INSTANCE.initialize(env.getProp("smsInfo.apiKey"), env.getProp("smsInfo.apiSecret"), env.getProp("smsInfo.targetUrl"));
     }
 
     /**
@@ -56,8 +77,8 @@ public class SYSSimulController {
 
             for (int i = 0; i < 1; i++) {
                 KakaoOption kakaoOption = new KakaoOption();
-                kakaoOption.setPfId("KA01PF211129011921158mUHJ1CKs80J");
-                kakaoOption.setTemplateId("KA01TP220315093404464YeG7uC0RS4r");
+                kakaoOption.setPfId(env.getProp("smsInfo.pfId"));
+                kakaoOption.setTemplateId(env.getProp("smsInfo.templateId"));
 
                 HashMap<String, String> variables = new HashMap<>();
                 variables.put("#{상점명}", "엄마손반찬");
@@ -80,6 +101,9 @@ public class SYSSimulController {
                 message.setTo("01043833386");
                 message.setKakaoOptions(kakaoOption);
 
+                System.out.println("===========================================");
+                System.out.println(message);
+                System.out.println("===========================================");
                 messageList.add(message);
             }
 
