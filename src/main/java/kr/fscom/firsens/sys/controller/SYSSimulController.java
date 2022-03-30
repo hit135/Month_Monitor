@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +56,7 @@ public class SYSSimulController {
     public SYSSimulController(SYSSimulRepo sysSimulRepo) {
         this.sysSimulRepo = sysSimulRepo;
 
-        this.messageService =  
+        this.messageService = 
             NurigoApp.INSTANCE.initialize(env.getProp("smsInfo.apiKey"), env.getProp("smsInfo.apiSecret"), env.getProp("smsInfo.targetUrl"));
     }
 
@@ -74,49 +75,54 @@ public class SYSSimulController {
         boolean result = false;
 
         try {
+            List<HashMap<String, Object>> smsList = this.sysSimulRepo.LIST_SYS_AREA_MONTHLY_PRT();
+
             ArrayList<Message> messageList = new ArrayList<>();
 
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < smsList.size(); i++) {
+                HashMap<String, Object> item = smsList.get(i);
+
                 KakaoOption kakaoOption = new KakaoOption();
                 kakaoOption.setPfId(env.getProp("smsInfo.pfId"));
                 kakaoOption.setTemplateId(env.getProp("smsInfo.templateId"));
 
                 HashMap<String, String> variables = new HashMap<>();
-                variables.put("#{상점명}", "엄마손반찬");
+                variables.put("#{상점명}", (String) item.get("strCode"));
                 variables.put("#{보고기간년월}", "22년 3월");
-                variables.put("#{보고기간}", "2022.03.01 ~ 2022.03.14");
-                variables.put("#{전기위험현황}", "안전한 상태입니다. 그래도 전기화재에 주의하십시오.");
-                variables.put("#{전기등급}", "5등급");
-                variables.put("#{위험순위}", "태평시장 120위 / 130개 상점");
-                variables.put("#{과전류발생}", "0회");
-                variables.put("#{누전발생}", "0회");
-                variables.put("#{전력사용순위}", "태평시장 23위 / 130개 상점");
-                variables.put("#{일별평균전력사용량}", "12 kWh");
-                variables.put("#{전력사용량총합}", "123 kWh");
-                variables.put("#{전력사용상태}", "전주대비 전력소비가 많습니다.");
-                variables.put("#{link}", "dev1.fscom.kr:30080/store/rpt?strCode=FS_STR_0000000001144");
+                variables.put("#{보고기간}", (String) item.get("rcvTime"));
+                variables.put("#{전기위험현황}", (String) item.get("evtMemo"));
+                variables.put("#{전기등급}", String.valueOf(item.get("evtGrade")) + "등급");
+                variables.put("#{위험순위}", (String) item.get("areaName") + " " + String.valueOf(item.get("evtRank")) + "위 / " + smsList.size() + "개 상점");
+                variables.put("#{과전류발생}", String.valueOf(item.get("ocAlm")) + "회");
+                variables.put("#{누전발생}", String.valueOf(item.get("igAlm")) + "회");
+                variables.put("#{전력사용순위}", (String) item.get("areaName") + " " + String.valueOf(item.get("snsrKwhRank")) + "위 / " + smsList.size() + "개 상점");
+                variables.put("#{일별평균전력사용량}", String.valueOf(item.get("snsrKwhAvg")) + " kWh");
+                variables.put("#{전력사용량총합}", String.valueOf(item.get("snsrKwhSum")) + " kWh");
+                variables.put("#{전력사용상태}", (String) item.get("snsrKwhMemo"));
+                variables.put("#{link}", "dev1.fscom.kr:30080/store/rpt?strCode=" + (String) item.get("strCode"));
                 kakaoOption.setVariables(variables);
 
                 Message message = new Message();
                 message.setFrom("0424715215");
-                message.setTo("01043833386");
+                message.setTo(((String) item.get("strOwnTel")).replaceAll("-", ""));
                 message.setKakaoOptions(kakaoOption);
 
                 System.out.println("========================================================================");
+                System.out.println("(" + (i+1) + ")");
                 for (Map.Entry entry : message.getKakaoOptions().getVariables().entrySet())
                     System.out.println(entry);
                 System.out.println("========================================================================");
-                
+
                 messageList.add(message);
             }
 
-            MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
-            MultipleMessageSentResponse response = this.messageService.sendMany(request);
+            //MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
+            //MultipleMessageSentResponse response = this.messageService.sendMany(request);
 
-            if (response != null 
-                    && StringUtils.isNotBlank(response.getGroupId())
-                    && StringUtils.isNotBlank(response.getAccountId())) 
-                result = true;
+            //if (response != null 
+            //        && StringUtils.isNotBlank(response.getGroupId())
+            //        && StringUtils.isNotBlank(response.getAccountId()))
+            //    result = true;
         } catch (NullPointerException | IllegalArgumentException e) {
             LOG.debug("sendSimulPush : " + e.getMessage());
         } catch (Exception e) {

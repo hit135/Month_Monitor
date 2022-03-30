@@ -8,9 +8,11 @@ const SimulMgr = () => {
   useEffect(async () => {}, []);
 
   const clickSend = () => {
-    sendSimulPush().then(r => {
-      alert(r.data.result ? "발송되었습니다." : "발송 도중 오류가 발생했습니다.");
-    });
+    if (window.confirm("발송하겠습니까?")) {
+      sendSimulPush().then(r => {
+        alert(r.data.result ? "발송되었습니다." : "발송 도중 오류가 발생했습니다.");
+      });
+    }
   };
 
   return (

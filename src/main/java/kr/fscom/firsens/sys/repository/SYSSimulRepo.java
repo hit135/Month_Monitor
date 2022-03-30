@@ -15,6 +15,8 @@ public interface SYSSimulRepo {
     HashMap<String, Object> SELECT_SYS_MONTHLY_RPT(HashMap<String, Object> param) throws Exception;
 
     List<HashMap<String, Object>> LIST_SYS_AREA_PUSH() throws Exception;
-    int INSERT_SYS_PUSH(HashMap<String, Object> param) throws Exception;*/
+    */
+    List<HashMap<String, Object>> LIST_SYS_AREA_MONTHLY_PRT() throws Exception;
+    int INSERT_SYS_PUSH(HashMap<String, Object> param) throws Exception;
 
 }

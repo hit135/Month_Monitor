@@ -194,10 +194,32 @@
                 ON S.STRCODE = E.STRCODE
             , (SELECT COUNT(*) AS STRCNT FROM ifiresens_v2.F_STORE WHERE AREACODE = 'AREA_000010' AND USEYN = 'Y') C
     </select>
+    -->
 
+    <select id="LIST_SYS_AREA_MONTHLY_PRT" resultType="map">
+        SELECT 
+            AREANAME AS areaName
+            , RCVTIME AS rcvTime
+            , STRCODE AS strCode
+            , STRNAME AS strName
+            , STROWNTEL AS strOwnTel
+            , SNSRKWHAVG AS snsrKwhAvg
+            , SNSRKWHSUM AS snsrKwhSum
+            , SNSRKWHRANK AS snsrKwhRank
+            , SNSRKWHMEMO AS snsrKwhMemo
+            , OCALM AS ocAlm
+            , IGALM AS igAlm
+            , EVTGRADE AS evtGrade
+            , EVTRANK AS evtRank
+            , EVTMEMO AS evtMemo
+        FROM
+            ifiresens_v2.F_PUSH_LIST
+        WHERE
+            ISUSE = 'Y'
+    </select>
 
     <insert id="INSERT_SYS_PUSH" parameterType="map">
-        INSERT INTO F_PUSH_LOG (
+        INSERT INTO ifiresens_v2.F_PUSH_LOG (
             SNSRSEQ
             , PUSHMSG
             , PUSHSTIME
@@ -219,6 +241,5 @@
             , #{pushRslt}
         )
     </insert>
-    -->
 
 </mapper>
