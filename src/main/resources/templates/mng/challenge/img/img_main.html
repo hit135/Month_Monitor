@@ -204,9 +204,10 @@
       $('#contextRoot').val() + '/img/mciListAreaButton',
       {areaCode: "'" + $("#areaCode").val() + "'"},
       function (d) {
+        $(".image-select-button").html("");
         let areaMap = "";
         if (d) {
-          areaMap = d[0].AREAMAP;
+          (window.selected_areamap) ? areaMap = window.selected_areamap : areaMap = d[0].AREAMAP;
           for (let i = 0; i < d.length; i++) {
             $(".image-select-button").append($.tmpl('area-select-button', d[i]));
           }
@@ -267,8 +268,11 @@
           let html = "";
           let c = "";
           let n = "";
+          let grpCode = (window.selected_grpcode) ? window.selected_grpcode : d[0].GRPCODE;
+          let grpName = "";
           for (let i = 0; i < d.length; i++) {
             let data = d[i];
+            if(grpCode === d[i].GRPCODE) grpName = d[i].GRPNAME;
             html +=
               '<tr><td>' + data.GRPNAME + '</td>' +
               '<td>' +
@@ -278,7 +282,7 @@
               'aria-valuemax="100">' + data.USEKWHPER + ' %' + '</div></div></td></tr>';
           }
           $("#useKwhByGrp tbody").html(html);
-          fn_mcmi_listSnsrUseKwh(d[0].GRPNAME, d[0].GRPCODE);
+          fn_mcmi_listSnsrUseKwh(grpName, grpCode);
         }
       });
   }
@@ -295,6 +299,7 @@
           $("#useKwhBySnsr tbody").html("");
           let html = "";
           let max = d[0].USEKWH * 1.2;
+          let snsrId = (window.selected_snsrid) ? window.selected_snsrid : d[0].SNSRID;
           for (let i = 0; i < d.length; i++) {
             let data = d[i];
             html += '<tr>';
@@ -315,8 +320,7 @@
               'aria-valuemax="100">' + data.USEKWH + '</div></div></td></tr>';
           }
           $("#useKwhBySnsr tbody").append(html);
-          let snsrName = d[0].SNSRIDTRIM + " " + d[0].SNSRNICK
-          fn_mcmi_getSnsrChart(d[0].SNSRID, snsrName);
+          fn_mcmi_getSnsrChart(snsrId);
         } else {
           let date = new Date();
           $("#snsrName").html("");

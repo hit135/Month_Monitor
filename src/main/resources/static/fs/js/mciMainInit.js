@@ -148,12 +148,23 @@ function fn_mcmii_initClickEvent() {
       window.center_name = 'main';
 
       fn_mcmii_toggleCenterCont();
+      fn_mcmi_initImageSelect();
     }else{
       window.center_name = 'store';
       window.selected_snsrid = $("#snsrId").val();
       fn_mcmii_clickCheckSensor();
       fn_mcsti_getTodayAreaState();
       fn_mcsti_getTodayAreaStoreState();
+    }
+  });
+
+  $(".center-left-store-btn").on("click", function () {
+    if (window.store_danger_cnt_type != $(this).text()) {
+      $(".btn-info.center-left-store-btn").removeClass("btn-info").addClass("btn-secondary");
+      $(this).removeClass("btn-secondary").addClass("btn-info");
+
+      window.store_danger_cnt_type = $(this).text();
+      fn_mcmii_clickAreaLv2();
     }
   });
 
@@ -207,6 +218,15 @@ function fn_mcmii_initMinCategory() {
 function fn_mcmii_clickCheckSensor() {
   window.center_name = 'store';
   fn_mcmii_toggleCenterCont();
+}
+
+// 왼쪽 시장 목록 선택
+function fn_mcmii_clickAreaLv2() {
+  window.center_name = 'store';
+
+  fn_mcmii_toggleCenterCont();
+  fn_mcsti_getTodayAreaState();
+  fn_mcsti_getTodayAreaStoreState();
 }
 
 // 메인/상점 정보 화면 toggle

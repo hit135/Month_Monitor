@@ -5,16 +5,19 @@
 
     <select id="SELECT_ONE_MCIST_STORE_INFO" parameterType="map" resultType="map">
         SELECT
-            S.AREACODE, S.GRPCODE, S.GRPNAME, S.STRADDR, S.STRTEL, S.STROWNTEL, S.STRPOSLAT, S.STRPOSLON
+            S.AREAMAP, S.AREACODE, S.GRPCODE, S.GRPNAME, S.STRADDR, S.STRTEL, S.STROWNTEL, S.STRPOSLAT, S.STRPOSLON
         FROM
             (SELECT
-                 AREACODE, B.GRPCODE, B.GRPNAME, A.STRCODE, STRNAME, STRADDR, STRTEL, STROWNTEL, STRPOSLAT, STRPOSLON
+                 C.AREAMAP, A.AREACODE, B.GRPCODE, B.GRPNAME, A.STRCODE, STRNAME, STRADDR, STRTEL, STROWNTEL, STRPOSLAT, STRPOSLON
              FROM
                  F_STORE A
                      LEFT JOIN F_STORE_GROUP B
                                ON A.STRCODE = B.STRCODE
+                     LEFT JOIN F_AREA_SKETCH_MAP_F C
+                               ON B.GRPCODE = C.GRPCODE
              WHERE
                  CONCAT(USEYN, DELYN, A.GRPCODE) = 'YN042'
+
             ) S
                 LEFT JOIN (SELECT
                                STRCODE, SNSRID
@@ -33,16 +36,18 @@
     <select id="SELECT_ONE_MCIST_SENSOR_EVT_CNT" parameterType="map" resultType="map">
         SELECT
             S.AREACODE
+            , I.AREAMAP
             , I.SNSRID
             , MAX(L.OCALM + L.IGOALM + L.IGRALM) AS ALMCNT
         FROM
             (SELECT
-                 STRCODE, SNSRID
+                 C.AREAMAP, B.STRCODE, A.SNSRID
              FROM
                  F_SENSOR_INFO A
-             LEFT JOIN F_STORE_GROUP B ON A.STRCODE = B.STRCODE
+                     LEFT JOIN F_STORE_GROUP B ON A.STRCODE = B.STRCODE
+                     LEFT JOIN F_AREA_SKETCH_MAP_F C ON B.GRPCODE = C.GRPCODE
              WHERE
-                 CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                 CONCAT(DELYN, B.STRCODE) LIKE 'NFS_STR_%'
                  AND B.GRPCODE = #{grpcode}
              ) I
                 LEFT JOIN F_STORE S
@@ -299,6 +304,7 @@
              , S.STRADDR
              , S.STRPOSLAT
              , S.STRPOSLON
+             , S.AREAMAP
              , GROUP_CONCAT(B.SEQ ORDER BY B.SEQ) AS SEQ
              , GROUP_CONCAT(B.STRCODE ORDER BY B.SEQ) AS STRCODE
              , GROUP_CONCAT(B.IMGNAME ORDER BY B.SEQ) AS IMGNAME
@@ -309,13 +315,14 @@
              , GROUP_CONCAT(DATE_FORMAT(B.REGDATE, '%Y-%m-%d %H:%i:%s') ORDER BY B.SEQ) AS REGDATE
         FROM
             (SELECT
-                 AREACODE, A.STRCODE, B.GRPCODE, B.GRPNAME, STRADDR, STRTEL, STROWNTEL, STRPOSLAT, STRPOSLON
+                 C.AREAMAP, A.AREACODE, A.STRCODE, B.GRPCODE, B.GRPNAME, STRADDR, STRTEL, STROWNTEL, STRPOSLAT, STRPOSLON
              FROM
                  F_STORE A
                      LEFT JOIN F_STORE_GROUP B ON A.STRCODE = B.STRCODE
+                     LEFT JOIN F_AREA_SKETCH_MAP_F C ON B.GRPCODE = C.GRPCODE
              WHERE
                  CONCAT(USEYN, DELYN, A.GRPCODE) = 'YN042'
-               AND AREACODE = #{ areaCode }
+               AND A.AREACODE = #{ areaCode }
                AND B.GRPCODE = #{ grpCode }
             ) S
                 LEFT JOIN (SELECT * FROM F_AREA_IMG WHERE IMGLEVEL = 'store') B

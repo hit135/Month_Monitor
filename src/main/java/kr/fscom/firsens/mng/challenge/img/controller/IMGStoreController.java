@@ -71,13 +71,18 @@ public class IMGStoreController {
     }
 
     // 영역, 상점 첫번째 센서ID 조회
-    private String getSensorCode(String areacode, String grpcode) throws Exception {
+    private String[] getSensorCode(String areacode, String grpcode) throws Exception {
+        String[] ret = new String[2];
+
         try {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("areacode", areacode);
             prm.put("grpcode", grpcode);
 
-            return (String) imgStoreRepo.SELECT_ONE_MCIST_SENSOR_EVT_CNT(prm).get("SNSRID");
+            HashMap<String, Object> store = imgStoreRepo.SELECT_ONE_MCIST_SENSOR_EVT_CNT(prm);
+            ret[0] = (String) store.get("SNSRID");
+            ret[1] = (String) store.get("AREAMAP");
+            return ret;
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {
@@ -257,18 +262,26 @@ public class IMGStoreController {
         ModelAndView mav = new ModelAndView("mng/challenge/img/img_store_log");
 
         try {
-            String areacode = req.getParameter("areacode");
-            String grpcode = req.getParameter("grpode");
+            String areacode = req.getParameter("areaCode");
+            String grpcode = req.getParameter("grpCode");
             String snsrid = req.getParameter("snsrid");
+            String areamap = req.getParameter("areamap");
 
             if (StringUtils.isEmptyOrWhitespace(grpcode)) {
                 String[] code = getAreaStoreCode(snsrid);
-                areacode = code[0];
-                grpcode = code[1];
+                if(areacode == null) areacode = code[0];
+                if(grpcode == null) grpcode = code[1];
+            }
+
+            if (StringUtils.isEmptyOrWhitespace(snsrid) || StringUtils.isEmptyOrWhitespace(areamap) ){
+                String[] code2 = getSensorCode(areacode, grpcode);
+                snsrid = code2[0];
+                areamap = code2[1];
             }
 
             mav.addObject("prm_areacode", areacode);
             mav.addObject("prm_grpcode", grpcode);
+            mav.addObject("prm_areamap", areamap);
             mav.addObject("prm_snsrid", snsrid);
             mav.addObject("prm_regdate", req.getParameter("regdate"));
             mav.addObject("prm_checktype", req.getParameter("checktype"));
@@ -296,21 +309,28 @@ public class IMGStoreController {
         ModelAndView mav = new ModelAndView("mng/challenge/img/img_store_chart");
 
         try {
-            String areacode = req.getParameter("areacode");
-            String grpcode = req.getParameter("grpcode");
+            String areacode = req.getParameter("areaCode");
+            String grpcode = req.getParameter("grpCode");
             String snsrid = req.getParameter("snsrid");
+            String areamap = req.getParameter("areamap");
 
-            if (StringUtils.isEmptyOrWhitespace(grpcode)) {
+            if (StringUtils.isEmptyOrWhitespace(grpcode) ) {
                 String[] code = getAreaStoreCode(snsrid);
-                areacode = code[0];
-                grpcode = code[1];
+                if(areacode == null) areacode = code[0];
+                if(grpcode == null) grpcode = code[1];
             }
 
-            if (StringUtils.isEmptyOrWhitespace(snsrid))
-                snsrid = getSensorCode(areacode, grpcode);
+            if (StringUtils.isEmptyOrWhitespace(snsrid) || StringUtils.isEmptyOrWhitespace(areamap) ){
+                String[] code2 = getSensorCode(areacode, grpcode);
+                snsrid = code2[0];
+                areamap = code2[1];
+            }
+
+
 
             mav.addObject("prm_areacode", areacode);
             mav.addObject("prm_grpcode", grpcode);
+            mav.addObject("prm_areamap", areamap);
             mav.addObject("prm_snsrid", snsrid);
             mav.addObject("prm_regdate", req.getParameter("regdate"));
             mav.addObject("prm_almtype", req.getParameter("almtype"));

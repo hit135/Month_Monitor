@@ -212,6 +212,7 @@
       },
       function (d) {
         if (d.store) {
+          window.selected_areamap = d.store.AREAMAP;
           $('.store-meta .store-name-cont').html(d.store.GRPNAME);
           $('.store-meta .store-addr-cont').html(d.store.STRADDR);
 
