@@ -28,10 +28,9 @@ function fn_mcmii_initTimer() {
   }, 1000);
 
   window.refresh_time = window.setInterval(function () {
-    if (new Date().getMinutes() % 10 === 2)
-      fn_mcmii_refresh();
-    if (new Date().getMinutes() === 0){
+    if (new Date().getMinutes() % 10 === 2) {
       let s = $("#snsrId").val();
+      fn_mcmii_refresh();
       fn_mcmi_setSnsrKwhChart(s);
       fn_mcmi_setSnsrEvtChart(s);
     }
