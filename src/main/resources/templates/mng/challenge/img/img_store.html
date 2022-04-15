@@ -1,0 +1,118 @@
+<div class="pr-4 pl-4">
+  <div class="center-store-cont">
+    <div class="row">
+      <div class="center-left col-md-3 col-12">
+        <div class="btn-group w-100">
+          <button type="button" class="btn btn-sm btn-info center-left-store-btn" style="font-size: 13px; font-weight: bold;">경보 누적 수</button>
+          <button type="button" class="btn btn-sm btn-secondary center-left-store-btn" style="font-size: 13px; font-weight: bold;">경보 센서 수</button>
+        </div>
+        <div class="center-left-store-list"></div>
+      </div><!-- /.col-md-3 -->
+      <div class="center-cont col-md-9 col-12">
+        <div class="row center-cont-top">
+          <div class="store-name col-4"></div>
+          <div class="cont-btn col-8">
+            <span class="center-cont-top-btn on" data-page="Info">기본정보</span>
+            <span class="center-cont-top-btn" data-page="Log">경보이력</span>
+            <span class="center-cont-top-btn" data-page="Chart">분석차트</span>
+            <span class="center-main-btn">Main Page</span>
+          </div><!-- /.col-8 -->
+        </div><!-- /.row -->
+        <div class="row center-cont-page"></div>
+      </div><!-- /.col-md-9 -->
+    </div><!-- /.row -->
+  </div><!-- /.center-store-cont (시장 내 상점정보) -->
+
+  <script type="text/javascript">
+
+  // 오늘 상점 화면 시장 내 센서 상태 조회 (전체, 경고, 주의, 끊김)
+  function fn_mcsti_getTodayAreaState() {
+    $.post(
+      $('#contextRoot').val() + '/img/todayAreaStateAjax',
+      { areaCode: window.selected_areacode },
+      function (d) {
+        if (d) {
+          $('.center .area-name').text(d[0].AREANAME);
+
+          $('.center .area-stat .store').text(d[0].STORE);
+          $('.center .area-stat .sensor').text(d[0].SENSOR);
+          $('.center .area-stat .danger').text(d[0].DANGER);
+          $('.center .area-stat .warn').text(d[0].WARN);
+          $('.center .area-stat .discon').text(d[0].DISCON);
+        }
+    });
+  }
+
+  // 시장 내 상점 목록 조회
+  function fn_mcsti_getTodayAreaStoreState() {
+    $('.center-left-store-list').html('');
+
+    $.post(
+      $('#contextRoot').val() + '/img/todayAreaStoreStateAjax',
+      { areaCode: window.selected_areacode },
+      function (d) {
+        for (let i = 0; i < d.length; i++) {
+          d[i].CNT = 0;
+          d[i].CNT2 = 0;
+          d[i].CNT3 = 0;
+
+          if (d[i].DANGER > 0) {
+            d[i].STATE = 'danger';
+
+            if (window.store_danger_cnt_type == '경보 누적 수')
+              d[i].CNT = d[i].DANGER;
+            else if (window.store_danger_cnt_type == '경보 센서 수')
+              d[i].CNT = d[i].DANGERSNSRCNT;
+          } 
+          
+          if (d[i].WARN > 0) {
+            d[i].STATE = 'warn';
+
+            if (window.store_danger_cnt_type == '경보 누적 수')
+              d[i].CNT2 = d[i].WARN;
+            else if (window.store_danger_cnt_type == '경보 센서 수')
+              d[i].CNT2 = d[i].WARNSNSRCNT;
+          } 
+          
+          if (d[i].CON > 0) {
+            d[i].STATE = 'discon';
+            d[i].CNT3 = d[i].CON;
+          }
+
+          $('.center-left-store-list').append($.tmpl('center-left-store', d[i]));
+        }
+     
+        let on_obj = '';
+        if (!window.selected_grpcode) {
+          on_obj = $('.center-left-store-list p')[0];
+          window.selected_grpcode = $(on_obj).attr('data-grpcode');
+        } else {
+          on_obj = $('.center-left-store-list p[data-grpcode="' + window.selected_grpcode + '"]')[0];
+        }
+
+        $(on_obj).addClass('on');
+        $('.center-cont-top .store-name').text($(on_obj).attr('data-grpname'));
+
+        fn_mcsti_clickContPage();
+    });
+  }
+
+  // 상점 목록 선택
+  function fn_mcsti_clickContPage() {
+
+    $.post(
+      $('#contextRoot').val() + '/img/store' + $('.center-cont-top-btn.on').attr('data-page'),
+      { 
+        areaCode: window.selected_areacode,
+        grpCode: window.selected_grpcode,
+        snsrid: window.selected_snsrid
+      },
+      function (d) {
+        let $temp = $('<div>');
+        $temp.html(d);
+
+        $('.center-cont-page').html($temp.find('.sub-cont'));
+    });
+  }
+  </script>
+</div>

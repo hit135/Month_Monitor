@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.fscom.firsens.mng.challenge.img.repository.IMGMainRepo">
+
+    <!-- 오늘 종합 현황 (전체, 경고, 주의, 끊김) -->
+    <select id="LIST_MCI_TODAY_TOTAL_STATE" resultType="map">
+        <![CDATA[
+        SELECT
+            B.TERM
+            , B.TYPE
+            , B.ORDERNUM
+            , (CASE CONCAT(B.TERM, '|', B.TYPE)
+                   WHEN 'TODAY|TOTAL' THEN A.TODAYTOTAL
+                   WHEN 'TODAY|DISCON' THEN A.TODAYDISCON
+                   WHEN 'TODAY|WARN' THEN A.TODAYWARN
+                   WHEN 'COUNT|WARN' THEN A.COUNTWARN
+                   WHEN 'TODAY|DANGER' THEN A.TODAYDANGER
+                   WHEN 'COUNT|DANGER' THEN A.COUNTDANGER
+               END) AS CNT
+        FROM
+            (SELECT
+                 COUNT(DISTINCT I.SNSRSEQ) AS TODAYTOTAL
+                 , COALESCE(SUM(I.DISNSNSRCNT), 0) AS TODAYDISCON
+                 , COALESCE(SUM(I.WARNSNSRCNT), 0) AS TODAYWARN
+                 , COALESCE(SUM(I.WARNCNT), 0) AS COUNTWARN
+                 , COALESCE(SUM(I.DANGERSNSRCNT), 0) AS TODAYDANGER
+                 , COALESCE(SUM(I.DANGERCNT), 0) AS COUNTDANGER
+             FROM
+                 (SELECT
+                      I1.STRCODE
+                      , I1.SNSRSEQ
+                      , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
+                      , I2.DANGERSNSRCNT
+                      , I2.DANGERCNT
+                      , I2.WARNSNSRCNT
+                      , I2.WARNCNT
+                  FROM
+                      (SELECT
+                           STRCODE, SNSRSEQ, DATARCVTIME
+                       FROM
+                           F_SENSOR_INFO
+                       WHERE
+                           CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                      ) I1
+                          LEFT JOIN (SELECT
+                                         SNSRSEQ
+                                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
+                                         , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                                         , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
+                                         , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARNCNT
+                                     FROM
+                                         F_SENSOR_LOG
+                                     WHERE
+                                         REGDATE > CURDATE()
+                                         AND OCALM + IGOALM + IGRALM > 0
+                                         AND ISSIMUL = 0
+                                     GROUP BY
+                                         SNSRSEQ) I2
+                              ON I1.SNSRSEQ = I2.SNSRSEQ
+                 ) I
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+                     LEFT JOIN F_LEVEL_AREA A
+                         ON S.AREACODE = A.AREACODE
+                     LEFT JOIN F_GUCODE G
+                         ON A.GUCODE = G.GUCODE
+             WHERE
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                 AND CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
+                 AND S.AREACODE = 'AREA_000001'
+            ) A
+            ,
+            (SELECT 'TODAY' AS TERM, 'TOTAL' AS TYPE, 1 AS ORDERNUM
+             UNION ALL SELECT 'TODAY', 'DISCON', 2
+             UNION ALL SELECT 'TODAY', 'WARN', 3
+             UNION ALL SELECT 'COUNT', 'WARN', 4
+             UNION ALL SELECT 'TODAY', 'DANGER', 5
+             UNION ALL SELECT 'COUNT', 'DANGER', 6) B
+        ORDER BY
+            B.ORDERNUM
+        ]]>
+    </select>
+
+    <!-- 오늘 구별, 시장별 센서 현황 (상점, 센서, 경고, 주의, 끊김) -->
+    <select id="LIST_MCI_TODAY_GU_AREA_STATE" resultType="map">
+        <![CDATA[
+        SELECT
+            B.LEVEL
+            , (CASE B.LEVEL WHEN '1' THEN A.GUCODE WHEN '2' THEN A.AREACODE END) AS CODE
+            , (CASE B.LEVEL WHEN '1' THEN A.GUNAME WHEN '2' THEN A.AREANAME END) AS NAME
+            , COUNT(DISTINCT A.SNSRSEQ) AS SENSOR
+            , COUNT(DISTINCT A.STRCODE) AS STORE
+            , COALESCE(SUM(A.DANGERSNSRCNT), 0) AS DANGER
+            , COALESCE(SUM(A.WARNSNSRCNT), 0) AS WARN
+            , COALESCE(SUM(A.DISNSNSRCNT), 0) AS DISCON
+            , (CASE B.LEVEL WHEN '1' THEN NULL WHEN '2' THEN A.GUCODE END) AS UPCODE
+            , (CASE B.LEVEL
+                   WHEN '1' THEN COALESCE(SUM(A.DANGERSNSRCNT), 0) * 10000 + COALESCE(SUM(A.WARNSNSRCNT), 0)
+                   WHEN '2' THEN 0 - (COALESCE(SUM(A.DANGERSNSRCNT), 0) * 10000 + COALESCE(SUM(A.WARNSNSRCNT), 0))
+               END) AS ORDERNUM
+        FROM
+            (SELECT
+                 G.GUCODE
+                 , G.GUNAME
+                 , A.AREACODE
+                 , A.AREANAME
+                 , I.STRCODE
+                 , I.SNSRSEQ
+                 , COALESCE(I.DANGERSNSRCNT, 0) AS DANGERSNSRCNT
+                 , COALESCE(I.WARNSNSRCNT, 0) AS WARNSNSRCNT
+                 , COALESCE(I.DISNSNSRCNT, 0) AS DISNSNSRCNT
+             FROM
+                  (SELECT
+                       I1.STRCODE
+                       , I1.SNSRSEQ
+                       , (CASE WHEN I1.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 1 ELSE 0 END) AS DISNSNSRCNT
+                       , I2.DANGERSNSRCNT
+                       , I2.WARNSNSRCNT
+                   FROM
+                       (SELECT
+                            STRCODE, SNSRSEQ, DATARCVTIME
+                        FROM
+                            F_SENSOR_INFO
+                        WHERE
+                            CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                       ) I1
+                           LEFT JOIN (SELECT
+                                          SNSRSEQ
+                                          , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN SNSRSEQ END) AS DANGERSNSRCNT
+                                          , COUNT(DISTINCT CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN SNSRSEQ END) AS WARNSNSRCNT
+                                      FROM
+                                          F_SENSOR_LOG
+                                      WHERE
+                                          REGDATE > CURDATE()
+                                          AND OCALM + IGOALM + IGRALM > 0
+                                          AND ISSIMUL = 0
+                                      GROUP BY
+                                          SNSRSEQ) I2
+                               ON I1.SNSRSEQ = I2.SNSRSEQ
+                  ) I
+                      LEFT JOIN F_STORE S
+                          ON I.STRCODE = S.STRCODE
+                      LEFT JOIN F_LEVEL_AREA A
+                          ON S.AREACODE = A.AREACODE
+                      LEFT JOIN F_GUCODE G
+                          ON A.GUCODE = G.GUCODE
+             WHERE
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                 AND CONCAT(G.USEYN, G.GRPCODE, G.GUCODE) LIKE 'Y04230%'
+            ) A
+            ,
+            (SELECT '1' AS LEVEL UNION ALL SELECT '2') B
+        GROUP BY
+            CASE B.LEVEL WHEN '1' THEN A.GUCODE WHEN '2' THEN A.AREACODE END
+        ORDER BY
+            LEVEL, ORDERNUM DESC
+        ]]>
+    </select>
+
+    <!-- 점검내역 목록 -->
+    <select id="LIST_MCI_CHECK_SENSOR" resultType="map">
+        SELECT
+            L.AREACODE, L.AREANAME, I.STRCODE, I.SNSRID, I.SNSRNICK, K.STATE, K.CNT
+        FROM
+            (SELECT
+                 SNSRID, 'CHECK' AS STATE, COUNT(*) AS CNT
+             FROM
+                 F_SENSOR_CHECK
+             WHERE
+                 CHECKSTAT = 'ING'
+             GROUP BY
+                 SNSRID
+            ) K
+                LEFT JOIN F_SENSOR_INFO I
+                    ON K.SNSRID = I.SNSRID
+                LEFT JOIN F_STORE S
+                    ON I.STRCODE = S.STRCODE
+                LEFT JOIN F_LEVEL_AREA L
+                    ON S.AREACODE = L.AREACODE
+        WHERE
+            CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+            AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+            AND CONCAT(L.AREALEVEL, L.USEYN, L.DELYN, L.GUCODE) LIKE '1YN30%'
+        ORDER BY
+            K.STATE, K.CNT DESC
+    </select>
+
+    <!-- 오늘 상태이상 센서 목록 -->
+    <select id="LIST_MCI_TODAY_ABNORMAL_SENSOR" resultType="map">
+        <![CDATA[
+        SELECT
+            S.AREACODE, S.AREANAME, S.STRCODE, S.SNSRSEQ, S.SNSRNICK, S.STATE, S.CNT
+        FROM
+            (SELECT
+                 A.AREACODE
+                 , A.AREANAME
+                 , S.STRCODE
+                 , I.SNSRSEQ
+                 , I.SNSRNICK
+                 , B.STATE
+                 , (CASE
+                        WHEN B.STATE = 'DANGER' THEN COALESCE(L.DANGERCNT, 0)
+                        WHEN B.STATE = 'WARN' THEN COALESCE(L.WARNCNT, 0)
+                        WHEN B.STATE = 'BROKEN' THEN COALESCE(D.BROKENCNT, 0)
+                    END) AS CNT
+             FROM
+                 (SELECT
+                      STRCODE, SNSRSEQ, SNSRNICK
+                  FROM
+                      F_SENSOR_INFO
+                  WHERE
+                      CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                 ) I
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+                     LEFT JOIN F_LEVEL_AREA A
+                         ON S.AREACODE = A.AREACODE
+                     LEFT JOIN (SELECT
+                                    SNSRSEQ, COUNT(*) AS BROKENCNT
+                                FROM
+                                    F_SENSOR_DATA
+                                WHERE
+                                    SNSRRCVTIME > CURDATE()
+                                    AND SNSRIGO > 50
+                                    AND ISSIMUL = 0
+                                GROUP BY
+                                    SNSRSEQ) D
+                         ON I.SNSRSEQ = D.SNSRSEQ
+                     LEFT JOIN (SELECT
+                                    SNSRSEQ
+                                    , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                                    , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARNCNT
+                                FROM
+                                    F_SENSOR_LOG
+                                WHERE
+                                    REGDATE > CURDATE()
+                                    AND OCALM + IGOALM + IGRALM > 0
+                                    AND ISSIMUL = 0
+                                GROUP BY
+                                    SNSRSEQ) L
+                         ON I.SNSRSEQ = L.SNSRSEQ
+                 ,
+                 (SELECT 'DANGER' AS STATE
+                  UNION ALL SELECT 'WARN'
+                  UNION ALL SELECT 'BROKEN') B
+             WHERE
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+                 AND S.AREACODE = 'AREA_000001'
+            ) S
+        WHERE
+            S.CNT > 0
+        ORDER BY
+            S.STATE, S.CNT DESC
+        ]]>
+    </select>
+
+    <select id="LIST_MCI_LIST_AREA_BUTTON" resultType="map">
+        SELECT DISTINCT AREAMAP AS AREAMAP
+          FROM F_AREA_SKETCH_MAP_F
+         WHERE AREACODE = ${ areaCode }
+         ORDER BY AREAMAP
+    </select>
+
+    <select id="LIST_MCI_LIST_IMAGE_AREA" resultType="map">
+        SELECT A.COORDS
+             , A.SHAPE
+             , A.GRPCODE
+             , B.GRPNAME
+        FROM F_AREA_SKETCH_MAP_F A
+         LEFT JOIN (SELECT DISTINCT GRPNAME, GRPCODE FROM F_STORE_GROUP) B ON A.GRPCODE = B.GRPCODE
+         WHERE AREACODE = ${ areaCode }
+           AND AREAMAP = ${ areaMap }
+    </select>
+
+    <select id="LIST_MCI_GRP_USEKWH" resultType="map">
+        SELECT A.GRPNAME
+             , A.GRPCODE
+             , SUM(SNSRKWHDAILY) AS USEKWH
+             , ROUND(SUM(SNSRKWHDAILY) * 100 / SUM(SUM(SNSRKWHDAILY)) OVER (), 2) AS USEKWHPER
+        FROM F_ELEC_SENSOR_STAT SS
+                 LEFT JOIN F_STORE_GROUP A ON SS.STRCODE = A.STRCODE
+                 LEFT JOIN F_AREA_SKETCH_MAP_F B ON A.GRPCODE = B.GRPCODE
+        WHERE DATE_FORMAT(SDATE, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+          AND B.AREAMAP = ${ areaMap }
+          AND B.GRPCODE LIKE CONCAT('%', ${ areaCode }, '%')
+        GROUP BY B.GRPCODE
+        ORDER BY USEKWHPER DESC
+    </select>
+
+    <select id="LIST_MCI_SNSR_USEKWH" resultType="map">
+                <![CDATA[
+        SELECT TRIM(LEADING '0' FROM A.SNSRID) AS SNSRIDTRIM
+             , A.SNSRID             AS SNSRID
+             , A.SNSRNICK
+             , IFNULL(SUM(SNSRKWHDAILY), 0)                                                  AS USEKWH
+             , IFNULL(ROUND(SUM(SNSRKWHDAILY) * 100 / SUM(SUM(SNSRKWHDAILY)) OVER (), 2), 0) AS USEKWHPER
+        , (CASE
+                WHEN A.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN 'discon'
+                ELSE ''END) AS STATE
+          FROM F_SENSOR_INFO A
+                 LEFT JOIN F_STORE_GROUP B ON A.STRCODE = B.STRCODE
+                 LEFT JOIN F_ELEC_SENSOR_STAT SS
+                           ON A.SNSRID = SS.SNSRID AND DATE_FORMAT(SS.SDATE, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+        WHERE B.GRPCODE = ${ grpCode }
+        GROUP BY A.SNSRID
+        ORDER BY USEKWH DESC
+        ]]>
+    </select>
+
+    <select id="LIST_MCI_SNSR_KWH_CHART" resultType="map">
+        <![CDATA[
+        SELECT GROUP_CONCAT(A.HH ORDER BY A.HH)                                 AS dt,
+               GROUP_CONCAT(ROUND(A.AVGKWH, 1) ORDER BY A.HH)                   AS avgKwh,
+               GROUP_CONCAT(IF(A.MAXKWH < IFNULL(B.USEKWH, 0), IFNULL(B.USEKWH, 0), A.MAXKWH) ORDER BY A.HH)                             AS maxKwh,
+               GROUP_CONCAT(IF((A.MINKWH > IFNULL(B.USEKWH, 0) AND A.HH < DATE_FORMAT(NOW(),'%H')), IFNULL(B.USEKWH, 0), A.MINKWH) ORDER BY A.HH)                             AS minKwh,
+               GROUP_CONCAT(IFNULL(B.USEKWH, 0) ORDER BY A.HH)                  AS useKwh
+        FROM (SELECT
+                  T.HOUR AS HH
+                   ,  K.SNSRSEQ
+                   , (CASE
+                          WHEN T.HOUR = '00' THEN K.MINH00  WHEN T.HOUR = '01' THEN K.MINH01 WHEN T.HOUR = '02' THEN K.MINH02 WHEN T.HOUR = '03' THEN K.MINH03
+                          WHEN T.HOUR = '04' THEN K.MINH04  WHEN T.HOUR = '05' THEN K.MINH05 WHEN T.HOUR = '06' THEN K.MINH06 WHEN T.HOUR = '07' THEN K.MINH07
+                          WHEN T.HOUR = '08' THEN K.MINH08  WHEN T.HOUR = '09' THEN K.MINH09 WHEN T.HOUR = '10' THEN K.MINH10 WHEN T.HOUR = '11' THEN K.MINH11
+                          WHEN T.HOUR = '12' THEN K.MINH12  WHEN T.HOUR = '13' THEN K.MINH13 WHEN T.HOUR = '14' THEN K.MINH14 WHEN T.HOUR = '15' THEN K.MINH15
+                          WHEN T.HOUR = '16' THEN K.MINH16  WHEN T.HOUR = '17' THEN K.MINH17 WHEN T.HOUR = '18' THEN K.MINH18 WHEN T.HOUR = '19' THEN K.MINH19
+                          WHEN T.HOUR = '20' THEN K.MINH20  WHEN T.HOUR = '21' THEN K.MINH21 WHEN T.HOUR = '22' THEN K.MINH22 WHEN T.HOUR = '23' THEN K.MINH23
+                END) AS MINKWH
+                   , (CASE
+                          WHEN T.HOUR = '00' THEN K.MAXH00  WHEN T.HOUR = '01' THEN K.MAXH01 WHEN T.HOUR = '02' THEN K.MAXH02 WHEN T.HOUR = '03' THEN K.MAXH03
+                          WHEN T.HOUR = '04' THEN K.MAXH04  WHEN T.HOUR = '05' THEN K.MAXH05 WHEN T.HOUR = '06' THEN K.MAXH06 WHEN T.HOUR = '07' THEN K.MAXH07
+                          WHEN T.HOUR = '08' THEN K.MAXH08  WHEN T.HOUR = '09' THEN K.MAXH09 WHEN T.HOUR = '10' THEN K.MAXH10 WHEN T.HOUR = '11' THEN K.MAXH11
+                          WHEN T.HOUR = '12' THEN K.MAXH12  WHEN T.HOUR = '13' THEN K.MAXH13 WHEN T.HOUR = '14' THEN K.MAXH14 WHEN T.HOUR = '15' THEN K.MAXH15
+                          WHEN T.HOUR = '16' THEN K.MAXH16  WHEN T.HOUR = '17' THEN K.MAXH17 WHEN T.HOUR = '18' THEN K.MAXH18 WHEN T.HOUR = '19' THEN K.MAXH19
+                          WHEN T.HOUR = '20' THEN K.MAXH20  WHEN T.HOUR = '21' THEN K.MAXH21 WHEN T.HOUR = '22' THEN K.MAXH22 WHEN T.HOUR = '23' THEN K.MAXH23
+                END) AS MAXKWH
+                   , (CASE
+                          WHEN T.HOUR = '00' THEN K.AVGH00  WHEN T.HOUR = '01' THEN K.AVGH01 WHEN T.HOUR = '02' THEN K.AVGH02 WHEN T.HOUR = '03' THEN K.AVGH03
+                          WHEN T.HOUR = '04' THEN K.AVGH04  WHEN T.HOUR = '05' THEN K.AVGH05 WHEN T.HOUR = '06' THEN K.AVGH06 WHEN T.HOUR = '07' THEN K.AVGH07
+                          WHEN T.HOUR = '08' THEN K.AVGH08  WHEN T.HOUR = '09' THEN K.AVGH09 WHEN T.HOUR = '10' THEN K.AVGH10 WHEN T.HOUR = '11' THEN K.AVGH11
+                          WHEN T.HOUR = '12' THEN K.AVGH12  WHEN T.HOUR = '13' THEN K.AVGH13 WHEN T.HOUR = '14' THEN K.AVGH14 WHEN T.HOUR = '15' THEN K.AVGH15
+                          WHEN T.HOUR = '16' THEN K.AVGH16  WHEN T.HOUR = '17' THEN K.AVGH17 WHEN T.HOUR = '18' THEN K.AVGH18 WHEN T.HOUR = '19' THEN K.AVGH19
+                          WHEN T.HOUR = '20' THEN K.AVGH20  WHEN T.HOUR = '21' THEN K.AVGH21 WHEN T.HOUR = '22' THEN K.AVGH22 WHEN T.HOUR = '23' THEN K.AVGH23
+                END) AS AVGKWH
+              FROM
+                      (SELECT LPAD(seq, 2, '0') AS HOUR FROM seq_0_to_23) T
+                      ,
+                      (SELECT
+                           SNSRSEQ
+                            , MIN(H00) AS MINH00, MIN(H01) AS MINH01, MIN(H02) AS MINH02, MIN(H03) AS MINH03, MIN(H04) AS MINH04, MIN(H05) AS MINH05, MIN(H06) AS MINH06, MIN(H07) AS MINH07
+                            , MIN(H08) AS MINH08, MIN(H09) AS MINH09, MIN(H10) AS MINH10, MIN(H11) AS MINH11, MIN(H12) AS MINH12, MIN(H13) AS MINH13, MIN(H14) AS MINH14, MIN(H15) AS MINH15
+                            , MIN(H16) AS MINH16, MIN(H17) AS MINH17, MIN(H18) AS MINH18, MIN(H19) AS MINH19, MIN(H20) AS MINH20, MIN(H21) AS MINH21, MIN(H22) AS MINH22, MIN(H23) AS MINH23
+                            , MAX(H00) AS MAXH00, MAX(H01) AS MAXH01, MAX(H02) AS MAXH02, MAX(H03) AS MAXH03, MAX(H04) AS MAXH04, MAX(H05) AS MAXH05, MAX(H06) AS MAXH06, MAX(H07) AS MAXH07
+                            , MAX(H08) AS MAXH08, MAX(H09) AS MAXH09, MAX(H10) AS MAXH10, MAX(H11) AS MAXH11, MAX(H12) AS MAXH12, MAX(H13) AS MAXH13, MAX(H14) AS MAXH14, MAX(H15) AS MAXH15
+                            , MAX(H16) AS MAXH16, MAX(H17) AS MAXH17, MAX(H18) AS MAXH18, MAX(H19) AS MAXH19, MAX(H20) AS MAXH20, MAX(H21) AS MAXH21, MAX(H22) AS MAXH22, MAX(H23) AS MAXH23
+                            , AVG(H00) AS AVGH00, AVG(H01) AS AVGH01, AVG(H02) AS AVGH02, AVG(H03) AS AVGH03, AVG(H04) AS AVGH04, AVG(H05) AS AVGH05, AVG(H06) AS AVGH06, AVG(H07) AS AVGH07
+                            , AVG(H08) AS AVGH08, AVG(H09) AS AVGH09, AVG(H10) AS AVGH10, AVG(H11) AS AVGH11, AVG(H12) AS AVGH12, AVG(H13) AS AVGH13, AVG(H14) AS AVGH14, AVG(H15) AS AVGH15
+                            , AVG(H16) AS AVGH16, AVG(H17) AS AVGH17, AVG(H18) AS AVGH18, AVG(H19) AS AVGH19, AVG(H20) AS AVGH20, AVG(H21) AS AVGH21, AVG(H22) AS AVGH22, AVG(H23) AS AVGH23
+                       FROM
+                           F_CRN_SNSR_KWH_HIST
+                       WHERE
+                               SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = ${ snsrId })
+                         AND
+                           DATE_FORMAT(DATETIME, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
+                       GROUP BY
+                           AREACODE, STRCODE
+                      ) K
+             ) A
+                 LEFT JOIN
+             (SELECT DATE_FORMAT(DATETIME, '%H') AS HH,
+                     SNSRSEQ,
+                     USEKWH AS USEKWH
+              FROM F_CRN_SNSR_KWH_TODAY_STAT
+              WHERE DATETIME >= DATE_FORMAT(NOW(), '%Y-%m-%d')
+                AND SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = ${ snsrId })) B ON A.HH = B.HH
+        ORDER BY A.HH
+        ]]>
+    </select>
+
+    <select id="LIST_MCI_SNSR_EVT_CHART" resultType="map">
+        <![CDATA[
+        SELECT
+            DATE_FORMAT(D.SNSRRCVTIME, '%H') AS HH
+          , AVG(D.SNSRAMPERE) AS AMPERE
+          , AVG(D.SNSRIGO) AS IGO
+          , AVG(D.SNSRIGR) AS IGR
+          , AVG(D.SNSRIGC) AS IGC
+        FROM
+            (SELECT
+                 STRCODE, SNSRID
+             FROM
+                 F_SENSOR_INFO
+             WHERE
+                 CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+               AND
+                 SNSRID = ${ snsrId }
+            ) I
+                LEFT JOIN F_STORE S
+                          ON I.STRCODE = S.STRCODE
+                LEFT JOIN (SELECT
+                               SNSRID, SNSRRCVTIME, SNSRKWH, SNSRWATT, SNSRVOLT, SNSRAMPERE, SNSRHZ, SNSRPF, SNSRIGO, SNSRIGR, SNSRIGC, SNSRREG
+                           FROM
+                               F_SENSOR_DATA
+                           WHERE
+                               SNSRRCVTIME BETWEEN CONCAT(DATE_FORMAT(NOW(), '%Y-%m-%d'), ' 00:00:00') AND
+                                   CONCAT(DATE_FORMAT(NOW(), '%Y-%m-%d'), ' 23:59:59')
+            ) D
+                          ON I.SNSRID = D.SNSRID
+        WHERE
+            CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+        GROUP BY
+            1
+        ORDER BY
+            HH
+        ]]>
+    </select>
+
+</mapper>

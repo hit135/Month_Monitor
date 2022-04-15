@@ -41,7 +41,7 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(mngConInterceptor)
                 .addPathPatterns("/mng/**")
-                .excludePathPatterns("/mng/loginPage", "/mng/selectRsaKeyAjax", "/mng/loginAjax", "/mng/logout", "/mng/mobile/**");
+                .excludePathPatterns("/mng/loginPage", "/mng/selectRsaKeyAjax", "/mng/loginAjax", "/mng/logout", "/mng/mobile/**", "/img/**");
 
         registry.addInterceptor(mngConInterceptor).addPathPatterns("/adm/**");
 
