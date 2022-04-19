@@ -196,7 +196,7 @@
     </select>
     -->
 
-    <select id="LIST_SYS_AREA_MONTHLY_PRT" resultType="map">
+    <select id="LIST_SYS_RPT_PUSH" resultType="map">
         SELECT 
             AREANAME AS areaName
             , RCVTIME AS rcvTime
@@ -213,7 +213,21 @@
             , EVTRANK AS evtRank
             , EVTMEMO AS evtMemo
         FROM
-            ifiresens_v2.F_PUSH_LIST
+            ifiresens_v2.F_RPT_PUSH_LIST
+        WHERE
+            ISUSE = 'Y'
+    </select>
+
+    <select id="LIST_SYS_IGREVT_PUSH" resultType="map">
+        SELECT
+            AREANAME AS areaName
+            , RCVTIME AS rcvTime
+            , STRCODE AS strCode
+            , STRNAME AS strName
+            , STROWNTEL AS strOwnTel
+            , ROUND(SNSRIGR) AS snsrIgr
+        FROM
+            ifiresens_v2.F_IGREVT_PUSH_LIST
         WHERE
             ISUSE = 'Y'
     </select>

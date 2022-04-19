@@ -23,7 +23,7 @@ import org.springframework.core.env.Environment;
  */
 
 @Configuration
-@PropertySource(value = "classpath:static/fs/json/sms_info.properties")
+@PropertySource(value = "classpath:static/fs/props/sms_info.properties")
 public class MNGSmsEnvironment implements EnvironmentAware {
     
     private static Environment env;

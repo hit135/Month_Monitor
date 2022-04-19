@@ -61,21 +61,21 @@ public class SYSSimulController {
     }
 
     /**
-     * @Method Name : sendSimulPush
+     * @Method Name : sendRptSimulPush
      * @작성일 : 2022-03-28
      * @작성자 : uhm
      * @변경이력 :
-     * @Method 설명 : 시물레이션 SMS 보내기
+     * @Method 설명 : 정기 보고 시물레이션 SMS 보내기
      * @return HashMap<String, Object>
      */
-    @RequestMapping(value = "/sendSimulPush")
+    @RequestMapping(value = "/sendRptSimulPush")
     @ResponseBody
-    public HashMap<String, Object> sendSimulPush(HttpServletRequest req) throws Exception {
+    public HashMap<String, Object> sendRptSimulPush(HttpServletRequest req) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         boolean result = false;
 
         try {
-            List<HashMap<String, Object>> smsList = this.sysSimulRepo.LIST_SYS_AREA_MONTHLY_PRT();
+            List<HashMap<String, Object>> smsList = this.sysSimulRepo.LIST_SYS_RPT_PUSH();
 
             ArrayList<Message> messageList = new ArrayList<>();
 
@@ -117,6 +117,74 @@ public class SYSSimulController {
             }
 
             //MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
+            //request.setAllowDuplicates(true);
+            //MultipleMessageSentResponse response = this.messageService.sendMany(request);
+
+            //if (response != null 
+            //        && StringUtils.isNotBlank(response.getGroupId())
+            //        && StringUtils.isNotBlank(response.getAccountId()))
+            //    result = true;
+        } catch (NullPointerException | IllegalArgumentException e) {
+            LOG.debug("sendSimulPush : " + e.getMessage());
+        } catch (Exception e) {
+            LOG.debug("sendSimulPush : " + e.getMessage());
+        } finally {
+            rtn.put("result", result);
+        }
+
+        return rtn;
+    }
+
+     /**
+     * @Method Name : sendRptSimulPush
+     * @작성일 : 2022-03-28
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : IGR 이벤트 시물레이션 SMS 보내기
+     * @return HashMap<String, Object>
+     */
+    @RequestMapping(value = "/sendIgrEvtSimulPush")
+    @ResponseBody
+    public HashMap<String, Object> sendIgrEvtSimulPush(HttpServletRequest req) throws Exception {
+        HashMap<String, Object> rtn = new HashMap<>();
+        boolean result = false;
+
+        try {
+            List<HashMap<String, Object>> smsList = this.sysSimulRepo.LIST_SYS_IGREVT_PUSH();
+
+            ArrayList<Message> messageList = new ArrayList<>();
+
+            for (int i = 0; i < smsList.size(); i++) {
+                HashMap<String, Object> item = smsList.get(i);
+
+                KakaoOption kakaoOption = new KakaoOption();
+                kakaoOption.setPfId(env.getProp("smsInfo.pfId"));
+                kakaoOption.setTemplateId(env.getProp("smsInfo.templateId2"));
+
+                HashMap<String, String> variables = new HashMap<>();
+                variables.put("#{시장명}", (String) item.get("areaName"));
+                variables.put("#{상점명}", (String) item.get("strName"));
+                variables.put("#{발생일시}", (String) item.get("rcvTime"));
+                variables.put("#{누설전류수치}", String.valueOf(item.get("snsrIgr")));
+                variables.put("#{link}", "dev1.fscom.kr:30080/store/igrEvt?strCode=" + (String) item.get("strCode"));
+                kakaoOption.setVariables(variables);
+
+                Message message = new Message();
+                message.setFrom("0424715215");
+                message.setTo(((String) item.get("strOwnTel")).replaceAll("-", ""));
+                message.setKakaoOptions(kakaoOption);
+
+                System.out.println("========================================================================");
+                System.out.println("(" + (i+1) + ")");
+                for (Map.Entry entry : message.getKakaoOptions().getVariables().entrySet())
+                    System.out.println(entry);
+                System.out.println("========================================================================");
+
+                messageList.add(message);
+            }
+
+            //MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
+            //request.setAllowDuplicates(true);
             //MultipleMessageSentResponse response = this.messageService.sendMany(request);
 
             //if (response != null 
