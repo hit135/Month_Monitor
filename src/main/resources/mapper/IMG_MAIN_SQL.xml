@@ -192,64 +192,69 @@
     <select id="LIST_MCI_TODAY_ABNORMAL_SENSOR" resultType="map">
         <![CDATA[
         SELECT
-            S.AREACODE, S.AREANAME, S.STRCODE, S.SNSRSEQ, S.SNSRNICK, S.STATE, S.CNT
+            S.AREAMAP, S.AREANAME, S.GRPCODE, S.SNSRID, S.SNSRSEQ, S.SNSRNICK, S.STATE, S.CNT
         FROM
             (SELECT
-                 A.AREACODE
-                 , A.AREANAME
-                 , S.STRCODE
-                 , I.SNSRSEQ
-                 , I.SNSRNICK
-                 , B.STATE
-                 , (CASE
-                        WHEN B.STATE = 'DANGER' THEN COALESCE(L.DANGERCNT, 0)
-                        WHEN B.STATE = 'WARN' THEN COALESCE(L.WARNCNT, 0)
-                        WHEN B.STATE = 'BROKEN' THEN COALESCE(D.BROKENCNT, 0)
+                 F.AREAMAP
+                  , A.AREANAME
+                  , SS.GRPCODE
+                  , I.SNSRID
+                  , I.SNSRSEQ
+                  , I.SNSRNICK
+                  , B.STATE
+                  , (CASE
+                         WHEN B.STATE = 'DANGER' THEN COALESCE(L.DANGERCNT, 0)
+                         WHEN B.STATE = 'WARN' THEN COALESCE(L.WARNCNT, 0)
+                         WHEN B.STATE = 'DISCON' THEN I.DATARCVTIME < NOW() - INTERVAL 24 HOUR
                     END) AS CNT
              FROM
                  (SELECT
-                      STRCODE, SNSRSEQ, SNSRNICK
+                      STRCODE, SNSRID, SNSRSEQ, SNSRNICK, DATARCVTIME
                   FROM
                       F_SENSOR_INFO
                   WHERE
                       CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
                  ) I
                      LEFT JOIN F_STORE S
-                         ON I.STRCODE = S.STRCODE
+                               ON I.STRCODE = S.STRCODE
+                     LEFT JOIN F_STORE_GROUP SS
+                               ON S.STRCODE = SS.STRCODE
+                     LEFT JOIN F_AREA_SKETCH_MAP_F F
+                               ON SS.GRPCODE = F.GRPCODE
                      LEFT JOIN F_LEVEL_AREA A
-                         ON S.AREACODE = A.AREACODE
+                               ON S.AREACODE = A.AREACODE
                      LEFT JOIN (SELECT
                                     SNSRSEQ, COUNT(*) AS BROKENCNT
                                 FROM
                                     F_SENSOR_DATA
                                 WHERE
                                     SNSRRCVTIME > CURDATE()
-                                    AND SNSRIGO > 50
-                                    AND ISSIMUL = 0
+                                  AND SNSRIGO > 50
+                                  AND ISSIMUL = 0
                                 GROUP BY
                                     SNSRSEQ) D
-                         ON I.SNSRSEQ = D.SNSRSEQ
+                               ON I.SNSRSEQ = D.SNSRSEQ
                      LEFT JOIN (SELECT
                                     SNSRSEQ
-                                    , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
-                                    , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARNCNT
+                                     , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                                     , SUM(CASE WHEN INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0 THEN 1 ELSE 0 END) AS WARNCNT
                                 FROM
                                     F_SENSOR_LOG
                                 WHERE
                                     REGDATE > CURDATE()
-                                    AND OCALM + IGOALM + IGRALM > 0
-                                    AND ISSIMUL = 0
+                                  AND OCALM + IGOALM + IGRALM > 0
+                                  AND ISSIMUL = 0
                                 GROUP BY
                                     SNSRSEQ) L
-                         ON I.SNSRSEQ = L.SNSRSEQ
-                 ,
+                               ON I.SNSRSEQ = L.SNSRSEQ
+                     ,
                  (SELECT 'DANGER' AS STATE
                   UNION ALL SELECT 'WARN'
-                  UNION ALL SELECT 'BROKEN') B
+                  UNION ALL SELECT 'DISCON') B
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
-                 AND S.AREACODE = 'AREA_000001'
+               AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+               AND S.AREACODE = 'AREA_000001'
             ) S
         WHERE
             S.CNT > 0

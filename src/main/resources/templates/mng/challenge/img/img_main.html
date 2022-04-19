@@ -5,7 +5,7 @@
   <th:block th:replace="mng/challenge/layout/mc_head"></th:block>
   <link rel="stylesheet" th:href="@{/fs/css/custom.css}"/>
   <style>
-    .img-title {
+    #reportModal .modal-header, .img-title {
       padding: 0.3rem;
       background-color: #2B559B;
       color: #FFFFFF;
@@ -25,6 +25,46 @@
       overflow: visible;
       color: black;
       text-align: left;
+    }
+
+    .modal-body .printTable td, .modal-body .printTable th {
+      font-size: 15px;
+      color: #333!important;
+      padding: 0.5rem;
+    }
+
+    .modal-body .table-bordered, .modal-body .table-bordered td, .modal-body .table-bordered th {
+      border: 1px solid #d8dbe0;
+    }
+    .modal-body .table-sm td, .modal-body .table-sm th {
+      padding: 0.3rem;
+    }
+    .modal-body .table td, .modal-body .table th {
+      padding: 0.75rem;
+      vertical-align: top;
+      border-top: 1px solid #d8dbe0;
+    }
+
+    .modal-body .table-title {
+      font-size: 19px!important;
+    }
+    .modal-body .wme_table_td_title {
+      font-weight: 700;
+      background-color: hsla(0,0%,87.1%,.3);
+      color: #444;
+      font-size: 14px;
+    }
+    .modal-body .text-center {
+      text-align: center!important;
+    }
+    .modal-body .title {
+      font-weight: 900!important;
+      font-size: 25px!important;
+    }
+    .modal-body .subTitle {
+      font-weight: 600!important;
+      font-size: 18px!important;
+      color: #2ca8ff!important;
     }
   </style>
 </head>
@@ -122,6 +162,38 @@
   <th:block th:replace="mng/challenge/layout/mc_bottom"></th:block>
 </div>
 
+
+<div id="menuModal" class="modal fade default-example-modal-left-sm" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-left modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h4">Firsens 관리자 메뉴</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><i class="fal fa-times"></i></span>
+        </button>
+      </div><!-- /.modal-header -->
+      <div class="modal-body">
+        <nav id="js-primary-nav" class="primary-nav" role="navigation">
+          <ul id="js-nav-menu" class="nav-menu">
+            <li>
+              <a href="javascript:void(0)" onclick="fn_mcmi_openReportModal()">
+                  <i class="fal fa-chart-pie"></i>
+                  보고서
+              </a>
+            </li>
+          </ul><!-- /#js-nav-menu -->
+        </nav><!-- /#js-primary-nav -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal-dialog (side menu) -->
+
+<th:block th:replace="mng/challenge/img/img_report"></th:block>
+
+
 <script th:src="@{/fs/js/polyfill.min.js}"></script>
 <script th:src="@{/fs/js/apexcharts.js}"></script>
 <script th:src="@{/fs/js/mciMainInit.js}"></script>
@@ -163,14 +235,14 @@
             $('.sensors-CHECK .cnt').text('(' + $('.sensors-CHECK .left-list-sensor p').length + ')');
           }
 
-          // 경고/주의/고장
+          // 경고/주의/끊김
           if (d.abnormal) {
             for (let i = 0; i < d.abnormal.length; i++)
               $('.sensors-' + d.abnormal[i].STATE + ' .list-sensor').append($.tmpl('right-sensor', d.abnormal[i]));
 
             $('.sensors-DANGER .cnt').text('(' + $('.sensors-DANGER .list-sensor p').length + ')');
             $('.sensors-WARN .cnt').text('(' + $('.sensors-WARN .list-sensor p').length + ')');
-            $('.sensors-BROKEN .cnt').text('(' + $('.sensors-BROKEN .list-sensor p').length + ')');
+            $('.sensors-DISCON .cnt').text('(' + $('.sensors-DISCON .list-sensor p').length + ')');
           }
         }
       });
@@ -215,6 +287,12 @@
 
         }
       });
+  }
+
+  function fn_mcmi_selectImageArea(areaMap){
+    window.selected_grpcode = "";
+    window.selected_snsrid = "";
+    fn_mcmi_listImageArea(areaMap);
   }
 
   function fn_mcmi_listImageArea(areaMap) {
@@ -268,7 +346,7 @@
           let html = "";
           let c = "";
           let n = "";
-          let grpCode = (window.selected_grpcode) ? window.selected_grpcode : d[0].GRPCODE;
+          let grpCode = (window.selected_grpcode !== "") ? window.selected_grpcode : d[0].GRPCODE;
           let grpName = "";
           for (let i = 0; i < d.length; i++) {
             let data = d[i];
@@ -350,12 +428,66 @@
   }
 
   function fn_mcmi_getSnsrChart(snsrId) {
-    let snsrName = $("td[data-snsrid=" + snsrId + "] a").html();
+    let snsrName = "";
+    if($("td[data-snsrid=" + snsrId + "] a").length !== 0){
+      snsrName = $("td[data-snsrid=" + snsrId + "] a").html();
+      fn_mcmi_setSnsrKwhChart(snsrId);
+      fn_mcmi_setSnsrEvtChart(snsrId);
+    } else {
+      snsrName = $("td[data-snsrid=" + snsrId + "]").html();
+      fn_mcmi_setNoDataChart();
+    }
     $("#snsrId").val(snsrId);
     $("#snsrName").html(snsrName);
-    fn_mcmi_setSnsrKwhChart(snsrId);
-    fn_mcmi_setSnsrEvtChart(snsrId);
 
+
+  }
+
+  function fn_mcmi_setNoDataChart(){
+    let date = new Date();
+    if (window.energy_kwhChart !== undefined) window.energy_kwhChart.destroy();
+    window.energy_kwhChart = new ApexCharts(document.querySelector('#me_snsr_kwh_chart'), {
+      series: [],
+      title: {text: date.getMonth() + 1 + '월 시간대별 사용전력(kWh)', type: 'line', align: 'left'},
+      chart: {height: 200, id: 'me_snsr_kwh_chart', animations: {enabled: false}},
+      noData: {text: '데이터가 없습니다.', style: {fontSize: '15px'}},
+      stroke: {width: 2},
+      dataLabels: {enabled: false},
+      tooltip: {
+        enabled: true,
+        marker: {show: true},
+      },
+      xaxis: {categories: window.categoryData},
+      yaxis: {
+        lines: {show: true},
+        tooltip: {enabled: true},
+      },
+      legend: {position: 'bottom'}
+    });
+
+    window.energy_kwhChart.render();
+
+    if (window.energy_evtChart !== undefined) window.energy_evtChart.destroy();
+    window.energy_evtChart = new ApexCharts(document.querySelector('#me_snsr_evt_chart'), {
+      series: [],
+      title: {text: '분석차트', type: 'line', align: 'left'},
+      chart: {height: 200, id: 'me_snsr_kwh_chart', animations: {enabled: false}},
+      noData: {text: '데이터가 없습니다.', style: {fontSize: '15px'}},
+      stroke: {width: 2},
+      dataLabels: {enabled: false},
+      tooltip: {
+        enabled: true,
+        marker: {show: true},
+      },
+      xaxis: {categories: window.categoryData},
+      yaxis: {
+        lines: {show: true},
+        tooltip: {enabled: true},
+      },
+      legend: {position: 'bottom'}
+    });
+
+    window.energy_evtChart.render();
   }
 
   function fn_mcmi_setSnsrKwhChart(snsrId) {
@@ -402,6 +534,7 @@
                 data: avgKwhData
               }
             ]
+            if (window.energy_kwhChart !== undefined) window.energy_kwhChart.destroy();
             window.energy_kwhChart = new ApexCharts(document.querySelector('#me_snsr_kwh_chart'), {
               series: window.series,
               title: {text: date.getMonth() + 1 + '월 시간대별 사용전력(kWh)', type: 'line', align: 'left'},
@@ -476,6 +609,7 @@
                 data: igoData
               }
             ]
+            if (window.energy_evtChart !== undefined) window.energy_evtChart.destroy();
             window.energy_evtChart = new ApexCharts(document.querySelector('#me_snsr_evt_chart'), {
               series: window.series,
               title: {text: '분석차트', type: 'line', align: 'left'},
@@ -511,7 +645,6 @@
         }
       });
   }
-
 
 </script>
 </body>
