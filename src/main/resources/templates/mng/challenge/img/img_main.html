@@ -178,7 +178,7 @@
             <li>
               <a href="javascript:void(0)" onclick="fn_mcmi_openReportModal()">
                   <i class="fal fa-chart-pie"></i>
-                  보고서
+                  <span class="nav-link-text">보고서</span>
               </a>
             </li>
           </ul><!-- /#js-nav-menu -->
@@ -581,6 +581,7 @@
           let igrData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
           let igcData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
           let igoData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+          let regData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
           let l = d[0];
           if (l !== null) {
             for (let i = 0; i < d.length; i++) {
@@ -589,6 +590,7 @@
               igrData[index] = d[i].IGO;
               igcData[index] = d[i].IGR;
               igoData[index] = d[i].IGC;
+              regData[index] = d[i].REG
             }
             window.series = [
               {
@@ -607,6 +609,10 @@
                 name: '누설전류 총합(IGO)',
                 type: 'line',
                 data: igoData
+              }, {
+                name: '절연저항',
+                type: 'line',
+                data: regData
               }
             ]
             if (window.energy_evtChart !== undefined) window.energy_evtChart.destroy();

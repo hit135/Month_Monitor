@@ -393,6 +393,7 @@
           , AVG(D.SNSRIGO) AS IGO
           , AVG(D.SNSRIGR) AS IGR
           , AVG(D.SNSRIGC) AS IGC
+          , AVG(D.SNSRREG) AS REG
         FROM
             (SELECT
                  STRCODE, SNSRID
