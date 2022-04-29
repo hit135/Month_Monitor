@@ -225,7 +225,7 @@
             , STRCODE AS strCode
             , STRNAME AS strName
             , STROWNTEL AS strOwnTel
-            , ROUND(SNSRIGR) AS snsrIgr
+            , ROUND(SNSRIGR, 0) AS snsrIgr
         FROM
             ifiresens_v2.F_IGREVT_PUSH_LIST
         WHERE

@@ -87,8 +87,8 @@ public class SYSSimulController {
                 kakaoOption.setTemplateId(env.getProp("smsInfo.templateId"));
 
                 HashMap<String, String> variables = new HashMap<>();
-                variables.put("#{상점명}", (String) item.get("strCode"));
-                variables.put("#{보고기간년월}", "22년 3월");
+                variables.put("#{상점명}", (String) item.get("strName"));
+                variables.put("#{보고기간년월}", "22년 4월");
                 variables.put("#{보고기간}", (String) item.get("rcvTime"));
                 variables.put("#{전기위험현황}", (String) item.get("evtMemo"));
                 variables.put("#{전기등급}", String.valueOf(item.get("evtGrade")) + "등급");
@@ -116,14 +116,16 @@ public class SYSSimulController {
                 messageList.add(message);
             }
 
-            //MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
-            //request.setAllowDuplicates(true);
-            //MultipleMessageSentResponse response = this.messageService.sendMany(request);
+            /*
+            MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
+            request.setAllowDuplicates(true);
+            MultipleMessageSentResponse response = this.messageService.sendMany(request);
 
-            //if (response != null 
-            //        && StringUtils.isNotBlank(response.getGroupId())
-            //        && StringUtils.isNotBlank(response.getAccountId()))
-            //    result = true;
+            if (response != null 
+                    && StringUtils.isNotBlank(response.getGroupId())
+                    && StringUtils.isNotBlank(response.getAccountId()))
+                result = true;
+            */
         } catch (NullPointerException | IllegalArgumentException e) {
             LOG.debug("sendSimulPush : " + e.getMessage());
         } catch (Exception e) {
@@ -165,7 +167,7 @@ public class SYSSimulController {
                 variables.put("#{시장명}", (String) item.get("areaName"));
                 variables.put("#{상점명}", (String) item.get("strName"));
                 variables.put("#{발생일시}", (String) item.get("rcvTime"));
-                variables.put("#{누설전류수치}", String.valueOf(item.get("snsrIgr")));
+                variables.put("#{누설전류수치}", String.valueOf((int) ((double) item.get("snsrIgr"))));
                 variables.put("#{link}", "dev1.fscom.kr:30080/store/igrEvt?strCode=" + (String) item.get("strCode"));
                 kakaoOption.setVariables(variables);
 
@@ -183,14 +185,16 @@ public class SYSSimulController {
                 messageList.add(message);
             }
 
-            //MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
-            //request.setAllowDuplicates(true);
-            //MultipleMessageSentResponse response = this.messageService.sendMany(request);
+            /*
+            MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
+            request.setAllowDuplicates(true);
+            MultipleMessageSentResponse response = this.messageService.sendMany(request);
 
-            //if (response != null 
-            //        && StringUtils.isNotBlank(response.getGroupId())
-            //        && StringUtils.isNotBlank(response.getAccountId()))
-            //    result = true;
+            if (response != null 
+                    && StringUtils.isNotBlank(response.getGroupId())
+                    && StringUtils.isNotBlank(response.getAccountId()))
+                result = true;
+            */
         } catch (NullPointerException | IllegalArgumentException e) {
             LOG.debug("sendSimulPush : " + e.getMessage());
         } catch (Exception e) {
