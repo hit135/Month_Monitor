@@ -47,7 +47,7 @@
                       , FS.STRCODE AS strCodeKey
                   FROM
                       F_STORE FS
-                          LEFT OUTER JOIN F_AREA FA
+                          LEFT OUTER JOIN F_LEVEL_AREA FA
                               ON FS.AREACODE = FA.AREACODE
                           LEFT OUTER JOIN F_GROUP FG
                               ON FS.GRPCODE = FG.GRPCODE
