@@ -1,5 +1,7 @@
 package kr.fscom.firsens.mng.challenge.controller;
 
+import kr.fscom.firsens.service.sync.decrypt.DecryptService;
+import kr.fscom.firsens.service.sync.encrypt.EncryptService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,6 +131,10 @@ public class MCLoginController {
                 mcLoginRepo.SELECT_MCL_LOGIN(new HashMap<String, Object>() {{ put("userId", userId); put("memPwd", sha256MemPwd); }});
 
             if (loginResult != null) {
+                loginResult.replace("memMobile",DecryptService.Decryption(loginResult.get("memMobile").toString()));
+                loginResult.replace("memName",DecryptService.Decryption(loginResult.get("memName").toString()));
+                loginResult.replace("memTel",DecryptService.Decryption(loginResult.get("memTel").toString()));
+
                 int upd = mcLoginRepo.UPDATE_MCL_MEMRSNTDATE(new HashMap<String, Object>() {{ put("userId", userId); }});
 
                 session.setAttribute("MNG_" + ipCheck.getUserIp(), new HashMap<String, String>() {{

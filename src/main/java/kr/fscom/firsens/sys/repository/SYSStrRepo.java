@@ -27,7 +27,7 @@ import java.util.List;
 public interface SYSStrRepo {
 
     int CNT_SYS_STR(SYSStrDomain domain) throws Exception;                                   // 상점 카운트
-    List<HashMap<String, Object>> LIST_SYS_STR(SYSStrDomain domain) throws Exception;        // 상점 목록
+    List<SYSStrDomain> LIST_SYS_STR(SYSStrDomain domain) throws Exception;        // 상점 목록
     int CHK_SYS_STRCODE(SYSStrDomain domain) throws Exception;                               // 상점 중복 체크
     int GENERATE_STORE_CODE(SYSStrDomain domain) throws Exception;
     int INSERT_SYS_STR(SYSStrDomain domain) throws Exception;

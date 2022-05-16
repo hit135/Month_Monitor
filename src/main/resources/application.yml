@@ -42,6 +42,8 @@ globals:
 custom:
   path:
     upload-images: 'D:/home/apps/img/imgstore/'
+ifiresens:
+  aeskey: QfTjWnZr4u7x!A%D*G-KaPdRgUkXp2s5
 
 ---
 spring:
@@ -85,3 +87,5 @@ globals:
 custom:
   path:
     upload-images: '/home/apps/img/imgstore/'
+ifiresens:
+  aeskey: QfTjWnZr4u7x!A%D*G-KaPdRgUkXp2s5

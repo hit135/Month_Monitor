@@ -8,15 +8,13 @@
             COUNT(*)
         FROM
             F_STORE FS
-                LEFT OUTER JOIN F_MEMBER FM
-                    ON FM.USERID = FS.USERID
         WHERE
             1 = 1
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND FS.AREACODE = #{areaCode}</if>
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
             AND (FS.STRNAME LIKE CONCAT('%', #{searchWrd}, '%')
                  OR FS.STRCODE LIKE CONCAT('%', #{searchWrd}, '%')
-                 OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%'))
+                 OR FS.USERNAME LIKE CONCAT('%', #{searchWrd}, '%'))
             </if>
             AND FS.USEYN = #{useYn}
     </select>
@@ -34,7 +32,7 @@
                       , FS.STRNAME AS strName
                       , FS.STRADDR AS strAddr
                       , FS.STRORDER AS strOrder
-                      , FM.MEMNAME AS strOwnName
+                      , FS.USERNAME AS strOwnName
                       , FS.STRTEL AS strTel
                       , FS.STROWNTEL AS strOwnTel
                       , FG.GRPCODE AS grpCode
@@ -51,15 +49,13 @@
                               ON FS.AREACODE = FA.AREACODE
                           LEFT OUTER JOIN F_GROUP FG
                               ON FS.GRPCODE = FG.GRPCODE
-                          LEFT OUTER JOIN F_MEMBER FM
-                              ON FM.USERID = FS.USERID
                   WHERE
                       1 = 1
                       <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(areaCode)">AND FS.AREACODE = #{areaCode}</if>
                       <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
                       AND (FS.STRNAME LIKE CONCAT('%', #{searchWrd}, '%')
                            OR FS.STRCODE LIKE CONCAT('%', #{searchWrd}, '%')
-                           OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%'))
+                           OR FS.USERNAME LIKE CONCAT('%', #{searchWrd}, '%'))
                       </if>
                       AND FS.USEYN = #{useYn}
                  ) A
@@ -126,7 +122,7 @@
             , FS.STRNAME AS strName
             , FS.STRADDR AS strAddr
             , FS.STRORDER AS strOrder
-            , FM.MEMNAME AS strOwnName
+            , FS.USERNAME AS strOwnName
             , FS.STRTEL AS strTel
             , FS.STROWNTEL AS strOwnTel
             , FS.STRPOSLAT AS strPosLat
@@ -141,8 +137,6 @@
             F_STORE FS
                 LEFT OUTER JOIN F_GROUP FG
                     ON FS.GRPCODE = FG.GRPCODE
-                LEFT OUTER JOIN F_MEMBER FM
-                    ON FM.USERID = FS.USERID
         WHERE
             FS.STRCODE = #{strCode}
             AND FS.AREACODE = #{areaCode}

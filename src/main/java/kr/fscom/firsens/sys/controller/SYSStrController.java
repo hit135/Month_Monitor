@@ -1,5 +1,7 @@
 package kr.fscom.firsens.sys.controller;
 
+import kr.fscom.firsens.service.sync.decrypt.DecryptService;
+import kr.fscom.firsens.service.sync.encrypt.EncryptService;
 import kr.fscom.firsens.sys.domain.SYSAreaDomain;
 import kr.fscom.firsens.sys.domain.SYSFileDomain;
 import kr.fscom.firsens.sys.domain.SYSStrDomain;
@@ -51,7 +53,7 @@ public class SYSStrController {
                 , domain, page, size, searchWrd, useYn);
 
         HashMap<String, Object> rtn = new HashMap<>();
-        List<HashMap<String, Object>> strList = new ArrayList<>();
+        List<SYSStrDomain> strList = new ArrayList<>();
         String result = "fail";
 
         try {
@@ -145,7 +147,9 @@ public class SYSStrController {
 
         try {
             if (!StringUtils.isEmptyOrWhitespace(domain.getStrCode())) {
-                rtn.put("content", sysStrRepo.SELECT_SYS_ONE_STR(domain));
+                SYSStrDomain svo = sysStrRepo.SELECT_SYS_ONE_STR(domain);
+                svo.setStrOwnName(DecryptService.Decryption(svo.getStrOwnName()));
+                rtn.put("content", svo);
 
                 SYSFileDomain fvo = new SYSFileDomain();
                 fvo.setAreaCode(domain.getAreaCode());

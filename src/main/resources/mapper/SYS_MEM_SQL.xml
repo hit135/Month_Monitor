@@ -27,13 +27,13 @@
                   WHERE
                       1 = 1
                       <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
-                      AND (FM.USERID LIKE CONCAT('%', #{searchWrd}, '%')
-                           OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%'))
+                      AND FM.USERID LIKE CONCAT('%', #{searchWrd}, '%')
                       </if>
                       AND FM.USEYN = #{useYn}
                       AND FM.DELYN = #{delYn}
                       AND FM.MEMISLEAVE = #{memIsLeave}
                       AND FM.MEMRCVSMS = #{memRcvSms}
+                      AND FM.MEMLEVEL <![CDATA[<]]> 10
                  ) A
                  ,
                  (SELECT @ROWNUM := 0) R
@@ -71,13 +71,13 @@
                   WHERE
                       1 = 1
                       <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
-                      AND (FM.USERID LIKE CONCAT('%', #{searchWrd}, '%')
-                           OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%'))
+                      AND FM.USERID LIKE CONCAT('%', #{searchWrd}, '%')
                       </if>
                       AND FM.USEYN = #{useYn}
                       AND FM.DELYN = #{delYn}
                       AND FM.MEMISLEAVE = #{memIsLeave}
                       AND FM.MEMRCVSMS = #{memRcvSms}
+                      AND FM.MEMLEVEL <![CDATA[<]]> 10
                   ORDER BY
                       FM.REGDATE DESC, FM.MEMNAME ASC) A
                  ,
@@ -94,9 +94,9 @@
             F_MEMBER FM
         WHERE
             1 = 1
+            AND FM.MEMLEVEL <![CDATA[<]]> 10
             <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(searchWrd)">
-            AND (FM.USERID LIKE CONCAT('%', #{searchWrd}, '%')
-                 OR FM.MEMNAME LIKE CONCAT('%', #{searchWrd}, '%'))
+            AND FM.USERID LIKE CONCAT('%', #{searchWrd}, '%')
             </if>
         ORDER BY
             FM.REGDATE DESC, FM.MEMNAME ASC

@@ -29,8 +29,8 @@ import java.util.List;
 public interface SYSMemRepo {
 
     int CNT_SYS_MEM(SYSMemDomain domain) throws Exception;                                      // 회원목록 카운트
-    List<HashMap<String, Object>> LIST_SYS_MEM(SYSMemDomain domain) throws Exception;           // 회원 목록
-    List<HashMap<String, Object>> LIST_MODAL_SYS_MEM(String searchWrd) throws Exception;        // 모달 회원 목록
+    List<SYSMemDomain> LIST_SYS_MEM(SYSMemDomain domain) throws Exception;           // 회원 목록
+    List<SYSMemDomain> LIST_MODAL_SYS_MEM(String searchWrd) throws Exception;        // 모달 회원 목록
     int CHK_MEM_ID(SYSMemDomain domain) throws Exception;                                       // 중복 체크
     int INSERT_SYS_MEM(SYSMemDomain domain) throws Exception;                                   // 회원 등록
     SYSMemDomain SELECT_SYS_MEM(SYSMemDomain domain) throws Exception;                          // 회원 선택

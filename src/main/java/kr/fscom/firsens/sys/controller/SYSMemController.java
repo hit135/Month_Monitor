@@ -1,6 +1,8 @@
 package kr.fscom.firsens.sys.controller;
 
 import kr.fscom.firsens.common.keycrypt.KeyEncrypt;
+import kr.fscom.firsens.service.sync.decrypt.DecryptService;
+import kr.fscom.firsens.service.sync.encrypt.EncryptService;
 import kr.fscom.firsens.sys.domain.SYSMemDomain;
 import kr.fscom.firsens.sys.repository.SYSMemRepo;
 
@@ -8,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
@@ -34,7 +37,7 @@ public class SYSMemController {
                 , domain, page, size, searchWrd, useYn, delYn, smsYn, leaveYn);
 
         HashMap<String, Object> rtn = new HashMap<>();
-        List<HashMap<String, Object>> memberList = new ArrayList<>();
+        List<SYSMemDomain> memberList = new ArrayList<>();
         String result = "fail";
 
         try {
@@ -48,6 +51,12 @@ public class SYSMemController {
 
             int resultCnt = sysMemRepo.CNT_SYS_MEM(domain);
             memberList = sysMemRepo.LIST_SYS_MEM(domain);
+            for (SYSMemDomain m : memberList) {
+                m.setMemName(DecryptService.Decryption(m.getMemName()));
+                m.setMemEmail(DecryptService.Decryption(m.getMemEmail()));
+                m.setMemTel(DecryptService.Decryption(m.getMemTel()));
+                m.setMemMobile(DecryptService.Decryption(m.getMemMobile()));
+            }
 
             rtn.put("resultList", memberList);
             rtn.put("totalElements", resultCnt);
@@ -71,7 +80,10 @@ public class SYSMemController {
         String result = "fail";
 
         try {
-            List<HashMap<String, Object>> resultList = sysMemRepo.LIST_MODAL_SYS_MEM(searchWrd);
+            List<SYSMemDomain> resultList = sysMemRepo.LIST_MODAL_SYS_MEM(searchWrd);
+            for (SYSMemDomain m : resultList) {
+                m.setMemName(DecryptService.Decryption(m.getMemName()));
+            }
             rtn.put("resultList", resultList);
             result = "success";
         } catch (SQLException ex) {
@@ -119,7 +131,10 @@ public class SYSMemController {
             if (!StringUtils.isEmptyOrWhitespace(domain.getUserId()) || StringUtils.isEmptyOrWhitespace(domain.getMemPwd())) {
                 String sha256MemPwd = new KeyEncrypt().sha256Encryption(domain.getMemPwd(), domain.getUserId());
                 domain.setMemPwd(sha256MemPwd);
-
+                domain.setMemEmail(EncryptService.Encryption(domain.getMemEmail()));
+                domain.setMemMobile(EncryptService.Encryption(domain.getMemMobile()));
+                domain.setMemName(EncryptService.Encryption(domain.getMemName()));
+                domain.setMemTel(EncryptService.Encryption(domain.getMemTel()));
                 if (sysMemRepo.INSERT_SYS_MEM(domain) > 0)
                     result = "success";
 
@@ -158,7 +173,12 @@ public class SYSMemController {
         String result = "fail";
 
         try {
-            rtn.put("content", sysMemRepo.SELECT_SYS_MEM(domain));
+            SYSMemDomain svo = sysMemRepo.SELECT_SYS_MEM(domain);
+            svo.setMemEmail(DecryptService.Decryption(svo.getMemEmail()));
+            svo.setMemMobile(DecryptService.Decryption(svo.getMemMobile()));
+            svo.setMemName(DecryptService.Decryption(svo.getMemName()));
+            svo.setMemTel(DecryptService.Decryption(svo.getMemTel()));
+            rtn.put("content", svo);
             result = "success";
         } catch (SQLException ex) {
             LOG.error("■■■■■■■■■■■■■■■ 회원 상세목록 요청 SQL 오류 : {}", ex.getMessage());
@@ -183,6 +203,10 @@ public class SYSMemController {
             if (!StringUtils.isEmptyOrWhitespace(domain.getMemPwd())) {
                 String sha256MemPwd = new KeyEncrypt().sha256Encryption(domain.getMemPwd(), domain.getUserId());
                 domain.setMemPwd(sha256MemPwd);
+                domain.setMemEmail(EncryptService.Encryption(domain.getMemEmail()));
+                domain.setMemMobile(EncryptService.Encryption(domain.getMemMobile()));
+                domain.setMemName(EncryptService.Encryption(domain.getMemName()));
+                domain.setMemTel(EncryptService.Encryption(domain.getMemTel()));
             }
 
             if (sysMemRepo.UPDATE_SYS_MEM(domain) > 0)
