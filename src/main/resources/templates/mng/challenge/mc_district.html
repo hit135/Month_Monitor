@@ -38,6 +38,11 @@
 
 #mcd_daejeonMap { width: 67% } 
 .js-data-attributes { position: absolute; }
+
+.line-badge { background-color: #2196F3; cursor: auto; width: 21px !important; height: 3px !important; padding: 0px; border-radius: 0px !important; }
+.mcd_guLabels { font-size: 0.9rem; color: #fff; margin-left: 10px; }
+#mcd_guElecEvtChart { height: 290px; display: block; width: 100%; margin-top: 3.5rem !important;  }
+#mcd_guKwhChart { height: 290px; display: block; width: 100%; margin-top: 0.75rem !important; }
 </style>
 
 <body class="mod-bg-1 nav-function-minify">
@@ -157,92 +162,92 @@
             </div><!-- // -->
           </div><!-- /#mcd_leftDiv -->
 
-          <div class="col-md-6 col-sm-12">
+          <div class="col-md-5 col-sm-12">
             <div class="row">
               <div class="col-xl-12">
                 <div class="d-flex justify-content-center">
                   <img th:src="@{/fs/img/district/daejeon-map.png}" alt="icon" id="mcd_daejeonMap" />
       
-                  <div class="js-data-attributes" style="left: 49.6%; top: 49%;">
+                  <div class="js-data-attributes" style="left: 46.6%; top: 46%;">
                     <span id="mcd_elecEvtDonggu" data-peity='{ "fill": ["#ce306b", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
                   </div>
-                  <div class="js-data-attributes" style="left: 60.5%; top: 68%;">
+                  <div class="js-data-attributes" style="left: 60%; top: 68%;">
                     <span id="mcd_kwhDonggu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
                   </div>
-                  <div class="js-data-attributes" style="top: 78.5%; left: 60.5%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 80.5%; left: 60%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhDonggu">111</h5>
                     </div>
                   </div>
-                  <div class="js-data-attributes" style="top: 78.5%; left: 65.2%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 80.5%; left: 65.6%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhDonggu">222</h5>
                     </div>
                   </div><!-- //동구-->
 
-                  <div class="js-data-attributes" style="left: 35.2%; top: 54%;">
+                  <div class="js-data-attributes" style="left: 32%; top: 52%;">
                     <span id="mcd_elecEvtJunggu" data-peity='{ "fill": ["#d90a14", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
                   </div>
-                  <div class="js-data-attributes" style="left: 46%; top: 73%;">
+                  <div class="js-data-attributes" style="left: 45%; top: 73.5%;">
                     <span id="mcd_kwhJunggu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
                   </div>
-                  <div class="js-data-attributes" style="top: 83.5%; left: 46%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 86%; left: 45%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhJunggu">111</h5>
                     </div>
                   </div>
-                  <div class="js-data-attributes" style="top: 83.5%; left: 50.6%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 86%; left: 50.6%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhJunggu">222</h5>
                     </div>
                   </div><!-- //중구-->
 
-                  <div class="js-data-attributes" style="left: 21.5%; top: 63.5%;">
+                  <div class="js-data-attributes" style="left: 18.4%; top: 61%;">
                     <span id="mcd_elecEvtSeogu" data-peity='{ "fill": ["#627300", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
                   </div>
-                  <div class="js-data-attributes" style="left: 32.5%; top: 82.5%;">
+                  <div class="js-data-attributes" style="left: 31.5%; top: 82.5%;">
                     <span id="mcd_kwhSeogu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
                   </div>
-                  <div class="js-data-attributes" style="top: 93%; left: 32.5%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 95%; left: 31.5%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhSeogu">111</h5>
                     </div>
                   </div>
-                  <div class="js-data-attributes" style="top: 93%; left: 37.2%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 95%; left: 37%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhSeogu">222</h5>
                     </div>
                   </div><!-- //서구-->
 
-                  <div class="js-data-attributes" style="left: 13.2%; top: 32%;">
+                  <div class="js-data-attributes" style="left: 10.2%; top: 28%;">
                     <span id="mcd_elecEvtYuseonggu" data-peity='{ "fill": ["#c08adc", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
                   </div>
-                  <div class="js-data-attributes" style="left: 33%; top: 30.6%;">
+                  <div class="js-data-attributes" style="left: 34%; top: 27.2%;">
                     <span id="mcd_kwhYuseonggu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
                   </div>
-                  <div class="js-data-attributes" style="top: 41.2%; left: 33%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 40.5%; left: 34.1%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhYuseonggu">111</h5>
                     </div>
                   </div>
-                  <div class="js-data-attributes" style="top: 41.2%; left: 37.7%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 40.5%; left: 39.6%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhYuseonggu">222</h5>
                     </div>
                   </div><!-- //유성구-->
 
-                  <div class="js-data-attributes" style="left: 37%; top: 19%;">
+                  <div class="js-data-attributes" style="left: 34%; top: 16%;">
                     <span id="mcd_elecEvtDaedeokgu" data-peity='{ "fill": ["#f26f00", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
                   </div>
-                  <div class="js-data-attributes" style="left: 57%; top: 17.6%;">
+                  <div class="js-data-attributes" style="left: 58%; top: 15%;">
                     <span id="mcd_kwhDaedeokgu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
                   </div>
-                  <div class="js-data-attributes" style="top: 28.2%; left: 57%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 28.2%; left: 58%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhDaedeokgu">111</h5>
                     </div>
                   </div>
-                  <div class="js-data-attributes" style="top: 28.2%; left: 61.7%; width: 45px;">
+                  <div class="js-data-attributes" style="top: 28.2%; left: 63.5%; width: 45px;">
                     <div class="d-flex justify-content-center align-items-center align-content-center text-center">
                       <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhDaedeokgu">222</h5>
                     </div>
@@ -250,24 +255,44 @@
                 </div><!-- /.d-flex justify-content-center -->
               </div><!-- /.col-xl-12 -->
             </div><!-- /.row -->
-            <div class="row" style="padding-left: 5vh; padding-right: 5vh; padding-top: 2vh;">
-              <div class="col-xl-12">
+
+            <div class="row" style="padding-left: 0; padding-right: 0; padding-top: 2vh;">
+              <div class="col-6 pl-0 pr-0">
                 <div class="d-flex" style="border-bottom: 1px solid #ccc;">
-                  <div class="p-2 flex-fill">
-                    <h3 class="m-0">지역별 전월대비 이벤트 발생현황</h3>
-                  </div>
+                  <div class="p-2 flex-fill"><h3 class="m-0">자치구별 전월대비 이벤트 발생현황</h3></div>
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
                     <h4 class="m-0" style="color: #fff; margin-left: 1vh;">(단위 : %)</h4>
                   </div>
                 </div><!-- /.d-flex -->
-              </div><!-- /.col-xl-12 -->
-              <div class="col-xl-12 pt-2">
-                <canvas id="localEventChart" style="height: 290px; display: block; width: 100%;"></canvas>
-              </div><!-- /.col-xl-12 -->
-            </div><!-- /.row -->
-          </div><!-- /.col-6 -->
+                <div class="mt-2">
+                  <canvas id="mcd_guElecEvtChart"></canvas>
+                </div><!-- /.mt-2 -->
+              </div>
+              <div class="col-6 pl-1 pr-0">
+                <div class="d-flex" style="border-bottom: 1px solid #ccc;">
+                  <div class="p-2 flex-fill"><h3 class="m-0">자치구별 전월대비 전력사용량</h3></div>
+                </div><!-- /.d-flex -->
+                <div class="mt-2">
+                  <div class="d-flex flex-column">
+                    <div class="d-flex justify-content-start">
+                      <span class="line-badge d-flex align-content-center align-items-center justify-content-center"
+                            style="background-color: #2196F3; cursor: auto; margin-top: 6px;"></span>
+                      <span class="mcd_guLabels">전월대비 시간당 전력사용 비율 (단위 : %)</span>
+                    </div><!-- /.p-1 d-flex justify-content-start -->
+                    <div class="d-flex justify-content-start">
+                      <span class="btn-icon rounded-circle waves-effect waves-themed round-span"
+                            style="background-color: #627594; cursor: auto;"></span>
+                      <span class="mcd_guLabels">금월 전력사용량 (단위 : MWh)</span>
+                    </div><!-- /.p-1 d-flex justify-content-start -->
+                  </div><!-- /.d-flex -->
 
-          <div class="col-md-3 col-sm-12">
+                  <canvas id="mcd_guKwhChart"></canvas>
+                </div><!-- /.mt-2 -->
+              </div>
+            </div><!-- /.row -->
+          </div><!-- /.col-md-5 col-sm-12 -->
+
+          <div class="col-md-4 col-sm-12">
             <div class="row">
               <div class="col-xl-12">
                 <div class="d-flex justify-content-center">
@@ -296,7 +321,7 @@
             <div class="row pt-3">
               <div class="col-xl-12" id="areaList"></div>
             </div><!-- /.row -->
-          </div><!-- /.col-3 -->
+          </div><!-- /.col-md-4 col-sm-12 -->
         </div><!-- /.row -->
       </main>
 
@@ -401,6 +426,103 @@ $(function () {
 
   $("#mcd_kwhDaedeokgu").text("111,222");
   $(".bar-colours-2").peity("bar", { fill: ["#2196F3", "#FF684A"] });
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  let bar_ctx = document.getElementById('mcd_guElecEvtChart').getContext('2d');
+  let background_1 = bar_ctx.createLinearGradient(0, 0, 0, 310);
+  background_1.addColorStop(0, '#f58a39');
+  background_1.addColorStop(1, '#fbcf33');
+
+  let mcd_guElecEvtChart = new Chart($("#mcd_guElecEvtChart"), {
+    type: 'bar',
+    data:  { 
+      labels: ['동구', '중구', '서구', '유성구', '대덕구'],
+      datasets: [{ label: '', backgroundColor: background_1, borderWidth: 1, data: [50, 33, 84, 56, 39] }] 
+    },
+    options: {
+      responsive: false,
+      legend: { position: 'bottom',  display: false },
+      hover: { animationDuration: 0 },
+      scales: {
+        yAxes : [{ ticks : { fontSize: 11 }, afterDataLimits(scale) { scale.max += 30; } }],
+        xAxes : [{ ticks: { fontColor: "white", fontSize: 15 } }]
+      },
+      animation: {
+        duration: 1,
+        onComplete: function () {
+          let chartInstance = this.chart, ctx = chartInstance.ctx;
+          ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+
+          this.data.datasets.forEach(function (dataset, i) {
+            let meta = chartInstance.controller.getDatasetMeta(i);
+
+            meta.data.forEach(function (bar, index) {
+              let data = dataset.data[index];
+              ctx.fillStyle = "#fff";
+              ctx.font = "bold 13px 'NanumBarunGothic', sans-serif";
+              ctx.fillText(data, bar._model.x, bar._model.y);
+            });
+          });
+      }},
+      title: { display: false, text: '' }
+    }
+  });
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  bar_ctx = document.getElementById('mcd_guKwhChart').getContext('2d');
+  background_1 = bar_ctx.createLinearGradient(0, 0, 0, 310);
+
+  background_1.addColorStop(0, '#374268');
+  background_1.addColorStop(1, '#78849c');
+
+  let mcd_guKwhChart = new Chart($("#mcd_guKwhChart"), {
+    type: 'bar',
+    data: {
+      labels: ['동구', '중구', '서구', '유성구', '대덕구'],
+      datasets: [
+        { type: 'line', label: '', yAxisID: 'A', fill: false, borderColor: 'rgb(54, 162, 235)', data: [779, 1057, 1693, 318, 959] },
+        { type: 'bar', label: '', yAxisID: 'B', borderColor: background_1, backgroundColor: background_1, borderWidth: 1, data: [312, 5581, 5206, 1908, 2914] }
+      ]
+    },
+    options: {
+      responsive: false,
+      legend: { position: 'bottom', display: false },
+      "hover": { "animationDuration": 0 },
+      scales: {
+        yAxes : [
+          { id: 'B', type: 'linear', position: 'left', ticks : { fontColor: "white", fontSize: 11 }, afterDataLimits(scale) { scale.max += 50; } },
+          { id: 'A', type: 'linear', position: 'right', ticks: { fontColor: "white", fontSize: 11 } }
+        ],
+        xAxes : [{ ticks : { fontColor: "white", fontSize: 15 } }]
+      },
+      animation: {
+        duration: 1,
+        onComplete: function () {
+          let chartInstance = this.chart, ctx = chartInstance.ctx;
+          ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+
+          this.data.datasets.forEach(function (dataset, i) {
+            if (i === 1) {
+              let meta = chartInstance.controller.getDatasetMeta(i);
+
+              meta.data.forEach(function (bar, index) {
+                let data = dataset.data[index];
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 13px 'NanumBarunGothic', sans-serif";
+
+                ctx.fillText(data, bar._model.x, bar._model.y);
+              });
+            }
+          });
+      }},
+      title: { display: false, text: '' }
+    }
+  });
+  
 });
 </script>
 </body>
