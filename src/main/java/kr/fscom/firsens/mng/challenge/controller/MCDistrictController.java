@@ -32,6 +32,20 @@ public class MCDistrictController {
     }
 
     /**
+     * @Method Name : mcdMainPage
+     * @작성일 : 2022-05-17
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 대전시 자치구별 전기위험현황
+     * @return ModelAndView
+     */
+    @GetMapping(value = "/main")
+    public ModelAndView mcdMainPage() throws Exception {
+        return new ModelAndView("mng/challenge/mc_district");
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
      * @Method Name : mcdSnsrMainPage
      * @작성일 : 2021-08-20
      * @작성자 : uhm
