@@ -112,7 +112,7 @@ public class IMGMainController {
     @ResponseBody
     public List<HashMap<String, Object>> mciTodayGuAreaState(HttpServletRequest req) throws Exception {
         try {
-            return imgMainRepo.LIST_MCI_TODAY_GU_AREA_STATE();
+            return imgMainRepo.LIST_MCI_TODAY_GRP_AREA_STATE();
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {

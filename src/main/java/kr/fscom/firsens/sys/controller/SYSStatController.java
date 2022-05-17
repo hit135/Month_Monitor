@@ -35,7 +35,7 @@ public class SYSStatController {
         HashMap<String, Object> rtn = new HashMap<>();
 
         try {
-            rtn.put("resultList", type.equals("guCode") ? sysStatRepo.LIST_TYPE_GUCODE() : sysStatRepo.LIST_TYPE_AREACODE());
+            rtn.put("resultList", type.equals("grpCode") ? sysStatRepo.LIST_TYPE_GRPCODE() : sysStatRepo.LIST_TYPE_AREACODE());
             rtn.put("result", "success");
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
@@ -52,7 +52,7 @@ public class SYSStatController {
     }
 
     @GetMapping(value = "/statInfo")
-    public HashMap<String, Object> statInfo(String type, String guCode, String areaCode, String startDate, String endDate, String strCode
+    public HashMap<String, Object> statInfo(String type, String grpCode, String areaCode, String startDate, String endDate, String strCode
             , String dateType, String yearDate, String monthDate, String halfDate, String halfSelect, String quarterDate) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         HashMap<String, Object> paramMap = new HashMap<>();
@@ -120,9 +120,9 @@ public class SYSStatController {
             rtn.put("hourlyStat", sysStatRepo.LIST_SYS_STAT_AREA_HOURLY_STAT(paramMap));
             rtn.put("dayOfWeekStat", sysStatRepo.LIST_SYS_STAT_AREA_DAYOFWEEK_STAT(paramMap));
 
-            if (type.equals("guCode")) {
-                paramMap.put("guCode", guCode);
-                rtn.put("infoStat", sysStatRepo.LIST_SYS_STAT_GU_INFO_STAT(guCode));
+            if (type.equals("grpCode")) {
+                paramMap.put("grpCode", grpCode);
+                rtn.put("infoStat", sysStatRepo.LIST_SYS_STAT_GRP_INFO_STAT(grpCode));
             } else if (type.equals("areaCode")){
                 rtn.put("levelAreaStat", sysStatRepo.LIST_SYS_STAT_LEVEL_AREA_STAT(paramMap));
                 rtn.put("levelStrStat", sysStatRepo.LIST_SYS_STAT_STR_EVENT_STAT(paramMap));
@@ -147,7 +147,7 @@ public class SYSStatController {
     }
 
     @GetMapping(value = "/statInfoList")
-    public HashMap<String, Object> statInfoList(String type, String guCode, String areaCode, String startDate, String endDate,
+    public HashMap<String, Object> statInfoList(String type, String grpCode, String areaCode, String startDate, String endDate,
             String dateType, String yearDate, String monthDate, String halfDate, String halfSelect, String quarterDate) throws Exception {
         HashMap<String, Object> rtn = new HashMap<>();
         HashMap<String, Object> paramMap = new HashMap<>();
@@ -212,9 +212,9 @@ public class SYSStatController {
             }
 
             paramMap.put("type", type);
-            if (type.equals("guCode")) {
-                paramMap.put("guCode", guCode);
-                rtn.put("infoStat", sysStatRepo.LIST_SYS_STAT_GU_INFO_STAT(guCode));
+            if (type.equals("grpCode")) {
+                paramMap.put("grpCode", grpCode);
+                rtn.put("infoStat", sysStatRepo.LIST_SYS_STAT_GRP_INFO_STAT(grpCode));
             } else if (type.equals("areaCode")) {
                 paramMap.put("areaCode", areaCode);
 

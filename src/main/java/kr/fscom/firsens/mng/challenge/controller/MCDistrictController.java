@@ -104,7 +104,7 @@ public class MCDistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> mcdCurrGuMapEventStatAjax(HttpServletRequest req) throws Exception {
         try {
-            return mcDistrictRepo.LIST_MCD_CURR_GU_MAP_EVENT_STAT();
+            return mcDistrictRepo.LIST_MCD_CURR_GRP_MAP_EVENT_STAT();
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {
@@ -128,7 +128,7 @@ public class MCDistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> mcdMonthlyGuEventCompStat(HttpServletRequest req) throws Exception {
         try {
-            return mcDistrictRepo.LIST_MCD_MONTHLY_GU_EVENT_COMP_STAT();
+            return mcDistrictRepo.LIST_MCD_MONTHLY_GRP_EVENT_COMP_STAT();
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {
@@ -152,7 +152,7 @@ public class MCDistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> mcdTodayGuAreaEventCompRank(HttpServletRequest req) throws Exception {
         try {
-            return mcDistrictRepo.LIST_MCD_TODAY_GU_AREA_EVENT_COMP_RANK();
+            return mcDistrictRepo.LIST_MCD_TODAY_GRP_AREA_EVENT_COMP_RANK();
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {
@@ -176,7 +176,7 @@ public class MCDistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> mcdTodayGuEvent(HttpServletRequest req) throws Exception {
         try {
-            return mcDistrictRepo.LIST_MCD_TODAY_GU_EVENT();
+            return mcDistrictRepo.LIST_MCD_TODAY_GRP_EVENT();
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {
@@ -262,7 +262,7 @@ public class MCDistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> mcdGuMapKwhStatAjax(HttpServletRequest req) throws Exception {
         try {
-            return mcDistrictRepo.LIST_MCD_GU_MAP_KWH_STAT();
+            return mcDistrictRepo.LIST_MCD_GRP_MAP_KWH_STAT();
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {
@@ -286,7 +286,7 @@ public class MCDistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> mcdGuMonthKwhStatAjax(HttpServletRequest req) throws Exception {
         try {
-            return mcDistrictRepo.LIST_MCD_GU_MONTH_KWH_STAT();
+            return mcDistrictRepo.LIST_MCD_GRP_MONTH_KWH_STAT();
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {
@@ -310,7 +310,7 @@ public class MCDistrictController {
     @ResponseBody
     public List<HashMap<String, Object>> mcdGuAreaKwhRankAjax(HttpServletRequest req) throws Exception {
         try {
-            return mcDistrictRepo.LIST_MCD_GU_AREA_KWH_STAT();
+            return mcDistrictRepo.LIST_MCD_GRP_AREA_KWH_STAT();
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {

@@ -10,10 +10,10 @@ import java.util.List;
 @Repository
 public interface SYSStatRepo {
 
-    List<HashMap<String, Object>> LIST_TYPE_GUCODE() throws Exception;
+    List<HashMap<String, Object>> LIST_TYPE_GRPCODE() throws Exception;
     List<HashMap<String, Object>> LIST_TYPE_AREACODE() throws Exception;
 
-    List<HashMap<String, Object>> LIST_SYS_STAT_GU_INFO_STAT(String guCode) throws Exception;
+    List<HashMap<String, Object>> LIST_SYS_STAT_GRP_INFO_STAT(String grpCode) throws Exception;
     HashMap<String, Object> SELECT_SYS_STAT_AREA_INFO_STAT(String areaCode) throws Exception;
     HashMap<String, Object> SELECT_SYS_STAT_STR_INFO(HashMap<String, Object> map) throws Exception;
     // HashMap<String, Object> SELECT_SYS_STAT_SNSR_INFO(HashMap<String, Object> map) throws Exception;

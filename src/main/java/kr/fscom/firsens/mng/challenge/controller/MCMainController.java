@@ -117,7 +117,7 @@ public class MCMainController {
    @ResponseBody
    public List<HashMap<String, Object>> mcmTodayGuAreaState(HttpServletRequest req) throws Exception {
        try {
-           return mcMainRepo.LIST_MCM_TODAY_GU_AREA_STATE();
+           return mcMainRepo.LIST_MCM_TODAY_GRP_AREA_STATE();
        } catch (NullPointerException e) {
            LOG.debug(e.getMessage());
        } catch (SQLException e) {

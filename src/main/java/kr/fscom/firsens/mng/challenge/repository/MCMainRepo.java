@@ -28,7 +28,7 @@ import java.util.Map;
 public interface MCMainRepo {
 
     List<HashMap<String, Object>> LIST_MCM_TODAY_TOTAL_STATE() throws Exception;                                    // 오늘 종합 현황 (전체, 경고, 주의, 끊김)
-    List<HashMap<String, Object>> LIST_MCM_TODAY_GU_AREA_STATE() throws Exception;                                  // 오늘 구별, 시장별 현황 (상점, 센서, 경고, 주의, 끊김)
+    List<HashMap<String, Object>> LIST_MCM_TODAY_GRP_AREA_STATE() throws Exception;                                  // 오늘 구별, 시장별 현황 (상점, 센서, 경고, 주의, 끊김)
     List<HashMap<String, Object>> LIST_MCM_CHECK_SENSOR() throws Exception;                                         // 점검내역 목록
     List<HashMap<String, Object>> LIST_MCM_TODAY_ABNORMAL_SENSOR() throws Exception;                                // 오늘 상태이상 센서 목록
 

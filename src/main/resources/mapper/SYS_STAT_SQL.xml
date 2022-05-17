@@ -3,18 +3,18 @@
 
 <mapper namespace="kr.fscom.firsens.sys.repository.SYSStatRepo">
 
-    <select id="LIST_TYPE_GUCODE" resultType="map">
+    <select id="LIST_TYPE_GRPCODE" resultType="map">
         SELECT
-            GUCODE AS guCode
-            , GRPCODE AS grpCode
-            , GUNAME AS guName
+            GRPCODE AS grpCode
+            , GRPNAME AS grpName
         FROM
-            F_GUCODE
+            F_GROUP
         WHERE
             USEYN = 'Y'
-            AND GUCODE != '28'
+            AND GRPCODE != '28'
+            AND PARENTGRPCODE IS NOT NULL
         ORDER BY
-            GUCODE
+            GRPCODE
     </select>
 
     <select id="LIST_TYPE_AREACODE" resultType="map">
@@ -25,12 +25,12 @@
             F_LEVEL_AREA
         WHERE
             CONCAT(AREALEVEL, USEYN, DELYN) = '1YN'
-            AND GUCODE != '28'
+            AND GRPCODE != '28'
         ORDER BY
             AREAORDER
     </select>
 
-    <select id="LIST_SYS_STAT_GU_INFO_STAT" parameterType="String" resultType="map">
+    <select id="LIST_SYS_STAT_GRP_INFO_STAT" parameterType="String" resultType="map">
         SELECT
             L.AREANAME AS areaName
             , L.AREAADDR AS areaAddr
@@ -44,7 +44,7 @@
                  F_LEVEL_AREA
              WHERE
                  CONCAT(AREALEVEL, USEYN, DELYN) = '1YN'
-                 AND GUCODE = #{guCode}
+                 AND GRPCODE = #{grpCode}
             ) L
                 LEFT JOIN (SELECT AREACODE, STRCODE FROM F_STORE WHERE COUCAT(USEYN, DELYN) = 'YN') S
                     ON L.AREACODE = S.AREACODE

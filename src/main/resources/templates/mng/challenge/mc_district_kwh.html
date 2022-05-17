@@ -362,7 +362,7 @@ function fn_mcdk_getCurrGuMapKwhStat () {
       todayNum = 24 * (todayIndex) + today.getHours();
 
     $.each(d, function (idx, item) {
-      if (item.GUCODE === "30110") {          // 동구
+      if (item.GRPCODE === "30110") {          // 동구
         let dongguBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
         let dongguToday = Math.round(item.THISWEEKUSEKWH / todayNum);
 
@@ -370,7 +370,7 @@ function fn_mcdk_getCurrGuMapKwhStat () {
         $("#tDonggu").text(dongguToday);
 
         fn_mcdk_drawPeityBar(item.SNSRCNT, dongguBefore, dongguToday, "donggu");
-      } else if (item.GUCODE === "30140") {   //중구
+      } else if (item.GRPCODE === "30140") {   //중구
         let jungguBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
         let jungguToday = Math.round(item.THISWEEKUSEKWH / todayNum);
 
@@ -378,7 +378,7 @@ function fn_mcdk_getCurrGuMapKwhStat () {
         $("#tJunggu").text(jungguToday);
 
         fn_mcdk_drawPeityBar(item.SNSRCNT, jungguBefore, jungguToday, "junggu");
-      } else if (item.GUCODE === "30170") {   // 서구
+      } else if (item.GRPCODE === "30170") {   // 서구
         let seoguBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
         let seoguToday = Math.round(item.THISWEEKUSEKWH / todayNum);
 
@@ -386,7 +386,7 @@ function fn_mcdk_getCurrGuMapKwhStat () {
         $("#tSeogu").text(seoguToday);
 
         fn_mcdk_drawPeityBar(item.SNSRCNT, seoguBefore, seoguToday, "seogu");
-      } else if (item.GUCODE === "30200") {   // 유성구
+      } else if (item.GRPCODE === "30200") {   // 유성구
         let yuseongBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
         let yuseongToday = Math.round(item.THISWEEKUSEKWH / todayNum);
 
@@ -394,7 +394,7 @@ function fn_mcdk_getCurrGuMapKwhStat () {
         $("#tYuseonggu").text(yuseongToday);
 
         fn_mcdk_drawPeityBar(item.SNSRCNT, yuseongBefore, yuseongToday, "yuseonggu");
-      } else if (item.GUCODE === "30230") {   // 대덕구
+      } else if (item.GRPCODE === "30230") {   // 대덕구
         let daedoekBefore = Math.round(item.THATWEEKUSEKWH / (24 * 7));
         let daedoekToday = Math.round(item.THISWEEKUSEKWH / todayNum);
 
@@ -414,19 +414,19 @@ function fn_mcdk_drawPeityBar(snsrCnt, yKwh, tKwh, className) {
 
 function fn_mcdk_getCurrGuMonthKwhStat() {
   $.get(contextPath + '/district/guMonthKwhStat', function (d) {
-    let guName = "";
-    let guNameLabel = [];
+    let grpName = "";
+    let grpNameLabel = [];
     let barKwhList = [];
     let lineKwhPerList = [];
 
     $.each(d, function (idx, item) {
-      if (item.GUCODE === "30110") guName = "동구";
-      else if (item.GUCODE === "30140") guName = "중구";
-      else if (item.GUCODE === "30170") guName = "서구";
-      else if (item.GUCODE === "30230") guName = "대덕구";
-      else if (item.GUCODE === "30200") guName = "유성구";
+      if (item.GRPCODE === "30110") grpName = "동구";
+      else if (item.GRPCODE === "30140") grpName = "중구";
+      else if (item.GRPCODE === "30170") grpName = "서구";
+      else if (item.GRPCODE === "30230") grpName = "대덕구";
+      else if (item.GRPCODE === "30200") grpName = "유성구";
 
-      guNameLabel.push(guName);
+      grpNameLabel.push(grpName);
       barKwhList.push(Math.round(item.THISMONTHUSEKWH / 1000));
       lineKwhPerList.push(Math.round(item.USEPER));
     });
@@ -438,7 +438,7 @@ function fn_mcdk_getCurrGuMonthKwhStat() {
     background_1.addColorStop(1, '#78849c');
 
     let localLabel = {
-      labels: guNameLabel,
+      labels: grpNameLabel,
       datasets: [
         { type: 'line', label: '', yAxisID: 'A', fill: false, borderColor: 'rgb(54, 162, 235)', data: lineKwhPerList },
         { type: 'bar', label: '', yAxisID: 'B', borderColor: background_1, backgroundColor: background_1, borderWidth: 1, data: barKwhList }
@@ -498,45 +498,45 @@ function fn_mcdk_getCurrGuAreaKwhRank() {
     let yuseongguCnt = 0
 
     $.each(d, function (idx, item) {
-      if (item.GUCODE === "30110") dongguCnt += item.THISMONTHUSEKWH;
-      else if (item.GUCODE === "30140") jungguCnt += item.THISMONTHUSEKWH;
-      else if (item.GUCODE === "30170") seoguCnt += item.THISMONTHUSEKWH;
-      else if (item.GUCODE === "30200") yuseongguCnt += item.THISMONTHUSEKWH;
-      else if (item.GUCODE === "30230") daedoekguCnt += item.THISMONTHUSEKWH;
+      if (item.GRPCODE === "30110") dongguCnt += item.THISMONTHUSEKWH;
+      else if (item.GRPCODE === "30140") jungguCnt += item.THISMONTHUSEKWH;
+      else if (item.GRPCODE === "30170") seoguCnt += item.THISMONTHUSEKWH;
+      else if (item.GRPCODE === "30200") yuseongguCnt += item.THISMONTHUSEKWH;
+      else if (item.GRPCODE === "30230") daedoekguCnt += item.THISMONTHUSEKWH;
     });
 
     let orderList = [
-      { GUCODE: "30110", SUMCNT: dongguCnt }, { GUCODE: "30140", SUMCNT: jungguCnt }, { GUCODE: "30170", SUMCNT: seoguCnt },
-      { GUCODE: "30200", SUMCNT: yuseongguCnt}, { GUCODE: "30230", SUMCNT: daedoekguCnt }
+      { GRPCODE: "30110", SUMCNT: dongguCnt }, { GRPCODE: "30140", SUMCNT: jungguCnt }, { GRPCODE: "30170", SUMCNT: seoguCnt },
+      { GRPCODE: "30200", SUMCNT: yuseongguCnt}, { GRPCODE: "30230", SUMCNT: daedoekguCnt }
     ];
 
     orderList.sort(function (a, b) { return b.SUMCNT - a.SUMCNT; });
 
     let btnClass = "";
-    let guName;
+    let grpName;
 
     $.each(orderList, function (idx1, item1) {
-      if (item1.GUCODE === "30110") {
+      if (item1.GRPCODE === "30110") {
         btnClass = "donggu-btn";
-        guName = "동구";
-      } else if (item1.GUCODE === "30140") {
+        grpName = "동구";
+      } else if (item1.GRPCODE === "30140") {
         btnClass = "junggu-btn";
-        guName = "중구";
-      } else if (item1.GUCODE === "30170") {
+        grpName = "중구";
+      } else if (item1.GRPCODE === "30170") {
         btnClass = "seogu-btn";
-        guName = "서구";
-      } else if (item1.GUCODE === "30230") {
+        grpName = "서구";
+      } else if (item1.GRPCODE === "30230") {
         btnClass = "daedeokgu-btn";
-        guName = "대덕구";
-      } else if (item1.GUCODE === "30200") {
+        grpName = "대덕구";
+      } else if (item1.GRPCODE === "30200") {
         btnClass = "yuseonggu-btn";
-        guName = "유성구";
+        grpName = "유성구";
       }
 
-      let html = '<div class="d-inline-flex"><h2><span class="badge pl-4 pr-4 pt-2 pb-2 ' + btnClass + '" style="font-weight: 900;">' + guName + '</span></h2></div>';
+      let html = '<div class="d-inline-flex"><h2><span class="badge pl-4 pr-4 pt-2 pb-2 ' + btnClass + '" style="font-weight: 900;">' + grpName + '</span></h2></div>';
 
       $.each(d, function (idx2, item2) {
-        if (item1.GUCODE === item2.GUCODE) {
+        if (item1.GRPCODE === item2.GRPCODE) {
           html += [ '<div class="d-flex">'
                   ,   '<div class="p-2 flex-fill" style="width: 180px;"><h4 class="m-0" style="font-weight: 400">' + item2.AREANAME + '</h4></div>'
                   ,   '<div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">'

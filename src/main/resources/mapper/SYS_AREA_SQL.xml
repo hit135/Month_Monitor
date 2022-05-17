@@ -94,7 +94,7 @@
             , FA.AREAPOSLON AS areaPosLon
             , FA.AREAMANAGER AS areaManager
             , FA.AREATEL AS areaTel
-            , FA.GUCODE AS guCode
+            , FA.GRPCODE AS grpCode
             , IFNULL((SELECT COUNT(AREACODE) FROM F_LEVEL_AREA B WHERE B.UPAREACODE = FA.UPAREACODE), 0) AS orderCnt
         FROM
             F_LEVEL_AREA FA

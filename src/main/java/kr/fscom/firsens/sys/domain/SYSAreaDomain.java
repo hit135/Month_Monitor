@@ -43,7 +43,7 @@ public class SYSAreaDomain {
     @JsonProperty("delYn")              private String delYn = "N";                     // 삭제여부
     @JsonProperty("regDate")            private String regDate = "";                    // 등록일시
     @JsonProperty("areaLevel")          private int areaLevel = 0;                      // 구역레벨
-    @JsonProperty("guCode")             private String guCode = "";                     // 구코드
+    @JsonProperty("grpCode")             private String grpCode = "";                     // 구코드
     @JsonProperty("storeCnt")           private int storeCnt = 0;                       // 소속 상점 수
     @JsonProperty("type")               private String type = "";                       // 레벨타입
     @JsonProperty("orderCnt")           private int orderCnt = 0;                       // 정렬갯수

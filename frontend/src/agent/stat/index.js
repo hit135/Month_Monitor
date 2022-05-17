@@ -6,10 +6,10 @@ import React from "react";
 const axios = require('axios');
 export const getSelectGroup = (type) =>
   axios.get( `${API_ROOT}/selectGroup?type=${type}`)
-export const getStatInfo = (type, guCode, areaCode, strCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
+export const getStatInfo = (type, grpCode, areaCode, strCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
   axios.get([
     `${API_ROOT}/statInfo?type=${type}`
-    , `guCode=${guCode}`
+    , `grpCode=${grpCode}`
     , `areaCode=${areaCode}`
     , `strCode=${strCode}`
     , `startDate=${formatDate(startDate)}`
@@ -21,10 +21,10 @@ export const getStatInfo = (type, guCode, areaCode, strCode, startDate, endDate,
     , `halfSelect=${halfSelect}`
     , `quarterDate=${formatDate(quarterDate)}`
   ].join('&'));
-export const getStatInfoList = (type, guCode, areaCode, strCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
+export const getStatInfoList = (type, grpCode, areaCode, strCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
   axios.get([
     `${API_ROOT}/statInfoList?type=${type}`
-    , `guCode=${guCode}`
+    , `grpCode=${grpCode}`
     , `areaCode=${areaCode}`
     , `strCode=${strCode}`
     , `startDate=${formatDate(startDate)}`

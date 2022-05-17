@@ -53,7 +53,7 @@ const StatMgr = () => {
   const [halfSelect, setHalfSelect] = useState("상반기");
   const [quarterDate, setQuarterDate] = useState(new Date());
   const [topBtnValue, setTopBtnValue] = useState("시장보고");
-  const [guCode, setGuCode] = useState("30110");
+  const [grpCode, setGuCode] = useState("30110");
   const [areaName, setAreaName] = useState("");
   const [areaCode, setAreaCode] = useState("AREA_000003");
   const [areaState, setAreaState] = useState();
@@ -128,8 +128,8 @@ const StatMgr = () => {
           if (resp.data['result'] === "success") {
             let html = '';
             for (let item of resp.data['resultList'])
-              if (type === "guCode")
-                html += `<option value="${item['guCode']}">${item['guName']}</option>`;
+              if (type === "grpCode")
+                html += `<option value="${item['grpCode']}">${item['grpName']}</option>`;
               else if(type === "areaCode")
                 html += `<option value="${item['areaCode']}">${item['areaName']}</option>`;
 
@@ -146,7 +146,7 @@ const StatMgr = () => {
   };
 
   const handleChangeGroup = e => {
-    if (typeValue === "guCode")
+    if (typeValue === "grpCode")
       setGuCode(e.target.value);
     else
       setAreaCode(e.target.value);
@@ -206,7 +206,7 @@ const StatMgr = () => {
       return false;
     }
 
-    await getStatInfo(typeValue, guCode, areaCode, strCode,  startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
+    await getStatInfo(typeValue, grpCode, areaCode, strCode,  startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
       if (resp.data['result'] === "success") {
         searchStartDate = resp.data["startDate"];
         searchEndDate = resp.data["endDate"];
@@ -276,7 +276,7 @@ const StatMgr = () => {
     });
 
     if (typeValue !== "store") {
-      await getStatInfoList(typeValue, guCode, areaCode, strCode,  startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
+      await getStatInfoList(typeValue, grpCode, areaCode, strCode,  startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate).then(resp => {
         if (resp.data['result'] === "success") {
           if (resp.data["areaKwhStat"] !== null)
             setAreaKwhStat(areaKwhStatComp(areaNameTitle, resp.data["areaKwhStat"]));
@@ -338,7 +338,7 @@ const StatMgr = () => {
               <h5 className={"mb-0 ml-0 d-flex justify-content-center align-items-center"}>통계 보고서</h5>
               <div className={'d-flex'}>
                 <CButtonGroup className="mr-3">
-                  {[{type: 'guCode', name : '구청보고'}, {type: 'areaCode', name : '시장보고'}, {type: 'store', name : '상점주보고'}].map((item, idx) => (
+                  {[{type: 'grpCode', name : '구청보고'}, {type: 'areaCode', name : '시장보고'}, {type: 'store', name : '상점주보고'}].map((item, idx) => (
                     <CButton color="outline-info" key={item.name} className="mx-0" active={item.name === topBtnValue} disabled={item.name === '구청보고'}
                              onClick={e => {
                                setTopBtnValue(e.target.innerHTML);

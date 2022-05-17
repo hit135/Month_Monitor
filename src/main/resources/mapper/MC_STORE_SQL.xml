@@ -185,7 +185,7 @@
                                I1.SNSRSEQ) I
                     ON S.STRCODE = I.STRCODE
         WHERE
-            CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+            CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
         GROUP BY
             S.STRCODE
         ORDER BY
@@ -250,7 +250,7 @@
                     ON I.SNSRID = E.SNSRID
         WHERE
             CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GUCODE) LIKE '1YN30%'
+            AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
             AND A.AREACODE = #{areacode}
         GROUP BY
             I.SNSRID
@@ -275,7 +275,7 @@
                 LEFT JOIN F_LEVEL_AREA L
                     ON S.AREACODE = L.AREACODE
         WHERE
-            CONCAT(L.AREALEVEL, L.USEYN, L.DELYN, L.GUCODE) LIKE '1YN30%'
+            CONCAT(L.AREALEVEL, L.USEYN, L.DELYN, L.GRPCODE) LIKE '1YN30%'
         ORDER BY
             S.STRNAME
     </select>
@@ -946,7 +946,7 @@
                            FROM
                                F_CRN_SNSR_ELEC_EVT_STAT
                            WHERE
-                               GUCODE LIKE '30%'
+                               GRPCODE LIKE '30%'
                                AND AREACODE = #{areacode}
                                AND STRCODE = #{strcode}
                                AND SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})
@@ -975,7 +975,7 @@
                            FROM
                                F_CRN_SNSR_ELEC_EVT_STAT
                            WHERE
-                               GUCODE LIKE '30%'
+                               GRPCODE LIKE '30%'
                                AND AREACODE = #{areacode}
                                AND STRCODE = #{strcode}
                                AND SNSRSEQ = (SELECT SNSRSEQ FROM F_SENSOR_INFO WHERE SNSRID = #{snsrid})

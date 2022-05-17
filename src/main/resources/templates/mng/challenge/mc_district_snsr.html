@@ -324,15 +324,15 @@ function fn_mcds_getTodayEventStatAjax() {
 function fn_mcds_getCurrGuMapEventStat () {
   $.get(contextPath + '/district/currGuMapEventStat', function (d) {
     $.each(d, function (idx, item) {
-      if (item.GUCODE === "30110")         // 동구
+      if (item.GRPCODE === "30110")         // 동구
         fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "donggu");
-      else if (item.GUCODE === "30140")    // 중구
+      else if (item.GRPCODE === "30140")    // 중구
         fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "junggu");
-      else if (item.GUCODE === "30170")    // 서구
+      else if (item.GRPCODE === "30170")    // 서구
         fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "seogu");
-      else if (item.GUCODE === "30200")    // 유성구
+      else if (item.GRPCODE === "30200")    // 유성구
         fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "yuseonggu");
-      else if (item.GUCODE === "30230")    // 대덕구
+      else if (item.GRPCODE === "30230")    // 대덕구
         fn_mcds_drawPeityDonut(item.SNSRCNT, item.DISCONNCNT, "daedeokgu");
     });
   });
@@ -368,21 +368,21 @@ function fn_mcds_getTodayGuAreaEventCompRankAjax() {
     let daedeokguCnt = 0;
 
     $.each(d, function (idx, item) {
-      if (item.GUNAME === "동구")
+      if (item.GRPNAME === "동구")
         dongguCnt += item.THISDANGERCNT + item.THISWARNINGCNT;
-      else if (item.GUNAME === "중구")
+      else if (item.GRPNAME === "중구")
         jungguCnt += item.THISDANGERCNT + item.THISWARNINGCNT;
-      else if (item.GUNAME === "서구")
+      else if (item.GRPNAME === "서구")
         seoguCnt += item.THISDANGERCNT + item.THISWARNINGCNT;
-      else if (item.GUNAME === "유성구")
+      else if (item.GRPNAME === "유성구")
         yuseongCnt += item.THISDANGERCNT + item.THISWARNINGCNT;
-      else if (item.GUNAME === "대덕구")
+      else if (item.GRPNAME === "대덕구")
         daedeokguCnt += item.THISDANGERCNT + item.THISWARNINGCNT;
     });
 
     let orderList = [
-      { GUNAME: "동구", SUMCNT: dongguCnt }, { GUNAME: "중구", SUMCNT: jungguCnt }, { GUNAME: "서구", SUMCNT: seoguCnt },
-      { GUNAME: "유성구", SUMCNT: yuseongCnt }, { GUNAME: "대덕구", SUMCNT: daedeokguCnt }
+      { GRPNAME: "동구", SUMCNT: dongguCnt }, { GRPNAME: "중구", SUMCNT: jungguCnt }, { GRPNAME: "서구", SUMCNT: seoguCnt },
+      { GRPNAME: "유성구", SUMCNT: yuseongCnt }, { GRPNAME: "대덕구", SUMCNT: daedeokguCnt }
     ];
 
     orderList.sort(function (a, b) { return b.SUMCNT - a.SUMCNT; });
@@ -394,30 +394,30 @@ function fn_mcds_getTodayGuAreaEventCompRankAjax() {
     let guTotalDangerArrowId = "";
 
     $.each(orderList, function (idx1, item1) {
-      if (item1.GUNAME === "동구") {
+      if (item1.GRPNAME === "동구") {
         btnClass = "donggu-btn";
         guTotalWarningCntId = 'donggu-warning-cnt', guTotalWarningArrowId = 'donggu-warning-arrow';
         guTotalDangerCntId = 'donggu-danger-cnt', guTotalDangerArrowId = 'donggu-danger-arrow';
-      } else if (item1.GUNAME === "중구") {
+      } else if (item1.GRPNAME === "중구") {
         btnClass = "junggu-btn";
         guTotalWarningCntId = 'junggu-warning-cnt', guTotalWarningArrowId = 'junggu-warning-arrow';
         guTotalDangerCntId = 'junggu-danger-cnt', guTotalDangerArrowId = 'junggu-danger-arrow';
-      } else if (item1.GUNAME === "서구") {
+      } else if (item1.GRPNAME === "서구") {
         btnClass = "seogu-btn";
         guTotalWarningCntId = 'seogu-warning-cnt', guTotalWarningArrowId = 'seogu-warning-arrow';
         guTotalDangerCntId = 'seogu-danger-cnt', guTotalDangerArrowId = 'seogu-danger-arrow';
-      } else if (item1.GUNAME === "유성구") {
+      } else if (item1.GRPNAME === "유성구") {
         btnClass = "yuseonggu-btn";
         guTotalWarningCntId = 'yuseonggu-warning-cnt', guTotalWarningArrowId = 'yuseonggu-warning-arrow';
         guTotalDangerCntId = 'yuseonggu-danger-cnt', guTotalDangerArrowId = 'yuseonggu-danger-arrow';
-      } else if (item1.GUNAME === "대덕구") {
+      } else if (item1.GRPNAME === "대덕구") {
         btnClass = "daedeokgu-btn";
         guTotalWarningCntId = 'daedeokgu-warning-cnt', guTotalWarningArrowId = 'daedeokgu-warning-arrow';
         guTotalDangerCntId = 'daedeokgu-danger-cnt', guTotalDangerArrowId = 'daedeokgu-danger-arrow';
       }
 
       let html = [ '<div class="d-flex">'
-                 ,   '<div class="p-2 flex-fill" style="width: 180px;"><h2><span class="badge pl-4 pr-4 pt-2 pb-2 ' + btnClass + '" style="font-weight: 900;">' + item1.GUNAME + '</span></h2></div>'
+                 ,   '<div class="p-2 flex-fill" style="width: 180px;"><h2><span class="badge pl-4 pr-4 pt-2 pb-2 ' + btnClass + '" style="font-weight: 900;">' + item1.GRPNAME + '</span></h2></div>'
                  ,   '<div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">'
                  ,     '<h3 class="m-0" id="' + guTotalWarningCntId + '" style="color: #ffc000;">0</h3>'
                  ,     '<img class="arrow-icon" id="' + guTotalWarningArrowId + '" src="' + (contextPath + '/fs/img/district/down-arrow.png') + '" alt="icon" />'
@@ -446,7 +446,7 @@ function fn_mcds_getTodayGuAreaEventCompRankAjax() {
         else
           dangerSrc = contextPath + "/fs/img/district/equal-arrow.png";
 
-        if (item1.GUNAME === item2.GUNAME) {
+        if (item1.GRPNAME === item2.GRPNAME) {
           html += [ '<div class="d-flex">'
                   ,   '<div class="p-2 flex-fill" style="width: 180px;">'
                   ,     '<h3 class="m-0" style="font-weight: 400">'+ item2.AREANAME +'</h3>'
@@ -484,11 +484,11 @@ function fn_mcds_getTodayGuEventAjax() {
     let guId = '';
 
     $.each(d, function (idx, item) {
-      if (item.GUNAME === "동구") guId = "donggu";
-      else if (item.GUNAME === "중구") guId = "junggu";
-      else if (item.GUNAME === "서구") guId = "seogu";
-      else if (item.GUNAME === "유성구") guId = "yuseonggu";
-      else if (item.GUNAME === "대덕구") guId = "daedeokgu";
+      if (item.GRPNAME === "동구") guId = "donggu";
+      else if (item.GRPNAME === "중구") guId = "junggu";
+      else if (item.GRPNAME === "서구") guId = "seogu";
+      else if (item.GRPNAME === "유성구") guId = "yuseonggu";
+      else if (item.GRPNAME === "대덕구") guId = "daedeokgu";
 
       $("#" + guId + "-warning-cnt").text(item.THISWARNINGCNT);
       $("#" + guId + "-danger-cnt").text(item.THISDANGERCNT);
@@ -513,18 +513,18 @@ function fn_mcds_getTodayGuEventAjax() {
 // 지역별 전월대비 이벤트 발생현황
 function fn_mcds_getMonthlyGuEventCompStatAjax() {
   $.get(contextPath + '/district/monthlyGuEventCompStatAjax', function (d) {
-    let guName = "";
-    let guNameLabel = [];
+    let grpName = "";
+    let grpNameLabel = [];
     let barEvnetList = [];
 
     $.each(d, function (idx, item) {
-      if (item.GUCODE === "30110") guName = "동구";
-      else if (item.GUCODE === "30140") guName = "중구";
-      else if (item.GUCODE === "30170") guName = "서구";
-      else if (item.GUCODE === "30200") guName = "유성구";
-      else if (item.GUCODE === "30230") guName = "대덕구";
+      if (item.GRPCODE === "30110") grpName = "동구";
+      else if (item.GRPCODE === "30140") grpName = "중구";
+      else if (item.GRPCODE === "30170") grpName = "서구";
+      else if (item.GRPCODE === "30200") grpName = "유성구";
+      else if (item.GRPCODE === "30230") grpName = "대덕구";
 
-      guNameLabel.push(guName);
+      grpNameLabel.push(grpName);
       barEvnetList.push(Math.round(item.THISEVENTCNT * 100 / item.THATEVENTCNT));
     });
 
@@ -533,7 +533,7 @@ function fn_mcds_getMonthlyGuEventCompStatAjax() {
     background_1.addColorStop(0, '#f58a39');
     background_1.addColorStop(1, '#fbcf33');
 
-    let localLabel = { labels: guNameLabel, datasets: [{ label: '', backgroundColor: background_1, borderWidth: 1, data: barEvnetList }] };
+    let localLabel = { labels: grpNameLabel, datasets: [{ label: '', backgroundColor: background_1, borderWidth: 1, data: barEvnetList }] };
 
     let localChart = new Chart($("#localEventChart"), {
       type: 'bar',
