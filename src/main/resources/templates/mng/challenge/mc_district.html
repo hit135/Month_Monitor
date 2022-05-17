@@ -43,6 +43,12 @@
 .mcd_guLabels { font-size: 0.9rem; color: #fff; margin-left: 10px; }
 #mcd_guElecEvtChart { height: 290px; display: block; width: 100%; margin-top: 3.5rem !important;  }
 #mcd_guKwhChart { height: 290px; display: block; width: 100%; margin-top: 0.75rem !important; }
+
+.mcd_dongguBtn { background-color: #cd2a68; }
+.mcd_jungguBtn { background-color: #c6000a; }
+.mcd_seoguBtn { background-color: #5c6d00; }
+.mcd_daedeokguBtn { background-color: #f26e00; }
+.mcd_yuseongguBtn { background-color: #c08adc; }
 </style>
 
 <body class="mod-bg-1 nav-function-minify">
@@ -297,8 +303,8 @@
               <div class="col-xl-12">
                 <div class="d-flex justify-content-center">
                   <div class="p-3" style="background-color: #4771d0; width: 100%; text-align: center; border-radius: 5px;">
-                    <span id="todayDate"></span>
-                    <span id="realTime"></span>
+                    <span id="todayDate">2022-05-11</span>
+                    <span id="realTime">11:11:!1</span>
                   </div><!-- /.p-3 -->
                 </div><!-- /.d-flex justify-content-center -->
               </div><!-- /.col-xl-12 -->
@@ -307,6 +313,12 @@
               <div class="col-xl-12">
                 <div class="d-flex" style="border-bottom: 1px solid #ccc;">
                   <div class="p-2 flex-fill"><h2 class="m-0">금일 누적 현황</h2></div>
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <span style="color: #2196F3; margin-left: 1vh; font-size: 1.0rem;">이번달 누적전력량</span>
+                  </div>
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <span style="color: #f08e45; margin-left: 1vh; font-size: 1.0rem;">전월대비%</span>
+                  </div>
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
                     <img th:src="@{/fs/img/district/yellowIcon.png}" alt="icon" />
                     <span style="color: #898989; margin-left: 1vh;">주의</span>
@@ -319,7 +331,28 @@
               </div><!-- /.col-xl-12 -->
             </div><!-- /.row -->
             <div class="row pt-3">
-              <div class="col-xl-12" id="areaList"></div>
+              <div class="col-xl-12" id="areaList">
+                <div class="d-flex">
+                  <div class="p-2 flex-fill" style="width: 180px;">
+                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_seoguBtn" style="font-weight: 900;">서구</span></h2>
+                  </div>
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <h3 class="m-0" style="color: #2196F3;">445 MWh</h3>
+                  </div>
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 50px;">
+                    <h3 class="m-0" style="color: #f08e45;">168%</h3>
+                  </div>
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <h3 class="m-0" id="seogu-warning-cnt" style="color: #ffc000;">18</h3>
+                    <img class="arrow-icon" id="seogu-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
+                  </div>
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <h3 class="m-0" id="seogu-danger-cnt" style="color: #ed7d31;">16</h3>
+                    <img class="arrow-icon" id="seogu-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
+                  </div>
+                </div>
+
+              </div>
             </div><!-- /.row -->
           </div><!-- /.col-md-4 col-sm-12 -->
         </div><!-- /.row -->
