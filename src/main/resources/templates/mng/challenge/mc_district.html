@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+<title>FireSense 대전시 자치구별 현황</title>
+<th:block th:replace="mng/challenge/districtLayout/mc_d_header"></th:block>
+
+<link rel="stylesheet" media="screen, print" th:href="@{/fs/css/statistics/chart.css}" />
+<link rel="stylesheet" media="screen, print" th:href="@{/fs/css/datagrid/datatables/datatables.bundle.css}" />
+<link rel="stylesheet" media="screen, print" th:href="@{/fs/css/custom/am_common.css}" />
+<link rel="stylesheet" media="screen, print" th:href="@{/fs/css/statistics/chartist.css}" />
+
+<style>
+.page-content-wrapper { background-color: #222222; }
+
+.mcd_topTitle { background-color: #4771d0; width: 33%; text-align: center; }
+.mcd_topTitleSpan { letter-spacing: 0.3rem; font-size: 2.2rem; font-weight: 400; }
+
+.mcd_mainTitle { border-bottom: 1px solid #ccc; }
+.mcd_mainTitleBadge { padding: 0.65rem 1.25rem 0.45rem 1.25rem; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; margin-left: 2vh; }
+
+.arrow-icon { width: 16px; height: 16px; margin-left: 1vh; }
+</style>
+
+<body class="mod-bg-1 nav-function-minify">
+<div class="page-wrapper">
+  <div class="page-inner">
+    <div class="page-content-wrapper">
+      <div class="d-flex justify-content-start">
+        <div class="p-2 mcd_topTitle">
+          <h2 class="m-0 mcd_topTitleSpan">대전시 자치구별 현황</h2>
+        </div><!-- /.p-2 mcd_topTitle -->
+      </div><!-- /.d-flex justify-content-start -->
+
+      <main id="js-page-content" role="main" class="page-content first-main-page">
+        <div class="row">
+          <div class="col-3" style="padding-left: 3vh; padding-right: 2vh;">
+            <div class="row" style="padding-bottom: 3vh;">
+              <div class="col-xl-12">
+                <h2 class="mcd_mainTitle">전기안전 현황<span class="badge badge-info mcd_mainTitleBadge">어제</span></h2>
+                <div class="d-flex justify-content-between mb-3 ml-2 mr-2">
+                  <div class="d-flex flex-row">
+                    <div style="margin-bottom: 1vh;">
+                      <img th:src="@{/fs/img/district/greenIcon.png}" alt="icon" />
+                      <span style="color: #aaaaaa; font-size: 1rem;">정상</span>
+                    </div><!-- margin-bottom: 1vh; -->
+                    <div class="d-flex justify-content-center pl-2">
+                      <h3 id="mcd_snsrCnt">4,444</h3>
+                      <img class="arrow-icon" th:src="@{/fs/img/district/up-arrow.png}" alt="icon" id="mcd_snsrImg" />
+                    </div><!-- /.d-flex justify-content-center pl-2 -->
+                  </div><!-- /.d-flex -->
+                  <div class="d-flex flex-row">
+                    <div style="margin-bottom: 1vh;">
+                      <img th:src="@{/fs/img/district/yellowIcon.png}" alt="icon" />
+                      <span style="color: #aaaaaa; font-size: 1rem;">주의</span>
+                    </div><!-- margin-bottom: 1vh; -->
+                    <div class="d-flex justify-content-center pl-2">
+                      <h3 id="mcd_warningCnt">111</h3>
+                      <img class="arrow-icon" th:src="@{/fs/img/district/down-arrow.png}" alt="icon" id="mcd_warningImg" />
+                    </div><!-- /.d-flex justify-content-center pl-2 -->
+                  </div><!-- /.d-flex flex-row -->
+                  <div class="d-flex flex-row">
+                    <div style="margin-bottom: 1vh;">
+                      <img th:src="@{/fs/img/district/redIcon.png}" alt="icon" />
+                      <span style="color: #aaaaaa; font-size: 1rem;">경고</span>
+                    </div><!-- margin-bottom: 1vh; -->
+                    <div class="d-flex justify-content-center pl-2">
+                      <h3 id="mcd_dangerCnt">232</h3>
+                      <img class="arrow-icon" th:src="@{/fs/img/district/down-arrow.png}" alt="icon" id="mcd_dangerImg" />
+                    </div><!-- /.d-flex justify-content-center pl-2 -->
+                  </div><!-- /.d-flex flex-row -->
+                </div><!-- /.d-flex justify-content-between mb-3 ml-2 mr-2 -->
+              </div><!-- /.col-xl-12 -->
+              <div class="col-xl-12">
+                <h2 class="mcd_mainTitle" style="padding-bottom: 2px;">전력사용 현황</h2>
+                <div class="d-flex justify-content-between mb-3 ml-3 mr-3">
+                  <div class="d-flex flex-row">
+                    <div style="margin-bottom: 1vh;">
+                      <img style="width: 100%; max-width: 20px;" th:src="@{/fs/img/district/redVolt.png}" alt="icon" />
+                      <span style="color: #AAAAAA; margin-left: 1vh; font-size: 1rem;">어제</span>
+                    </div><!-- /margin-bottom: 1vh; -->
+                    <div class="d-flex justify-content-center align-items-center ml-2">
+                      <h2 id="mcd_yesterdayKwh">136</h2>
+                    </div><!-- /.d-flex justify-content-center -->
+                  </div><!-- /.d-flex flex-row -->
+                  <div class="d-flex flex-row">
+                    <div style="margin-bottom: 1vh;">
+                      <img style="width: 100%; max-width: 20px;" th:src="@{/fs/img/district/yellowVolt.png}" alt="icon" />
+                      <span style="color: #AAAAAA; margin-left: 1vh; font-size: 1rem;">지난주</span>
+                    </div><!-- /margin-bottom: 1vh -->
+                    <div class="d-flex justify-content-center align-items-center ml-2">
+                      <h2 id="mcd_lastWeekKwh">948</h2>
+                    </div><!-- /.d-flex justify-content-center -->
+                  </div><!-- /.d-flex flex-row -->
+                  <div class="d-flex flex-row">
+                    <div style="margin-bottom: 1vh; font-size: 1rem;">
+                      <img style="width: 100%; max-width: 20px;" th:src="@{/fs/img/district/blueVolt.png}" alt="icon" />
+                      <span style="color: #AAAAAA; margin-left: 1vh; font-size: 1rem;">지난달</span>
+                    </div><!-- /margin-bottom: 1vh; font-size: 1rem; -->
+                    <div class="d-flex justify-content-center align-items-center ml-2">
+                      <h2 id="mcd_lastMonthKwh">2,164</h2>
+                    </div><!-- /.d-flex justify-content-center -->
+                  </div><!-- /.d-flex flex-row -->
+                </div><!-- /.d-flex justify-content-between mb-3 ml-3 mr-3 -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+            <div class="row">
+              <div class="col-xl-12">
+                <h2 class="mcd_mainTitle" style="padding-bottom: 5px;">금일 위험 현황</h2>
+                <div class="d-flex mb-3">
+                  <div class="mr-auto p-2">
+                    <div class="d-flex flex-column">
+                      <!--<div>
+                        <span style="font-size: 1.2rem; color: #aaaaaa;">전체</span>&nbsp;
+                        <span style="color: #fff; font-weight: 900; font-size: 1.7rem;">상점수</span>&nbsp;
+                        <span style="color: #ffe490; font-weight: 900; font-size: 1.7rem;" id="realStrCnt">0</span>
+                        <span style="font-size: 1.2rem; color: #aaaaaa;">개</span></div>-->
+                      <div>
+                        <span style="font-size: 1.2rem; color: #aaaaaa;">전체</span>&nbsp;
+                        <span style="color: #fff; font-weight: 900; font-size: 1.7rem;">센서수</span>&nbsp;
+                        <span style="color: #ffe490; font-weight: 900; font-size: 1.7rem;" id="realSnsrCnt">0</span>
+                        <span style="font-size: 1.2rem; color: #aaaaaa;">개</span>
+                      </div>
+                    </div><!-- /.d-flex flex-column -->
+                  </div><!-- /.d-flex mb-3 -->
+                  <div class="p-2">
+                    <div class="d-flex flex-column">
+                      <div class="p-1 d-flex justify-content-center">
+                        <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #ffc000; cursor: auto;"></span>
+                        <span style="font-size:1.2rem; color: #fff; margin-left: 10px;">주의</span>
+                      </div><!-- /.p-1 d-flex justify-content-center -->
+                      <div class="p-1 d-flex justify-content-center">
+                        <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #ed7d31; cursor: auto;"></span>
+                        <span style="font-size:1.2rem; color: #fff; margin-left: 10px;">경고</span>
+                      </div><!-- /.p-1 d-flex justify-content-center -->
+                      <div class="p-1 d-flex justify-content-center">
+                        <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #36a2eb; cursor: auto;"></span>
+                        <span style="font-size:1.2rem; color: #fff; margin-left: 10px;">끊김</span>
+                      </div><!-- /.p-1 d-flex justify-content-center -->
+                    </div><!-- /.d-flex flex-column -->
+                  </div><!-- /.p-1 -->
+                </div><!-- /.d-flex mb-3 -->
+                <div id="donutFill" class="ct-chart" style="width:100%; height:300px;"></div>
+              </div><!-- /.col-xl-12 -->
+              <div class="col-xl-12">
+                <h2 class="main-title" style="padding-bottom: 5px;">전일대비 전력 사용량</h2>
+                <div class="d-flex mb-3">
+                  <div class="mr-auto p-2">
+                    <div class="d-flex flex-column">
+                      <!--     <div>
+                             <span style="font-size: 1.2rem; color: #AAAAAA;">전체</span>&nbsp;
+                             <span style="color: #fff; font-weight: 900; font-size: 1.7rem;">상점수</span>&nbsp;
+                             <span style="color: #ffe490; font-weight: 900; font-size: 1.7rem;" id="realStrCnt">0</span>
+                             <span style="font-size: 1.2rem; color: #AAAAAA;">개</span>
+                           </div>-->
+                      <div>
+                        <span style="font-size: 1.2rem; color: #AAAAAA;">전체</span>&nbsp;
+                        <span style="color: #fff; font-weight: 900; font-size: 1.7rem;">센서수</span>&nbsp;
+                        <span style="color: #ffe490; font-weight: 900; font-size: 1.7rem;" id="realSnsrCnt">0</span>
+                        <span style="font-size: 1.2rem; color: #AAAAAA;">개</span>
+                      </div>
+                    </div><!-- /.d-flex flex-column -->
+                  </div><!-- /.mr-auto p-2 -->
+                </div><!-- /.d-flex -->
+                <div style="margin-top: 7vh;">
+                  <span id="realKwhPer" data-peity='{ "fill": ["#2196F3", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
+                </div><!-- /margin-top: 7vh; -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+          </div><!-- /.col-3 -->
+
+          <div class="col-6">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="d-flex justify-content-center">
+                  <img th:src="@{/fs/img/district/daejeon-map.png}" alt="icon" style="width: 77%;" />
+                  <div class="js-data-attributes" style="left: 63%; top: 46%;">
+                    <span id="donggu" data-peity='{ "fill": ["#ce306b", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
+                  </div><!-- /.js-data-attributes -->
+                  <div class="js-data-attributes" style="left: 46%; top: 52%;">
+                    <span id="junggu" data-peity='{ "fill": ["#d90a14", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
+                  </div><!-- /.js-data-attributes -->
+                  <div class="js-data-attributes" style="left: 30%; top: 61%;">
+                    <span id="seogu" data-peity='{ "fill": ["#627300", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
+                  </div><!-- /.js-data-attributes -->
+                  <div class="js-data-attributes" style="left: 26%; top: 29%;">
+                    <span id="yuseonggu" data-peity='{ "fill": ["#c08adc", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
+                  </div><!-- /.js-data-attributes -->
+                  <div class="js-data-attributes" style="left: 54%; top: 18%;">
+                    <span id="daedeokgu" data-peity='{ "fill": ["#f26f00", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
+                  </div><!-- /.js-data-attributes -->
+                </div><!-- /.d-flex justify-content-center -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+            <div class="row" style="padding-left: 5vh; padding-right: 5vh; padding-top: 2vh;">
+              <div class="col-xl-12">
+                <div class="d-flex" style="border-bottom: 1px solid #ccc;">
+                  <div class="p-2 flex-fill"><h2 class="m-0">지역별 전월대비 이벤트발생현황</h2></div>
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <h4 class="m-0" style="color: #fff; margin-left: 1vh;">(단위 : %)</h4>
+                  </div>
+                </div><!-- /.d-flex -->
+
+                <!--                <div class="d-flex" style="border-bottom: 1px solid #ccc;">-->
+                <!--                  <div class="p-2 flex-fill d-flex align-content-end align-items-end"><h3 class="m-0">지역별 전월대비 이벤트발생현황</h3></div>-->
+                <!--                </div>-->
+              </div><!-- /.col-xl-12 -->
+              <div class="col-xl-12 pt-2">
+                <canvas id="localEventChart" style="height: 290px; display: block; width: 100%;"></canvas>
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+          </div><!-- /.col-6 -->
+
+          <div class="col-3">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="d-flex justify-content-center">
+                  <div class="p-3" style="background-color: #4771d0; width: 100%; text-align: center; border-radius: 5px;">
+                    <span id="todayDate"></span>
+                    <span id="realTime"></span>
+                  </div><!-- /.p-3 -->
+                </div><!-- /.d-flex justify-content-center -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+            <div class="row" style="margin-top: 4vh;">
+              <div class="col-xl-12">
+                <div class="d-flex" style="border-bottom: 1px solid #ccc;">
+                  <div class="p-2 flex-fill"><h2 class="m-0">금일 누적 현황</h2></div>
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <img th:src="@{/fs/img/district/yellowIcon.png}" alt="icon" />
+                    <span style="color: #898989; margin-left: 1vh;">주의</span>
+                  </div><!-- /.p-2 flex-fill d-flex justify-content-end align-content-center align-items-center -->
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                    <img th:src="@{/fs/img/district/redIcon.png}" alt="icon" />
+                    <span style="color: #898989; margin-left: 1vh;">경고</span>
+                  </div><!-- /.p-2 flex-fill d-flex justify-content-end align-content-center align-items-center -->
+                </div><!-- /.d-flex -->
+              </div><!-- /.col-xl-12 -->
+            </div><!-- /.row -->
+            <div class="row pt-3">
+              <div class="col-xl-12" id="areaList"></div>
+            </div><!-- /.row -->
+          </div><!-- /.col-3 -->
+        </div><!-- /.row -->
+      </main>
+
+      <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+      <th:block th:replace="mng/challenge/districtLayout/mc_d_footer"></th:block>
+    </div><!-- /.page-content-wrapper -->
+  </div><!-- /.page-inner -->
+</div><!-- /.page-wrapper -->
+
+<th:block th:replace="mng/challenge/districtLayout/mc_d_bottom"></th:block>
+
+<link id="contextPathHolder" th:data-contextPath="${#httpServletRequest.getContextPath()}"/>
+
+<script th:src="@{/fs/js/statistics/chart.js}"></script>
+<script th:src="@{/fs/js/statistics/utils.js}"></script>
+<script th:src="@{/fs/js/statistics/chartist.js}"></script>
+<script th:src="@{/fs/js/statistics/peity.bundle.js}"></script>
+
+<script>
+let contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
+
+
+</script>
+</body>
+</html>
