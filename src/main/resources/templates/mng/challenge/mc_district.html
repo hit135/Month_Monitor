@@ -16,10 +16,28 @@
 .mcd_topTitle { background-color: #4771d0; width: 33%; text-align: center; }
 .mcd_topTitleSpan { letter-spacing: 0.3rem; font-size: 2rem; font-weight: 400; }
 
-.mcd_mainTitle { border-bottom: 1px solid #ccc; }
+.mcd_mainTitle { border-bottom: 1px solid #ccc; padding-bottom: 2px; }
 .mcd_mainTitleBadge { padding: 0.65rem 1.25rem 0.45rem 1.25rem; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; margin-left: 2vh; }
 
+#mcd_leftDiv { padding-left: 3vh; }
+.mcd_leftSpanTxt { color: #aaaaaa; font-size: 1rem; }
+.mcd_leftKwhImg { width: 100%; max-width: 20px; margin-right: 5px; }
 .arrow-icon { width: 16px; height: 16px; margin-left: 1vh; }
+
+#mcd_snsrNormalCnt, #mcd_warningCnt, #mcd_dangerCnt { margin-left: 0.5rem !important; margin-bottom: 0; }
+#mcd_yesterdayKwh, #mcd_lastWeekKwh, #mcd_lastMonthKwh, #mcd_yesterdayT, #mcd_lastWeekT, #mcd_lastMonthT { margin-left: 0.75rem !important; margin-bottom: 0; }
+
+#mcd_snsrTotalCnt { color: #ffe490; font-weight: 900; font-size: 1.5rem; }
+#mcd_todayElecEvtChart { width: 100%; height: 240px; margin-top: 15px; }
+.mcd_todayElecEvtChartWarning { stroke: #ffc000; fill: #ffc000; }
+.mcd_todayElecEvtChartDanger { stroke: #ed7d31; fill: #ed7d31; }
+.mcd_todayElecEvtChartDisconn { stroke: #36a2eb; fill: #36a2eb; }
+.mcd_todayChartLabels { font-size: 1.2rem; color: #fff; margin-left: 10px; }
+.ct-label { font-size: 1.2rem; fill: #fff; }
+.round-span { padding: 10px; width: 1vh; height: 1vh; }
+
+#mcd_daejeonMap { width: 67% } 
+.js-data-attributes { position: absolute; }
 </style>
 
 <body class="mod-bg-1 nav-function-minify">
@@ -34,153 +52,210 @@
 
       <main id="js-page-content" role="main" class="page-content first-main-page">
         <div class="row">
-          <div class="col-md-3 col-sm-12" style="padding-left: 3vh; padding-right: 2vh;">
+          <div class="col-md-3 col-sm-12" id="mcd_leftDiv">
             <div>
-              <h2 class="mcd_mainTitle">전기안전 현황<span class="badge badge-info mcd_mainTitleBadge">어제</span></h2>
-              <div class="d-flex justify-content-between mb-3 ml-2 mr-2">
-                <div class="d-flex flex-row">
-                  <div style="margin-bottom: 1vh;">
-                    <img th:src="@{/fs/img/district/greenIcon.png}" alt="icon" />
-                    <span style="color: #aaaaaa; font-size: 1rem;">정상</span>
-                  </div><!-- margin-bottom: 1vh; -->
-                  <div class="d-flex justify-content-center pl-2">
-                    <h3 id="mcd_snsrCnt">4,444</h3>
-                    <img class="arrow-icon" th:src="@{/fs/img/district/up-arrow.png}" alt="icon" id="mcd_snsrImg" />
-                  </div><!-- /.d-flex justify-content-center pl-2 -->
-                </div><!-- /.d-flex -->
-                <div class="d-flex flex-row">
-                  <div style="margin-bottom: 1vh;">
-                    <img th:src="@{/fs/img/district/yellowIcon.png}" alt="icon" />
-                    <span style="color: #aaaaaa; font-size: 1rem;">주의</span>
-                  </div><!-- margin-bottom: 1vh; -->
-                  <div class="d-flex justify-content-center pl-2">
-                    <h3 id="mcd_warningCnt">111</h3>
-                    <img class="arrow-icon" th:src="@{/fs/img/district/down-arrow.png}" alt="icon" id="mcd_warningImg" />
-                  </div><!-- /.d-flex justify-content-center pl-2 -->
-                </div><!-- /.d-flex flex-row -->
-                <div class="d-flex flex-row">
-                  <div style="margin-bottom: 1vh;">
-                    <img th:src="@{/fs/img/district/redIcon.png}" alt="icon" />
-                    <span style="color: #aaaaaa; font-size: 1rem;">경고</span>
-                  </div><!-- margin-bottom: 1vh; -->
-                  <div class="d-flex justify-content-center pl-2">
-                    <h3 id="mcd_dangerCnt">232</h3>
-                    <img class="arrow-icon" th:src="@{/fs/img/district/down-arrow.png}" alt="icon" id="mcd_dangerImg" />
-                  </div><!-- /.d-flex justify-content-center pl-2 -->
-                </div><!-- /.d-flex flex-row -->
-              </div><!-- /.d-flex justify-content-between mb-3 ml-2 mr-2 -->
-            </div>
+              <h3 class="mcd_mainTitle">전기안전 현황<span class="badge badge-info mcd_mainTitleBadge">어제</span></h3>
+              <div class="row mb-3 ml-0 mr-0">
+                <div class="col-4 p-0 d-flex justify-content-start align-items-center">
+                  <img th:src="@{/fs/img/district/greenIcon.png}" alt="icon" />
+                  <span class="mcd_leftSpanTxt">정상</span>
+                  <h3 id="mcd_snsrNormalCnt">4,444</h3>
+                  <img class="arrow-icon" th:src="@{/fs/img/district/up-arrow.png}" alt="icon" />
+                </div><!-- /.col-4 p-0 d-flex justify-content-start align-items-center -->
+                <div class="col-4 p-0 d-flex justify-content-start align-items-center">
+                  <img th:src="@{/fs/img/district/yellowIcon.png}" alt="icon" />
+                  <span class="mcd_leftSpanTxt">주의</span>
+                  <h3 id="mcd_warningCnt">111</h3>
+                  <img class="arrow-icon" th:src="@{/fs/img/district/down-arrow.png}" alt="icon" />
+                </div><!-- /.col-4 p-0 d-flex justify-content-start align-items-center -->
+                <div class="col-4 p-0 d-flex justify-content-start align-items-center">
+                  <img th:src="@{/fs/img/district/redIcon.png}" alt="icon" />
+                  <span class="mcd_leftSpanTxt">경고</span>
+                  <h3 id="mcd_dangerCnt">232</h3>
+                  <img class="arrow-icon" th:src="@{/fs/img/district/down-arrow.png}" alt="icon" />
+                </div><!-- /.col-4 p-0 d-flex justify-content-start align-items-center -->
+              </div><!-- /.row mb-3 ml-0 mr-0 -->
+            </div><!-- // -->
             <div>
-              <h2 class="mcd_mainTitle" style="padding-bottom: 2px;">전력사용 현황</h2>
-              <div class="d-flex justify-content-between mb-3 ml-3 mr-3">
-                <div class="d-flex flex-row">
-                  <div style="margin-bottom: 1vh;">
-                    <img style="width: 100%; max-width: 20px;" th:src="@{/fs/img/district/redVolt.png}" alt="icon" />
-                    <span style="color: #AAAAAA; margin-left: 1vh; font-size: 1rem;">어제</span>
-                  </div><!-- /margin-bottom: 1vh; -->
-                  <div class="d-flex justify-content-center align-items-center ml-2">
-                    <h2 id="mcd_yesterdayKwh">136</h2>
-                  </div><!-- /.d-flex justify-content-center -->
-                </div><!-- /.d-flex flex-row -->
-                <div class="d-flex flex-row">
-                  <div style="margin-bottom: 1vh;">
-                    <img style="width: 100%; max-width: 20px;" th:src="@{/fs/img/district/yellowVolt.png}" alt="icon" />
-                    <span style="color: #AAAAAA; margin-left: 1vh; font-size: 1rem;">지난주</span>
-                  </div><!-- /margin-bottom: 1vh -->
-                  <div class="d-flex justify-content-center align-items-center ml-2">
-                    <h2 id="mcd_lastWeekKwh">948</h2>
-                  </div><!-- /.d-flex justify-content-center -->
-                </div><!-- /.d-flex flex-row -->
-                <div class="d-flex flex-row">
-                  <div style="margin-bottom: 1vh; font-size: 1rem;">
-                    <img style="width: 100%; max-width: 20px;" th:src="@{/fs/img/district/blueVolt.png}" alt="icon" />
-                    <span style="color: #AAAAAA; margin-left: 1vh; font-size: 1rem;">지난달</span>
-                  </div><!-- /margin-bottom: 1vh; font-size: 1rem; -->
-                  <div class="d-flex justify-content-center align-items-center ml-2">
-                    <h2 id="mcd_lastMonthKwh">2,164</h2>
-                  </div><!-- /.d-flex justify-content-center -->
-                </div><!-- /.d-flex flex-row -->
-              </div><!-- /.d-flex justify-content-between mb-3 ml-3 mr-3 -->
-            </div>
+              <h3 class="mcd_mainTitle">전력사용 현황 (MWh)</h3>
+              <div class="row mb-3 ml-0 mr-0">
+                <div class="col-4 p-0 d-flex justify-content-start align-items-center">
+                  <img class="mcd_leftKwhImg" th:src="@{/fs/img/district/redVolt.png}" alt="icon" />
+                  <span class="mcd_leftSpanTxt">어제</span>
+                  <h3 id="mcd_yesterdayKwh">136</h3>
+                </div><!-- /.col-4 p-0 d-flex justify-content-start align-items-center -->
+                <div class="col-4 p-0 d-flex justify-content-start align-items-center">
+                  <img class="mcd_leftKwhImg" th:src="@{/fs/img/district/yellowVolt.png}" alt="icon" />
+                  <span class="mcd_leftSpanTxt">지난주</span>
+                  <h3 id="mcd_lastWeekKwh">948</h3>
+                </div><!-- /.col-4 p-0 d-flex justify-content-start align-items-center -->
+                <div class="col-4 p-0 d-flex justify-content-start align-items-center">
+                  <img class="mcd_leftKwhImg" th:src="@{/fs/img/district/blueVolt.png}" alt="icon" />
+                  <span class="mcd_leftSpanTxt">지난달</span>
+                  <h3 id="mcd_lastMonthKwh">2,164</h3>
+                </div><!-- /.col-4 p-0 d-flex justify-content-start align-items-center -->
+              </div><!-- /.row mb-3 ml-0 mr-0 -->
+            </div><!-- // -->
             <div>
-              <h2 class="mcd_mainTitle" style="padding-bottom: 2px;">금일 위험 현황</h2>
-              <div class="d-flex mb-3">
-                <div class="mr-auto p-2">
-                  <div class="d-flex flex-column">
-                    <div>
-                      <span style="font-size: 1.2rem; color: #aaaaaa;">전체</span>&nbsp;
-                      <span style="color: #fff; font-weight: 900; font-size: 1.7rem;">센서수</span>&nbsp;
-                      <span style="color: #ffe490; font-weight: 900; font-size: 1.7rem;" id="realSnsrCnt">0</span>
-                      <span style="font-size: 1.2rem; color: #aaaaaa;">개</span>
-                    </div>
-                  </div><!-- /.d-flex flex-column -->
-                </div><!-- /.d-flex mb-3 -->
-                <div class="p-2">
-                  <div class="d-flex flex-column">
-                    <div class="p-1 d-flex justify-content-center">
-                      <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #ffc000; cursor: auto;"></span>
-                      <span style="font-size:1.2rem; color: #fff; margin-left: 10px;">주의</span>
-                    </div><!-- /.p-1 d-flex justify-content-center -->
-                    <div class="p-1 d-flex justify-content-center">
-                      <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #ed7d31; cursor: auto;"></span>
-                      <span style="font-size:1.2rem; color: #fff; margin-left: 10px;">경고</span>
-                    </div><!-- /.p-1 d-flex justify-content-center -->
-                    <div class="p-1 d-flex justify-content-center">
-                      <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #36a2eb; cursor: auto;"></span>
-                      <span style="font-size:1.2rem; color: #fff; margin-left: 10px;">끊김</span>
-                    </div><!-- /.p-1 d-flex justify-content-center -->
-                  </div><!-- /.d-flex flex-column -->
-                </div><!-- /.p-1 -->
-              </div><!-- /.d-flex mb-3 -->
-              <div id="donutFill" class="ct-chart" style="width:100%; height:300px;"></div>
-            </div>
+              <h3 class="mcd_mainTitle">탄소배출량 현황 (Ton)</h3>
+              <div class="row mb-3 ml-0 mr-0">
+                <div class="col-4 p-0 d-flex justify-content-start align-items-center">
+                  <img class="mcd_leftKwhImg" th:src="@{/fs/img/district/redVolt.png}" alt="icon" />
+                  <span class="mcd_leftSpanTxt">어제</span>
+                  <h3 id="mcd_yesterdayT">0.114</h3>
+                </div><!-- /.col-4 p-0 d-flex justify-content-start align-items-center -->
+                <div class="col-4 p-0 d-flex justify-content-start align-items-center">
+                  <img class="mcd_leftKwhImg" th:src="@{/fs/img/district/yellowVolt.png}" alt="icon" />
+                  <span class="mcd_leftSpanTxt">지난주</span>
+                  <h3 id="mcd_lastWeekT">0.223</h3>
+                </div><!-- /.col-4 p-0 d-flex justify-content-start align-items-center -->
+                <div class="col-4 p-0 d-flex justify-content-start align-items-center">
+                  <img class="mcd_leftKwhImg" th:src="@{/fs/img/district/blueVolt.png}" alt="icon" />
+                  <span class="mcd_leftSpanTxt">지난달</span>
+                  <h3 id="mcd_lastMonthT">2.112</h3>
+                </div><!-- /.col-4 p-0 d-flex justify-content-start align-items-center -->
+              </div><!-- /.row mb-3 ml-0 mr-0 -->
+            </div><!-- // -->
             <div>
-              <h2 class="mcd_mainTitle" style="padding-bottom: 2px;">전일대비 전력 사용량</h2>
-              <div class="d-flex mb-3">
-                <div class="mr-auto p-2">
-                  <div class="d-flex flex-column">
-                    <div>
-                      <span style="font-size: 1.2rem; color: #AAAAAA;">전체</span>&nbsp;
-                      <span style="color: #fff; font-weight: 900; font-size: 1.7rem;">센서수</span>&nbsp;
-                      <span style="color: #ffe490; font-weight: 900; font-size: 1.7rem;" id="realSnsrCnt">0</span>
-                      <span style="font-size: 1.2rem; color: #AAAAAA;">개</span>
-                    </div>
-                  </div><!-- /.d-flex flex-column -->
-                </div><!-- /.mr-auto p-2 -->
-              </div><!-- /.d-flex -->
-              <div style="margin-top: 7vh;">
-                <span id="realKwhPer" data-peity='{ "fill": ["#2196F3", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
-              </div><!-- /margin-top: 7vh; -->
-            </div>
-          </div><!-- /.col-3 -->
+              <div class="mcd_mainTitle d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">금일 위험 현황</h3>
+                <h4 class="mb-0">전체 센서 수&nbsp;&nbsp;<span id="mcd_snsrTotalCnt">4,191</span>개</h4>
+              </div><!-- /.mcd_mainTitle d-flex justify-content-between align-items-center -->
+              <div class="row">
+                <div class="col-8">
+                  <div id="mcd_todayElecEvtChart" class="ct-chart"></div>
+                </div>
+                <div class="col-4 d-flex flex-column justify-content-center">
+                  <div class="p-1 d-flex justify-content-center">
+                    <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #ffc000; cursor: auto;"></span>
+                    <span class="mcd_todayChartLabels">주의</span>
+                  </div><!-- /.p-1 d-flex justify-content-center -->
+                  <div class="mt-2 p-1 d-flex justify-content-center">
+                    <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #ed7d31; cursor: auto;"></span>
+                    <span class="mcd_todayChartLabels">경고</span>
+                  </div><!-- /.p-1 d-flex justify-content-center -->
+                  <div class="mt-2 p-1 d-flex justify-content-center">
+                    <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #36a2eb; cursor: auto;"></span>
+                    <span class="mcd_todayChartLabels">끊김</span>
+                  </div><!-- /.p-1 d-flex justify-content-center -->
+                </div><!-- /.col-4 d-flex flex-column justify-content-center -->
+              </div><!-- /.row -->
+            </div><!-- // -->
+            <div class="mt-2">
+              <h3 class="mcd_mainTitle mb-3">전일대비 전력 사용량</h3>
+              <div class="row">
+                <div class="col-8">
+                  <div id="mcd_toadyKwhPerChart" data-peity='{ "fill": ["#2196F3", "#e6e7e8"], "innerRadius": 70, "radius": 37, "height": "240px", "width": "100%" }'>22/100</div>
+                </div>
+                <div class="col-4 d-flex flex-column justify-content-center">
+                  <div class="mt-2 p-1 d-flex justify-content-center">
+                    <span class="btn-icon rounded-circle waves-effect waves-themed round-span" style="background-color: #36a2eb; cursor: auto;"></span>
+                    <span class="mcd_todayChartLabels">전력사용량</span>
+                  </div><!-- /.p-1 d-flex justify-content-center -->
+                </div>
+              </div>
+            </div><!-- // -->
+          </div><!-- /#mcd_leftDiv -->
 
           <div class="col-md-6 col-sm-12">
             <div class="row">
               <div class="col-xl-12">
                 <div class="d-flex justify-content-center">
-                  <img th:src="@{/fs/img/district/daejeon-map.png}" alt="icon" style="width: 77%;" />
-                  <div class="js-data-attributes" style="left: 63%; top: 46%;">
-                    <span id="donggu" data-peity='{ "fill": ["#ce306b", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
-                  </div><!-- /.js-data-attributes -->
-                  <div class="js-data-attributes" style="left: 46%; top: 52%;">
-                    <span id="junggu" data-peity='{ "fill": ["#d90a14", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
-                  </div><!-- /.js-data-attributes -->
-                  <div class="js-data-attributes" style="left: 30%; top: 61%;">
-                    <span id="seogu" data-peity='{ "fill": ["#627300", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
-                  </div><!-- /.js-data-attributes -->
-                  <div class="js-data-attributes" style="left: 26%; top: 29%;">
-                    <span id="yuseonggu" data-peity='{ "fill": ["#c08adc", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
-                  </div><!-- /.js-data-attributes -->
-                  <div class="js-data-attributes" style="left: 54%; top: 18%;">
-                    <span id="daedeokgu" data-peity='{ "fill": ["#f26f00", "#e6e7e8"], "innerRadius": 13, "radius": 37 }'></span>
-                  </div><!-- /.js-data-attributes -->
+                  <img th:src="@{/fs/img/district/daejeon-map.png}" alt="icon" id="mcd_daejeonMap" />
+      
+                  <div class="js-data-attributes" style="left: 49.6%; top: 49%;">
+                    <span id="mcd_elecEvtDonggu" data-peity='{ "fill": ["#ce306b", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
+                  </div>
+                  <div class="js-data-attributes" style="left: 60.5%; top: 68%;">
+                    <span id="mcd_kwhDonggu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
+                  </div>
+                  <div class="js-data-attributes" style="top: 78.5%; left: 60.5%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhDonggu">111</h5>
+                    </div>
+                  </div>
+                  <div class="js-data-attributes" style="top: 78.5%; left: 65.2%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhDonggu">222</h5>
+                    </div>
+                  </div><!-- //동구-->
+
+                  <div class="js-data-attributes" style="left: 35.2%; top: 54%;">
+                    <span id="mcd_elecEvtJunggu" data-peity='{ "fill": ["#d90a14", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
+                  </div>
+                  <div class="js-data-attributes" style="left: 46%; top: 73%;">
+                    <span id="mcd_kwhJunggu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
+                  </div>
+                  <div class="js-data-attributes" style="top: 83.5%; left: 46%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhJunggu">111</h5>
+                    </div>
+                  </div>
+                  <div class="js-data-attributes" style="top: 83.5%; left: 50.6%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhJunggu">222</h5>
+                    </div>
+                  </div><!-- //중구-->
+
+                  <div class="js-data-attributes" style="left: 21.5%; top: 63.5%;">
+                    <span id="mcd_elecEvtSeogu" data-peity='{ "fill": ["#627300", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
+                  </div>
+                  <div class="js-data-attributes" style="left: 32.5%; top: 82.5%;">
+                    <span id="mcd_kwhSeogu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
+                  </div>
+                  <div class="js-data-attributes" style="top: 93%; left: 32.5%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhSeogu">111</h5>
+                    </div>
+                  </div>
+                  <div class="js-data-attributes" style="top: 93%; left: 37.2%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhSeogu">222</h5>
+                    </div>
+                  </div><!-- //서구-->
+
+                  <div class="js-data-attributes" style="left: 13.2%; top: 32%;">
+                    <span id="mcd_elecEvtYuseonggu" data-peity='{ "fill": ["#c08adc", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
+                  </div>
+                  <div class="js-data-attributes" style="left: 33%; top: 30.6%;">
+                    <span id="mcd_kwhYuseonggu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
+                  </div>
+                  <div class="js-data-attributes" style="top: 41.2%; left: 33%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhYuseonggu">111</h5>
+                    </div>
+                  </div>
+                  <div class="js-data-attributes" style="top: 41.2%; left: 37.7%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhYuseonggu">222</h5>
+                    </div>
+                  </div><!-- //유성구-->
+
+                  <div class="js-data-attributes" style="left: 37%; top: 19%;">
+                    <span id="mcd_elecEvtDaedeokgu" data-peity='{ "fill": ["#f26f00", "#e6e7e8"], "innerRadius": 22, "radius": 30, "height": "75px", "width": "100%" }'>99/100</span>
+                  </div>
+                  <div class="js-data-attributes" style="left: 57%; top: 17.6%;">
+                    <span id="mcd_kwhDaedeokgu" class="bar-colours-2" data-peity='{ "height": 80, "width": 90 }'></span>
+                  </div>
+                  <div class="js-data-attributes" style="top: 28.2%; left: 57%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_yKwhDaedeokgu">111</h5>
+                    </div>
+                  </div>
+                  <div class="js-data-attributes" style="top: 28.2%; left: 61.7%; width: 45px;">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-white" id="mcd_tKwhDaedeokgu">222</h5>
+                    </div>
+                  </div><!-- //대덕구-->
                 </div><!-- /.d-flex justify-content-center -->
               </div><!-- /.col-xl-12 -->
             </div><!-- /.row -->
             <div class="row" style="padding-left: 5vh; padding-right: 5vh; padding-top: 2vh;">
               <div class="col-xl-12">
                 <div class="d-flex" style="border-bottom: 1px solid #ccc;">
-                  <div class="p-2 flex-fill"><h2 class="m-0">지역별 전월대비 이벤트발생현황</h2></div>
+                  <div class="p-2 flex-fill">
+                    <h3 class="m-0">지역별 전월대비 이벤트 발생현황</h3>
+                  </div>
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
                     <h4 class="m-0" style="color: #fff; margin-left: 1vh;">(단위 : %)</h4>
                   </div>
@@ -243,7 +318,90 @@
 <script>
 let contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
 
+$(function () {
 
+  new Chartist.Pie('#mcd_todayElecEvtChart', 
+    {
+      series: [
+        { value: 444, className: "mcd_todayElecEvtChartWarning" },
+        { value: 11, className: "mcd_todayElecEvtChartDanger" }, 
+        { value: 22, className: "mcd_todayElecEvtChartDisconn" }
+      ] 
+    },
+    { donut: true, donutWidth: 60, donutSolid: true, startAngle: 270 }
+  );
+
+  $('#mcd_toadyKwhPerChart').peity('donut', {
+    after: function () {
+      this.$svg.append(
+        this
+          .svgElement('text', { fill: '#fff', 'font-size': "2.5rem", 'font-weight': 900, 'text-anchor': 'middle', x: this.scale(0, 0)[0], y: this.scale(0, 0)[1] + 12 })
+          .text(22 + "%")
+      );
+    }
+  });
+
+  $('#mcd_elecEvtDonggu').peity('donut', {
+    after: function () {
+      this.$svg.append(
+        this
+          .svgElement('text', { fill: '#000', 'font-size': "1.1rem", 'font-weight': 900, 'text-anchor': 'middle', x: this.scale(0, 0)[0], y: this.scale(0, 0)[1] + 5 })
+          .text($.number(22))
+      );
+    }
+  });
+
+  $("#mcd_kwhDonggu").text("111,222");
+
+  $('#mcd_elecEvtJunggu').peity('donut', {
+    after: function () {
+      this.$svg.append(
+        this
+          .svgElement('text', { fill: '#000', 'font-size': "1.1rem", 'font-weight': 900, 'text-anchor': 'middle', x: this.scale(0, 0)[0], y: this.scale(0, 0)[1] + 5 })
+          .text($.number(22))
+      );
+    }
+  });
+
+  $("#mcd_kwhJunggu").text("111,222");
+
+  $('#mcd_elecEvtSeogu').peity('donut', {
+    after: function () {
+      this.$svg.append(
+        this
+          .svgElement('text', { fill: '#000', 'font-size': "1.1rem", 'font-weight': 900, 'text-anchor': 'middle', x: this.scale(0, 0)[0], y: this.scale(0, 0)[1] + 5 })
+          .text($.number(22))
+      );
+    }
+  });
+
+  $("#mcd_kwhSeogu").text("111,222");
+
+  $('#mcd_elecEvtYuseonggu').peity('donut', {
+    after: function () {
+      this.$svg.append(
+        this
+          .svgElement('text', { fill: '#000', 'font-size': "1.1rem", 'font-weight': 900, 'text-anchor': 'middle', x: this.scale(0, 0)[0], y: this.scale(0, 0)[1] + 5 })
+          .text($.number(22))
+      );
+    }
+  });
+
+  $("#mcd_kwhYuseonggu").text("111,222");
+
+  $('#mcd_elecEvtDaedeokgu').peity('donut', {
+    after: function () {
+      this.$svg.append(
+        this
+          .svgElement('text', { fill: '#000', 'font-size': "1.1rem", 'font-weight': 900, 'text-anchor': 'middle', x: this.scale(0, 0)[0], y: this.scale(0, 0)[1] + 5 })
+          .text($.number(22))
+      );
+    }
+  });
+
+  $("#mcd_kwhDaedeokgu").text("111,222");
+  $(".bar-colours-2").peity("bar", { fill: ["#2196F3", "#FF684A"] });
+});
 </script>
 </body>
 </html>
