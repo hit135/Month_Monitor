@@ -53,7 +53,7 @@ const StatMgr = () => {
   const [halfSelect, setHalfSelect] = useState("상반기");
   const [quarterDate, setQuarterDate] = useState(new Date());
   const [topBtnValue, setTopBtnValue] = useState("시장보고");
-  const [grpCode, setGuCode] = useState("30110");
+  const [grpCode, setGrpCode] = useState("30110");
   const [areaName, setAreaName] = useState("");
   const [areaCode, setAreaCode] = useState("AREA_000003");
   const [areaState, setAreaState] = useState();
@@ -147,7 +147,7 @@ const StatMgr = () => {
 
   const handleChangeGroup = e => {
     if (typeValue === "grpCode")
-      setGuCode(e.target.value);
+      setGrpCode(e.target.value);
     else
       setAreaCode(e.target.value);
   };
