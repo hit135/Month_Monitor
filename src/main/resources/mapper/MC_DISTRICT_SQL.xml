@@ -530,13 +530,16 @@
                       WHERE GRPCODE LIKE '30%'
                         AND SDATE BETWEEN CONCAT(DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m'), '-01')
                             AND CONCAT(DATE_FORMAT(CURDATE(), '%Y-%m'), '-01') - INTERVAL 1 DAY
-                      GROUP BY GRPCODE) A ON L.GRPCODE = A.GRPCODE
+                        AND SNSRKWHDAILY < 100
+
+                     GROUP BY GRPCODE) A ON L.GRPCODE = A.GRPCODE
           LEFT JOIN (SELECT SS.GRPCODE,
                             COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
                        FROM (SELECT GRPCODE,
                                     SUM(SNSRKWHDAILY) AS USEKWH
                                FROM F_ELEC_SENSOR_STAT
                               WHERE GRPCODE LIKE '30%'
+                                AND SNSRKWHDAILY < 100
                         AND SDATE >= CONCAT(DATE_FORMAT(CURDATE(), '%Y-%m'), '-01')
                       GROUP BY GRPCODE
                       UNION ALL
