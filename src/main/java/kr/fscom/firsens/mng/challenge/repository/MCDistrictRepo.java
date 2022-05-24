@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Repository
@@ -22,5 +23,8 @@ public interface MCDistrictRepo {
     List<HashMap<String, Object>> LIST_MCD_GRP_MAP_KWH_STAT() throws Exception;            // 지도 지역별 주별대비 전력소모량 비교
     List<HashMap<String, Object>> LIST_MCD_GRP_MONTH_KWH_STAT() throws Exception;          // 구별 전월대비 전력소모량 비교
     List<HashMap<String, Object>> LIST_MCD_GRP_AREA_KWH_STAT() throws Exception;           // 구별 시장별 전력소모량 비교
+
+    List<HashMap<String, Object>> LIST_MCD_TODAY_GRP_AREA_RANK() throws Exception;          // 구별 금일 누적 랭크
+    List<HashMap<String, Object>> LIST_MCD_MONTH_CARBON_DATA(Map<String, Object> param) throws Exception;          // 구별 탄소배출량 현황
 
 }

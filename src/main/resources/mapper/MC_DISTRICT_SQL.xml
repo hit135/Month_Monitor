@@ -4,621 +4,637 @@
 <mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCDistrictRepo">
 
     <select id="SELECT_MCD_YESTERDAY_EVENT_COMP_STAT" resultType="map">
-        SELECT
-            C.SNSRCNT - A.ERRCNT AS YSNSRCNT
-            , A.DANGERCNT AS YDANGERCNT
-            , A.WARNINGCNT AS YWARNINGCNT
-            , C.SNSRCNT - B.ERRCNT AS TSNSRCNT
-            , B.DANGERCNT AS TDANGERCNT
-            , B.WARNINGCNT AS TWARNINGCNT
-        FROM
-            (SELECT
-                 COUNT(DISTINCT CASE WHEN EVENTCNT > 0 THEN SNSRSEQ END) AS ERRCNT
-                 , COUNT(DISTINCT CASE WHEN WARNINGCNT > 0 THEN SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN DANGERCNT > 0 THEN SNSRSEQ END) AS WARNINGCNT
-             FROM
-                 F_CRN_SNSR_ELEC_EVT_STAT
-             WHERE
-                 DATETIME > CURDATE() - INTERVAL 1 DAY AND DATETIME <![CDATA[<]]> CURDATE()
-                 AND GRPCODE LIKE '30%'
-            ) A
-            ,
-            (SELECT
-                 COUNT(DISTINCT CASE WHEN L.ALMFLAG != '000' THEN L.SNSRSEQ END) AS ERRCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '2') > 0 THEN L.SNSRSEQ END) AS DANGERCNT
-                 , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '1') > 0 THEN L.SNSRSEQ END) AS WARNINGCNT
-             FROM
-                 (SELECT
-                      SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
-                  FROM
-                      F_SENSOR_LOG
-                  WHERE
-                      REGDATE > CURDATE()
-                 ) L
-                     LEFT JOIN F_SENSOR_INFO I
-                         ON L.SNSRSEQ = I.SNSRSEQ
-                     LEFT JOIN F_STORE S
-                         ON I.STRCODE = S.STRCODE
-             WHERE
-                 CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            ) B
-            ,
-            (SELECT
-                 COUNT(I.SNSRID) AS SNSRCNT
-             FROM
-                 (SELECT
-                      STRCODE, SNSRID
-                  FROM
-                      F_SENSOR_INFO
-                  WHERE
-                      CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
-                 ) I
-                     LEFT JOIN F_STORE S
-                         ON I.STRCODE = S.STRCODE
-             WHERE
-                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            ) C
+        SELECT C.SNSRCNT - A.ERRCNT                     AS YSNSRCNT
+             , A.DANGERCNT                              AS YDANGERCNT
+             , A.WARNINGCNT                             AS YWARNINGCNT
+             , C.SNSRCNT - B.DANGERCNT - B.WARNINGCNT   AS TSNSRCNT
+             , B.DANGERCNT                              AS TDANGERCNT
+             , B.WARNINGCNT                             AS TWARNINGCNT
+        FROM (SELECT COUNT(DISTINCT CASE WHEN EVENTCNT > 0 THEN SNSRSEQ END)   AS ERRCNT
+                   , COUNT(DISTINCT CASE WHEN WARNINGCNT > 0 THEN SNSRSEQ END) AS DANGERCNT
+                   , COUNT(DISTINCT CASE WHEN DANGERCNT > 0 THEN SNSRSEQ END)  AS WARNINGCNT
+              FROM F_CRN_SNSR_ELEC_EVT_STAT
+              WHERE DATETIME > CURDATE() - INTERVAL 1 DAY
+                AND DATETIME <![CDATA[<]]> CURDATE()
+                AND GRPCODE LIKE '30%'
+             ) A
+                ,
+             (SELECT COUNT(DISTINCT CASE WHEN L.ALMFLAG != '000' THEN L.SNSRSEQ END)        AS ERRCNT
+                   , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '2') > 0 THEN L.SNSRSEQ END) AS DANGERCNT
+                   , COUNT(DISTINCT CASE WHEN INSTR(L.ALMFLAG, '1') > 0 THEN L.SNSRSEQ END) AS WARNINGCNT
+              FROM (SELECT SNSRSEQ,
+                           CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                    FROM F_SENSOR_LOG
+                    WHERE REGDATE > CURDATE()
+                   ) L
+                       LEFT JOIN F_SENSOR_INFO I
+                                 ON L.SNSRSEQ = I.SNSRSEQ
+                       LEFT JOIN F_STORE S
+                                 ON I.STRCODE = S.STRCODE
+              WHERE CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+             ) B
+                ,
+             (SELECT COUNT(I.SNSRID) AS SNSRCNT
+              FROM (SELECT STRCODE,
+                           SNSRID
+                    FROM F_SENSOR_INFO
+                    WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                   ) I
+                       LEFT JOIN F_STORE S
+                                 ON I.STRCODE = S.STRCODE
+              WHERE CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+             ) C
     </select>
 
     <select id="SELECT_MCD_TODAY_EVENT_STAT" resultType="map">
         <![CDATA[
-        SELECT
-            COUNT(DISTINCT I.STRCODE) AS STRCNT
-            , COUNT(DISTINCT I.SNSRSEQ) AS SNSRCNT
-            , SUM(I.DANGERSNSRCNT) AS DANGERCNT
-            , SUM(I.WARNSNSRCNT) AS WARNINGCNT
-            , SUM(I.DISCONNSNSRCNT) AS DISCONNCNT
-        FROM
-            (SELECT
-                 I1.STRCODE, I1.SNSRSEQ, I2.DANGERSNSRCNT, I2.WARNSNSRCNT, I2.DISCONNSNSRCNT
-             FROM
-                 (SELECT
-                      STRCODE, SNSRSEQ, DATARCVTIME
-                  FROM
-                      F_SENSOR_INFO
-                  WHERE
-                      CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
-                 ) I1
-                     LEFT JOIN (SELECT
-                                    SNSRSEQ
-                                    , (CASE WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN 1 ELSE 0 END) AS DANGERSNSRCNT
-                                    , (CASE WHEN INSTR(
-                                          CONCAT(
-                                              MAX(CASE WHEN OCALM = 2 THEN 0 ELSE OCALM END)
-                                              , MAX(CASE WHEN IGOALM = 2 THEN 0 ELSE IGOALM END)
-                                              , MAX(CASE WHEN IGRALM = 2 THEN 0 ELSE IGRALM END)
-                                          ), '1') > 0 THEN 1 ELSE 0 END) AS WARNSNSRCNT
-                                    , MAX(DISCONN) AS DISCONNSNSRCNT
-                                FROM
-                                    F_SENSOR_LOG
-                                WHERE
-                                    REGDATE > CURDATE()
+        SELECT COUNT(DISTINCT I.STRCODE) AS STRCNT
+             , COUNT(DISTINCT I.SNSRSEQ) AS SNSRCNT
+             , SUM(I.DANGERSNSRCNT)      AS DANGERCNT
+             , SUM(I.WARNSNSRCNT)        AS WARNINGCNT
+             , SUM(I.DISCONNSNSRCNT)     AS DISCONNCNT
+        FROM (SELECT I1.STRCODE,
+                     I1.SNSRSEQ,
+                     I2.DANGERSNSRCNT,
+                     I2.WARNSNSRCNT,
+                     I2.DISCONNSNSRCNT
+              FROM (SELECT STRCODE,
+                           SNSRSEQ,
+                           DATARCVTIME
+                    FROM F_SENSOR_INFO
+                    WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                   ) I1
+                       LEFT JOIN (SELECT SNSRSEQ
+                                       , (CASE
+                                              WHEN INSTR(CONCAT(MAX(OCALM), MAX(IGOALM), MAX(IGRALM)), '2') > 0 THEN 1
+                                              ELSE 0 END) AS DANGERSNSRCNT
+                                       , (CASE
+                                              WHEN INSTR(
+                                                           CONCAT(
+                                                                   MAX(CASE WHEN OCALM = 2 THEN 0 ELSE OCALM END)
+                                                               , MAX(CASE WHEN IGOALM = 2 THEN 0 ELSE IGOALM END)
+                                                               , MAX(CASE WHEN IGRALM = 2 THEN 0 ELSE IGRALM END)
+                                                               ), '1') > 0 THEN 1
+                                              ELSE 0 END) AS WARNSNSRCNT
+                                       , MAX(DISCONN)     AS DISCONNSNSRCNT
+                                  FROM F_SENSOR_LOG
+                                  WHERE REGDATE > CURDATE()
                                     AND ISSIMUL = 0
-                                GROUP BY
-                                    SNSRSEQ) I2
-                         ON I1.SNSRSEQ = I2.SNSRSEQ
-            ) I
-                LEFT JOIN F_STORE S
-                    ON I.STRCODE = S.STRCODE
-        WHERE
-            CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                                  GROUP BY SNSRSEQ) I2
+                                 ON I1.SNSRSEQ = I2.SNSRSEQ
+             ) I
+                 LEFT JOIN F_STORE S
+                           ON I.STRCODE = S.STRCODE
+        WHERE CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
         ]]>
     </select>
 
     <select id="LIST_MCD_CURR_GRP_MAP_EVENT_STAT" resultType="map">
         <![CDATA[
-        SELECT
-            A.GRPCODE
-            , COUNT(DISTINCT I.SNSRSEQ) AS SNSRCNT
-            , COALESCE(COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN I.SNSRSEQ END), 0) AS DISCONNCNT
-        FROM
-            (SELECT GRPCODE, AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN, GRPCODE) LIKE '1YN30%') A
-                LEFT JOIN (SELECT
-                               AREACODE, STRCODE, GRPCODE
-                           FROM
-                               F_STORE
-                           WHERE
-                               CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
-                          ) S
-                    ON A.AREACODE = S.AREACODE
-                LEFT JOIN (SELECT STRCODE, SNSRSEQ, DATARCVTIME FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
-                    ON S.STRCODE = I.STRCODE
-        GROUP BY
-            A.GRPCODE
+        SELECT A.GRPCODE
+             , COUNT(DISTINCT I.SNSRSEQ)                                                                          AS SNSRCNT
+             , COALESCE(COUNT(DISTINCT CASE WHEN I.DATARCVTIME < NOW() - INTERVAL 24 HOUR THEN I.SNSRSEQ END),
+                        0)                                                                                        AS DISCONNCNT
+        FROM (SELECT GRPCODE, AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN, GRPCODE) LIKE '1YN30%') A
+                 LEFT JOIN (SELECT AREACODE,
+                                   STRCODE,
+                                   GRPCODE
+                            FROM F_STORE
+                            WHERE CONCAT(USEYN, DELYN, GRPCODE) = 'YN042'
+        ) S
+                           ON A.AREACODE = S.AREACODE
+                 LEFT JOIN (SELECT STRCODE, SNSRSEQ, DATARCVTIME
+                            FROM F_SENSOR_INFO
+                            WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
+                           ON S.STRCODE = I.STRCODE
+        GROUP BY A.GRPCODE
         ]]>
     </select>
 
     <select id="LIST_MCD_MONTHLY_GRP_EVENT_COMP_STAT" resultType="map">
         <![CDATA[
-        SELECT
-            L.GRPCODE
-            , COALESCE(A.EVENTCNT, 0) AS THATEVENTCNT
-            , COALESCE(B.EVENTCNT, 0) AS THISEVENTCNT
-        FROM
-            (SELECT GRPCODE FROM F_GROUP WHERE CONCAT(USEYN, PARENTGRPCODE, GRPCODE) LIKE 'Y04230%') L
-                LEFT JOIN (SELECT
-                               GRPCODE
-                               , COALESCE(SUM(TOTOCALM) + SUM(TOTIGALM), 0) AS EVENTCNT
-                           FROM
-                               F_ELEC_SENSOR_STAT
-                           WHERE
-                               GRPCODE LIKE '30%'
-                               AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
-                               AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
-                           GROUP BY
-                               GRPCODE
-                          ) A
-                              ON L.GRPCODE = A.GRPCODE
-                LEFT JOIN (SELECT
-                               SS.GRPCODE
-                               , COALESCE(SUM(SS.EVENTCNT), 0) AS EVENTCNT
-                           FROM
-                               (SELECT
-                                    GRPCODE
-                                    , COALESCE(SUM(TOTOCALM) + SUM(TOTIGALM), 0) AS EVENTCNT
-                                FROM
-                                    F_ELEC_SENSOR_STAT
-                                WHERE
-                                    GRPCODE LIKE '30%'
+        SELECT L.GRPCODE
+             , COALESCE(A.EVENTCNT, 0) AS THATEVENTCNT
+             , COALESCE(B.EVENTCNT, 0) AS THISEVENTCNT
+        FROM (SELECT GRPCODE FROM F_GROUP WHERE CONCAT(USEYN, PARENTGRPCODE, GRPCODE) LIKE 'Y04230%') L
+                 LEFT JOIN (SELECT GRPCODE
+                                 , COALESCE(SUM(TOTOCALM) + SUM(TOTIGALM), 0) AS EVENTCNT
+                            FROM F_ELEC_SENSOR_STAT
+                            WHERE GRPCODE LIKE '30%'
+                              AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                              AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
+                            GROUP BY GRPCODE
+        ) A
+                           ON L.GRPCODE = A.GRPCODE
+                 LEFT JOIN (SELECT SS.GRPCODE
+                                 , COALESCE(SUM(SS.EVENTCNT), 0) AS EVENTCNT
+                            FROM (SELECT GRPCODE
+                                       , COALESCE(SUM(TOTOCALM) + SUM(TOTIGALM), 0) AS EVENTCNT
+                                  FROM F_ELEC_SENSOR_STAT
+                                  WHERE GRPCODE LIKE '30%'
                                     AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
-                                GROUP BY
-                                    GRPCODE
+                                  GROUP BY GRPCODE
 
-                                UNION ALL
+                                  UNION ALL
 
-                                SELECT
-                                    A.GRPCODE, COALESCE(SUM(L.ISALM), 0) AS EVENTCNT
-                                FROM
-                                    (SELECT
-                                         SNSRSEQ
-                                         , (CASE WHEN CONCAT(OCALM, IGOALM, IGRALM) <> '000' THEN 1 ELSE 0 END) AS ISALM
-                                     FROM
-                                         F_SENSOR_LOG
-                                     WHERE
-                                         REGDATE > CURDATE()
-                                    ) L
-                                       LEFT JOIN F_SENSOR_INFO I
-                                           ON L.SNSRSEQ = I.SNSRSEQ
-                                       LEFT JOIN F_STORE S
-                                           ON I.STRCODE = S.STRCODE
-                                       LEFT JOIN F_LEVEL_AREA A
-                                           ON S.AREACODE = A.AREACODE
-                                WHERE
-                                    CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                                  SELECT A.GRPCODE,
+                                         COALESCE(SUM(L.ISALM), 0) AS EVENTCNT
+                                  FROM (SELECT SNSRSEQ
+                                             , (CASE WHEN CONCAT(OCALM, IGOALM, IGRALM) <> '000' THEN 1 ELSE 0 END) AS ISALM
+                                        FROM F_SENSOR_LOG
+                                        WHERE REGDATE > CURDATE()
+                                       ) L
+                                           LEFT JOIN F_SENSOR_INFO I
+                                                     ON L.SNSRSEQ = I.SNSRSEQ
+                                           LEFT JOIN F_STORE S
+                                                     ON I.STRCODE = S.STRCODE
+                                           LEFT JOIN F_LEVEL_AREA A
+                                                     ON S.AREACODE = A.AREACODE
+                                  WHERE CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
                                     AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
                                     AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                                GROUP BY
-                                    A.GRPCODE) SS
-                           GROUP BY
-                               SS.GRPCODE) B
-                    ON A.GRPCODE = B.GRPCODE
-        ORDER BY
-            L.GRPCODE
+                                  GROUP BY A.GRPCODE) SS
+                            GROUP BY SS.GRPCODE) B
+                           ON A.GRPCODE = B.GRPCODE
+        ORDER BY L.GRPCODE
         ]]>
     </select>
 
     <select id="LIST_MCD_TODAY_GRP_AREA_EVENT_COMP_RANK" resultType="map">
         <![CDATA[
-        SELECT
-            R1.GRPCODE
-            , R1.GRPNAME
-            , R1.AREACODE
-            , R1.AREANAME
-            , COALESCE(R1.DANGERCNT, 0) AS THISDANGERCNT
-            , COALESCE(R1.WARNINGCNT, 0) AS THISWARNINGCNT
-            , COALESCE(R2.DANGERCNT, 0) AS THATDANGERCNT
-            , COALESCE(R2.WARNINGCNT, 0) AS THATWARNINGCNT
-        FROM
-            (SELECT
-                 G.GRPCODE
-                 , G.GRPNAME
-                 , A.AREACODE
-                 , A.AREANAME
-                 , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
-                 , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
-             FROM
-                 (SELECT
-                      SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
-                  FROM
-                      F_SENSOR_LOG
-                  WHERE
-                      REGDATE > CURDATE()
-                 ) L
-                     LEFT JOIN F_SENSOR_INFO I
-                         ON L.SNSRSEQ = I.SNSRSEQ
-                     LEFT JOIN F_STORE S
-                         ON I.STRCODE = S.STRCODE
-                     LEFT JOIN F_LEVEL_AREA A
-                         ON S.AREACODE = A.AREACODE
-                     LEFT JOIN F_GROUP G
-                         ON A.GRPCODE = G.GRPCODE
-             WHERE
-                 CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
-                 AND A.AREACODE != 'AREA_000001'
+        SELECT R1.GRPCODE
+             , R1.GRPNAME
+             , R1.AREACODE
+             , R1.AREANAME
+             , COALESCE(R1.DANGERCNT, 0)  AS THISDANGERCNT
+             , COALESCE(R1.WARNINGCNT, 0) AS THISWARNINGCNT
+             , COALESCE(R2.DANGERCNT, 0)  AS THATDANGERCNT
+             , COALESCE(R2.WARNINGCNT, 0) AS THATWARNINGCNT
+        FROM (SELECT G.GRPCODE
+                   , G.GRPNAME
+                   , A.AREACODE
+                   , A.AREANAME
+                   , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                   , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
+              FROM (SELECT SNSRSEQ,
+                           CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                    FROM F_SENSOR_LOG
+                    WHERE REGDATE > CURDATE()
+                   ) L
+                       LEFT JOIN F_SENSOR_INFO I
+                                 ON L.SNSRSEQ = I.SNSRSEQ
+                       LEFT JOIN F_STORE S
+                                 ON I.STRCODE = S.STRCODE
+                       LEFT JOIN F_LEVEL_AREA A
+                                 ON S.AREACODE = A.AREACODE
+                       LEFT JOIN F_GROUP G
+                                 ON A.GRPCODE = G.GRPCODE
+              WHERE CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
+                AND A.AREACODE != 'AREA_000001'
                  AND CONCAT(G.USEYN, G.PARENTGRPCODE, G.GRPCODE) LIKE 'Y04230%'
-             GROUP BY
-                 A.AREACODE
-            ) R1
-                LEFT JOIN (SELECT
-                               G.GRPCODE
-                               , G.GRPNAME
-                               , A.AREACODE
-                               , A.AREANAME
-                               , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
-                               , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
-                           FROM
-                               (SELECT
-                                    SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
-                                FROM
-                                    F_SENSOR_LOG
-                                WHERE
-                                    REGDATE > CURDATE() - INTERVAL 1 DAY
-                                  AND REGDATE < CURDATE()
-                               ) L
-                                   LEFT JOIN F_SENSOR_INFO I
-                                       ON L.SNSRSEQ = I.SNSRSEQ
-                                   LEFT JOIN F_STORE S
-                                       ON I.STRCODE = S.STRCODE
-                                   LEFT JOIN F_LEVEL_AREA A
-                                       ON S.AREACODE = A.AREACODE
-                                   LEFT JOIN F_GROUP G
-                                       ON A.GRPCODE = G.GRPCODE
-                           WHERE
-                               CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                               AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                               AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
-                               AND A.AREACODE != 'AREA_000001'
+              GROUP BY
+                  A.AREACODE
+             ) R1
+                 LEFT JOIN (SELECT G.GRPCODE
+                                 , G.GRPNAME
+                                 , A.AREACODE
+                                 , A.AREANAME
+                                 , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                                 , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
+                            FROM (SELECT SNSRSEQ,
+                                         CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                                  FROM F_SENSOR_LOG
+                                  WHERE REGDATE > CURDATE() - INTERVAL 1 DAY
+                                    AND REGDATE
+                                      < CURDATE()
+                                 ) L
+                                     LEFT JOIN F_SENSOR_INFO I
+                                               ON L.SNSRSEQ = I.SNSRSEQ
+                                     LEFT JOIN F_STORE S
+                                               ON I.STRCODE = S.STRCODE
+                                     LEFT JOIN F_LEVEL_AREA A
+                                               ON S.AREACODE = A.AREACODE
+                                     LEFT JOIN F_GROUP G
+                                               ON A.GRPCODE = G.GRPCODE
+                            WHERE CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                              AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                              AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
+                              AND A.AREACODE != 'AREA_000001'
                                AND CONCAT(G.USEYN, G.PARENTGRPCODE, G.GRPCODE) LIKE 'Y04230%'
-                           GROUP BY
-                               A.AREACODE
-                          ) R2
-                    ON R1.AREACODE = R2.AREACODE
+                            GROUP BY
+                                A.AREACODE
+        ) R2
+                           ON R1.AREACODE = R2.AREACODE
         ]]>
     </select>
 
     <select id="LIST_MCD_TODAY_GRP_EVENT" resultType="map">
         <![CDATA[
-        SELECT
-            R1.GRPCODE
-            , R1.GRPNAME
-            , COALESCE(R1.DANGERCNT, 0) AS THISDANGERCNT
-            , COALESCE(R1.WARNINGCNT, 0) AS THISWARNINGCNT
-            , COALESCE(R2.DANGERCNT, 0) AS THATDANGERCNT
-            , COALESCE(R2.WARNINGCNT, 0) AS THATWARNINGCNT
-        FROM
-            (SELECT
-                 G.GRPCODE
-                 , G.GRPNAME
-                 , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
-                 , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
-             FROM
-                  (SELECT
-                       SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
-                   FROM
-                       F_SENSOR_LOG
-                   WHERE
-                       REGDATE > CURDATE()
-                  ) L
-                      LEFT JOIN F_SENSOR_INFO I
-                          ON L.SNSRSEQ = I.SNSRSEQ
-                      LEFT JOIN F_STORE S
-                          ON I.STRCODE = S.STRCODE
-                      LEFT JOIN F_LEVEL_AREA A
-                          ON S.AREACODE = A.AREACODE
-                      LEFT JOIN F_GROUP G
-                          ON A.GRPCODE = G.GRPCODE
-             WHERE
-                 CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                 AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
-                 AND A.AREACODE != 'AREA_000001'
+        SELECT R1.GRPCODE
+             , R1.GRPNAME
+             , COALESCE(R1.DANGERCNT, 0)  AS THISDANGERCNT
+             , COALESCE(R1.WARNINGCNT, 0) AS THISWARNINGCNT
+             , COALESCE(R2.DANGERCNT, 0)  AS THATDANGERCNT
+             , COALESCE(R2.WARNINGCNT, 0) AS THATWARNINGCNT
+        FROM (SELECT G.GRPCODE
+                   , G.GRPNAME
+                   , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                   , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
+              FROM (SELECT SNSRSEQ,
+                           CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                    FROM F_SENSOR_LOG
+                    WHERE REGDATE > CURDATE()
+                   ) L
+                       LEFT JOIN F_SENSOR_INFO I
+                                 ON L.SNSRSEQ = I.SNSRSEQ
+                       LEFT JOIN F_STORE S
+                                 ON I.STRCODE = S.STRCODE
+                       LEFT JOIN F_LEVEL_AREA A
+                                 ON S.AREACODE = A.AREACODE
+                       LEFT JOIN F_GROUP G
+                                 ON A.GRPCODE = G.GRPCODE
+              WHERE CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
+                AND A.AREACODE != 'AREA_000001'
                  AND CONCAT(G.USEYN, G.PARENTGRPCODE, G.GRPCODE) LIKE 'Y04230%'
-             GROUP BY
-                 G.GRPCODE
-            ) R1
-                LEFT JOIN (SELECT
-                               G.GRPCODE
-                               , G.GRPNAME
-                               , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
-                               , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
-                           FROM
-                               (SELECT
-                                    SNSRSEQ, CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
-                                FROM
-                                    F_SENSOR_LOG
-                                WHERE
-                                    REGDATE > CURDATE() - INTERVAL 1 DAY
-                                    AND REGDATE < CURDATE()
-                               ) L
-                                   LEFT JOIN F_SENSOR_INFO I
-                                       ON L.SNSRSEQ = I.SNSRSEQ
-                                   LEFT JOIN F_STORE S
-                                       ON I.STRCODE = S.STRCODE
-                                   LEFT JOIN F_LEVEL_AREA A
-                                       ON S.AREACODE = A.AREACODE
-                                   LEFT JOIN F_GROUP G
-                                       ON A.GRPCODE = G.GRPCODE
-                           WHERE
-                               CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-                               AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                               AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
-                               AND A.AREACODE != 'AREA_000001'
+              GROUP BY
+                  G.GRPCODE
+             ) R1
+                 LEFT JOIN (SELECT G.GRPCODE
+                                 , G.GRPNAME
+                                 , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                                 , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
+                            FROM (SELECT SNSRSEQ,
+                                         CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                                  FROM F_SENSOR_LOG
+                                  WHERE REGDATE > CURDATE() - INTERVAL 1 DAY
+                                    AND REGDATE
+                                      < CURDATE()
+                                 ) L
+                                     LEFT JOIN F_SENSOR_INFO I
+                                               ON L.SNSRSEQ = I.SNSRSEQ
+                                     LEFT JOIN F_STORE S
+                                               ON I.STRCODE = S.STRCODE
+                                     LEFT JOIN F_LEVEL_AREA A
+                                               ON S.AREACODE = A.AREACODE
+                                     LEFT JOIN F_GROUP G
+                                               ON A.GRPCODE = G.GRPCODE
+                            WHERE CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                              AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                              AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
+                              AND A.AREACODE != 'AREA_000001'
                                AND CONCAT(G.USEYN, G.PARENTGRPCODE, G.GRPCODE) LIKE 'Y04230%'
-                           GROUP BY
-                               G.GRPCODE
-                          ) R2
-                    ON R1.GRPCODE = R2.GRPCODE
+                            GROUP BY
+                                G.GRPCODE
+        ) R2
+                           ON R1.GRPCODE = R2.GRPCODE
         ]]>
     </select>
     <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <select id="SELECT_MCD_KWH_STAT" resultType="map">
         <![CDATA[
-        SELECT
-            A.USEKWH AS YESTERDAYUSEKWH
-            , B.USEKWH AS LASTWEEKUSEKWH
-            , C.USEKWH AS LASTMONTHUSEKWH
-        FROM
-            (SELECT
-                 SUM(SNSRKWHDAILY) AS USEKWH
-             FROM
-                 F_ELEC_SENSOR_STAT
-             WHERE
-                 GRPCODE LIKE '30%'
-                 AND SDATE = CURDATE() - INTERVAL 1 DAY
-            ) A
-            ,
-            (SELECT
-                 SUM(SNSRKWHDAILY) AS USEKWH
-             FROM
-                 F_ELEC_SENSOR_STAT
-             WHERE
-                 GRPCODE LIKE '30%'
-                 AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
+        SELECT A.USEKWH AS YESTERDAYUSEKWH
+             , B.USEKWH AS LASTWEEKUSEKWH
+             , C.USEKWH AS LASTMONTHUSEKWH
+        FROM (SELECT SUM(SNSRKWHDAILY) AS USEKWH
+              FROM F_ELEC_SENSOR_STAT
+              WHERE GRPCODE LIKE '30%'
+                AND SDATE = CURDATE() - INTERVAL 1 DAY
+             ) A
+                ,
+             (SELECT SUM(SNSRKWHDAILY) AS USEKWH
+              FROM F_ELEC_SENSOR_STAT
+              WHERE GRPCODE LIKE '30%'
+                AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
                            AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
             ) B
             ,
-            (SELECT
-                 SUM(SNSRKWHDAILY) AS USEKWH
-             FROM
-                 F_ELEC_SENSOR_STAT
-             WHERE
-                 GRPCODE LIKE '30%'
-                 AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
-                 AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
+            (
+        SELECT
+            SUM (SNSRKWHDAILY) AS USEKWH
+        FROM
+            F_ELEC_SENSOR_STAT
+        WHERE
+            GRPCODE LIKE '30%'
+          AND SDATE
+            > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH
+            , '%Y-%m')
+          AND SDATE
+            < DATE_FORMAT(CURDATE()
+            , '%Y-%m')
             ) C
         ]]>
     </select>
 
     <select id="SELECT_MCD_CURR_KWH_STAT" resultType="map">
         <![CDATA[
-        SELECT
-            V.STRCNT
-            , V.SNSRCNT
-            , A.USEKWH AS YESTERDAYUSEKWH
-            , B.USEKWH AS TODAYUSEKWH
-            , (B.USEKWH / A.USEKWH) * 100 AS USEPER
-        FROM
-            (SELECT
-                 COUNT(DISTINCT I.STRCODE) AS STRCNT
-                 , COUNT(DISTINCT I.SNSRSEQ) AS SNSRCNT
-             FROM
-                 (SELECT SNSRSEQ, STRCODE FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
-                     LEFT JOIN F_STORE S
-                         ON I.STRCODE = S.STRCODE
-             WHERE
-                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-            ) V
-            ,
-            (SELECT
-                 SUM(SNSRKWHDAILY) AS USEKWH
-             FROM
-                 F_ELEC_SENSOR_STAT
-             WHERE
-                 GRPCODE LIKE '30%'
-                 AND SDATE = CURDATE() - INTERVAL 1 DAY
-            ) A
-            ,
-            (SELECT
-                 SUM(USEKWH) AS USEKWH
-             FROM
-                 F_CRN_SNSR_KWH_TODAY_STAT
-             WHERE
-                 GRPCODE LIKE '30%'
-            ) B
+        SELECT V.STRCNT
+             , V.SNSRCNT
+             , A.USEKWH                    AS YESTERDAYUSEKWH
+             , B.USEKWH                    AS TODAYUSEKWH
+             , (B.USEKWH / A.USEKWH) * 100 AS USEPER
+        FROM (SELECT COUNT(DISTINCT I.STRCODE) AS STRCNT
+                   , COUNT(DISTINCT I.SNSRSEQ) AS SNSRCNT
+              FROM (SELECT SNSRSEQ, STRCODE FROM F_SENSOR_INFO WHERE CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%') I
+                       LEFT JOIN F_STORE S
+                                 ON I.STRCODE = S.STRCODE
+              WHERE CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+             ) V
+                ,
+             (SELECT SUM(SNSRKWHDAILY) AS USEKWH
+              FROM F_ELEC_SENSOR_STAT
+              WHERE GRPCODE LIKE '30%'
+                AND SDATE = CURDATE() - INTERVAL 1 DAY
+             ) A
+                ,
+             (SELECT SUM(USEKWH) AS USEKWH
+              FROM F_CRN_SNSR_KWH_TODAY_STAT
+              WHERE GRPCODE LIKE '30%'
+             ) B
         ]]>
     </select>
 
     <select id="LIST_MCD_GRP_MAP_KWH_STAT" resultType="map">
-        SELECT
-            L.GRPCODE
-            , COALESCE(A.USEKWH, 0) AS THATWEEKUSEKWH
-            , COALESCE(B.USEKWH, 0) AS THISWEEKUSEKWH
-        FROM
-            (SELECT GRPCODE FROM F_GROUP WHERE CONCAT(USEYN, PARENTGRPCODE, GRPCODE) LIKE 'Y04230%') L
-                LEFT JOIN (SELECT
-                               GRPCODE, SUM(SNSRKWHDAILY) AS USEKWH
-                           FROM
-                               F_ELEC_SENSOR_STAT
-                           WHERE
-                               GRPCODE LIKE '30%'
-                               AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
+        SELECT L.GRPCODE
+             , COALESCE(A.USEKWH, 0) AS THATWEEKUSEKWH
+             , COALESCE(B.USEKWH, 0) AS THISWEEKUSEKWH
+        FROM (SELECT GRPCODE FROM F_GROUP WHERE CONCAT(USEYN, PARENTGRPCODE, GRPCODE) LIKE 'Y04230%') L
+                 LEFT JOIN (SELECT GRPCODE,
+                                   SUM(SNSRKWHDAILY) AS USEKWH
+                            FROM F_ELEC_SENSOR_STAT
+                            WHERE GRPCODE LIKE '30%'
+                              AND SDATE BETWEEN CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 7 DAY
                                          AND CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 1) + 1 DAY
-                           GROUP BY
-                               GRPCODE) A
-                    ON L.GRPCODE = A.GRPCODE
-                LEFT JOIN (SELECT
-                               SS.GRPCODE, COALESCE(SUM(USEKWH), 0) AS USEKWH
-                           FROM
-                               (SELECT
-                                    GRPCODE, SUM(SNSRKWHDAILY) AS USEKWH
-                                FROM
-                                    F_ELEC_SENSOR_STAT
-                                WHERE
-                                    GRPCODE LIKE '30%'
-                                    AND SDATE >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
-                                GROUP BY
-                                    GRPCODE
-
-                                UNION ALL
-
-                                SELECT
-                                    GRPCODE, SUM(USEKWH) AS USEKWH
-                                FROM
-                                    F_CRN_SNSR_KWH_TODAY_STAT
-                                WHERE
-                                    GRPCODE LIKE '30%'
-                                GROUP BY
-                                    GRPCODE) SS
-                           GROUP BY
-                               SS.GRPCODE) B
-                    ON L.GRPCODE = B.GRPCODE
+        GROUP BY
+            GRPCODE) A
+        ON L.GRPCODE = A.GRPCODE
+            LEFT JOIN (SELECT
+            SS.GRPCODE, COALESCE (SUM (USEKWH), 0) AS USEKWH
+            FROM
+            (SELECT
+            GRPCODE, SUM (SNSRKWHDAILY) AS USEKWH
+            FROM
+            F_ELEC_SENSOR_STAT
+            WHERE
+            GRPCODE LIKE '30%'
+            AND SDATE >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 1 DAY
+            GROUP BY
+            GRPCODE
+            UNION ALL
+            SELECT
+            GRPCODE, SUM (USEKWH) AS USEKWH
+            FROM
+            F_CRN_SNSR_KWH_TODAY_STAT
+            WHERE
+            GRPCODE LIKE '30%'
+            GROUP BY
+            GRPCODE) SS
+            GROUP BY
+            SS.GRPCODE) B
+            ON L.GRPCODE = B.GRPCODE
         ORDER BY
             L.GRPCODE
     </select>
 
     <select id="LIST_MCD_GRP_MONTH_KWH_STAT" resultType="map">
         <![CDATA[
-        SELECT
-            DISTINCT L.GRPCODE
-            , A.USEKWH AS THATMONTHUSEKWH
-            , B.USEKWH AS THISMONTHUSEKWH
-            , (B.USEKWH / A.USEKWH) * 100 AS USEPER
-        FROM
-            (SELECT GRPCODE, AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN, GRPCODE) LIKE '1YN30%') L
-                LEFT JOIN (SELECT
-                               GRPCODE, SUM(SNSRKWHDAILY) AS USEKWH
-                           FROM
-                               F_ELEC_SENSOR_STAT
-                           WHERE
-                               GRPCODE LIKE '30%'
-                               AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
-                               AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
-                           GROUP BY
-                               GRPCODE) A
-                    ON L.GRPCODE = A.GRPCODE
-                LEFT JOIN (SELECT
-                               SS.GRPCODE, COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
-                           FROM
-                               (SELECT
-                                    GRPCODE, SUM(SNSRKWHDAILY) AS USEKWH
-                                FROM
-                                    F_ELEC_SENSOR_STAT
-                                WHERE
-                                    GRPCODE LIKE '30%'
+        SELECT DISTINCT L.GRPCODE
+                      , A.USEKWH                    AS THATMONTHUSEKWH
+                      , B.USEKWH                    AS THISMONTHUSEKWH
+                      , (B.USEKWH / A.USEKWH) * 100 AS USEPER
+        FROM (SELECT GRPCODE, AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN, GRPCODE) LIKE '1YN30%') L
+                 LEFT JOIN (SELECT GRPCODE,
+                                   SUM(SNSRKWHDAILY) AS USEKWH
+                            FROM F_ELEC_SENSOR_STAT
+                            WHERE GRPCODE LIKE '30%'
+                              AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
+                              AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
+                            GROUP BY GRPCODE) A
+                           ON L.GRPCODE = A.GRPCODE
+                 LEFT JOIN (SELECT SS.GRPCODE,
+                                   COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
+                            FROM (SELECT GRPCODE,
+                                         SUM(SNSRKWHDAILY) AS USEKWH
+                                  FROM F_ELEC_SENSOR_STAT
+                                  WHERE GRPCODE LIKE '30%'
                                     AND SDATE > DATE_FORMAT(CURDATE(), '-%m')
-                                GROUP BY
-                                    GRPCODE
+                                  GROUP BY GRPCODE
 
-                                UNION ALL
+                                  UNION ALL
 
-                                SELECT
-                                    GRPCODE, SUM(USEKWH) AS USEKWH
-                                FROM
-                                    F_CRN_SNSR_KWH_TODAY_STAT
-                                WHERE
-                                    GRPCODE LIKE '30%'
-                                GROUP BY
-                                    GRPCODE) SS
-                           GROUP BY
-                               SS.GRPCODE) B
-                    ON L.GRPCODE = B.GRPCODE
-        ORDER BY
-            L.GRPCODE
+                                  SELECT GRPCODE,
+                                         SUM(USEKWH) AS USEKWH
+                                  FROM F_CRN_SNSR_KWH_TODAY_STAT
+                                  WHERE GRPCODE LIKE '30%'
+                                  GROUP BY GRPCODE) SS
+                            GROUP BY SS.GRPCODE) B
+                           ON L.GRPCODE = B.GRPCODE
+        ORDER BY L.GRPCODE
         ]]>
     </select>
 
     <select id="LIST_MCD_GRP_AREA_KWH_STAT" resultType="map">
         <![CDATA[
-        SELECT
-            A.GRPCODE
-            , A.GRPNAME
-            , A.AREACODE
-            , A.AREANAME
-            , A.USEKWH AS THATMONTHUSEKWH
-            , COALESCE(B.USEKWH, 0) AS THISMONTHUSEKWH
-            , (CASE
-                   WHEN A.USEKWH = 0 AND COALESCE(B.USEKWH, 0) != 0 THEN 100
-                   WHEN COALESCE(B.USEKWH, 0) = 0 THEN 0
-                   ELSE (COALESCE(B.USEKWH, 0) / A.USEKWH) * 100
-              END) AS USEPER
-        FROM
-            (SELECT
-                 L.GRPCODE
-                 , L.GRPNAME
-                 , L.AREACODE
-                 , L.AREANAME
-                 , COALESCE(R.USEKWH, 0) AS USEKWH
-             FROM
-                 (SELECT
-                      G.GRPCODE, G.GRPNAME, A.AREACODE, A.AREANAME
-                  FROM
-                      (SELECT
-                           GRPCODE, GRPNAME
-                       FROM
-                           F_GROUP
-                       WHERE
-                           CONCAT(USEYN, PARENTGRPCODE, GRPCODE) LIKE 'Y04230%'
-                      ) G
-                          LEFT JOIN (SELECT
-                                         GRPCODE, AREACODE, AREANAME
-                                     FROM
-                                         F_LEVEL_AREA
-                                     WHERE
-                                         CONCAT(AREALEVEL, USEYN, DELYN, GRPCODE) LIKE '1YN30%'
-                                         AND AREACODE != 'AREA_000001'
-                                    ) A
-                              ON A.GRPCODE = G.GRPCODE
-                 ) L
-                    LEFT JOIN (SELECT
-                                   AREACODE
-                                   , SUM(SNSRKWHDAILY) AS USEKWH
-                               FROM
-                                    F_ELEC_SENSOR_STAT SS
-                               WHERE
-                                    GRPCODE LIKE '30%'
+        SELECT A.GRPCODE
+             , A.GRPNAME
+             , A.AREACODE
+             , A.AREANAME
+             , A.USEKWH              AS THATMONTHUSEKWH
+             , COALESCE(B.USEKWH, 0) AS THISMONTHUSEKWH
+             , (CASE
+                    WHEN A.USEKWH = 0 AND COALESCE(B.USEKWH, 0) != 0 THEN 100
+                    WHEN COALESCE(B.USEKWH, 0) = 0 THEN 0
+                    ELSE (COALESCE(B.USEKWH, 0) / A.USEKWH) * 100
+            END)                     AS USEPER
+        FROM (SELECT L.GRPCODE
+                   , L.GRPNAME
+                   , L.AREACODE
+                   , L.AREANAME
+                   , COALESCE(R.USEKWH, 0) AS USEKWH
+              FROM (SELECT G.GRPCODE,
+                           G.GRPNAME,
+                           A.AREACODE,
+                           A.AREANAME
+                    FROM (SELECT GRPCODE,
+                                 GRPNAME
+                          FROM F_GROUP
+                          WHERE CONCAT(USEYN, PARENTGRPCODE, GRPCODE) LIKE 'Y04230%'
+                         ) G
+                             LEFT JOIN (SELECT GRPCODE,
+                                               AREACODE,
+                                               AREANAME
+                                        FROM F_LEVEL_AREA
+                                        WHERE CONCAT(AREALEVEL, USEYN, DELYN, GRPCODE) LIKE '1YN30%'
+                                          AND AREACODE != 'AREA_000001'
+                    ) A
+                                       ON A.GRPCODE = G.GRPCODE
+                   ) L
+                       LEFT JOIN (SELECT AREACODE
+                                       , SUM(SNSRKWHDAILY) AS USEKWH
+                                  FROM F_ELEC_SENSOR_STAT SS
+                                  WHERE GRPCODE LIKE '30%'
                                     AND SDATE > DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m')
                                     AND SDATE < DATE_FORMAT(CURDATE(), '%Y-%m')
                                     AND AREACODE != 'AREA_000001'
-                               GROUP BY
-                                    AREACODE) R
-                        ON L.AREACODE = R.AREACODE
-            ) A
-                LEFT JOIN (SELECT
-                               SS.AREACODE
-                               , COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
-                           FROM
-                               (SELECT
-                                    AREACODE
-                                    , SUM(SNSRKWHDAILY) AS USEKWH
-                                FROM
-                                    F_ELEC_SENSOR_STAT
-                                WHERE
-                                    GRPCODE LIKE '30%'
+                                  GROUP BY
+                                      AREACODE) R
+                                 ON L.AREACODE = R.AREACODE
+             ) A
+                 LEFT JOIN (SELECT SS.AREACODE
+                                 , COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
+                            FROM (SELECT AREACODE
+                                       , SUM(SNSRKWHDAILY) AS USEKWH
+                                  FROM F_ELEC_SENSOR_STAT
+                                  WHERE GRPCODE LIKE '30%'
                                     AND SDATE > DATE_FORMAT(CURDATE(), '%Y-%m')
                                     AND AREACODE != 'AREA_000001'
-                                GROUP BY
-                                    AREACODE
+                                  GROUP BY
+                                      AREACODE
 
-                                UNION ALL
+                                  UNION ALL
 
-                                SELECT
-                                    AREACODE, SUM(USEKWH) AS USEKWH
-                                FROM
-                                    F_CRN_SNSR_KWH_TODAY_STAT
-                                WHERE
-                                    GRPCODE LIKE '30%'
+                                  SELECT
+                                      AREACODE, SUM (USEKWH) AS USEKWH
+                                  FROM
+                                      F_CRN_SNSR_KWH_TODAY_STAT
+                                  WHERE
+                                      GRPCODE LIKE '30%'
                                     AND AREACODE != 'AREA_000001'
-                                GROUP BY
-                                    AREACODE) SS
-                           GROUP BY
-                               SS.AREACODE) B
-                    ON A.AREACODE = B.AREACODE
-        ORDER BY
-            A.GRPCODE, COALESCE(B.USEKWH, 0) DESC
+                                  GROUP BY
+                                      AREACODE) SS
+                            GROUP BY SS.AREACODE) B
+                           ON A.AREACODE = B.AREACODE
+        ORDER BY A.GRPCODE, COALESCE(B.USEKWH, 0) DESC
+        ]]>
+    </select>
+
+    <select id="LIST_MCD_TODAY_GRP_AREA_RANK" resultType="map">
+        <![CDATA[
+        SELECT DISTINCT L.GRPCODE
+             , A.USEKWH AS THATMONTHUSEKWH
+             , B.USEKWH AS THISMONTHUSEKWH
+             , (B.USEKWH / A.USEKWH) * 100 AS USEPER
+             , COALESCE(R1.DANGERCNT, 0) AS THISDANGERCNT
+             , COALESCE(R1.WARNINGCNT, 0) AS THISWARNINGCNT
+             , COALESCE(R2.DANGERCNT, 0) AS THATDANGERCNT
+             , COALESCE(R2.WARNINGCNT, 0) AS THATWARNINGCNT
+          FROM (SELECT GRPCODE, AREACODE FROM F_LEVEL_AREA WHERE CONCAT(AREALEVEL, USEYN, DELYN, GRPCODE) LIKE '1YN30%') L
+          LEFT JOIN (SELECT GRPCODE,
+                            SUM(SNSRKWHDAILY) AS USEKWH
+                       FROM F_ELEC_SENSOR_STAT
+                      WHERE GRPCODE LIKE '30%'
+                        AND SDATE BETWEEN CONCAT(DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m'), '-01')
+                            AND CONCAT(DATE_FORMAT(CURDATE(), '%Y-%m'), '-01') - INTERVAL 1 DAY
+                      GROUP BY GRPCODE) A ON L.GRPCODE = A.GRPCODE
+          LEFT JOIN (SELECT SS.GRPCODE,
+                            COALESCE(SUM(SS.USEKWH), 0) AS USEKWH
+                       FROM (SELECT GRPCODE,
+                                    SUM(SNSRKWHDAILY) AS USEKWH
+                               FROM F_ELEC_SENSOR_STAT
+                              WHERE GRPCODE LIKE '30%'
+                        AND SDATE >= CONCAT(DATE_FORMAT(CURDATE(), '%Y-%m'), '-01')
+                      GROUP BY GRPCODE
+                      UNION ALL
+                     SELECT GRPCODE,
+                            SUM(USEKWH) AS USEKWH
+                       FROM F_CRN_SNSR_KWH_TODAY_STAT
+                      WHERE GRPCODE LIKE '30%'
+                      GROUP BY GRPCODE) SS
+                        GROUP BY SS.GRPCODE) B ON L.GRPCODE = B.GRPCODE
+          LEFT JOIN (SELECT G.GRPCODE
+                          , G.GRPNAME
+                          , A.AREACODE
+                          , A.AREANAME
+                          , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                          , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
+                       FROM (SELECT SNSRSEQ,
+                                    CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                               FROM F_SENSOR_LOG
+                              WHERE REGDATE > CURDATE()
+                            ) L
+                                LEFT JOIN F_SENSOR_INFO I
+                                                    ON L.SNSRSEQ = I.SNSRSEQ
+                                LEFT JOIN F_STORE S
+                                                    ON I.STRCODE = S.STRCODE
+                                LEFT JOIN F_LEVEL_AREA A
+                                                    ON S.AREACODE = A.AREACODE
+                                LEFT JOIN F_GROUP G
+                                                    ON A.GRPCODE = G.GRPCODE
+                      WHERE CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                        AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                        AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
+                        AND A.AREACODE != 'AREA_000001'
+                        AND CONCAT(G.USEYN, G.PARENTGRPCODE, G.GRPCODE) LIKE 'Y04230%'
+                      GROUP BY A.GRPCODE
+                      ) R1 ON L.GRPCODE = R1.GRPCODE
+          LEFT JOIN (SELECT G.GRPCODE
+                          , G.GRPNAME
+                          , A.AREACODE
+                          , A.AREANAME
+                          , SUM(CASE WHEN INSTR(ALMFLAG, '2') > 0 THEN 1 ELSE 0 END) AS DANGERCNT
+                          , SUM(CASE WHEN INSTR(ALMFLAG, '1') > 0 THEN 1 ELSE 0 END) AS WARNINGCNT
+                       FROM (SELECT SNSRSEQ,
+                                    CONCAT(OCALM, IGOALM, IGRALM) AS ALMFLAG
+                               FROM F_SENSOR_LOG
+                              WHERE REGDATE > CURDATE() - INTERVAL 1 DAY
+                                AND REGDATE< CURDATE()
+                            ) L
+                                LEFT JOIN F_SENSOR_INFO I
+                                            ON L.SNSRSEQ = I.SNSRSEQ
+                                LEFT JOIN F_STORE S
+                                            ON I.STRCODE = S.STRCODE
+                                LEFT JOIN F_LEVEL_AREA A
+                                            ON S.AREACODE = A.AREACODE
+                                LEFT JOIN F_GROUP G
+                                            ON A.GRPCODE = G.GRPCODE
+                      WHERE CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                        AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                        AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
+                        AND A.AREACODE != 'AREA_000001'
+                        AND CONCAT(G.USEYN, G.PARENTGRPCODE, G.GRPCODE) LIKE 'Y04230%'
+                      GROUP BY A.GRPCODE
+                     ) R2
+                        ON R2.GRPCODE = L.GRPCODE
+        ORDER BY THISDANGERCNT DESC
+        ]]>
+    </select>
+
+    <select id="LIST_MCD_MONTH_CARBON_DATA" parameterType="map" resultType="map">
+        <![CDATA[
+        SELECT A.GRPCODE
+             , GRPNAME
+             , IFNULL(C.USEKWH*0.000424, 0) AS BEFOREUSEKWH
+             , IFNULL(D.USEKWH*0.000424, 0) AS AFTERUSEKWH
+        FROM F_GROUP A
+                 LEFT JOIN F_LEVEL_AREA B ON A.GRPCODE = B.GRPCODE
+                 LEFT JOIN (
+            SELECT GRPCODE
+                 , SUM(SNSRKWHDAILY) AS USEKWH
+            FROM F_ELEC_SENSOR_STAT SS
+            WHERE GRPCODE LIKE '30%'
+              AND SDATE > #{ startDate1}
+              AND SDATE < #{ endDate1}
+            GROUP BY
+                GRPCODE
+        ) C ON C.GRPCODE = B.GRPCODE
+                 LEFT JOIN (
+            SELECT GRPCODE
+                 , SUM(SNSRKWHDAILY) AS USEKWH
+            FROM F_ELEC_SENSOR_STAT SS
+            WHERE GRPCODE LIKE '30%'
+              AND SDATE > #{ startDate2 }
+              AND SDATE < #{ endDate2 }
+            GROUP BY
+                GRPCODE
+        ) D ON D.GRPCODE = B.GRPCODE
+        WHERE A.GRPCODE LIKE '30%'
+        GROUP BY A.GRPCODE
+        ORDER BY A.GRPCODE
         ]]>
     </select>
 

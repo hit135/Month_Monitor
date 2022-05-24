@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/district")
@@ -201,6 +202,30 @@ public class MCDistrictController {
 
         return null;
     }
+
+    /**
+     * @Method Name : mcdTodayGuAreaEventCompRank
+     * @작성일 : 2021-08-20
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 금일 시장별 위험 현황
+     * @return HashMap<String, Object>
+     */
+    @RequestMapping(value = "/todayGuAreaRankAjax")
+    @ResponseBody
+    public List<HashMap<String, Object>> todayGuAreaRankAjax(HttpServletRequest req) throws Exception {
+        try {
+            return mcDistrictRepo.LIST_MCD_TODAY_GRP_AREA_RANK();
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -325,6 +350,35 @@ public class MCDistrictController {
     public List<HashMap<String, Object>> mcdGuAreaKwhRankAjax(HttpServletRequest req) throws Exception {
         try {
             return mcDistrictRepo.LIST_MCD_GRP_AREA_KWH_STAT();
+        } catch (NullPointerException e) {
+            LOG.debug(e.getMessage());
+        } catch (SQLException e) {
+            LOG.debug(e.getMessage());
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * @Method Name : mcdGuAreaKwhRankAjax
+     * @작성일 : 2021-08-20
+     * @작성자 : uhm
+     * @변경이력 :
+     * @Method 설명 : 구별 시장별 탄소배출량 비교
+     * @return List<HashMap<String, Object>>
+     */
+    @RequestMapping(value = "/guAreaCarbonStat")
+    @ResponseBody
+    public List<HashMap<String, Object>> mcdGuAreaCarbonStatAjax(HttpServletRequest req) throws Exception {
+        try {
+            Map<String, Object> param = new HashMap<>();
+            param.put("startDate1", req.getParameter("startDate1"));
+            param.put("endDate1", req.getParameter("endDate1"));
+            param.put("startDate2", req.getParameter("startDate2"));
+            param.put("endDate2", req.getParameter("endDate2"));
+            return mcDistrictRepo.LIST_MCD_MONTH_CARBON_DATA(param);
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (SQLException e) {
