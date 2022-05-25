@@ -43,7 +43,7 @@
 
 .line-badge { background-color: #2196F3; cursor: auto; width: 21px !important; height: 3px !important; padding: 0px; border-radius: 0px !important; }
 .mcd_guLabels { font-size: 0.9rem; color: #fff; margin-left: 10px; }
-#mcd_CarbonChart { height: 270px; display: block; width: 80%; margin-top: 3.5rem !important;position:relative;left:0;right:0;margin-left:auto;margin-right:auto;  }
+#mcd_CarbonChart { height: 400px; display: block; margin-top: 0.5rem !important;position:relative;left:0;right:0;margin-left:auto;margin-right:auto;  }
 #mcd_guElecEvtChart { height: 290px; display: block; width: 100%; margin-top: 3.5rem !important;  }
 #mcd_guKwhChart { height: 290px; display: block; width: 100%; margin-top: 0.75rem !important; }
 
@@ -310,7 +310,7 @@
             <div class="row" style="margin-top: 4vh;">
               <div class="col-xl-12">
                 <div class="d-flex pr-5 mr-3" style="border-bottom: 1px solid #ccc;">
-                  <div class="p-2 flex-fill"><h2 class="m-0">위험 순위</h2></div>
+                  <div class="p-2 flex-fill"><h2 class="m-0">전기위험 순위</h2></div>
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
                     <img th:src="@{/fs/img/district/yellowIcon.png}" alt="icon" />
                     <span style="color: #898989; margin-left: 1vh;">주의</span>
@@ -331,97 +331,97 @@
             <div class="row pt-3 pr-5">
               <div class="col-xl-12" id="areaList">
                 <div class="d-flex">
-                  <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important;">
+                  <div class="p-2 flex-fill" style="flex: 0.2 0.2 auto !important; width: 25%">
                     <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_1stBtn" style="font-weight: 900; width: 120px;">서구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
                     <h3 class="m-0" id="1st-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="1st-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
                     <h3 class="m-0" id="1st-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="1st-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
                     <h3 class="m-0" id="1st_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 50px;">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="1st_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important;">
+                  <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important; width: 25%">
                     <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_2ndBtn" style="font-weight: 900; width: 120px;">중구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center"style="width: 15%;">
                     <h3 class="m-0" id="2nd-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="2nd-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center"style="width: 18%;">
                     <h3 class="m-0" id="2nd-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="2nd-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center"style="width: 22%;">
                     <h3 class="m-0" id="2nd_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 50px;">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center"style="width: 20%;">
                     <h3 class="m-0" id="2nd_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important;">
+                  <div class="p-2 flex-fill" style="flex: 0.2 0.2 auto !important; width: 25%">
                     <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_3rdBtn" style="font-weight: 900; width: 120px;">동구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
                     <h3 class="m-0" id="3rd-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="3rd-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
                     <h3 class="m-0" id="3rd-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="3rd-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
                     <h3 class="m-0" id="3rd_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 50px;">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="3rd_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important;">
+                  <div class="p-2 flex-fill" style="flex: 0.2 0.2 auto !important; width: 25%">
                     <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_4thBtn" style="font-weight: 900; width: 120px;">유성구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
                     <h3 class="m-0" id="4th-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="4th-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
                     <h3 class="m-0" id="4th-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="4th-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
                     <h3 class="m-0" id="4th_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 50px;">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="4th_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important;">
+                  <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important; width: 25%">
                     <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_5thBtn" style="font-weight: 900; width: 120px;">대덕구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
                     <h3 class="m-0" id="5th-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="5th-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
                     <h3 class="m-0" id="5th-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="5th-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
                     <h3 class="m-0" id="5th_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 50px;">
+                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="5th_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
@@ -639,11 +639,11 @@ function fn_mcd_getCarbonChartStat(){
           },
           options: {
             responsive: false,
-            legend: { position: 'bottom',  display: true, labels: { fontColor: 'white' }},
+            legend: { position: 'bottom',  display: true, labels: { fontSize: 15, fontColor: 'white' }},
             hover: { animationDuration: 0 },
             scales: {
-              yAxes : [{ ticks : { fontSize: 13 }, afterDataLimits(scale) { scale.max += 30; } }],
-              xAxes : [{ ticks: { fontColor: "white", fontSize: 13 } }],
+              yAxes : [{ ticks : { fontColor: "white", fontSize: 15 }, afterDataLimits(scale) { scale.max += 30; } }],
+              xAxes : [{ ticks: { fontColor: "white", fontSize: 20 } }],
             },
             animation: {
               duration: 1,
