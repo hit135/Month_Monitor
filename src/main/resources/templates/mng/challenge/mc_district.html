@@ -299,7 +299,7 @@
           <div class="col-md-6 col-sm-12">
             <div class="row">
               <div class="col-xl-12">
-                <div class="d-flex" style="border-bottom: 1px solid #ccc;">
+                <div class="d-flex mr-3" style="border-bottom: 1px solid #ccc;">
                   <div class="p-2 flex-fill"><h2 class="m-0">탄소 배출량(Ton)</h2></div><!-- /.p-2 flex-fill d-flex justify-content-end align-content-center align-items-center -->
                 </div><!-- /.d-flex -->
                 <div class="mt-2 justify-content-center">
@@ -309,7 +309,7 @@
             </div><!-- /.row -->
             <div class="row" style="margin-top: 4vh;">
               <div class="col-xl-12">
-                <div class="d-flex" style="border-bottom: 1px solid #ccc;">
+                <div class="d-flex pr-5 mr-3" style="border-bottom: 1px solid #ccc;">
                   <div class="p-2 flex-fill"><h2 class="m-0">위험 순위</h2></div>
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
                     <img th:src="@{/fs/img/district/yellowIcon.png}" alt="icon" />
@@ -328,7 +328,7 @@
                 </div><!-- /.d-flex -->
               </div><!-- /.col-xl-12 -->
             </div><!-- /.row -->
-            <div class="row pt-3">
+            <div class="row pt-3 pr-5">
               <div class="col-xl-12" id="areaList">
                 <div class="d-flex">
                   <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important;">
@@ -469,11 +469,6 @@ function fn_mcd_initTimer() {
     $('.top-date').text(now_str.substring(0, 10) + ' (' + w[new Date().getDay()] + ')');
     $('.top-time').text(now_str.substring(11));
   }, 1000);
-
-  window.refresh_time = window.setInterval(function () {
-    if (new Date().getMinutes() % 10 === 2)
-      fn_mcmi_refresh();
-  }, 60 * 1000);
 }
 
 
@@ -485,23 +480,23 @@ function fn_mcd_getYesterdayEventCompStatAjax() {
     $("#mcd_dangerCnt").text($.number(d.TDANGERCNT));
 
     if (d.TSNSRCNT > d.YSNSRCNT)
-      $("#mcd_snsrImg").attr("src", contextPath + "/fs/img/district/up-arrow.png");
+      $("#mcd_snsrImg").attr("src", contextPath + "/fs/img/district/up-angle.png");
     else if (d.TSNSRCNT < d.YSNSRCNT)
-      $("#mcd_snsrImg").attr("src", contextPath + "/fs/img/district/down-arrow.png");
+      $("#mcd_snsrImg").attr("src", contextPath + "/fs/img/district/down-angle.png");
     else
       $("#mcd_snsrImg").attr("src", contextPath + "/fs/img/district/equal-arrow.png");
 
     if (d.TWARNINGCNT > d.YWARNINGCNT)
-      $("#mcd_warningImg").attr("src", contextPath + "/fs/img/district/up-arrow.png");
+      $("#mcd_warningImg").attr("src", contextPath + "/fs/img/district/up-angle.png");
     else if (d.TWARNINGCNT < d.YWARNINGCNT)
-      $("#mcd_warningImg").attr("src", contextPath + "/fs/img/district/down-arrow.png");
+      $("#mcd_warningImg").attr("src", contextPath + "/fs/img/district/down-angle.png");
     else
       $("#mcd_warningImg").attr("src", contextPath + "/fs/img/district/equal-arrow.png");
 
     if (d.TDANGERCNT > d.YDANGERCNT)
-      $("#mcd_dangerImg").attr("src", contextPath + "/fs/img/district/up-arrow.png");
+      $("#mcd_dangerImg").attr("src", contextPath + "/fs/img/district/up-angle.png");
     else if (d.TDANGERCNT < d.YDANGERCNT)
-      $("#mcd_dangerImg").attr("src", contextPath + "/fs/img/district/down-arrow.png");
+      $("#mcd_dangerImg").attr("src", contextPath + "/fs/img/district/down-angle.png");
     else
       $("#mcd_dangerImg").attr("src", contextPath + "/fs/img/district/equal-arrow.png");
   });
@@ -559,14 +554,19 @@ function fn_mcd_getYesterdaykwhRank() {
       $("#" + rankList[i] + "-danger-cnt").html(d[i].THISDANGERCNT);
       $("#" + rankList[i] + "-warning-cnt").html(d[i].THISWARNINGCNT);
 
-      if(d[i].THISDANGERCNT > d[i].THATDANGERCNT) $("#" + rankList[i] + "-danger-arrow").attr("src", "/fs/img/district/up-arrow.png")
-      else $("#" + rankList[i] + "-danger-arrow").attr("src", "/fs/img/district/down-arrow.png")
-      if(d[i].THISWARNINGCNT > d[i].THATARNINGCNT) $("#" + rankList[i] + "-warning-arrow").attr("src", "/fs/img/district/up-arrow.png")
-      else $("#" + rankList[i] + "-warning-arrow").attr("src", "/fs/img/district/down-arrow.png")
+      if(d[i].THISDANGERCNT > d[i].THATDANGERCNT) $("#" + rankList[i] + "-danger-arrow").attr("src", "/fs/img/district/up-angle.png")
+      else if(d[i].THISDANGERCNT < d[i].THATDANGERCNT) $("#" + rankList[i] + "-danger-arrow").attr("src", "/fs/img/district/down-angle.png")
+      else $("#" + rankList[i] + "-danger-arrow").attr("src", "/fs/img/district/equal-arrow.png")
+
+      if(d[i].THISWARNINGCNT > d[i].THATWARNINGCNT) $("#" + rankList[i] + "-warning-arrow").attr("src", "/fs/img/district/up-angle.png")
+      else if(d[i].THISWARNINGCNT < d[i].THATWARNINGCNT) $("#" + rankList[i] + "-warning-arrow").attr("src", "/fs/img/district/down-angle.png")
+      else $("#" + rankList[i] + "-warning-arrow").attr("src", "/fs/img/district/equal-arrow.png")
+
+
 
 
     }
-    $(".bar-colours-2").peity("bar", { fill: ["#2196F3", "#FF684A"] });
+    $(".bar-colours-2").peity("bar", { fill: ["#2196F3", "#FF684A"], max: 500 });
 
   });
 }
