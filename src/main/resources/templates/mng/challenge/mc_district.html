@@ -15,7 +15,7 @@
 
 .mcd_topTitle { background-color: #4771d0; width: 100%; text-align: center; }
 .mcd_topTitleSpan { letter-spacing: 0.3rem; font-size: 2rem; font-weight: 400; }
-
+.js-legend-attributes { color: white; font-size: 20px; }
 .top-time, .top-date { color: white; font-size: 1.2rem; }
 
 .mcd_mainTitle { border-bottom: 1px solid #ccc; padding-bottom: 2px; }
@@ -26,7 +26,73 @@
 .mcd_leftKwhImg { width: 100%; max-width: 20px; margin-right: 5px; }
 .arrow-icon { width: 16px; height: 16px; margin-left: 1vh; }
 
-#mcd_snsrNormalCnt, #mcd_warningCnt, #mcd_dangerCnt { margin-left: 0.5rem !important; margin-bottom: 0; }
+.mcd_yKwhDonggu { top: 75.5%; left: 4.5%; width: 45px; }
+.mcd_tKwhDonggu { top: 75.5%; left: 55.4%; width: 45px; }
+.mcd_yKwhJunggu { top: 75%; left: 4.5%; width: 45px; }
+.mcd_tKwhJunggu { top: 75%; left: 54.4%; width: 45px; }
+.mcd_yKwhSeogu { top: 76%; left: 5%; width: 45px; }
+.mcd_tKwhSeogu { top: 76%; left: 54%; width: 45px; }
+.mcd_yKwhYuseonggu { top: 75.5%; left: 6.4%; width: 45px; }
+.mcd_tKwhYuseonggu { top: 75.5%; left: 55.4%; width: 45px; }
+.mcd_yKwhDaedeokgu { top: 73.2%; left: 5.5%; width: 45px; }
+.mcd_tKwhDaedeokgu { top: 73.2%; left: 54.5%; width: 45px; }
+.dongguMap { left: 61%; top: 46%; }
+.jungguMap { left: 45%; top: 52.5%; }
+.seoguMap { left: 26.5%; top: 61.5%; }
+.yuseongguMap { left: 27%; top: 27.2%; }
+.daedeokguMap { left: 52%; top: 17%; }
+.daejeonMapLegend { left: 80%; top: 85%; }
+
+@media (max-width: 767px) {
+  .mcd_topLeftSpan { display: none; }
+  .mcd_topTimeSpan { display: none; }
+  .mcd_topTitleSpan { letter-spacing: 0.3rem; font-size: 1.5rem; font-weight: 400; }
+  .mcd_leftSpanTxt { color: #aaaaaa; font-size: 0.8rem; }
+  .mcd_leftKwhImg { width: 100%; max-width: 15px; margin-right: 5px; }
+  .arrow-icon { width: 12px; height: 12px; margin-left: 0.5vh; }
+  #mcd_snsrNormalCnt, #mcd_warningCnt, #mcd_dangerCnt { font-size: 14px; margin-left: 0.5rem !important; margin-bottom: 0; }
+  #mcd_yesterdayKwh, #mcd_lastWeekKwh, #mcd_lastMonthKwh, #mcd_yesterdayT, #mcd_lastWeekT, #mcd_lastMonthT { font-size: 14px;  margin-left: 0.75rem !important; margin-bottom: 0; }
+  #mcd_CarbonChart { height: 200px !important; width: 400px !important; display: block; margin-top: 0.5rem !important;position:relative;left:0;right:0;margin-left:auto;margin-right:auto;  }
+  .js-legend-attributes { color: white; font-size: 10px; }
+  .mcd_yKwhDonggu { top: 114.5%; left: 9.5%; width: 15px; }
+  .mcd_tKwhDonggu { top: 114.5%; left: 64%; width: 15px; }
+  .mcd_yKwhJunggu { top: 107%; left: 7.5%; width: 15px; }
+  .mcd_tKwhJunggu { top: 107%; left: 63%; width: 15px; }
+  .mcd_yKwhSeogu { top: 110%; left: 14%; width: 15px; }
+  .mcd_tKwhSeogu { top: 110%; left: 60.6%; width: 15px; }
+  .mcd_yKwhYuseonggu { top: 101.5%; left: 8.4%; width: 15px; }
+  .mcd_tKwhYuseonggu { top: 101.5%; left: 63%; width: 15px; }
+  .mcd_yKwhDaedeokgu { top: 104.2%; left: 11.5%; width: 15px; }
+  .mcd_tKwhDaedeokgu { top: 104.2%; left: 63.1%; width: 15px; }
+  #mcd_yKwhDonggu {  font-size: 0.8rem; }
+  #mcd_tKwhDonggu {  font-size: 0.8rem; }
+  #mcd_yKwhJunggu {  font-size: 0.8rem; }
+  #mcd_tKwhJunggu {  font-size: 0.8rem; }
+  #mcd_yKwhSeogu {  font-size: 0.8rem; }
+  #mcd_tKwhSeogu {  font-size: 0.8rem; }
+  #mcd_yKwhYuseonggu {  font-size: 0.8rem; }
+  #mcd_tKwhYuseonggu {  font-size: 0.8rem; }
+  #mcd_yKwhDaedeokgu {  font-size: 0.8rem; }
+  #mcd_tKwhDaedeokgu {  font-size: 0.8rem; }
+  #mcd_daejeonMap { width: 100% !important; }
+  .mcd_1stBtn { background-color: #ef1c25; font-weight: 900 ; width: 90px !important; }
+  .mcd_2ndBtn { background-color: #f76f23; font-weight: 900 ; width: 90px !important; }
+  .mcd_3rdBtn { background-color: #dfb523; font-weight: 900 ; width: 90px !important; }
+  .mcd_4thBtn { background-color: #0c8b80; font-weight: 900 ; width: 90px !important; }
+  .mcd_5thBtn { background-color: #03b7f2; font-weight: 900 ; width: 90px !important; }
+
+  .dongguMap { left: 65%; top: 49%; }
+  .jungguMap { left: 43%; top: 55.5%; }
+  .seoguMap { left: 21.5%; top: 64.5%; }
+  .yuseongguMap { left: 18%; top: 29.2%; }
+  .daedeokguMap { left: 54%; top: 17%; }
+
+  .daejeonMapLegend { left: 76%; top: 91%; }
+  .daejeonMapLegend > p { font-size : 12px;}
+
+}
+
+  #mcd_snsrNormalCnt, #mcd_warningCnt, #mcd_dangerCnt { margin-left: 0.5rem !important; margin-bottom: 0; }
 #mcd_yesterdayKwh, #mcd_lastWeekKwh, #mcd_lastMonthKwh, #mcd_yesterdayT, #mcd_lastWeekT, #mcd_lastMonthT { margin-left: 0.75rem !important; margin-bottom: 0; }
 
 #mcd_snsrTotalCnt { color: #ffe490; font-weight: 900; font-size: 1.5rem; }
@@ -47,11 +113,9 @@
 #mcd_guElecEvtChart { height: 290px; display: block; width: 100%; margin-top: 3.5rem !important;  }
 #mcd_guKwhChart { height: 290px; display: block; width: 100%; margin-top: 0.75rem !important; }
 
-.mcd_1stBtn { background-color: #ef1c25; }
-.mcd_2ndBtn { background-color: #f76f23; }
-.mcd_3rdBtn { background-color: #dfb523; }
-.mcd_4thBtn { background-color: #0c8b80; }
-.mcd_5thBtn { background-color: #03b7f2; }
+.mcd_Danger1stBtn { background-color: #ef1c25; font-weight: 900; width: 120px; }
+.mcd_Danger2ndBtn { background-color: #dfb523; font-weight: 900; width: 120px; }
+.mcd_Danger3rdBtn { background-color: limegreen; font-weight: 900; width: 120px; }
 
 </style>
 
@@ -61,13 +125,13 @@
     <div class="page-content-wrapper">
       <div class="d-flex justify-content-start">
         <div class="col-12 row mcd_topTitle">
-          <div class="col-3"></div>
-          <div class="col-6">
+          <div class="col-md-3 mcd_topLeftSpan"></div>
+          <div class="col-md-6">
         <div class="p-2">
-          <h2 class="m-0 mcd_topTitleSpan">대전시 자치구별 전통시장 전기위험 및 전력사용 현황</h2>
+            <h2 class="m-0 mcd_topTitleSpan">대전시 자치구별 전통시장 전기위험 및 전력사용 현황</h2>
         </div><!-- /.p-2 mcd_topTitle -->
           </div>
-          <div class="col-3 p-2 pt-3" style="text-align: right;">
+          <div class="col-md-3 p-2 pt-3 mcd_topTimeSpan" style="text-align: right;">
             <span class="m-0 top-date"></span>
             <span class="m-0 top-time"></span>
           </div>
@@ -182,75 +246,75 @@
             <div class="col-xl-12">
               <div class="d-flex justify-content-center">
                 <img th:src="@{/fs/img/district/daejeon-map.png}" alt="icon" id="mcd_daejeonMap" />
-                <div class="js-data-attributes" style="left: 61%; top: 46%;">
+                <div class="js-data-attributes dongguMap">
                   <span id="mcd_kwhDonggu" class="bar-colours-2" data-peity='{ "height": 80, "width": 110 }'></span>
-                </div>
-                <div class="js-data-attributes" style="top: 57.5%; left: 61.5%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhDonggu">111</h5>
+                  <div class="js-data-attributes mcd_yKwhDonggu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhDonggu">111</h5>
+                    </div>
                   </div>
-                </div>
-                <div class="js-data-attributes" style="top: 57.5%; left: 67.4%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhDonggu">222</h5>
+                  <div class="js-data-attributes mcd_tKwhDonggu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhDonggu">222</h5>
+                    </div>
                   </div>
                 </div><!-- //동구-->
-                <div class="js-data-attributes" style="left: 45%; top: 52.5%;">
+                <div class="js-data-attributes jungguMap">
                   <span id="mcd_kwhJunggu" class="bar-colours-2" data-peity='{ "height": 80, "width": 110 }'></span>
-                </div>
-                <div class="js-data-attributes" style="top: 64%; left: 45.5%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhJunggu">111</h5>
+                  <div class="js-data-attributes mcd_yKwhJunggu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhJunggu">111</h5>
+                    </div>
                   </div>
-                </div>
-                <div class="js-data-attributes" style="top: 64%; left: 51.4%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhJunggu">222</h5>
+                  <div class="js-data-attributes mcd_tKwhJunggu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhJunggu">222</h5>
+                    </div>
                   </div>
                 </div><!-- //중구-->
-                <div class="js-data-attributes" style="left: 30.5%; top: 60.5%;">
+                <div class="js-data-attributes seoguMap">
                   <span id="mcd_kwhSeogu" class="bar-colours-2" data-peity='{ "height": 80, "width": 110 }'></span>
-                </div>
-                <div class="js-data-attributes" style="top: 72%; left: 31%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhSeogu">111</h5>
+                  <div class="js-data-attributes mcd_yKwhSeogu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhSeogu">111</h5>
+                    </div>
                   </div>
-                </div>
-                <div class="js-data-attributes" style="top: 72%; left: 37%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhSeogu">222</h5>
+                  <div class="js-data-attributes mcd_tKwhSeogu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhSeogu">222</h5>
+                    </div>
                   </div>
                 </div><!-- //서구-->
-                <div class="js-data-attributes" style="left: 27%; top: 27.2%;">
+                <div class="js-data-attributes yuseongguMap">
                   <span id="mcd_kwhYuseonggu" class="bar-colours-2" data-peity='{ "height": 80, "width": 110 }'></span>
-                </div>
-                <div class="js-data-attributes" style="top: 38.5%; left: 27.4%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhYuseonggu">111</h5>
+                  <div class="js-data-attributes mcd_yKwhYuseonggu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhYuseonggu">111</h5>
+                    </div>
                   </div>
-                </div>
-                <div class="js-data-attributes" style="top: 38.5%; left: 33.4%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhYuseonggu">222</h5>
+                  <div class="js-data-attributes mcd_tKwhYuseonggu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhYuseonggu">222</h5>
+                    </div>
                   </div>
                 </div><!-- //유성구-->
-                <div class="js-data-attributes" style="left: 52%; top: 17%;">
+                <div class="js-data-attributes daedeokguMap">
                   <span id="mcd_kwhDaedeokgu" class="bar-colours-2" data-peity='{ "height": 80, "width": 110 }'></span>
-                </div>
-                <div class="js-data-attributes" style="top: 28.2%; left: 52.5%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhDaedeokgu">111</h5>
+                  <div class="js-data-attributes mcd_yKwhDaedeokgu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_yKwhDaedeokgu">111</h5>
+                    </div>
                   </div>
-                </div>
-                <div class="js-data-attributes" style="top: 28.2%; left: 58.5%; width: 45px;">
-                  <div class="d-flex justify-content-center align-items-center align-content-center text-center">
-                    <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhDaedeokgu">222</h5>
+                  <div class="js-data-attributes mcd_tKwhDaedeokgu">
+                    <div class="d-flex justify-content-center align-items-center align-content-center text-center">
+                      <h5 class="mb-0 small-chart-text text-black-50" id="mcd_tKwhDaedeokgu">222</h5>
+                    </div>
                   </div>
                 </div><!-- //대덕구-->
               </div><!-- /.d-flex justify-content-center -->
-              <div class="js-data-attributes" style="left: 80%; top: 85%;">
-                <p style="color: white; font-size: 20px;"><span style="color: rgb(33, 150, 243);">■</span> 사용량(MWh)</p>
-                <p style="color: white; font-size: 20px;"><span style="color: rgb(255, 104, 74);">■</span> 이벤트 현황(건)</p>
+              <div class="js-data-attributes daejeonMapLegend">
+                <p class="js-legend-attributes mb-0" ><span style="color: rgb(33, 150, 243);">■</span> 사용량(MWh)</p>
+                <p class="js-legend-attributes" ><span style="color: rgb(255, 104, 74);">■</span> 이벤트 현황(건)</p>
               </div>
             </div><!-- /.col-xl-12 -->
           </div><!-- /#mcd_leftDiv -->
@@ -309,8 +373,8 @@
             </div><!-- /.row -->
             <div class="row" style="margin-top: 4vh;">
               <div class="col-xl-12">
-                <div class="d-flex pr-5 mr-3" style="border-bottom: 1px solid #ccc;">
-                  <div class="p-2 flex-fill"><h2 class="m-0">전기위험 순위</h2></div>
+                <div class="d-flex pr-5 mr-3 tableHead" style="border-bottom: 1px solid #ccc;">
+                  <div class="p-2 flex-fill"><h2 class="m-0 rankGuKwh">전기위험 순위</h2></div>
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
                     <img th:src="@{/fs/img/district/yellowIcon.png}" alt="icon" />
                     <span style="color: #898989; margin-left: 1vh;">주의</span>
@@ -320,108 +384,108 @@
                     <span style="color: #898989; margin-left: 1vh;">경고</span>
                   </div><!-- /.p-2 flex-fill d-flex justify-content-end align-content-center align-items-center -->
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
-                    <span style="color: #2196F3; margin-left: 1vh; font-size: 1.0rem;">이번달 누적전력량</span>
+                    <span class="thisMonth" style="color: #2196F3; margin-left: 1vh; font-size: 1.0rem;">이번달 누적전력량</span>
                   </div>
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
-                    <span style="color: #f08e45; margin-left: 1vh; font-size: 1.0rem;">전월대비%</span>
+                    <span class="compareMonth" style="color: #f08e45; margin-left: 1vh; font-size: 1.0rem;">전월대비%</span>
                   </div>
                 </div><!-- /.d-flex -->
               </div><!-- /.col-xl-12 -->
             </div><!-- /.row -->
-            <div class="row pt-3 pr-5">
+            <div class="row pt-3 pr-5 tableBody">
               <div class="col-xl-12" id="areaList">
                 <div class="d-flex">
-                  <div class="p-2 flex-fill" style="flex: 0.2 0.2 auto !important; width: 25%">
-                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_1stBtn" style="font-weight: 900; width: 120px;">서구</span></h2>
+                  <div class="p-2 flex-fill tableBody1" style="flex: 0.2 0.2 auto !important; width: 25%">
+                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_1stBtn">서구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
+                  <div class="p-2 flex-fill tableBody2 d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
                     <h3 class="m-0" id="1st-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="1st-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
+                  <div class="p-2 flex-fill tableBody3 d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
                     <h3 class="m-0" id="1st-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="1st-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
+                  <div class="p-2 flex-fill tableBody4 d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
                     <h3 class="m-0" id="1st_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
+                  <div class="p-2 flex-fill tableBody5 d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="1st_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important; width: 25%">
-                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_2ndBtn" style="font-weight: 900; width: 120px;">중구</span></h2>
+                  <div class="p-2 flex-fill tableBody1" style="flex: 0.2 0.2 auto !important; width: 25%">
+                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_2ndBtn">중구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center"style="width: 15%;">
+                  <div class="p-2 flex-fill tableBody2 d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
                     <h3 class="m-0" id="2nd-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="2nd-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center"style="width: 18%;">
+                  <div class="p-2 flex-fill tableBody3 d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
                     <h3 class="m-0" id="2nd-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="2nd-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center"style="width: 22%;">
+                  <div class="p-2 flex-fill tableBody4 d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
                     <h3 class="m-0" id="2nd_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center"style="width: 20%;">
+                  <div class="p-2 flex-fill tableBody5 d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="2nd_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <div class="p-2 flex-fill" style="flex: 0.2 0.2 auto !important; width: 25%">
-                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_3rdBtn" style="font-weight: 900; width: 120px;">동구</span></h2>
+                  <div class="p-2 flex-fill tableBody1" style="flex: 0.2 0.2 auto !important; width: 25%">
+                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_3rdBtn">동구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
+                  <div class="p-2 flex-fill tableBody2 d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
                     <h3 class="m-0" id="3rd-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="3rd-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
+                  <div class="p-2 flex-fill tableBody3 d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
                     <h3 class="m-0" id="3rd-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="3rd-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
+                  <div class="p-2 flex-fill tableBody4 d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
                     <h3 class="m-0" id="3rd_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
+                  <div class="p-2 flex-fill tableBody5 d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="3rd_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <div class="p-2 flex-fill" style="flex: 0.2 0.2 auto !important; width: 25%">
-                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_4thBtn" style="font-weight: 900; width: 120px;">유성구</span></h2>
+                  <div class="p-2 flex-fill tableBody1" style="flex: 0.2 0.2 auto !important; width: 25%">
+                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_4thBtn">유성구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
+                  <div class="p-2 flex-fill tableBody2 d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
                     <h3 class="m-0" id="4th-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="4th-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
+                  <div class="p-2 flex-fill tableBody3 d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
                     <h3 class="m-0" id="4th-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="4th-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
+                  <div class="p-2 flex-fill tableBody4 d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
                     <h3 class="m-0" id="4th_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
+                  <div class="p-2 flex-fill tableBody5 d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="4th_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
                 <div class="d-flex">
-                  <div class="p-2 flex-fill"style="flex: 0.2 0.2 auto !important; width: 25%">
-                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_5thBtn" style="font-weight: 900; width: 120px;">대덕구</span></h2>
+                  <div class="p-2 flex-fill tableBody1" style="flex: 0.2 0.2 auto !important; width: 25%">
+                    <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_5thBtn">대덕구</span></h2>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
+                  <div class="p-2 flex-fill tableBody2 d-flex justify-content-end align-content-center align-items-center" style="width: 15%;">
                     <h3 class="m-0" id="5th-warning-cnt" style="color: #ffc000;">18</h3>
                     <img class="arrow-icon" id="5th-warning-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
+                  <div class="p-2 flex-fill tableBody3 d-flex justify-content-end align-content-center align-items-center" style="width: 18%;">
                     <h3 class="m-0" id="5th-danger-cnt" style="color: #ed7d31;">16</h3>
                     <img class="arrow-icon" id="5th-danger-arrow" src="/fs/img/district/down-arrow.png" alt="icon">
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
+                  <div class="p-2 flex-fill tableBody4 d-flex justify-content-end align-content-center align-items-center" style="width: 22%;">
                     <h3 class="m-0" id="5th_useKwh" style="color: #2196F3;">445 MWh</h3>
                   </div>
-                  <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
+                  <div class="p-2 flex-fill tableBody5 d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="5th_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
@@ -451,7 +515,38 @@
 <script>
 let contextPath = $('#contextPathHolder').attr('data-contextPath') ? $('#contextPathHolder').attr('data-contextPath') : '';
 let carbonChartDataset;
+let windowWidth =  window.innerWidth || document.body.clientWidth;
+
 $(function () {
+  if(windowWidth < 767) {
+    $("#mcd_kwhDonggu").attr("data-peity", '{ "height": 20, "width": 60 }');
+    $("#mcd_kwhJunggu").attr("data-peity", '{ "height": 20, "width": 60 }');
+    $("#mcd_kwhSeogu").attr("data-peity", '{ "height": 20, "width": 60 }');
+    $("#mcd_kwhYuseonggu").attr("data-peity", '{ "height": 20, "width": 60 }');
+    $("#mcd_kwhDaedeokgu").attr("data-peity", '{ "height": 20, "width": 60 }');
+    $(".mcd_1stBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".mcd_2ndBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".mcd_3rdBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".mcd_4thBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".mcd_5thBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".tableHead").removeClass("pr-5").removeClass("mr-3");
+    $(".tableBody").removeClass("pr-5");
+    $(".mcd_topTitleSpan").html("대전시 자치구별 전통시장<br/>전기위험 및 전력사용 현황");
+    $(".rankGuKwh").html("전기위험<br/>순위");
+    $(".thisMonth").html("이번달<br/>누적전력량");
+    $(".compareMonth").html("전월<br/>대비%");
+    $(".tableHead div").addClass("p-1").removeClass("p-2");
+    $(".tableBody1").css("width", "30%");
+    $(".tableBody2").css("width", "20%");
+    $(".tableBody3").css("width", "22%");
+    $(".tableBody4").css("width", "35%");
+    $(".tableBody5").css("width", "25%");
+    $(".tableBody1 h3").css("font-size", "0.8rem");
+    $(".tableBody2 h3").css("font-size", "0.8rem");
+    $(".tableBody3 h3").css("font-size", "0.8rem");
+    $(".tableBody4 h3").css("font-size", "0.8rem");
+    $(".tableBody5 h3").css("font-size", "0.8rem");
+  }
   fn_mcd_getYesterdayEventCompStatAjax();
   fn_mcd_getYesterdaykwhStat();
   fn_mcd_getYesterdaykwhRank();
@@ -548,7 +643,12 @@ function fn_mcd_getYesterdaykwhRank() {
         $("#mcd_tKwhDaedeokgu").text(d[i].THISDANGERCNT + d[i].THISWARNINGCNT)
         $("#mcd_yKwhDaedeokgu").text($.number(Math.round(d[i].THISMONTHUSEKWH) / 1000))
       }
-      $(".mcd_" + rankList[i] + "Btn").text(grpName)
+      let className = (d[i].THISDANGERCNT > 100) ? "mcd_Danger1stBtn"
+        : (d[i].THISDANGERCNT > 0 ) ? "mcd_Danger2ndBtn" : "mcd_Danger3rdBtn"
+
+
+
+      $(".mcd_" + rankList[i] + "Btn").text(grpName).addClass(className);
       $("#" + rankList[i] + "_useKwh").html($.number(Math.round(d[i].THISMONTHUSEKWH) / 1000)  + " MWh");
       $("#" + rankList[i] + "_percentage").html((d[i].THISMONTHUSEKWH / d[i].THATMONTHUSEKWH * 100).toFixed(1) + '%');
       $("#" + rankList[i] + "-danger-cnt").html(d[i].THISDANGERCNT);
@@ -612,6 +712,8 @@ function fn_mcd_getCarbonChartStat(){
       endDate2: endDate2
     },
     function (d) {
+      let fontSize1 = (windowWidth > 767) ? 15 : 10;
+      let fontSize2 = (windowWidth > 767) ? 20 : 15;
       if (d !== null) {
         for(let i = 0 ; i < d.length ; i++){
           let item = d[i];
@@ -642,8 +744,8 @@ function fn_mcd_getCarbonChartStat(){
             legend: { position: 'bottom',  display: true, labels: { fontSize: 15, fontColor: 'white' }},
             hover: { animationDuration: 0 },
             scales: {
-              yAxes : [{ ticks : { fontColor: "white", fontSize: 15 }, afterDataLimits(scale) { scale.max += 30; } }],
-              xAxes : [{ ticks: { fontColor: "white", fontSize: 20 } }],
+              yAxes : [{ ticks : { fontColor: "white", fontSize: fontSize1 }, afterDataLimits(scale) { scale.max += 30; } }],
+              xAxes : [{ ticks: { fontColor: "white", fontSize: fontSize2 } }],
             },
             animation: {
               duration: 1,

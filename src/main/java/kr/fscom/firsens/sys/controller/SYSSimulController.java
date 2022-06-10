@@ -91,10 +91,10 @@ public class SYSSimulController {
                 variables.put("#{보고기간년월}", "22년 4월");
                 variables.put("#{보고기간}", (String) item.get("rcvTime"));
                 variables.put("#{전기위험현황}", (String) item.get("evtMemo"));
-                variables.put("#{전기등급}", String.valueOf(item.get("evtGrade")) + "등급");
-                variables.put("#{위험순위}", (String) item.get("areaName") + " " + String.valueOf(item.get("evtRank")) + "위 / " + smsList.size() + "개 상점");
-                variables.put("#{과전류발생}", String.valueOf(item.get("ocAlm")) + "회");
-                variables.put("#{누전발생}", String.valueOf(item.get("igAlm")) + "회");
+//                variables.put("#{전기등급}", String.valueOf(item.get("evtGrade")) + "등급");
+//                variables.put("#{위험순위}", (String) item.get("areaName") + " " + String.valueOf(item.get("evtRank")) + "위 / " + smsList.size() + "개 상점");
+                variables.put("#{누전경고}", String.valueOf(item.get("ocAlm")) + "회");
+                variables.put("#{누전주의}", String.valueOf(item.get("igAlm")) + "회");
                 variables.put("#{전력사용순위}", (String) item.get("areaName") + " " + String.valueOf(item.get("snsrKwhRank")) + "위 / " + smsList.size() + "개 상점");
                 variables.put("#{일별평균전력사용량}", String.valueOf(item.get("snsrKwhAvg")) + " kWh");
                 variables.put("#{전력사용량총합}", String.valueOf(item.get("snsrKwhSum")) + " kWh");
@@ -185,7 +185,6 @@ public class SYSSimulController {
                 messageList.add(message);
             }
 
-            /*
             MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
             request.setAllowDuplicates(true);
             MultipleMessageSentResponse response = this.messageService.sendMany(request);
@@ -194,7 +193,6 @@ public class SYSSimulController {
                     && StringUtils.isNotBlank(response.getGroupId())
                     && StringUtils.isNotBlank(response.getAccountId()))
                 result = true;
-            */
         } catch (NullPointerException | IllegalArgumentException e) {
             LOG.debug("sendSimulPush : " + e.getMessage());
         } catch (Exception e) {
