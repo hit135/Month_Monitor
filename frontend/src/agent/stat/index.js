@@ -3,9 +3,11 @@ import { CButton, CCol, CRow } from "@coreui/react";
 import { ResponsiveBar } from '@nivo/bar'
 import { ResponsivePie } from '@nivo/pie'
 import React from "react";
+
 const axios = require('axios');
-export const getSelectGroup = (type) =>
-  axios.get( `${API_ROOT}/selectGroup?type=${type}`)
+
+export const getSelectGroup = (type) => axios.get( `${API_ROOT}/selectGroup?type=${type}`);
+
 export const getStatInfo = (type, grpCode, areaCode, strCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
   axios.get([
     `${API_ROOT}/statInfo?type=${type}`
@@ -21,6 +23,7 @@ export const getStatInfo = (type, grpCode, areaCode, strCode, startDate, endDate
     , `halfSelect=${halfSelect}`
     , `quarterDate=${formatDate(quarterDate)}`
   ].join('&'));
+
 export const getStatInfoList = (type, grpCode, areaCode, strCode, startDate, endDate, dateType, yearDate, monthDate, halfDate, halfSelect, quarterDate) =>
   axios.get([
     `${API_ROOT}/statInfoList?type=${type}`
@@ -36,8 +39,12 @@ export const getStatInfoList = (type, grpCode, areaCode, strCode, startDate, end
     , `halfSelect=${halfSelect}`
     , `quarterDate=${formatDate(quarterDate)}`
   ].join('&'));
+
 // 시장, 상점 전기안전현황 컴포넌트
 export const areaStatusComponent = (param, startDate, endDate, type, strName, snsrCnt, strTel, strOwnTel) => {
+  let today = new Date();
+  let todayString = today.getFullYear() + '년 ' + (today.getMonth() + 1) + '월 ' + today.getDate() + '일';
+
   return (
     <div>
       {type !== "store" ?
@@ -66,16 +73,13 @@ export const areaStatusComponent = (param, startDate, endDate, type, strName, sn
               <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>운영기간</td>
               <td>
                 {type !== "store" ?
-                  param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일 ~ 현재" :
-                  param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재"}
+                  param.aRegDate.split("-")[0] + "년 " + param.aRegDate.split("-")[1] + "월 " + param.aRegDate.split("-")[2] + "일 ~ 현재 (" + todayString + ")" :
+                  param.sRegDate.split("-")[0] + "년 " + param.sRegDate.split("-")[1] + "월 " + param.sRegDate.split("-")[2] + "일 ~ 현재 (" + todayString + ")"}
               </td>
             </tr>
             <tr>
               <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>조회기간</td>
-              <td>
-                {endDate === undefined ? startDate : startDate + " - " + endDate}
-                {/*{formatDate(startDate)} ~ {formatDate(endDate)}*/}
-              </td>
+              <td>{startDate + ' ~ ' + endDate}</td>
             </tr>
             <tr>
               <td className="wme_table_td_title" style={{width: "15%", paddingLeft: "1.5%"}}>주소</td>
@@ -122,16 +126,19 @@ export const areaStatusComponent = (param, startDate, endDate, type, strName, sn
     </div>
   );
 }
+
 // 시장
 // 전기안전 경보 발생현황(종합) 컴포넌트
 export const areaTotalWarningComp = (areaName, item) => {
   let chartData = [];
   let totalWarning1stNum = item[12]["oc1st"] + item[12]["igo1st"] + item[12]["igr1st"];
   let totalWarning2ndNum = item[12]["oc2nd"] + item[12]["igo2nd"] + item[12]["igr2nd"];
+
   item.map((item, idx) => {
     if (idx !== 12)
       chartData.push({"label": (idx + 1) + "월", "과전류 1차 경보": item["oc1st"], "과전류 2차 경보": item["oc2nd"]});
   });
+
   return (
     <div className={"mt-3 printMargin"}>
       <h5 className={"title"}>{areaName} 전기위험 경보 발생 현황</h5>
@@ -345,6 +352,7 @@ export const areaTotalWarningComp = (areaName, item) => {
     </div>
   );
 }
+
 export const areaTotalChartStatComp = (item1, item2, item3) => {
   let hourOcChartData = [];
   let hourIgoChartData = [];
@@ -353,16 +361,19 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
   let dayIgoChartData = [];
   let dayIgrChartData = [];
   let keys = ["주의", "경고"];
+
   item1.map(item => {
     hourOcChartData.push({"label" : item["hour"], "주의" : item["ocWarningCnt"], "경고" : item["ocDangerCnt"]});
     hourIgoChartData.push({"label" : item["hour"], "주의" : item["igoWarningCnt"], "경고" : item["igoDangerCnt"]});
     hourIgrChartData.push({"label" : item["hour"], "주의" : item["igrWarningCnt"], "경고" : item["igrDangerCnt"]});
   });
+
   item2.map(items => {
     dayOcChartData.push({"label" : items["dayName"], "주의" : items["oc1stCnt"], "경고" : items["oc2ndCnt"]});
     dayIgoChartData.push({"label" : items["dayName"], "주의" : items["igo1stCnt"], "경고" : items["igo2ndCnt"]});
     dayIgrChartData.push({"label" : items["dayName"], "주의" : items["igr1stCnt"], "경고" : items["igr2ndCnt"]});
   });
+
   let chartData = [];
   item3.map((item, idx) => {
     if (idx !== 12) {
@@ -375,6 +386,7 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
       });
     }
   });
+
   return (
     <div className={"printMargin"}>
       <div>
@@ -579,20 +591,24 @@ export const areaTotalChartStatComp = (item1, item2, item3) => {
     </div>
   );
 }
+
 export const areaTotalChartStatComp2 = (item1, item2) => {
   let hourIgoChartData = [];
   let hourIgrChartData = [];
   let dayIgoChartData = [];
   let dayIgrChartData = [];
   let keys = ["주의", "경고"];
+
   item1.map(item => {
     hourIgoChartData.push({"label" : item["hour"], "주의" : item["igoWarningCnt"], "경고" : item["igoDangerCnt"]});
     hourIgrChartData.push({"label" : item["hour"], "주의" : item["igrWarningCnt"], "경고" : item["igrDangerCnt"]});
   });
+
   item2.map(items => {
     dayIgoChartData.push({"label" : items["dayName"], "주의" : items["igo1stCnt"], "경고" : items["igo2ndCnt"]});
     dayIgrChartData.push({"label" : items["dayName"], "주의" : items["igr1stCnt"], "경고" : items["igr2ndCnt"]});
   });
+
   return (
     <div className={"printRow printMargin"}>
       <CRow>
@@ -790,6 +806,7 @@ export const areaTotalChartStatComp2 = (item1, item2) => {
     </div>
   );
 }
+
 // 시장별 현황
 export const levelAreaStatComp = (areaName, item) => {
   let areaType = false;
@@ -865,6 +882,7 @@ export const levelAreaStatComp = (areaName, item) => {
     </div>
   );
 }
+
 //
 // 내상점별 현황
 export const levelStoreStatComp = (areaName, item) =>
@@ -1035,6 +1053,7 @@ export const areaKwhStatYearComp = (item, item2, item3) => {
     </div>
   );
 }
+
 //
 export const strKwhStatComp = (areaName, item) => {
   let dayKwhData = [];
@@ -1278,6 +1297,7 @@ export const storeYearWarningComp = (item, strName, areaName, strCnt) => {
     </div>
   );
 }
+
 // 시간대별, 요일별 차트
 export const storeChartComp = (item1, item2, item3) => {
   let chartData = [];
@@ -1288,20 +1308,24 @@ export const storeChartComp = (item1, item2, item3) => {
   let dayIgrChartData = [];
   let daySnsrChartData = [];
   let keys = ["주의", "경고"];
+
   item1.map(item => {
     hourOcChartData.push({"label" : item["hour"], "주의" : item["ocWarningCnt"], "경고" : item["ocDangerCnt"]});
     hourIgrChartData.push({"label" : item["hour"], "주의" : item["igrWarningCnt"], "경고" : item["igrDangerCnt"]});
     hourSnsrChartData.push({"label" : item["hour"], "전력사용량" : item["snsrKwh"]});
   });
+
   item2.map(items => {
     dayOcChartData.push({"label" : items["dayName"], "주의" : items["oc1stCnt"], "경고" : items["oc2ndCnt"]});
     dayIgrChartData.push({"label" : items["dayName"], "주의" : items["igr1stCnt"], "경고" : items["igr2ndCnt"]});
     daySnsrChartData.push({"label" : items["dayName"], "전력사용량" : items["snsrKwh"]});
   });
+
   item3.map((item, idx) => {
     if (idx !== 12)
       chartData.push({"label": (idx + 1) + "월", "전력사용량": Math.round(item["snsrKwh"])});
   });
+
   return (
     <div className={"mt-5 printMargin"}>
       <CRow className={"mb-5"}>
@@ -1360,6 +1384,7 @@ export const storeChartComp = (item1, item2, item3) => {
     </div>
   );
 }
+
 export const storePrintChartComp = (item1) => {
   let chartData = [];
   item1.map((item, idx) => {
@@ -1382,6 +1407,7 @@ export const storePrintChartComp = (item1) => {
     </div>
   );
 }
+
 const areaBarChart = (key, data, color, colorType = true) => (
   <ResponsiveBar
     data={data}
@@ -1430,6 +1456,7 @@ const areaBarChart = (key, data, color, colorType = true) => (
     ]}
   />
 )
+
 const areaHourlDayStatChart = (key, data, color) => (
   <ResponsiveBar
     data={data}
@@ -1513,20 +1540,24 @@ const areaHourlDayStatChart = (key, data, color) => (
     // ]}
   />
 );
+
 function getStatValue(paramVal, paramMonth) {
   let selectDateGroup = document.getElementById("selectDateGroup").value;
   if (selectDateGroup == '년')  {
     let year = document.getElementById("year").innerHTML.split('value="')[1].split('"')[0];
+
     if (new Date().getFullYear() == Number(year) && Number(paramMonth) > (new Date().getMonth() + 1))
       return "-";
   } else if (selectDateGroup == '월') {
     let date = document.getElementById("month").innerHTML.split('value="')[1].split('"')[0];
     let month = date.split('-')[1];
+
     if (paramMonth > Number(month))
       return "-";
   } else if (selectDateGroup == '반기') {
     let year = document.getElementById("halfItem").innerHTML.split('value="')[1].split('"')[0];
     let halfSelect = document.getElementById("halfSelect").value;
+
     if (halfSelect == '상반기' && Number(paramMonth) > 6 || new Date().getFullYear() == Number(year) && Number(paramMonth) > (new Date().getMonth() + 1))
       return "-";
     if (halfSelect == '하반기' && Number(paramMonth) < 7 || new Date().getFullYear() == Number(year) && Number(paramMonth) > (new Date().getMonth() + 1))
@@ -1535,6 +1566,7 @@ function getStatValue(paramVal, paramMonth) {
     let date = document.getElementById("quarter").innerHTML.split('value="')[1].split('"')[0];
     let year = date.split(", ")[0];
     let quarter = date.split(", ")[1];
+
     if (quarter == 'Q1' && Number(paramMonth) > 3 || new Date().getFullYear() == Number(year) && Number(paramMonth) > (new Date().getMonth() + 1))
       return "-";
     else if (quarter == 'Q2' && (Number(paramMonth) < 4 || Number(paramMonth) > 6) || new Date().getFullYear() == Number(year) && Number(paramMonth) > (new Date().getMonth() + 1))
@@ -1546,5 +1578,6 @@ function getStatValue(paramVal, paramMonth) {
   } else if (typeof paramVal == 'undefined' || paramVal == null) {
     return 0;
   }
+
   return paramVal.toLocaleString();
 }
