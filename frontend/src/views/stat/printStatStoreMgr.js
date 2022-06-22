@@ -10,16 +10,16 @@ export const ComponentToPrint2 = React.forwardRef((props, ref) => (
         <div className={"printRow"}>
           <div className={"d-flex justify-content-between logoMargin"}>
             <div>
-              <img src={'/fs/img/logo.png'} style={{ width: "250px" }} />
+              <img src={'/fs/img/logo-v2.png'} style={{ width: "250px", height: "100px" }} />
             </div>
             <div className="p-2 bd-highlight text-center">
-              <h2 style={{fontSize: "30px", fontWeight : "bold"}}>대전 스마트시티 챌린지 사업</h2>
-              <h2 style={{fontSize: "30px", fontWeight : "bold"}}>
-                {props.areaTitle} [<span style={{color: "red"}}>{typeof props.endDate === 'undefined' ? props.startDate : props.startDate + " ~ " + props.endDate}</span>] {props.strName} 현황 보고서
+              <h2 style={{ fontSize: "30px", fontWeight: "bold" }}>대전 스마트시티 챌린지 사업</h2>
+              <h2 style={{ fontSize: "30px", fontWeight: "bold" }}>
+                {props.areaTitle} [<span style={{ color: "red" }}>{typeof props.endDate === 'undefined' ? props.startDate : props.startDate + " ~ " + props.endDate}</span>] {props.strName} 현황 보고서
               </h2>
             </div>
             <div className={"p-5"}>
-              <h3 style={{fontSize: "30px"}}>
+              <h3 style={{ fontSize: "30px" }}>
                 {/*{props.type}*/}
                 <h2>[전기화재 예방 서비스]</h2>
               </h3>
@@ -33,10 +33,10 @@ export const ComponentToPrint2 = React.forwardRef((props, ref) => (
             </div>
           </div>
           <div className="position-absolute-ct">
-            <h3 className="m-0" style={{fontSize: "30px"}}>- 1 -</h3>
+            <h3 className="m-0" style={{ fontSize: "30px" }}>- 1 -</h3>
           </div>
           <div className="position-absolute-rb">
-            <img src={"/fs/img/logo-fs.png"} style={{width: "100%", maxWidth: "150px"}} />
+            <img src={"/fs/img/logo-fs.png"} style={{ width: "100%", maxWidth: "150px" }} />
           </div>
         </div>
       </CCardBody>
