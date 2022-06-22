@@ -10,7 +10,7 @@ export const ComponentToPrint2 = React.forwardRef((props, ref) => (
         <div className={"printRow"}>
           <div className={"d-flex justify-content-between logoMargin"}>
             <div>
-              <img src={'/fs/img/logo-v2.png'} style={{ width: "250px", height: "100px" }} />
+              <img src={'/fs/img/logo-v2.png'} style={{ width: "250px", height: "60px" }} />
             </div>
             <div className="p-2 bd-highlight text-center">
               <h2 style={{ fontSize: "30px", fontWeight: "bold" }}>대전 스마트시티 챌린지 사업</h2>
