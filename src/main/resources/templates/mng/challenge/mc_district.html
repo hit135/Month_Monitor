@@ -576,17 +576,7 @@ let carbonChartDataset;
 let windowWidth =  window.innerWidth || document.body.clientWidth;
 
 $(function () {
-  if(windowWidth < 1400){
-    $(".mcd_1stBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
-    $(".mcd_2ndBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
-    $(".mcd_3rdBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
-    $(".mcd_4thBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
-    $(".mcd_5thBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
-    $(".tableHead").removeClass("pr-5").removeClass("mr-3");
-    $(".tableBody").removeClass("pr-5");
-    $(".tableHead div").addClass("p-1").removeClass("p-2");
-    $("#mcd_rightDiv").css("padding-left", "3vh");
-  } else if(windowWidth < 1023){
+  if(windowWidth < 1023){
     $("#mcd_kwhDonggu").attr("data-peity", '{ "height": 20, "width": 60 }');
     $("#mcd_kwhJunggu").attr("data-peity", '{ "height": 20, "width": 60 }');
     $("#mcd_kwhSeogu").attr("data-peity", '{ "height": 20, "width": 60 }');
@@ -599,7 +589,7 @@ $(function () {
     $(".mcd_5thBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
     $(".tableHead").removeClass("pr-5").removeClass("mr-3");
     $(".tableBody").removeClass("pr-5");
-    $(".mcd_topTitleSpan").html("대전시 자치구별 전통시장<br/>전기위험 및 전력사용 현황");
+    $(".mcd_topTitleSpan").html("<span class=\"color1\">대전시 자치구별</span> 전통시장<br/><span class=\"color2\">전기위험 및 전력사용</span> 현황");
     $(".rankGuKwh").html("전기위험<br/>순위");
     $(".thisMonth").html("이번달<br/>누적전력량");
     $(".compareMonth").html("전월<br/>대비%");
@@ -614,6 +604,16 @@ $(function () {
     $(".tableBody3 h3").css("font-size", "0.8rem");
     $(".tableBody4 h3").css("font-size", "0.8rem");
     $(".tableBody5 h3").css("font-size", "0.8rem");
+    $("#mcd_rightDiv").css("padding-left", "3vh");
+  } else if(windowWidth < 1400){
+    $(".mcd_1stBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".mcd_2ndBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".mcd_3rdBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".mcd_4thBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".mcd_5thBtn").removeClass("pr-4").removeClass("pl-4").addClass("pr-2").addClass("pl-2");
+    $(".tableHead").removeClass("pr-5").removeClass("mr-3");
+    $(".tableBody").removeClass("pr-5");
+    $(".tableHead div").addClass("p-1").removeClass("p-2");
     $("#mcd_rightDiv").css("padding-left", "3vh");
   }
 
