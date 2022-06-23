@@ -185,6 +185,7 @@ public class SYSSimulController {
                 messageList.add(message);
             }
 
+            /*
             MultipleMessageSendingRequest request = new MultipleMessageSendingRequest(messageList);
             request.setAllowDuplicates(true);
             MultipleMessageSentResponse response = this.messageService.sendMany(request);
@@ -193,6 +194,7 @@ public class SYSSimulController {
                     && StringUtils.isNotBlank(response.getGroupId())
                     && StringUtils.isNotBlank(response.getAccountId()))
                 result = true;
+            */
         } catch (NullPointerException | IllegalArgumentException e) {
             LOG.debug("sendSimulPush : " + e.getMessage());
         } catch (Exception e) {
