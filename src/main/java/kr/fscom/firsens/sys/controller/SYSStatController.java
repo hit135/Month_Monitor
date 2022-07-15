@@ -154,17 +154,20 @@ public class SYSStatController {
             }
 
             paramMap.put("type", type);
+            paramMap.put("grpCode", grpCode);
             paramMap.put("areaCode", areaCode);
             paramMap.put("strCode", strCode);
 
-            rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_AREA_INFO_STAT(areaCode));
+            if(!type.equals("grpCode")) rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_AREA_INFO_STAT(areaCode));
+            else rtn.put("infoStat", sysStatRepo.SELECT_SYS_STAT_GRP_INFO_STAT(grpCode));
             rtn.put("weekMonthStat", sysStatRepo.LIST_SYS_STAT_AREA_MONTHLY_STAT(paramMap));
             rtn.put("hourlyStat", sysStatRepo.LIST_SYS_STAT_AREA_HOURLY_STAT(paramMap));
             rtn.put("dayOfWeekStat", sysStatRepo.LIST_SYS_STAT_AREA_DAYOFWEEK_STAT(paramMap));
 
             if (type.equals("grpCode")) {
-                paramMap.put("grpCode", grpCode);
-                rtn.put("infoStat", sysStatRepo.LIST_SYS_STAT_GRP_INFO_STAT(grpCode));
+                rtn.put("areaList", sysStatRepo.LIST_SYS_STAT_GRP_INFO_STAT(grpCode));
+                rtn.put("levelAreaStat", sysStatRepo.LIST_SYS_STAT_LEVEL_GRP_STAT(paramMap));
+                rtn.put("levelStrStat", sysStatRepo.LIST_SYS_STAT_STR_GRP_EVENT_STAT(paramMap));
             } else if (type.equals("areaCode")){
                 rtn.put("levelAreaStat", sysStatRepo.LIST_SYS_STAT_LEVEL_AREA_STAT(paramMap));
                 rtn.put("levelStrStat", sysStatRepo.LIST_SYS_STAT_STR_EVENT_STAT(paramMap));
@@ -257,6 +260,10 @@ public class SYSStatController {
             if (type.equals("grpCode")) {
                 paramMap.put("grpCode", grpCode);
                 rtn.put("infoStat", sysStatRepo.LIST_SYS_STAT_GRP_INFO_STAT(grpCode));
+                rtn.put("areaKwhStat", sysStatRepo.SELECT_SYS_STAT_GRP_KWHIGO_STAT(paramMap));
+                rtn.put("areaStrKwhStat", sysStatRepo.LIST_SYS_STAT_STR_GRP_KWH_STAT(paramMap));
+                rtn.put("areaUseKwhStat", sysStatRepo.LIST_SYS_STAT_AREA_GRP_KWH_STAT(paramMap));
+
             } else if (type.equals("areaCode")) {
                 paramMap.put("areaCode", areaCode);
 

@@ -21,12 +21,14 @@ import {
   areaTotalChartStatComp2,
   storePrintChartComp,
   strKwhListComp,
+  strKwhAreaListComp,
 } from "../../agent/stat";
 import ReactToPrint, {useReactToPrint} from "react-to-print";
 import {ComponentToPrint} from "./printStatMgr";
 import PageStrTableModalWidget from "../../widget/pageStrTableModalWidget";
 import '../../scss/react-datepicker.css';
 import {ComponentToPrint2} from "./printStatStoreMgr";
+import {ComponentToPrint3} from "./printStatGrpMgr";
 
 const StatMgr = () => {
   let Spinner = require('react-spinkit');
@@ -66,6 +68,7 @@ const StatMgr = () => {
   const [areaKwhStat, setAreaKwhStat] = useState();
   const [areaKwhYearStat, setAreaKwhYearStat] = useState();
   const [strKwhStat, setStrKwhStat] = useState();
+  const [areaUseKwhStat, setAreaUseKwhStat] = useState();
   const [strKwhList, setStrKwhList] = useState();
 
   const [propStrName, setPropStrName] = useState();
@@ -92,6 +95,7 @@ const StatMgr = () => {
     setAreaKwhHourlyStat("");
     setStrKwhStat("");
     setStrKwhList("");
+    setAreaUseKwhStat("")
   }
 
   const initStrCode = () => {
@@ -233,10 +237,10 @@ const StatMgr = () => {
           setAreaState(compList);
         } else {
           const temp = resp.data["infoStat"];
-
+          const areaList = (typeValue === "grpCode" ? resp.data["areaList"] : null);
           setAreaName(temp.areaName);
           areaNameTitle = temp.areaName;
-          setAreaState(areaStatusComponent(temp, searchStartDate, searchEndDate, typeValue, strName, snsrCnt, strTel, strOwnTel));
+          setAreaState(areaStatusComponent(temp, searchStartDate, searchEndDate, typeValue, strName, snsrCnt, strTel, strOwnTel, areaList));
 
           if (resp.data["weekMonthStat"] !== null) {
             setStoreYearWarning(storeYearWarningComp(resp.data["weekMonthStat"], strName, temp.areaName, temp.strCnt));
@@ -245,9 +249,9 @@ const StatMgr = () => {
           }
         }
 
-        if (typeValue === "areaCode") {
-          setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"]));
-          setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"]));
+        if (typeValue === "areaCode" || typeValue === "grpCode") {
+          setAreaTotalWarning(areaTotalWarningComp(areaNameTitle, resp.data["weekMonthStat"], typeValue));
+          setAreaHourlyStat(areaTotalChartStatComp(resp.data["hourlyStat"], resp.data["dayOfWeekStat"], resp.data["weekMonthStat"], typeValue));
           setAreaHourlyStat2(areaTotalChartStatComp2(resp.data["hourlyStat"], resp.data["dayOfWeekStat"]));
 
           if (resp.data["levelAreaStat"].length > 0)
@@ -257,7 +261,7 @@ const StatMgr = () => {
 
           if (resp.data["levelStrStat"] !== null)
             if (resp.data["levelStrStat"].length > 0)
-              setLevelStrStat(levelStoreStatComp(areaNameTitle, resp.data["levelStrStat"]));
+              setLevelStrStat(levelStoreStatComp(typeValue, areaNameTitle, resp.data["levelStrStat"]));
             else
               setLevelStrStat("");
 
@@ -285,10 +289,14 @@ const StatMgr = () => {
 
           if (resp.data["areaStrKwhStat"] !== null) {
             setStrKwhStat(strKwhStatComp(areaNameTitle, dayWeekData));
-            setStrKwhList(strKwhListComp(resp.data["areaStrKwhStat"]));
+            setStrKwhList(strKwhListComp(typeValue, resp.data["areaStrKwhStat"]));
+            if(typeValue === "grpCode"){
+              setAreaUseKwhStat(strKwhAreaListComp(resp.data["areaUseKwhStat"]));
+            }
           } else {
             setStrKwhStat("");
             setStrKwhList("");
+
           }
         } else {
           alert("서버 통신에 오류가 발생했습니다.");
@@ -339,7 +347,7 @@ const StatMgr = () => {
               <div className={'d-flex'}>
                 <CButtonGroup className="mr-3">
                   {[{type: 'grpCode', name : '구청보고'}, {type: 'areaCode', name : '시장보고'}, {type: 'store', name : '상점주보고'}].map((item, idx) => (
-                    <CButton color="outline-info" key={item.name} className="mx-0" active={item.name === topBtnValue} disabled={item.name === '구청보고'}
+                    <CButton color="outline-info" key={item.name} className="mx-0" active={item.name === topBtnValue}
                              onClick={e => {
                                setTopBtnValue(e.target.innerHTML);
                                handleClickBtnGroup(item.type);
@@ -412,6 +420,7 @@ const StatMgr = () => {
             {(typeValue !== "store") ? areaKwhStat : ""}
             {(typeValue !== "store") ? areaKwhYearStat : ""}
             {(typeValue !== "store") ? strKwhStat : ""}
+            {(typeValue === "grpCode") ? areaUseKwhStat : ""}
             {(typeValue !== "store") ? strKwhList : ""}
           </CCardBody>
         </CCard>
@@ -425,6 +434,11 @@ const StatMgr = () => {
       {printLoading && typeValue === "store" &&
       <ComponentToPrint2 ref={componentRef} areaState={areaState} storeYearWarning={storeYearWarning} storeChart={printChartComp}
                          type={topBtnValue} areaTitle={areaName} strName={propStrName} startDate={startDate} endDate={endDate} />}
+      {printLoading && typeValue === "grpCode" &&
+      <ComponentToPrint3 ref={componentRef} areaState={areaState} areaTotalWarning={areaTotalWarning} areaHourlyStat={areaHourlyStat}
+                        levelAreaStat={levelAreaStat} levelStrStat={levelStrStat} areaKwhStat={areaKwhStat} areaKwhYearStat={areaKwhYearStat}
+                        typeName={typeValue} areaKwhHourlyStat={areaKwhHourlyStat} areaHourlyStat2={areaHourlyStat2} strKwhStat={strKwhStat} strKwhList={strKwhList}
+                        areaTitle={areaName} type={topBtnValue} startDate={startDate} endDate={endDate} areaUseKwhStat={areaUseKwhStat}/>}
     </>
   );
 };
