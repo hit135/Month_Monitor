@@ -70,10 +70,22 @@ spring:
     init:
       platform: mariadb
 server:
-  port: 8081
+  error:
+    whitelabel:
+      enabled: false
+  port: 8443
   servlet:
     session:
       timeout: 86400
+  ssl:
+    enabled: true
+    key-alias: securesign
+    key-store-type: pkcs12
+    key-store: /home/apps/ssl/fscom.kr.pkcs12
+    key-store-password: dpvmdptm1!
+    trust-store: /home/apps/ssl/fscom.kr.jks
+    trust-store-password: dpvmdptm1!
+
 logging:
   file:
     name: app

@@ -33,7 +33,7 @@
   <springProfile name="prod">
     <include resource="appenders/appender-file.xml" />
 
-    <logger name="kr.fscom.firsens" level="DEBUG" additivity="false">
+    <logger name="kr.fscom.firsens" level="DEBUG">
       <appender-ref ref="FILE" />
     </logger>
     <logger name="org.hibernate" level="DEBUG">
@@ -43,6 +43,9 @@
       <appender-ref ref="FILE" />
     </logger>
     <logger name="org.springframework.web" level="DEBUG">
+      <appender-ref ref="FILE" />
+    </logger>
+    <logger name="org.springframework.boot" level="DEBUG">
       <appender-ref ref="FILE" />
     </logger>
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE">
