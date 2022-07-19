@@ -17,6 +17,7 @@
 .mcd_topTitleSpan .color1 { color: #8cb2ff; text-shadow:#000000 1px 0 10px; }
 .mcd_topTitleSpan .color2 { color: #ffd000; font-size:2.2rem; text-shadow:#000000 1px 0 10px;  }
 .js-legend-attributes { color: white; font-size: 20px; }
+.js-legend-attributes2 { color: #cccccc; font-size: 16px; }
 .top-time, .top-date { color: white; font-size: 1.2rem; }
 
 .mcd_mainTitle { border-bottom: 1px solid #ccc; padding-bottom: 2px; }
@@ -59,6 +60,7 @@
   #mcd_yesterdayKwh, #mcd_lastWeekKwh, #mcd_lastMonthKwh, #mcd_yesterdayT, #mcd_lastWeekT, #mcd_lastMonthT { font-size: 14px;  margin-left: 0.75rem !important; margin-bottom: 0; }
   #mcd_CarbonChart { height: 400px !important; width: auto !important; display: block; margin-top: 0.5rem !important;position:relative;left:0;right:0;margin-left:auto;margin-right:auto;  }
   .js-legend-attributes { color: white; font-size: 10px; }
+  .js-legend-attributes2 { color: #cccccc; font-size: 10px; }
   .mcd_yKwhDonggu { top: 114.5%; left: 9.5%; width: 15px; }
   .mcd_tKwhDonggu { top: 114.5%; left: 64%; width: 15px; }
   .mcd_yKwhJunggu { top: 107%; left: 7.5%; width: 15px; }
@@ -429,17 +431,17 @@
                 </div>
               </div><!-- /.col-xl-12 -->
             </div><!-- /.row -->
-            <div class="row" style="margin-top: 4vh;">
+            <div class="row" style="margin-top: 1vh">
               <div class="col-xl-12">
                 <div class="d-flex pr-5 mr-3 tableHead" style="border-bottom: 1px solid #ccc;">
                   <div class="p-2 flex-fill"><h2 class="m-0 rankGuKwh">전기위험 순위</h2></div>
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
                     <img th:src="@{/fs/img/district/yellowIcon.png}" alt="icon" />
-                    <span style="color: #898989; margin-left: 1vh;">주의</span>
+                    <span class="warningTitle" style="color: #898989; margin-left: 1vh; font-size: 1.0rem;">주의(건)</span>
                   </div><!-- /.p-2 flex-fill d-flex justify-content-end align-content-center align-items-center -->
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
                     <img th:src="@{/fs/img/district/redIcon.png}" alt="icon" />
-                    <span style="color: #898989; margin-left: 1vh;">경고</span>
+                    <span class="dangerTitle" style="color: #898989; margin-left: 1vh; font-size: 1.0rem;">경고(건)</span>
                   </div><!-- /.p-2 flex-fill d-flex justify-content-end align-content-center align-items-center -->
                   <div class="p-2 flex-fill d-flex justify-content-end align-content-center align-items-center">
                     <span class="thisMonth" style="color: #2196F3; margin-left: 1vh; font-size: 1.0rem;">이번달 누적전력량</span>
@@ -528,7 +530,7 @@
                     <h3 class="m-0" id="4th_percentage" style="color: #f08e45;">168%</h3>
                   </div>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex" style="height: 50px;">
                   <div class="p-2 flex-fill tableBody1" style="flex: 0.2 0.2 auto !important; width: 25%">
                     <h2><span class="badge pl-4 pr-4 pt-2 pb-2 mcd_5thBtn">대덕구</span></h2>
                   </div>
@@ -546,6 +548,11 @@
                   <div class="p-2 flex-fill tableBody5 d-flex justify-content-end align-content-center align-items-center" style="width: 20%;">
                     <h3 class="m-0" id="5th_percentage" style="color: #f08e45;">168%</h3>
                   </div>
+                </div>
+                <div style="display: flex; justify-content: center;">
+                    <p class="js-legend-attributes2" style="margin-right: 20px;"><span style="color: #ef1c25; font-size: 19px;">▬</span> 경고 100건 이상</p>
+                    <p class="js-legend-attributes2" style="margin-right: 20px;"><span style="color: #dfb523; font-size: 19px;">▬</span> 경고 1~100건</p>
+                    <p class="js-legend-attributes2"><span style="color: limegreen; font-size: 19px;">▬</span> 경고 0건</p>
                 </div>
 
 
@@ -591,6 +598,8 @@ $(function () {
     $(".tableBody").removeClass("pr-5");
     $(".mcd_topTitleSpan").html("<span class=\"color1\">대전시 자치구별</span> 전통시장<br/><span class=\"color2\">전기위험 및 전력사용</span> 현황");
     $(".rankGuKwh").html("전기위험<br/>순위");
+    $(".warningTitle").html("주의<br/>(건)");
+    $(".dangerTitle").html("경고<br/>(건)");
     $(".thisMonth").html("이번달<br/>누적전력량");
     $(".compareMonth").html("전월<br/>대비%");
     $(".tableHead div").addClass("p-1").removeClass("p-2");
