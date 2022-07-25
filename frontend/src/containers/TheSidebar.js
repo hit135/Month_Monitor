@@ -11,7 +11,7 @@ function movePageMng() {
   if (window.location.hostname === "localhost")
     window.location.href = "http://localhost:8081/";
   else
-    window.location.href = "http://1.223.40.19:30081/";
+    window.location.href = "http://dev1.fscom.kr/";
 }
 
 const TheSidebar = () => {

@@ -6,7 +6,7 @@ http://dev1.fscom.kr:30081/mng/main
 
 ## 관리 화면
 
-http://1.223.40.19:30081/adm#
+http://dev1.fscom.kr/adm#
 
 ## 대전시 자치구별 화면
 
