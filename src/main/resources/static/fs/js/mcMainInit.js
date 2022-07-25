@@ -317,8 +317,8 @@ function fn_mcmi_toggleCenterCont() {
 
 // 관리 화면 이동
 function fn_mcmi_movePageAdm(type) {
-  location.href = ((location.hostname === "localhost") ? "http://localhost:3000/#/" : "http://dev1.fscom.kr/adm#/") + type;
-  // http://dev1.fscom.kr/adm#/area
+  location.href = ((location.hostname === "localhost") ? "http://localhost:3000/#/" : "https://dev1.fscom.kr/adm#/") + type;
+  // https://dev1.fscom.kr/adm#/area
 }
 
 // 로그아웃

@@ -2,17 +2,17 @@
 
 ## 메인 화면
 
-http://dev1.fscom.kr:30081/mng/main
+https://dev1.fscom.kr/mng/main
 
 ## 관리 화면
 
-http://dev1.fscom.kr/adm#
+https://dev1.fscom.kr/adm#
 
 ## 대전시 자치구별 화면
 
-● 전기 이벤트 : http://dev1.fscom.kr:30081/district/snsrMain
+● 전기 이벤트 : https://dev1.fscom.kr/district/snsrMain
 
-● 전력사용량 : http://dev1.fscom.kr:30081/district/kwhMain
+● 전력사용량 : https://dev1.fscom.kr/district/kwhMain
 
 ----
 

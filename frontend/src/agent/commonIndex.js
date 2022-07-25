@@ -1,8 +1,8 @@
 // export const API_ROOT = 'http://localhost:8081/api';    // 로컬
-export const API_ROOT = 'http://dev1.fscom.kr:30081/api/';
+export const API_ROOT = 'https://dev1.fscom.kr/api/';
 
 // export const filePathName = "http://localhost:8081/localImgstore/";
-export const filePathName = "http://dev1.fscom.kr:30081/imgstore/";
+export const filePathName = "https://dev1.fscom.kr/imgstore/";
 
 export const numCommaFormat = value =>
   (Math.abs(parseInt(value)) >= 1000) ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : value;
