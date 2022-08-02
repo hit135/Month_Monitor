@@ -232,6 +232,36 @@
             ISUSE = 'Y'
     </select>
 
+    <select id="LIST_SYS_IGREVT_DAILY_PUSH" resultType="map">
+        SELECT
+            RPTDATE AS rptDate
+            , AREANAME AS areaName
+            , AREATEL AS areaTel
+            , MONITORINGDATE AS monitoringDate
+            , EVTINFO AS evtInfo
+            , STRCNT AS strCnt
+            , STRLIST AS strList
+        FROM
+            ifiresens_v2.F_IGREVT_DAILY_PUSH_LIST
+        WHERE
+            ISSEND = 'N'
+            AND STRCNT > 0
+    </select>
+
+    <select id="LIST_SYS_IGREVT_WEEK_PUSH" resultType="map">
+        SELECT
+            RPTDATE AS rptDate
+            , AREANAME AS areaName
+            , AREATEL AS areaTel
+            , MONITORINGDATE AS monitoringDate
+            , EVTINFO AS evtInfo
+        FROM
+            ifiresens_v2.F_IGREVT_DAILY_PUSH_LIST
+        WHERE
+            ISSEND = 'N'
+            AND STRCNT = 0
+    </select>
+
     <insert id="INSERT_SYS_PUSH" parameterType="map">
         INSERT INTO ifiresens_v2.F_PUSH_LOG (
             SNSRSEQ

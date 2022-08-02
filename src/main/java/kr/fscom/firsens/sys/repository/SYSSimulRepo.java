@@ -17,7 +17,11 @@ public interface SYSSimulRepo {
     List<HashMap<String, Object>> LIST_SYS_AREA_PUSH() throws Exception;
     */
     List<HashMap<String, Object>> LIST_SYS_RPT_PUSH() throws Exception;
-    List<HashMap<String, Object>> LIST_SYS_IGREVT_PUSH() throws Exception;
+    List<HashMap<String, Object>> LIST_SYS_IGREVT_PUSH() throws Exception;          // 상점주
+
+    List<HashMap<String, Object>> LIST_SYS_IGREVT_DAILY_PUSH() throws Exception;    // 상인회 일별
+    List<HashMap<String, Object>> LIST_SYS_IGREVT_WEEK_PUSH() throws Exception;     // 상인회 주별
+
     int INSERT_SYS_PUSH(HashMap<String, Object> param) throws Exception;
 
 }
