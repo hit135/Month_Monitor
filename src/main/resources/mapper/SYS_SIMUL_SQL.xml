@@ -232,6 +232,214 @@
             ISUSE = 'Y'
     </select>
 
+    <insert id="INSERT_SYS_YESTERDAY_IGREVT_DANGER_DAILY" parameterType="map">
+        INSERT INTO F_IGREVT_DAILY_PUSH_LIST 
+        SELECT
+            #{rptDate} AS RPTDATE
+            , CONCAT(P.AREANAME, ' [설치일(', P.REGDATE, '), 상점수(', Q.STRCNT ,'상점), 센서수(', Q.SNSRCNT, '채널)]') AS AREANAME
+            , P.AREATEL
+            , #{monitoringDate} AS MONITORINGDATE
+            , CONCAT('저항성누설전류(IGR) 경고(2차) 알림이 (', CAST(SUM(P.ALMCNT) AS CHAR(20)), ')회 발생하였습니다.') AS EVTINFO
+            , COUNT(P.STRCODE) AS STRCNT
+            , GROUP_CONCAT(P.STRNAME, '(', P.ALMCNT, ')' ORDER BY P.ALMCNT DESC SEPARATOR '\n') AS STRLIST
+            , 'N' AS ISSEND
+        FROM
+            (SELECT
+                 A.AREACODE
+                 , A.AREANAME
+                 , A.REGDATE
+                 , A.AREATEL
+                 , S.STRCODE
+                 , S.STRNAME
+                 , COUNT(L.LSEQ) AS ALMCNT
+             FROM
+                 (SELECT 
+                      * 
+                  FROM 
+                      <choose>
+                          <when test='"F_SENSOR_LOG_2022".equals(logTable)'>F_SENSOR_LOG_2022</when>
+                          <otherwise>F_SENSOR_LOG</otherwise>
+                      </choose> 
+                  WHERE 
+                      IGRALM = 2
+                      AND DATE_FORMAT(REGDATE, '%Y-%m-%d') = #{regDate}
+                 ) L
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON L.SNSRID = I.SNSRID
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+                     LEFT JOIN (SELECT
+                                    AA.AREACODE
+                                    , AA.AREANAME
+                                    , AA.USEYN
+                                    , AA.DELYN
+                                    , AA.GRPCODE
+                                    , DATE_FORMAT(AA.REGDATE, '%Y-%m-%d') AS REGDATE
+                                    , SUBSTRING_INDEX(SUBSTRING_INDEX(AA.AREATEL, ',', NUMBERS.n), ',', -1) AS AREATEL
+                                FROM
+                                    (SELECT 1 AS n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5) NUMBERS 
+                                        INNER JOIN F_LEVEL_AREA AA
+                                            ON CHAR_LENGTH(AA.AREATEL) - CHAR_LENGTH(REPLACE(AA.AREATEL, ',', '')) >= NUMBERS.n-1
+                                ORDER BY
+                                    AA.AREACODE, NUMBERS.n) A
+                         ON S.AREACODE = A.AREACODE
+             WHERE
+                 A.AREACODE IS NOT NULL
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(A.USEYN, A.DELYN, A.GRPCODE) LIKE 'YN30%'
+                 AND A.AREACODE != 'AREA_000003'
+                 AND A.AREATEL != '010-0000-0000'
+             GROUP BY
+                 A.AREACODE, A.AREATEL, S.STRCODE
+            ) P
+                LEFT JOIN (SELECT
+                               A.AREACODE 
+                               , COUNT(DISTINCT A.SNSRSEQ) AS SNSRCNT
+                               , COUNT(DISTINCT A.STRCODE) AS STRCNT
+                           FROM
+                               (SELECT
+                                    G.GRPCODE
+                                    , G.GRPNAME
+                                    , A.AREACODE
+                                    , A.AREANAME
+                                    , I.STRCODE
+                                    , I.SNSRSEQ
+                                FROM
+                                    (SELECT
+                                         I1.STRCODE, I1.SNSRSEQ
+                                     FROM
+                                         (SELECT
+                                              STRCODE, SNSRSEQ, DATARCVTIME
+                                          FROM
+                                              F_SENSOR_INFO
+                                          WHERE
+                                              CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                                         ) I1
+                                    ) I
+                                        LEFT JOIN F_STORE S
+                                            ON I.STRCODE = S.STRCODE
+                                        LEFT JOIN F_LEVEL_AREA A
+                                            ON S.AREACODE = A.AREACODE
+                                        LEFT JOIN F_GROUP G
+                                            ON A.GRPCODE = G.GRPCODE
+                                WHERE
+                                    CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                                    AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
+                                    AND CONCAT(G.USEYN, G.PARENTGRPCODE, G.GRPCODE) LIKE 'Y04230%') A
+                           GROUP BY
+                               A.AREACODE
+                          ) Q
+                    ON P.AREACODE = Q.AREACODE
+        GROUP BY
+            P.AREACODE, P.AREATEL
+    </insert>
+
+    <update id="UPDATE_SYS_YESTERDAY_IGREVT_WARN_DAILY" parameterType="map">
+        INSERT INTO F_IGREVT_DAILY_PUSH_LIST 
+        SELECT
+            #{rptDate} AS RPTDATE
+            , CONCAT(P.AREANAME, ' [설치일(', P.REGDATE, '), 상점수(', Q.STRCNT ,'상점), 센서수(', Q.SNSRCNT, '채널)]') AS AREANAME
+            , P.AREATEL
+            , #{monitoringDate} AS MONITORINGDATE
+            , CONCAT('저항성누설전류(IGR) 주의(1차) 알림이 (', CAST(SUM(P.ALMCNT) AS CHAR(20)), ')회 발생하였습니다.') AS EVTINFO
+            , COUNT(P.STRCODE) AS STRCNT
+            , GROUP_CONCAT(P.STRNAME, '(', P.ALMCNT, ')' ORDER BY P.ALMCNT DESC SEPARATOR '\n') AS STRLIST
+            , 'N' AS ISSEND
+        FROM
+            (SELECT
+                 A.AREACODE
+                 , A.AREANAME
+                 , A.REGDATE
+                 , A.AREATEL
+                 , S.STRCODE
+                 , S.STRNAME
+                 , COUNT(L.LSEQ) AS ALMCNT
+             FROM
+                 (SELECT 
+                      * 
+                  FROM 
+                      <choose>
+                          <when test='"F_SENSOR_LOG_2022".equals(logTable)'>F_SENSOR_LOG_2022</when>
+                          <otherwise>F_SENSOR_LOG</otherwise>
+                      </choose> 
+                  WHERE 
+                      IGRALM = 1
+                      AND DATE_FORMAT(REGDATE, '%Y-%m-%d') = #{regDate}
+                 ) L
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON L.SNSRID = I.SNSRID
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+                     LEFT JOIN (SELECT
+                                    AA.AREACODE
+                                    , AA.AREANAME
+                                    , AA.USEYN
+                                    , AA.DELYN
+                                    , AA.GRPCODE
+                                    , DATE_FORMAT(AA.REGDATE, '%Y-%m-%d') AS REGDATE
+                                    , SUBSTRING_INDEX(SUBSTRING_INDEX(AA.AREATEL, ',', NUMBERS.n), ',', -1) AS AREATEL
+                                FROM
+                                    (SELECT 1 AS n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5) NUMBERS 
+                                        INNER JOIN F_LEVEL_AREA AA
+                                            ON CHAR_LENGTH(AA.AREATEL) - CHAR_LENGTH(REPLACE(AA.AREATEL, ',', '')) >= NUMBERS.n-1
+                                ORDER BY
+                                    AA.AREACODE, NUMBERS.n) A
+                         ON S.AREACODE = A.AREACODE
+             WHERE
+                 A.AREACODE IS NOT NULL
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 AND CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(A.USEYN, A.DELYN, A.GRPCODE) LIKE 'YN30%'
+                 AND A.AREACODE != 'AREA_000003'
+                 AND A.AREATEL != '010-0000-0000'
+             GROUP BY
+                 A.AREACODE, A.AREATEL, S.STRCODE
+            ) P
+                LEFT JOIN (SELECT
+                               A.AREACODE 
+                               , COUNT(DISTINCT A.SNSRSEQ) AS SNSRCNT
+                               , COUNT(DISTINCT A.STRCODE) AS STRCNT
+                           FROM
+                               (SELECT
+                                    G.GRPCODE
+                                    , G.GRPNAME
+                                    , A.AREACODE
+                                    , A.AREANAME
+                                    , I.STRCODE
+                                    , I.SNSRSEQ
+                                FROM
+                                    (SELECT
+                                         I1.STRCODE, I1.SNSRSEQ
+                                     FROM
+                                         (SELECT
+                                              STRCODE, SNSRSEQ, DATARCVTIME
+                                          FROM
+                                              F_SENSOR_INFO
+                                          WHERE
+                                              CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+                                         ) I1
+                                    ) I
+                                        LEFT JOIN F_STORE S
+                                            ON I.STRCODE = S.STRCODE
+                                        LEFT JOIN F_LEVEL_AREA A
+                                            ON S.AREACODE = A.AREACODE
+                                        LEFT JOIN F_GROUP G
+                                            ON A.GRPCODE = G.GRPCODE
+                                WHERE
+                                    CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                                    AND CONCAT(A.AREALEVEL, A.USEYN, A.DELYN, A.GRPCODE) LIKE '1YN30%'
+                                    AND CONCAT(G.USEYN, G.PARENTGRPCODE, G.GRPCODE) LIKE 'Y04230%') A
+                           GROUP BY
+                               A.AREACODE
+                          ) Q
+                    ON P.AREACODE = Q.AREACODE
+        GROUP BY
+            P.AREACODE, P.AREATEL
+        ON DUPLICATE KEY UPDATE
+            ISSEND = 'N'
+    </update>
+
     <select id="LIST_SYS_IGREVT_DAILY_PUSH" resultType="map">
         SELECT
             RPTDATE AS rptDate
