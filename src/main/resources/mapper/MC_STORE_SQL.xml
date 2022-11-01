@@ -392,6 +392,7 @@
                                SNSRID, SNSRRCVTIME, SNSRKWH, SNSRWATT, SNSRVOLT, SNSRAMPERE, SNSRHZ, SNSRPF, SNSRIGO, SNSRIGR, SNSRIGC, SNSRREG
                            FROM
                                <choose>
+                                   <when test='"F_SENSOR_DATA_2023".equals(tblSensorData)'>F_SENSOR_DATA_2023</when>
                                    <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
                                    <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
                                    <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
@@ -450,6 +451,7 @@
                   SNSRID, SNSRRCVTIME, SNSRKWH, SNSRVOLT, SNSRWATT, SNSRAMPERE, SNSRHZ, SNSRPF, SNSRREG, SNSRRSSI, SNSRIGR, SNSRIGO, SNSRIGC
              FROM
                  <choose>
+                     <when test='"F_SENSOR_DATA_2023".equals(tblSensorData)'>F_SENSOR_DATA_2023</when>
                      <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
                      <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
                      <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
@@ -545,6 +547,7 @@
                  SNSRSEQ, SNSRKWH
              FROM
                  <choose>
+                     <when test='"F_SENSOR_DATA_2023".equals(tblSensorData)'>F_SENSOR_DATA_2023</when>
                      <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
                      <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
                      <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
@@ -568,7 +571,7 @@
     <select id="CNT_DATA_LOG_TOTAL" parameterType="map" resultType="int">
         <![CDATA[
         SELECT
-            A.CNT + B.CNT + C.CNT
+            A.CNT + B.CNT + C.CNT + D.CNT
         FROM
             (SELECT
                  COUNT(D.SNSRRCVTIME) AS CNT
@@ -596,7 +599,7 @@
                  (SELECT
                       SNSRID, SNSRRCVTIME
                   FROM
-                      F_SENSOR_DATA_2021
+                      F_SENSOR_DATA_2022
                   WHERE
                       SNSRRCVTIME <= CONCAT(#{regdt}, ' 23:59:59')
                       AND SNSRID = #{snsrid}
@@ -616,6 +619,26 @@
                  (SELECT
                       SNSRID, SNSRRCVTIME
                   FROM
+                      F_SENSOR_DATA_2021
+                  WHERE
+                      SNSRRCVTIME <= CONCAT(#{regdt}, ' 23:59:59')
+                      AND SNSRID = #{snsrid}
+                 ) D
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON D.SNSRID = I.SNSRID
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+             WHERE
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+            ) C
+            ,
+            (SELECT
+                 COUNT(D.SNSRRCVTIME) AS CNT
+             FROM
+                 (SELECT
+                      SNSRID, SNSRRCVTIME
+                  FROM
                       F_SENSOR_DATA_2020
                   WHERE
                       SNSRRCVTIME <= CONCAT(#{regdt}, ' 23:59:59')
@@ -628,7 +651,7 @@
              WHERE
                  CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
                  AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
-            ) B
+            ) D
         ]]>
     </select>
 
@@ -646,6 +669,36 @@
                   SNSRID, SNSRRCVTIME, SNSRWATT, SNSRAMPERE, SNSRIGO
               FROM
                   F_SENSOR_DATA
+              WHERE
+                  SNSRRCVTIME <= CONCAT(#{regdt}, ' 23:59:59')
+                  AND SNSRID = #{snsrid}
+             ) D
+                 LEFT JOIN F_SENSOR_INFO I
+                     ON D.SNSRID = I.SNSRID
+                 LEFT JOIN F_STORE S
+                     ON I.STRCODE = S.STRCODE
+         WHERE
+             CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+             AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+         ORDER BY
+             D.SNSRRCVTIME DESC
+         LIMIT
+             #{pagelimit})
+
+        UNION ALL
+
+        (SELECT
+             DATE_FORMAT(D.SNSRRCVTIME, '%Y-%m-%d %H:%i:%s') AS SNSRRCVTIME
+             , D.SNSRID
+             , SUBSTRING(D.SNSRID FROM 9 FOR 4) SNSRIDSUBSTR
+             , D.SNSRWATT
+             , D.SNSRAMPERE
+             , D.SNSRIGO
+         FROM
+             (SELECT
+                  SNSRID, SNSRRCVTIME, SNSRWATT, SNSRAMPERE, SNSRIGO
+              FROM
+                  F_SENSOR_DATA_2022
               WHERE
                   SNSRRCVTIME <= CONCAT(#{regdt}, ' 23:59:59')
                   AND SNSRID = #{snsrid}
@@ -812,30 +865,30 @@
             ) C
             ,
             (SELECT
-                COUNT(L.REGDATE) AS CNT
-            FROM
-                (SELECT
-                    SNSRID, REGDATE
-                 FROM
-                    F_SENSOR_LOG_2022
-                 WHERE
-                    REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
-                    AND SNSRID = #{snsrid}
-                    AND <choose>
-                            <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
-                            <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
-                            <when test='"check-warn".equals(type)'>
-                                (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
-                            </when>
-                        </choose>
-                ) L
-                    LEFT JOIN F_SENSOR_INFO I
-                        ON L.SNSRID = I.SNSRID
-                    LEFT JOIN F_STORE S
-                        ON I.STRCODE = S.STRCODE
-                WHERE
-                        CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
-                        AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
+                 COUNT(L.REGDATE) AS CNT
+             FROM
+                 (SELECT
+                     SNSRID, REGDATE
+                  FROM
+                     F_SENSOR_LOG_2022
+                  WHERE
+                     REGDATE <![CDATA[<=]]> CONCAT(#{regdt}, ' 23:59:59')
+                     AND SNSRID = #{snsrid}
+                     AND <choose>
+                             <when test='"check-danger,check-warn".equals(type)'>(OCALM + IGOALM + IGRALM) > 0</when>
+                             <when test='"check-danger".equals(type)'>INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') > 0</when>
+                             <when test='"check-warn".equals(type)'>
+                                 (INSTR(CONCAT(OCALM, IGOALM, IGRALM), '2') = 0 AND INSTR(CONCAT(OCALM, IGOALM, IGRALM), '1') > 0)
+                             </when>
+                         </choose>
+                 ) L
+                     LEFT JOIN F_SENSOR_INFO I
+                         ON L.SNSRID = I.SNSRID
+                     LEFT JOIN F_STORE S
+                         ON I.STRCODE = S.STRCODE
+             WHERE
+                 CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+                 AND CONCAT(I.DELYN, I.STRCODE) LIKE 'NFS_STR_%'
             ) D
     </select>
 
@@ -876,7 +929,6 @@
              L.REGDATE DESC
          LIMIT
              #{pagelimit})
-
 
         UNION ALL
 

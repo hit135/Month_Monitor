@@ -265,7 +265,8 @@
                  SNSRID, SNSRRCVTIME
              FROM
                  <choose>
-                     <when test="day == 1">F_SENSOR_DATA_2021</when>
+                     <when test="day == 1 and year == 2023">F_SENSOR_DATA_2023</when>
+                     <when test="day == 1 and year == 2022">F_SENSOR_DATA_2022</when>
                      <otherwise>F_SENSOR_DATA</otherwise>
                  </choose>
              WHERE
@@ -321,8 +322,9 @@
             (SELECT
                  SNSRID, REGDATE
              FROM
-                 <choose>
-                     <when test="day == 1">F_SENSOR_LOG_2021</when>
+                <choose>
+                     <when test="day == 1 and year == 2023">F_SENSOR_LOG_2023</when>
+                     <when test="day == 1 and year == 2022">F_SENSOR_LOG_2022</when>
                      <otherwise>F_SENSOR_LOG</otherwise>
                  </choose>
              WHERE

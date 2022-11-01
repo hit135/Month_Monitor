@@ -170,6 +170,7 @@ public class MCMainController {
             HashMap<String, Object> prm = new HashMap<>();
             prm.put("areacode", req.getParameter("areacode"));
             prm.put("day", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth());
+            prm.put("year", new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear());
 
             rtn.put("log", mcMainRepo.LIST_MCM_2DAYS_AREA_LOG_CHART(prm));
             rtn.put("data", mcMainRepo.LIST_MCM_2DAYS_AREA_DATA_CHART(prm));
