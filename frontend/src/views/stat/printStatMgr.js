@@ -10,7 +10,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => (
         <div className={"d-flex justify-content-between logoMargin"}>
           <img class="image" src={"/fs/img/logo-v2.png"} style={{ width: "350px", height: "80px" }} />
           <div className={"p-5"}>
-            <h3 style={{ fontSize: "40px" }}>{props.type}</h3>
+
           </div>
         </div>
         <div className={"d-flex justify-content-center"} style={{ marginTop: "10rem" }}>

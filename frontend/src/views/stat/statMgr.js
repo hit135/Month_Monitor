@@ -289,9 +289,9 @@ const StatMgr = () => {
 
           if (resp.data["areaStrKwhStat"] !== null) {
             setStrKwhStat(strKwhStatComp(areaNameTitle, dayWeekData));
-            setStrKwhList(strKwhListComp(typeValue, resp.data["areaStrKwhStat"]));
+            setStrKwhList(strKwhListComp(areaNameTitle, typeValue, resp.data["areaStrKwhStat"]));
             if(typeValue === "grpCode"){
-              setAreaUseKwhStat(strKwhAreaListComp(resp.data["areaUseKwhStat"]));
+              setAreaUseKwhStat(strKwhAreaListComp(areaNameTitle, resp.data["areaUseKwhStat"]));
             }
           } else {
             setStrKwhStat("");

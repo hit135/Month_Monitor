@@ -61,8 +61,7 @@ export const areaStatusComponent = (param, startDate, endDate, type, strName, sn
           <table className="table table-sm table-bordered mb-0 printTable">
             <tbody>
             <tr>
-              <td className="wme_table_td_title table-title text-center" colSpan={2}>{param.areaName} {strName} 전기위험
-                현황
+              <td className="wme_table_td_title table-title text-center" colSpan={2}>{param.areaName} {strName} 전기화재예방서비스 설치현황
               </td>
             </tr>
             <tr>
@@ -70,7 +69,10 @@ export const areaStatusComponent = (param, startDate, endDate, type, strName, sn
               <td>
                 {type === "store"
                   ? "전기감지 센서 " + snsrCnt + "채널"
-                  : param.snsrCnt?.toLocaleString() + "대 (상점수 " + param.strCnt?.toLocaleString() + "개)"}
+                  : param.areaName.includes('시장')
+                      ? param.snsrCnt?.toLocaleString() + "채널 (상점수 " + param.strCnt?.toLocaleString() + "개)"
+                      : param.snsrCnt?.toLocaleString() + "채널 (분전함수 " + param.strCnt?.toLocaleString() + "개)"
+                }
               </td>
             </tr>
             <tr>
@@ -145,8 +147,7 @@ export const areaStatusComponent = (param, startDate, endDate, type, strName, sn
               <table className="table table-sm table-bordered mb-0 printTable">
                 <tbody>
                 <tr>
-                  <td className="wme_table_td_title table-title text-center" colSpan={4}>{param.areaName} {strName} 전기위험
-                    현황
+                  <td className="wme_table_td_title table-title text-center" colSpan={4}>{param.areaName} {strName} 전기화재예방서비스 설치현황
                   </td>
                 </tr>
                 <tr>
@@ -924,15 +925,19 @@ export const levelAreaStatComp = (areaName, item) => {
   }
   return (
     <div className={"mt-4 printMargin"}>
-      <h5 className={"title"}>{areaName} 내 시장별 현황</h5>
+      {areaName.includes('시장')
+      ? <h5 className={"title"}>{areaName} 내 시장별 현황</h5>
+      : <h5 className={"title"}>{areaName} 전기 위험 발생 현황</h5>}
       <table className="table table-sm table-bordered mb-0 printTable">
         <tbody id="wme_level_area_table">
         <tr>
-          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소시장명</td>
+          {areaName.includes('시장')
+          ? <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소시장명</td>
+          : <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>기관명</td>}
           <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>과전류경보</td>
           <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>저항성누설전류(IGR)</td>
           <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>전체누설전류(IGO)</td>
-          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소비전력</td>
+          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>소비전력(kWh)</td>
         </tr>
         <tr>
           <td className="wme_table_td_title text-center">1차</td>
@@ -989,13 +994,17 @@ export const levelAreaStatComp = (areaName, item) => {
 // 내상점별 현황
 export const levelStoreStatComp = (type, areaName, item) =>
   <div className={"mt-5 printMargin"}>
-    <h5 className={"title"}>{areaName} 내 상점별 현황</h5>
+    {areaName.includes('시장')
+      ? <h5 className={"title"}>{areaName} 내 상점별 현황</h5>
+      : <h5 className={"title"}>{areaName} 분전함별 전기 위험 발생 현황</h5>}
     {type === "grpCode" ?
       <table className="table table-sm table-bordered mb-0 printTable">
         <tbody id="wme_str_event_table">
         <tr>
           <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>시장명</td>
-          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>상점명</td>
+          {areaName.includes('시장')
+            ? <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>상점명</td>
+            : <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>분전함명</td>}
           <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>과전류경보</td>
           <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>저항성누설전류(IGR)</td>
           <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>전체누설전류(IGO)</td>
@@ -1028,7 +1037,9 @@ export const levelStoreStatComp = (type, areaName, item) =>
       <table className="table table-sm table-bordered mb-0 printTable">
         <tbody id="wme_str_event_table">
         <tr>
-          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>상점명</td>
+          {areaName.includes('시장')
+            ? <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>상점명</td>
+            : <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>분전함명</td>}
           <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>과전류경보</td>
           <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>저항성누설전류(IGR)</td>
           <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>전체누설전류(IGO)</td>
@@ -1254,7 +1265,7 @@ export const strKwhStatComp = (areaName, item) => {
   );
 }
 
-export const strKwhAreaListComp = (item) => {
+export const strKwhAreaListComp = (areaName, item) => {
   return (
     <div className={"printMargin"}>
       <CRow>
@@ -1262,7 +1273,9 @@ export const strKwhAreaListComp = (item) => {
         <table className="table table-sm table-bordered mb-0 printTable" id="wme_str_kwh_table">
           <tbody>
           <tr>
-            <td className="wme_table_td_title text-center">시장명</td>
+            {areaName.includes('시장')
+              ? <td className="wme_table_td_title text-center">시장명</td>
+              : <td className="wme_table_td_title text-center">분전함명</td>}
             <td className="wme_table_td_title text-center">소비전력(kWh)</td>
             {/*<td className="wme_table_td_title text-center">누설전류(kWh)</td>*/}
             <td className="wme_table_td_title text-center">비고</td>
@@ -1281,18 +1294,22 @@ export const strKwhAreaListComp = (item) => {
   )
 }
 
-export const strKwhListComp = (type, item) => {
+export const strKwhListComp = (areaName ,type, item) => {
   return (
     <div className={"printMargin"}>
       {type === "grpCode"
         ?
         <CRow>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>상점별 전력사용량</span>
+          {areaName.includes('시장')
+            ? <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>상점별 전력사용량</span>
+            : <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>분전함별 전력사용량</span>}
           <table className="table table-sm table-bordered mb-0 printTable" id="wme_str_kwh_table">
             <tbody>
             <tr>
               <td className="wme_table_td_title text-center">시장명</td>
-              <td className="wme_table_td_title text-center">상점명</td>
+              {areaName.includes('시장')
+                ? <td className="wme_table_td_title text-center">상점명</td>
+                : <td className="wme_table_td_title text-center">분전함명</td>}
               <td className="wme_table_td_title text-center">소비전력(kWh)</td>
               {/*<td className="wme_table_td_title text-center">누설전류(kWh)</td>*/}
               <td className="wme_table_td_title text-center">비고</td>
@@ -1310,11 +1327,15 @@ export const strKwhListComp = (type, item) => {
         </CRow>
         :
         <CRow>
-          <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>상점별 전력사용량</span>
+          {areaName.includes('시장')
+            ? <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>상점별 전력사용량</span>
+            : <span className={"mb-2 mt-2 subTitle"} style={{fontSize: "20px", display: "block"}}>분전함별 전력사용량</span>}
           <table className="table table-sm table-bordered mb-0 printTable" id="wme_str_kwh_table">
             <tbody>
             <tr>
-              <td className="wme_table_td_title text-center">상점명</td>
+              {areaName.includes('시장')
+                ? <td className="wme_table_td_title text-center">상점명</td>
+                : <td className="wme_table_td_title text-center">분전함명</td>}
               <td className="wme_table_td_title text-center">소비전력(kWh)</td>
               {/*<td className="wme_table_td_title text-center">누설전류(kWh)</td>*/}
               <td className="wme_table_td_title text-center">비고</td>
