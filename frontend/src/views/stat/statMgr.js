@@ -21,7 +21,7 @@ import {
   areaTotalChartStatComp2,
   storePrintChartComp,
   strKwhListComp,
-  strKwhAreaListComp,
+  strKwhAreaListComp, levelStoreStatNullComp,
 } from "../../agent/stat";
 import ReactToPrint, {useReactToPrint} from "react-to-print";
 import {ComponentToPrint} from "./printStatMgr";
@@ -263,7 +263,7 @@ const StatMgr = () => {
             if (resp.data["levelStrStat"].length > 0)
               setLevelStrStat(levelStoreStatComp(typeValue, areaNameTitle, resp.data["levelStrStat"]));
             else
-              setLevelStrStat("");
+              setLevelStrStat(levelStoreStatNullComp(typeValue, areaNameTitle, resp.data["levelStrStat"]));
 
           if (resp.data["weekMonthStat"] !== null)
             if (resp.data["weekMonthStat"].length > 0)

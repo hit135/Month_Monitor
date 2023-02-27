@@ -1069,9 +1069,68 @@ export const levelStoreStatComp = (type, areaName, item) =>
       </table>
     }
   </div>;
+// 데이터가 존재하지 않을 경우, 내상점별 현황에 [데이터없음] 표시
+export const levelStoreStatNullComp = (type, areaName, item) =>
+  <div className={"mt-5 printMargin"}>
+    {areaName.includes('시장')
+      ? <h5 className={"title"}>{areaName} 내 상점별 현황</h5>
+      : <h5 className={"title"}>{areaName} 분전함별 전기 위험 발생 현황</h5>}
+    {type === "grpCode" ?
+      <table className="table table-sm table-bordered mb-0 printTable">
+        <tbody id="wme_str_event_table">
+        <tr>
+          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>시장명</td>
+          {areaName.includes('시장')
+            ? <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>상점명</td>
+            : <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>분전함명</td>}
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>과전류경보</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>저항성누설전류(IGR)</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>전체누설전류(IGO)</td>
+          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>비고</td>
+        </tr>
+        <tr>
+          <td className="wme_table_td_title text-center">1차</td>
+          <td className="wme_table_td_title text-center">2차</td>
+          <td className="wme_table_td_title text-center">1차</td>
+          <td className="wme_table_td_title text-center">2차</td>
+          <td className="wme_table_td_title text-center">1차</td>
+          <td className="wme_table_td_title text-center">2차</td>
+        </tr>
+          <td colSpan="8" className="wme_str_event_tr text-center">
+            데이터없음
+          </td>
+        </tbody>
+      </table>
+      :
+      <table className="table table-sm table-bordered mb-0 printTable">
+        <tbody id="wme_str_event_table">
+        <tr>
+          {areaName.includes('시장')
+            ? <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>상점명</td>
+            : <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>분전함명</td>}
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>과전류경보</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>저항성누설전류(IGR)</td>
+          <td colSpan="2" className="wme_table_td_title text-center" style={{width: "20%"}}>전체누설전류(IGO)</td>
+          <td rowSpan="2" className="wme_table_td_title text-center" style={{verticalAlign: "middle"}}>비고</td>
+        </tr>
+        <tr>
+          <td className="wme_table_td_title text-center">1차</td>
+          <td className="wme_table_td_title text-center">2차</td>
+          <td className="wme_table_td_title text-center">1차</td>
+          <td className="wme_table_td_title text-center">2차</td>
+          <td className="wme_table_td_title text-center">1차</td>
+          <td className="wme_table_td_title text-center">2차</td>
+        </tr>
+        </tbody>
+        <td colSpan="8" className="wme_str_event_tr text-center">
+          데이터없음
+        </td>
+      </table>
+    }
+  </div>;
 // 전기사용량 현황
 export const areaKwhStatComp = (areaName, item) =>
-  <div className={"printMargin"}>
+  <div className={"mt-5 printMargin"}>
     <CRow>
       <CCol sm={"12"}>
         <h5 className={"title"}>{areaName} 전력사용량 현황(종합)</h5>

@@ -554,11 +554,11 @@
         SELECT
             S.STRCODE AS strCode
             , (SELECT
-                   DISTINCT STRNAME
+                   DISTINCT SNSRNICK
                FROM
-                   F_STORE
+                   F_SENSOR_INFO
                WHERE
-                   STRCODE = S.STRCODE
+                   SNSRID = S.SNSRID
                    AND AREACODE = #{areaCode}) AS strName
             , S.OC1ST AS oc1st
             , S.OC2ND AS oc2nd
@@ -569,25 +569,28 @@
             <!-- , S.DISCONN AS disconn -->
         FROM
             (SELECT
-                 STRCODE
-                 , SUM(OC1ST) AS OC1ST
-                 , SUM(OC2ND) AS OC2ND
-                 , SUM(IGO1ST) AS IGO1ST
-                 , SUM(IGO2ND) AS IGO2ND
-                 , SUM(IGR1ST) AS IGR1ST
-                 , SUM(IGR2ND) AS IGR2ND
+                 FESS.STRCODE
+                 , FSI.SNSRID
+                 , SUM(FESS.OC1ST) AS OC1ST
+                 , SUM(FESS.OC2ND) AS OC2ND
+                 , SUM(FESS.IGO1ST) AS IGO1ST
+                 , SUM(FESS.IGO2ND) AS IGO2ND
+                 , SUM(FESS.IGR1ST) AS IGR1ST
+                 , SUM(FESS.IGR2ND) AS IGR2ND
                   <!-- , SUM(DISCONN) AS DISCONN -->
              FROM
-                 F_ELEC_SENSOR_STAT
+                 F_ELEC_SENSOR_STAT FESS
+             LEFT JOIN
+                 F_SENSOR_INFO FSI ON FESS.SNSRID = FSI.SNSRID
              WHERE
-                 AREACODE = #{areaCode}
+                 FESS.AREACODE = #{areaCode}
                  AND <choose>
                          <when test='dateType == "year"'>DATE_FORMAT(SDATE, '%Y') = #{startDate}</when>
                          <when test='dateType == "month"'>DATE_FORMAT(SDATE, '%Y-%m') = #{endDate}</when>
                          <otherwise>DATE_FORMAT(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
                      </choose>
              GROUP BY
-                 AREACODE, STRCODE) S
+                 FESS.AREACODE, FESS.STRCODE, FSI.SNSRID) S
         WHERE
             (S.OC1ST + S.OC2ND + S.IGO1ST + S.IGO2ND + S.IGR1ST + S.IGR2ND) > 0
         ORDER BY
@@ -601,11 +604,11 @@
         (SELECT AREANAME FROM F_LEVEL_AREA WHERE AREACODE = S.AREACODE) AS areaName
         , S.STRCODE AS strCode
         , (SELECT
-        DISTINCT STRNAME
+        DISTINCT SNSRNICK
         FROM
-        F_STORE
+        F_SENSOR_INFO
         WHERE
-        STRCODE = S.STRCODE
+        SNSRID = S.SNSRID
         AND AREACODE IN (SELECT AREACODE FROM F_LEVEL_AREA WHERE GRPCODE = #{grpCode} AND UPAREACODE = '0')) AS strName
         , S.OC1ST AS oc1st
         , S.OC2ND AS oc2nd
@@ -616,17 +619,20 @@
         <!-- , S.DISCONN AS disconn -->
         FROM
         (SELECT
-        AREACODE
-        , STRCODE
-        , SUM(OC1ST) AS OC1ST
-        , SUM(OC2ND) AS OC2ND
-        , SUM(IGO1ST) AS IGO1ST
-        , SUM(IGO2ND) AS IGO2ND
-        , SUM(IGR1ST) AS IGR1ST
-        , SUM(IGR2ND) AS IGR2ND
+        FESS.REACODE
+        , FESS.STRCODE
+        , FSI.SNSRID
+        , SUM(FESS.OC1ST) AS OC1ST
+        , SUM(FESS.OC2ND) AS OC2ND
+        , SUM(FESS.IGO1ST) AS IGO1ST
+        , SUM(FESS.IGO2ND) AS IGO2ND
+        , SUM(FESS.IGR1ST) AS IGR1ST
+        , SUM(FESS.IGR2ND) AS IGR2ND
         <!-- , SUM(DISCONN) AS DISCONN -->
         FROM
-        F_ELEC_SENSOR_STAT
+        F_ELEC_SENSOR_STAT FESS
+        LEFT JOIN
+        F_SENSOR_INFO FSI ON FESS.SNSRID = FSI.SNSRID
         WHERE
         GRPCODE = #{grpCode}
         AND <choose>
@@ -635,7 +641,7 @@
         <otherwise>DATE_FORMAT(SDATE, '%Y-%m') BETWEEN #{startDate} AND #{endDate}</otherwise>
     </choose>
         GROUP BY
-        GRPCODE, STRCODE) S
+        FESS.GRPCODE, FESS.STRCODE, FSI.SNSRID) S
         WHERE
         (S.OC1ST + S.OC2ND + S.IGO1ST + S.IGO2ND + S.IGR1ST + S.IGR2ND) > 0
         ORDER BY
