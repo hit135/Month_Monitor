@@ -22,7 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.thymeleaf.util.StringUtils;
-
+import java.text.SimpleDateFormat;
+import java.util.*;
 /**
  * @author : jjm
  * @version 1.0
@@ -546,6 +547,41 @@ public class MCStoreController {
             pagingPrm.put("pageSize", 5);
             pagingPrm.put("recordCountPerPage", 1000);
             pagingPrm.put("currentPageNo", Integer.parseInt((String) paramMap.get("pageindex")));
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            Date now = new Date();
+            String nowDate=sdf.format(now);
+            String nowDateY=nowDate.substring(0,4);
+            String nowDateM=nowDate.substring(5,7);
+            String nowDateYM=nowDateY+nowDateM;
+
+            String regDate=(String)paramMap.get("regdt");
+            String regDateY=regDate.substring(0,4);
+            String regDateM=regDate.substring(5,7);
+            String regDateYM=regDateY+regDateM;
+
+            /* 1. 현재 날짜에서의 한달전 날짜 */
+            Calendar cal1=Calendar.getInstance();
+            Date getDate1=sdf.parse(nowDate);
+            cal1.setTime(getDate1);
+            cal1.add(Calendar.MONTH,-1);
+
+            /* 2. 사용자가 지정한 날짜 */
+            Calendar cal2=Calendar.getInstance();
+            Date getDate2=sdf.parse(regDate);
+            cal2.setTime(getDate2);
+
+            /* 1, 2번 날짜를 비교하여 정수값으로 저장*/
+            int cmpResult=cal1.getTime().compareTo(cal2.getTime());
+
+            if(nowDateYM.equals(regDateYM) || cmpResult<0 || cmpResult==0){
+                param.put("tables","F_SENSOR_LOG");
+            }else if(nowDateY.equals(regDateY) && !nowDateM.equals(regDateM)){
+                param.put("tables","F_SENSOR_LOG".concat("_").concat(nowDateY));
+            }else if(!nowDateY.equals(regDateY)){
+                param.put("tables","F_SENSOR_LOG".concat("_").concat(regDateY));
+            }
 
             if ("check-total".equals(paramMap.get("type"))) {
                 resultCnt = mcStoreRepo.CNT_DATA_LOG_TOTAL(param);

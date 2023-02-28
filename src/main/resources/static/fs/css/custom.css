@@ -25,6 +25,7 @@
 .left-list-sensor { height:213px; overflow-y:scroll; padding:5px 10px; }
 .left-list-sensor p { font-size:14px; margin-bottom:7px; cursor:pointer; }
 .left-list-sensor p:hover { background:#e7f0f8; }
+.list-area {overflow-y:scroll; height:51em;}
 
 .right [class^=sensors] { margin-bottom:15px; }
 .right h3 { text-align:center; color:#fff; padding:8px; font-size:20px; font-weight:bold; text-shadow:1px 1px 5px #000; }
