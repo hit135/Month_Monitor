@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.fscom.firsens.mng.challenge.repository.MCToolRepo">
+
+    <select id="LIST_DATA_YEAR" resultType="map">
+        SELECT REPLACE(TABLE_NAME, 'F_SENSOR_DATA_', '') AS YY
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE TABLE_NAME LIKE 'F_SENSOR_DATA_%'
+        ORDER BY 1 DESC
+    </select>
+
+    <select id="LIST_DATA_MONTH" resultType="map">
+        SELECT MIN(MINMM) AS MINMM
+            , MAX(MAXMM) AS MAXMM
+        FROM (
+        SELECT DATE_FORMAT(MIN(SNSRRCVTIME),'%Y,%m') AS MINMM
+            , DATE_FORMAT(MAX(SNSRRCVTIME),'%Y,%m') AS MAXMM
+        FROM F_SENSOR_DATA
+        WHERE SNSRRCVTIME <![CDATA[<]]> CONCAT(#{year},'-12-31')
+        <if test='tbl="BCK"'>
+            UNION
+            SELECT DATE_FORMAT(MIN(SNSRRCVTIME),'%Y,%m') AS MINMM
+                , DATE_FORMAT(MAX(SNSRRCVTIME),'%Y,%m') AS MAXMM
+            FROM F_SENSOR_DATA_${year}
+        </if>
+        ) A
+    </select>
+
+    <select id="LIST_DATA_DATE" resultType="map">
+        SELECT SDATE AS DD
+            , IFNULL(SUM(OC1ST)+SUM(IGO1ST)+SUM(IGR1ST),0) AS WARN1
+            , IFNULL(SUM(OC2ND)+SUM(IGO2ND)+SUM(IGR2ND),0) AS WARN2
+        FROM F_ELEC_SENSOR_STAT
+        WHERE SDATE LIKE CONCAT(#{year},'-',#{month},'%')
+        GROUP BY 1
+        ORDER BY 1 DESC
+    </select>
+
+    <select id="LIST_DATA_SENSOR" resultType="map">
+        SELECT A.SNSRID
+            ,A.SNSRNICK
+            ,B.STRCODE
+            ,B.STRNAME
+            ,C.AREACODE
+            ,C.AREANAME
+            ,CONCAT(IFNULL(C.AREANAME,''),'_',B.STRNAME,'_',A.SNSRID) AS NICKNAME
+            ,D.WARN1
+            ,D.WARN2
+        FROM F_SENSOR_INFO A
+            LEFT JOIN F_STORE B ON A.STRCODE=B.STRCODE
+            LEFT JOIN F_LEVEL_AREA C ON A.LEVELAREACODE=C.AREACODE
+            LEFT JOIN (
+                   SELECT SNSRID
+                    ,IFNULL(SUM(OC1ST)+SUM(IGO1ST)+SUM(IGR1ST),0) AS WARN1
+                    ,IFNULL(SUM(OC2ND)+SUM(IGO2ND)+SUM(IGR2ND),0) AS WARN2
+                FROM F_ELEC_SENSOR_STAT
+                WHERE SDATE = #{sdate}
+                GROUP BY 1
+           ) D ON A.SNSRID=D.SNSRID
+        ORDER BY D.WARN2 DESC
+            ,D.WARN1 DESC
+            ,C.AREANAME
+            ,B.STRNAME
+            ,A.SNSRNICK
+    </select>
+</mapper>

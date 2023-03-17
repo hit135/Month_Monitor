@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Data Tagging</title>
+    <meta name="description" content="Analytics Dashboard" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui" />
+
+    <!-- Call App Mode on ios devices -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Remove Tap Highlight on Windows Phone IE -->
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <!-- base css -->
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/fs/img/favicon/favicon.ico}" />
+    <link id="vendorsbundle" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/vendors.bundle.css}" />
+    <link id="appbundle" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/app.bundle.css}" />
+    <link id="mytheme" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/themes/cust-theme-8.css}" />
+    <link id="myskin" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/skins/skin-master.css}" />
+
+    <!-- additional css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/fs/css/apexcharts.css}" />
+
+    <!-- base javascript -->
+    <script type="text/javascript" th:src="@{/fs/js/jquery.js}"></script>
+    <style type="text/css">
+      .ib { display:inline-block; }
+      .scl { height:800px; overflow-y:scroll; }
+      .dt-list div { cursor:pointer; margin:2px; padding:4px; font-size:14px; border-bottom:1px solid #6dabda; }
+      .dt-list div.on { background:#afd9ee; font-weight:bold; }
+      .dt-list div:hover { text-decoration:underline; }
+      .dt-list .warn1 { color:#9a6e3a; }
+      .dt-list .warn2 { color:#dc3545; }
+      .snsr-list div { cursor:pointer; margin:2px; padding:4px; font-size:14px; border-bottom:1px solid #6dabda; }
+      .snsr-list div.on { background:#afd9ee; font-weight:bold; }
+      .snsr-list div:hover { text-decoration:underline; }
+      .snsr-list .warn1 { color:#9a6e3a; }
+      .snsr-list .warn2 { color:#dc3545; }
+      .load-chart { display:none; }
+    </style>
+  </head>
+  <body>
+    <input id="contextRoot" type="hidden" th:value="${#httpServletRequest.getContextPath()}" />
+    <div>
+      <div class="ib scl" style="width:10%;">
+        <div class="dt-ctrl">
+          <div class="ib"><select id="year"></select><span>년</span></div>
+          <div class="ib"><select id="month"></select><span>월</span></div>
+        </div>
+        <div class="dt-list"></div>
+      </div>
+      <div class="ib scl" style="width:20%;">
+        <div class="snsr-list"></div>
+      </div>
+      <div class="ib scl" style="width:48%;">
+        <div class="data-ctrl">
+          <div class="ib"><input type="checkbox" name="dataname" value="IGO" /> 누설전류 총합(IGO)</div>
+          <div class="ib"><input type="checkbox" name="dataname" value="IGR" /> 저항성 누설전류(IGR)</div>
+          <div class="ib"><input type="checkbox" name="dataname" value="IGC" /> 용량성 누설전류(IGC)</div>
+          <div class="ib"><input type="checkbox" name="dataname" value="KWH" /> 누적전력량(KWH)</div>
+          <div class="ib"><input type="checkbox" name="dataname" value="WATT" /> 일률(WATT)</div>
+          <div class="ib"><input type="checkbox" name="dataname" value="VOLT" /> 전압(VOLT)</div>
+          <div class="ib"><input type="checkbox" name="dataname" value="AMPERE" /> 전류(AMP)</div>
+          <div class="ib"><input type="checkbox" name="dataname" value="HZ" /> 주파수(HZ)</div>
+          <div class="ib"><input type="checkbox" name="dataname" value="PF" /> 역률(PF)</div>
+          <div class="ib"><input type="checkbox" name="dataname" value="REG" /> 절연저항</div>
+        </div>
+        <div id="data-chart" style="width:100%; height:400px;"></div>
+        <div class="load-chart position-absolute w-100 h-100 bg-white" style="left: 0; top: 0; text-align: center;">
+          <button class="btn btn-info waves-effect waves-themed align-self-center" type="button" disabled="" style="margin-top: 100px;">
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Loading...
+          </button>
+        </div>
+        <div class="data-tagging">
+          <div class="ib"><span>시작</span><input type="time" id="start"/></div>
+          <div class="ib"><span>끝</span><input type="time" id="end"/></div>
+          <div><span>메모</span><input type="text" id="memo"/></div>
+        </div>
+      </div>
+      <div class="ib scl" style="width:20%;">
+        <div class="tag-list"></div>
+      </div>
+    </div>
+
+    <script th:src="@{/fs/js/polyfill.min.js}"></script>
+    <script th:src="@{/fs/js/apexcharts.js}"></script>
+    <script th:src="@{/fs/js/mcMainInit.js}"></script>
+    <script type="text/javascript" th:src="@{/smartadmin/js/vendors.bundle.js}"></script>
+    <script type="text/javascript" th:src="@{/smartadmin/js/app.bundle.js}"></script>
+    <script type="text/javascript" th:src="@{/fs/js/jquery.tmpl.min.js}"></script>
+    <script type="text/javascript">
+      $(function() {
+        $.template('data-year','<option value="{{html YY}}" data-tbl="{{html tbl}}">{{html YY}}</option>');
+        $.template('data-month','<option value="{{html MM}}">{{html MM}}</option>');
+        $.template('data-date','<div class="{{html cls}}" data-dd="{{html DD}}">{{html DD}}</div>');
+        $.template('data-snsr','<div class="{{html cls}}" data-snsrid="{{html SNSRID}}">{{html NICKNAME}}</div>');
+
+        $('#year').on('change',fn_setMonth);
+        $('#month').on('change',fn_setDate);
+        $('.dt-list').on('click','div',function() {
+          $('.dt-list div.on').removeClass('on');
+          $(this).addClass('on');
+          fn_setSensor();
+        });
+        $('.snsr-list').on('click','div',function() {
+          $('.snsr-list div.on').removeClass('on');
+          $(this).addClass('on');
+        });
+        fn_setYear();
+      });
+
+      function fn_setYear() {
+        $.post(
+          $('#contextRoot').val() + '/tool/dataYearAjax',
+          {  },
+          function(d) {
+            let cur = new Date();
+            $('#year').html('');
+            for (let i = 0; i < d.length; i++) {
+              if(i==0 && (cur.getFullYear()-d[i].year)==0) {
+                let temp = { year:cur.getFullYear(), tbl:'ORG' }
+                $('#year').append($.tmpl('data-year', temp));
+              }
+              d[i].tbl = 'BCK';
+              $('#year').append($.tmpl('data-year', d[i]));
+            }
+            $('#year option:first-child').attr('selected',true);
+            fn_setMonth();
+          });
+      }
+
+      function fn_setMonth() {
+        $.post(
+          $('#contextRoot').val() + '/tool/dataMonthAjax',
+          {
+            year: $('#year option:selected').val()
+            , tbl: $('#year option:selected').attr('data-tbl')
+          },
+          function(d) {
+            $('#month').html('');
+            let minmm = 1;
+            let maxmm = 0;
+            if(d && d.length>0) {
+              minmm = d[0].MINMM.split(',')[1];
+              maxmm = d[0].MAXMM.split(',')[1];
+            }
+            for (let i = maxmm; i >= minmm; i--) {
+              let o = { MM: ('0'+i).substr(-2) }
+              $('#month').append($.tmpl('data-month', o));
+            }
+            $('#month option:first-child').attr('selected',true);
+            fn_setDate();
+          });
+      }
+
+      function fn_setDate() {
+        $.post(
+          $('#contextRoot').val() + '/tool/dataDateAjax',
+          {
+            year: $('#year option:selected').val()
+            , month: $('#month option:selected').val()
+          },
+          function(d) {
+            $('.dt-list').html('');
+            for (let i = 0; i < d.length; i++) {
+              if(d[i].WARN2 > 0) d[i].cls = 'warn2';
+              else if(d[i].WARN1 > 0) d[i].cls = 'warn1';
+              $('.dt-list').append($.tmpl('data-date', d[i]));
+            }
+            $('.dt-list div:first-child').addClass('on');
+            fn_setSensor();
+          });
+      }
+
+      function fn_setSensor() {
+        $.post(
+          $('#contextRoot').val() + '/tool/dataSensorAjax',
+          {
+            sdate: $('.dt-list div.on').attr('data-dd')
+          },
+          function(d) {
+            $('.snsr-list').html('');
+            for (let i = 0; i < d.length; i++) {
+              if(d[i].WARN2 > 0) d[i].cls = 'warn2';
+              else if(d[i].WARN1 > 0) d[i].cls = 'warn1';
+              $('.snsr-list').append($.tmpl('data-snsr', d[i]));
+            }
+            $('.snsr-list div:first-child').addClass('on');
+          });
+      }
+
+      function fn_dateToString(d) {
+        return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
+          ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+      }
+
+      function fn_initSnsrChart() {
+        window.chart1 = null;
+        window.datadt = null;
+        window.dataset = null;
+        window.val = null;
+
+        if ($('#prm_almtype').val()) {
+          $('[name=dataname][value="' + $('#prm_almtype').val() + '"]').prop('checked', true);
+        } else {
+          $('[name=dataname][value="IGO"]').prop('checked', true);
+          $('[name=dataname][value="IGR"]').prop('checked', true);
+          $('[name=dataname][value="IGC"]').prop('checked', true);
+        }
+
+        $('#regdt').val(fn_dateToString(new Date()).slice(0, 10));
+        fn_getStoreSensor();
+      }
+
+      function fn_setChart() {
+        let opt = {
+          series: [],
+          chart: {
+            height: 400,
+            type: line,
+            id: 'chart',
+            animations: { enabled: false },
+          },
+          colors: [],
+          stroke: { width: 3 },
+          dataLabels: { enabled: false },
+          annotations: fn_setAnnotations(),
+          tooltip: {
+            enabled: true, marker: { show: true }, fixed: { enabled: true, position: 'topLeft' },
+            x: { format: 'yyyy년 MM월 dd일 HH:mm:ss' },
+            y: { formatter: function (val) { return (val) ? val.toFixed(2) : null; } }
+          },
+          xaxis: {
+            type: 'datetime',
+            lines: { show: true },
+            tooltip: { enabled: true },
+            labels: { datetimeUTC: false, datetimeFormatter: { year: 'yyyy년', month: 'yyyy년 MM월', day: 'MM월 dd일', hour: 'HH:mm' } }
+          },
+          yaxis: {
+            lines: { show: true }, tooltip: { enabled: true }, min: null, max: null,
+            labels: { formatter: function(val) { return (val) ? val.toFixed(2) : null; } }
+          }
+        };
+
+        let colorset = {
+          IGO: '#d3372d', IGR: '#518d45', IGC: '#4475e0', KWH: '#ff6272', WATT: '#ff8040', VOLT: '#800000', AMPERE: '#0080ff', HZ: '#8000ff', PF: '#800080', REG: '#ff0080'
+        };
+
+        let $dns = $('[name=dataname]:checked');
+        let series = [];
+
+        for (let i = 0; i < $dns.length; i++) {
+          let dns = $dns[i].value;
+          series.push({ name: $($dns[i]).parent('div').text().trim(), data: window.dataset[dns] });
+          opt.colors.push(colorset[dns]);
+
+          let min = window.val[dns].min * 0.95;
+          let max = window.val[dns].max * 1.4;
+
+          if (opt.yaxis.min == null || opt.yaxis.min > min) opt.yaxis.min = min;
+          if (opt.yaxis.max == null || opt.yaxis.max < max) opt.yaxis.max = max;
+        }
+
+        if (window.dataset['IGO'].length < 100)
+          opt.markers = { size: 1, strokeWidth: 0, hover: { size: 5 } };
+        else
+          opt.markers = { size: 0, hover: { size: 0 } };
+
+        if (series.length > 0) {
+          $('#data-chart').css('visibility', 'visible');
+
+          if (window.chart1) {
+            opt.chart.type = $('#charttype option:selected').val();
+            opt.annotations = fn_mcstc_setAnnotations();
+
+            window.chart1.updateOptions(opt);
+            window.chart1.updateSeries(series);
+          } else {
+            opt.series = series;
+            $('#data-chart').html('');
+
+            window.chart1 = new ApexCharts(document.querySelector("#chart"), opt);
+            window.chart1.render().then(function() {});
+          }
+        } else {
+          $('#data-chart').css('visibility', 'hidden');
+        }
+      }
+
+      function fn_setAnnotations() {
+        let a1 = null, a2 = null;
+        let ret = { yaxis: [] };
+
+        if ($('[name=dataname]:checked').length > 1)
+          return ret;
+
+        let dataname = $('[name=dataname]:checked').val();
+
+        if (dataname == 'AMPERE') { a1 = 20, a2 = 26; }
+        if (dataname == 'IGO') { a1 = 15, a2 = 18; }
+        if (dataname == 'IGR') { a1 = 3, a2 = 5; }
+
+        if (a1) {
+          ret.yaxis.push({
+            y: a1, y2: a2, borderColor: '#ffa454', fillColor: '#ffa454', opacity: 0.3,
+            label: { style: { color: '#ffa454' }, text: '주의', textAnchor: 'start', position: 'left', offsetY: 50 }
+          });
+        }
+
+        if (a2) {
+          ret.yaxis.push({
+            y: a2, y2: 65, borderColor: '#ff6272', fillColor: '#ff6272', opacity: 0.3,
+            label: { style: { color: '#ff6272' }, text: '경고', textAnchor: 'start', position: 'left', offsetY: 50 }
+          });
+
+          return ret;
+        }
+      }
+    </script>
+  </body>
+</html>
