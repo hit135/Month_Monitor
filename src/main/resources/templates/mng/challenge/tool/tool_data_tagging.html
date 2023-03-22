@@ -1,322 +1,1073 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Data Tagging</title>
-    <meta name="description" content="Analytics Dashboard" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui" />
+    <meta name="description" content="Analytics Dashboard"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui"/>
 
     <!-- Call App Mode on ios devices -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
     <!-- Remove Tap Highlight on Windows Phone IE -->
-    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="msapplication-tap-highlight" content="no"/>
 
     <!-- base css -->
-    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/fs/img/favicon/favicon.ico}" />
-    <link id="vendorsbundle" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/vendors.bundle.css}" />
-    <link id="appbundle" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/app.bundle.css}" />
-    <link id="mytheme" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/themes/cust-theme-8.css}" />
-    <link id="myskin" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/skins/skin-master.css}" />
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/fs/img/favicon/favicon.ico}"/>
+    <link id="vendorsbundle" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/vendors.bundle.css}"/>
+    <link id="appbundle" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/app.bundle.css}"/>
+    <link id="mytheme" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/themes/cust-theme-8.css}"/>
+    <link id="myskin" rel="stylesheet" media="screen, print" th:href="@{/smartadmin/css/skins/skin-master.css}"/>
 
     <!-- additional css -->
-    <link rel="stylesheet" type="text/css" th:href="@{/fs/css/apexcharts.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/fs/css/apexcharts.css}"/>
 
     <!-- base javascript -->
     <script type="text/javascript" th:src="@{/fs/js/jquery.js}"></script>
     <style type="text/css">
-      .ib { display:inline-block; }
-      .scl { height:800px; overflow-y:scroll; }
-      .dt-list div { cursor:pointer; margin:2px; padding:4px; font-size:14px; border-bottom:1px solid #6dabda; }
-      .dt-list div.on { background:#afd9ee; font-weight:bold; }
-      .dt-list div:hover { text-decoration:underline; }
-      .dt-list .warn1 { color:#9a6e3a; }
-      .dt-list .warn2 { color:#dc3545; }
-      .snsr-list div { cursor:pointer; margin:2px; padding:4px; font-size:14px; border-bottom:1px solid #6dabda; }
-      .snsr-list div.on { background:#afd9ee; font-weight:bold; }
-      .snsr-list div:hover { text-decoration:underline; }
-      .snsr-list .warn1 { color:#9a6e3a; }
-      .snsr-list .warn2 { color:#dc3545; }
-      .load-chart { display:none; }
+        .ib {
+            display: inline-block;
+        }
+
+        .scl {
+            height: 900px;
+            overflow-y: scroll;
+        }
+
+        /*날짜 리스트*/
+        .dt-list div {
+            cursor: pointer;
+            margin: 2px;
+            padding: 4px;
+            font-size: 14px;
+            border-bottom: 1px solid #6dabda;
+        }
+
+        .dt-list div.on {
+            background: #afd9ee;
+            font-weight: bold;
+        }
+
+        .dt-list div:hover {
+            text-decoration: underline;
+        }
+
+        .dt-list .warn1 {
+            color: #9a6e3a;
+        }
+
+        .dt-list .warn2 {
+            color: #dc3545;
+        }
+
+        /*센서 리스트*/
+        .snsr-list div {
+            cursor: pointer;
+            margin: 2px;
+            padding: 4px;
+            font-size: 14px;
+            border-bottom: 1px solid #6dabda;
+        }
+
+        .snsr-list div.on {
+            background: #afd9ee;
+            font-weight: bold;
+        }
+
+        .snsr-list div:hover {
+            text-decoration: underline;
+        }
+
+        .snsr-list .warn1 {
+            color: #9a6e3a;
+        }
+
+        .snsr-list .warn2 {
+            color: #dc3545;
+        }
+
+        /*태그 리스트*/
+        .tag-list div {
+            cursor: pointer;
+            margin: 2px;
+            padding: 4px;
+            font-size: 14px;
+            border-bottom: 1px solid #6dabda;
+        }
+
+        .tag-list div.on {
+            background: #afd9ee;
+            font-weight: bold;
+        }
+
+        .tag-list div:hover {
+            text-decoration: underline;
+        }
+
+        /**/
+        .load-chart {
+            display: none;
+        }
     </style>
-  </head>
-  <body>
-    <input id="contextRoot" type="hidden" th:value="${#httpServletRequest.getContextPath()}" />
-    <div>
-      <div class="ib scl" style="width:10%;">
+</head>
+<body>
+<input id="contextRoot" type="hidden" th:value="${#httpServletRequest.getContextPath()}"/>
+<input type="hidden" id="prm_areacode" th:value="${prm_areacode}"/>
+<input type="hidden" id="prm_strcode" th:value="${prm_strcode}"/>
+<input type="hidden" id="prm_snsrid" th:value="${prm_snsrid}"/>
+<input type="hidden" id="prm_regdate" th:value="${prm_regdate}"/>
+<input type="hidden" id="prm_almtype" th:value="${prm_almtype}"/>
+<input type="hidden" id="rangeStart"/>
+<input type="hidden" id="rangeEnd"/>
+
+
+<div>
+    <div class="ib scl" style="width:10%;">
         <div class="dt-ctrl">
-          <div class="ib"><select id="year"></select><span>년</span></div>
-          <div class="ib"><select id="month"></select><span>월</span></div>
+            <div class="ib"><select id="year"></select><span>년</span></div>
+            <div class="ib"><select id="month"></select><span>월</span></div>
         </div>
         <div class="dt-list"></div>
-      </div>
-      <div class="ib scl" style="width:20%;">
+    </div>
+    <div class="ib scl" style="width:20%;">
         <div class="snsr-list"></div>
-      </div>
-      <div class="ib scl" style="width:48%;">
+    </div>
+    <div class="ib scl" style="width:48%;">
         <div class="data-ctrl">
-          <div class="ib"><input type="checkbox" name="dataname" value="IGO" /> 누설전류 총합(IGO)</div>
-          <div class="ib"><input type="checkbox" name="dataname" value="IGR" /> 저항성 누설전류(IGR)</div>
-          <div class="ib"><input type="checkbox" name="dataname" value="IGC" /> 용량성 누설전류(IGC)</div>
-          <div class="ib"><input type="checkbox" name="dataname" value="KWH" /> 누적전력량(KWH)</div>
-          <div class="ib"><input type="checkbox" name="dataname" value="WATT" /> 일률(WATT)</div>
-          <div class="ib"><input type="checkbox" name="dataname" value="VOLT" /> 전압(VOLT)</div>
-          <div class="ib"><input type="checkbox" name="dataname" value="AMPERE" /> 전류(AMP)</div>
-          <div class="ib"><input type="checkbox" name="dataname" value="HZ" /> 주파수(HZ)</div>
-          <div class="ib"><input type="checkbox" name="dataname" value="PF" /> 역률(PF)</div>
-          <div class="ib"><input type="checkbox" name="dataname" value="REG" /> 절연저항</div>
+            <br>
+            <div class="ib"><input type="radio" name="dataname" value="IGO"/> 누설전류 총합(IGO)</div>
+            <div class="ib"><input type="radio" name="dataname" value="IGR"/> 저항성 누설전류(IGR)</div>
+            <div class="ib"><input type="radio" name="dataname" value="IGC"/> 용량성 누설전류(IGC)</div>
+            <div class="ib"><input type="radio" name="dataname" value="KWH"/> 누적전력량(KWH)</div>
+            <div class="ib"><input type="radio" name="dataname" value="WATT"/> 일률(WATT)</div>
+            <div class="ib"><input type="radio" name="dataname" value="VOLT"/> 전압(VOLT)</div>
+            <div class="ib"><input type="radio" name="dataname" value="AMPERE"/> 전류(AMP)</div>
+            <div class="ib"><input type="radio" name="dataname" value="HZ"/> 주파수(HZ)</div>
+            <div class="ib"><input type="radio" name="dataname" value="PF"/> 역률(PF)</div>
+            <div class="ib"><input type="radio" name="dataname" value="REG"/> 절연저항(REG)</div>
         </div>
-        <div id="data-chart" style="width:100%; height:400px;"></div>
+        <div id="data-chart" style="width:100%; height:200px;">
+        </div>
+        <div id="data-chart2" style="width:100%; height:300px;"></div>
         <div class="load-chart position-absolute w-100 h-100 bg-white" style="left: 0; top: 0; text-align: center;">
-          <button class="btn btn-info waves-effect waves-themed align-self-center" type="button" disabled="" style="margin-top: 100px;">
-            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Loading...
-          </button>
+            <button class="btn btn-info waves-effect waves-themed align-self-center" type="button" disabled=""
+                    style="margin-top: 100px;">
+                <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Loading...
+            </button>
         </div>
         <div class="data-tagging">
-          <div class="ib"><span>시작</span><input type="time" id="start"/></div>
-          <div class="ib"><span>끝</span><input type="time" id="end"/></div>
-          <div><span>메모</span><input type="text" id="memo"/></div>
+            <div class="ib"><span>시작</span><input type="time" id="start" step="1"/></div>
+            <div class="ib"><span>끝</span><input type="time" id="end" step="1"/></div>
+            <div><span>TAG DATA TYPE  </span><input type="text" id="tagDataType" readonly/></div>
+            <div><span>TAG COMMENT  </span><input type="text" id="tagComment"/></div>
+
+            <button id="chartBtn1" type="button" class="btn btn-sm btn-success waves-effect waves-themed">상단 차트 범위 수정
+            </button>
+
+            <button id="chartBtn2" type="button" class="btn btn-sm btn-success waves-effect waves-themed">하단 차트 범위 수정
+            </button>
+
+            <button id="insertBtn" type="button" class="btn btn-sm btn-success waves-effect waves-themed">태깅 데이터 저장
+            </button>
+
         </div>
-      </div>
-      <div class="ib scl" style="width:20%;">
-        <div class="tag-list"></div>
-      </div>
     </div>
+    <div class="ib scl" style="width:20%;">
+        <div class="tag-list">
 
-    <script th:src="@{/fs/js/polyfill.min.js}"></script>
-    <script th:src="@{/fs/js/apexcharts.js}"></script>
-    <script th:src="@{/fs/js/mcMainInit.js}"></script>
-    <script type="text/javascript" th:src="@{/smartadmin/js/vendors.bundle.js}"></script>
-    <script type="text/javascript" th:src="@{/smartadmin/js/app.bundle.js}"></script>
-    <script type="text/javascript" th:src="@{/fs/js/jquery.tmpl.min.js}"></script>
-    <script type="text/javascript">
-      $(function() {
-        $.template('data-year','<option value="{{html YY}}" data-tbl="{{html tbl}}">{{html YY}}</option>');
-        $.template('data-month','<option value="{{html MM}}">{{html MM}}</option>');
-        $.template('data-date','<div class="{{html cls}}" data-dd="{{html DD}}">{{html DD}}</div>');
-        $.template('data-snsr','<div class="{{html cls}}" data-snsrid="{{html SNSRID}}">{{html NICKNAME}}</div>');
+        </div>
+    </div>
+</div>
 
-        $('#year').on('change',fn_setMonth);
-        $('#month').on('change',fn_setDate);
-        $('.dt-list').on('click','div',function() {
-          $('.dt-list div.on').removeClass('on');
-          $(this).addClass('on');
-          fn_setSensor();
-        });
-        $('.snsr-list').on('click','div',function() {
-          $('.snsr-list div.on').removeClass('on');
-          $(this).addClass('on');
-        });
+<script th:src="@{/fs/js/polyfill.min.js}"></script>
+<script th:src="@{/fs/js/apexcharts.js}"></script>
+<script th:src="@{/fs/js/mcMainInit.js}"></script>
+<script type="text/javascript" th:src="@{/smartadmin/js/vendors.bundle.js}"></script>
+<script type="text/javascript" th:src="@{/smartadmin/js/app.bundle.js}"></script>
+<script type="text/javascript" th:src="@{/fs/js/jquery.tmpl.min.js}"></script>
+<script type="text/javascript">
+
+    // 로딩시 자동 실행
+    $(function () {
+        $.template('data-year', '<option value="{{html YY}}" data-tbl="{{html tbl}}">{{html YY}}</option>');
+        $.template('data-month', '<option value="{{html MM}}">{{html MM}}</option>');
+        $.template('data-date', '<div class="{{html cls}}" data-dd="{{html DD}}">{{html DD}}</div>');
+        $.template('data-snsr', '<div class="{{html cls}}" data-snsrid="{{html SNSRID}}" data-strcode="{{html STRCODE}}" data-snsrseq="{{html SNSRSEQ}}">{{html NICKNAME}}</div>');
+        $.template('data-tag', '<div class="{{html DATATYPE}}" tag-type="{{html DATATYPE}}" tag-snsrid="{{html SNSRID}}" tag-strcode="{{html STRCODE}}" tag-snsrseq="{{html SNSRSEQ}}" tag-starttime="{{html STARTTIME}}" tag-endtime="{{html ENDTIME}}">{{html formatDateTime(REGDT,"tag")}} : {{html COMMENT}}</div>');
+
+        //초기 리스트 불러오기
         fn_setYear();
-      });
 
-      function fn_setYear() {
-        $.post(
-          $('#contextRoot').val() + '/tool/dataYearAjax',
-          {  },
-          function(d) {
-            let cur = new Date();
-            $('#year').html('');
-            for (let i = 0; i < d.length; i++) {
-              if(i==0 && (cur.getFullYear()-d[i].year)==0) {
-                let temp = { year:cur.getFullYear(), tbl:'ORG' }
-                $('#year').append($.tmpl('data-year', temp));
-              }
-              d[i].tbl = 'BCK';
-              $('#year').append($.tmpl('data-year', d[i]));
-            }
-            $('#year option:first-child').attr('selected',true);
-            fn_setMonth();
-          });
-      }
+        //태그 리스트 불러오기
+        fn_setTaggingData();
 
-      function fn_setMonth() {
-        $.post(
-          $('#contextRoot').val() + '/tool/dataMonthAjax',
-          {
-            year: $('#year option:selected').val()
-            , tbl: $('#year option:selected').attr('data-tbl')
-          },
-          function(d) {
-            $('#month').html('');
-            let minmm = 1;
-            let maxmm = 0;
-            if(d && d.length>0) {
-              minmm = d[0].MINMM.split(',')[1];
-              maxmm = d[0].MAXMM.split(',')[1];
-            }
-            for (let i = maxmm; i >= minmm; i--) {
-              let o = { MM: ('0'+i).substr(-2) }
-              $('#month').append($.tmpl('data-month', o));
-            }
-            $('#month option:first-child').attr('selected',true);
-            fn_setDate();
-          });
-      }
-
-      function fn_setDate() {
-        $.post(
-          $('#contextRoot').val() + '/tool/dataDateAjax',
-          {
-            year: $('#year option:selected').val()
-            , month: $('#month option:selected').val()
-          },
-          function(d) {
-            $('.dt-list').html('');
-            for (let i = 0; i < d.length; i++) {
-              if(d[i].WARN2 > 0) d[i].cls = 'warn2';
-              else if(d[i].WARN1 > 0) d[i].cls = 'warn1';
-              $('.dt-list').append($.tmpl('data-date', d[i]));
-            }
-            $('.dt-list div:first-child').addClass('on');
+        // 날짜 클릭 이벤트
+        $('.dt-list').on('click', 'div', function () {
+            $('.dt-list div.on').removeClass('on');
+            $(this).addClass('on');
             fn_setSensor();
-          });
-      }
+        });
 
-      function fn_setSensor() {
+        // 센서 클릭 이벤트
+        $('.snsr-list').on('click', 'div', function () {
+            $('.snsr-list div.on').removeClass('on');
+            $(this).addClass('on');
+
+            //20230317WJH
+            window.getSnsrid = document.querySelector('.snsr-list .on').getAttribute('data-snsrid');
+            window.getName = document.querySelector('.snsr-list .on').innerHTML.split("_")[0];
+            window.getDate = document.querySelector('.dt-list .on').getAttribute('data-dd');
+            window.getStrcode = document.querySelector('.snsr-list .on').getAttribute('data-strcode');
+            window.getSnsrseq = document.querySelector('.snsr-list .on').getAttribute('data-snsrseq');
+
+            fn_Analysis_getChart(getSnsrid, getName, getDate);
+            fn_Tagging_initChart();
+            fn_Tagging_initDataset();
+            fn_Tagging_getData('d', getDate, 1, "desc", true, getSnsrid, getStrcode);
+
+            $('#rangeStart').val("");
+            $('#rangeEnd').val("");
+            $('#start').val("");
+            $('#end').val("");
+            $('#tagComment').val("");
+            $('#prm_regdate').val(getDate);
+        });
+
+        // 태그 클릭 이벤트
+        $('.tag-list').on('click', 'div', function () {
+            $('.tag-list div.on').removeClass('on');
+
+            $(this).addClass('on');
+            window.tagSnsrid = document.querySelector('.tag-list .on').getAttribute('tag-snsrid');
+            window.tagStrcode = document.querySelector('.tag-list .on').getAttribute('tag-strcode');
+            window.tagSnsrseq = document.querySelector('.tag-list .on').getAttribute('tag-snsrseq');
+            window.tagType = document.querySelector('.tag-list .on').getAttribute('tag-type');
+            window.tagStartDate = document.querySelector('.tag-list .on').getAttribute('tag-starttime');
+            window.tagEndDate = document.querySelector('.tag-list .on').getAttribute('tag-endtime');
+            window.tagComment = document.querySelector('.tag-list .on').innerHTML.split(" : ")[1];
+            window.tagDate = formatDateTime(tagStartDate / 1, "tag");
+
+            $('#prm_regdate').val(tagDate);
+
+            fn_Analysis_getChart(tagSnsrid, "", tagDate);
+            fn_Tagging_initChart();
+            fn_Tagging_initDataset();
+            fn_Tagging_getData('d', tagDate, 1, "desc", true, tagSnsrid, tagStrcode);
+
+            formatDateTime(tagStartDate / 1, "start");
+            formatDateTime(tagEndDate / 1, "end");
+            $('#rangeStart').val(tagStartDate);
+            $('#rangeEnd').val(tagEndDate);
+            $('#tagDataType').val(tagType);
+            $('#tagComment').val(tagComment);
+            $('[name=dataname][value="' + tagType + '"]').prop('checked', true);
+
+            // 차트 로딩 후 음영 칠하기( 로딩이 짧으면 에러발생하며 음영이 생기지 않음 )
+            setTimeout(() => {
+                document.getElementById("chartBtn1").click();
+            }, 500);
+        });
+
+        // 차트 범례 라디어 버튼 클릭 이벤트
+        $('[name=dataname]').on('click', fn_Tagging_setChart);
+
+        // 변경 이벤트
+        $('#year').on('change', fn_setMonth);
+        $('#month').on('change', fn_setDate);
+
+        $('#start').on('change', startTimeChange);
+        $('#end').on('change', endTimeChange);
+
+    });
+
+    function getTimeStampInSeconds(year, month, day, hours, minutes, seconds) {
+        const date = new Date(year, month - 1, day, hours, minutes, seconds);
+        return Math.floor(date.getTime());
+    }
+
+    // 시작 시간 변경시 시간을 초단위로 변경하는 함수
+    function startTimeChange() {
+        var getDate = $('#prm_regdate').val();
+        var [gYear, gMonth, gDay] = getDate.split('-');
+
+        var timeValue = document.getElementById('start').value;
+        var [gHour, gMinute, gSecond] = timeValue.split(':');
+        var seconds = getTimeStampInSeconds(gYear, gMonth, gDay, gHour, gMinute, gSecond);
+        $('#rangeStart').val(seconds);
+    }
+
+    // 종료 시간 변경시 시간을 초단위로 변경하는 함수
+    function endTimeChange() {
+        var getDate = $('#prm_regdate').val();
+        var [gYear, gMonth, gDay] = getDate.split('-');
+
+        var timeValue = document.getElementById('end').value;
+        var [gHour, gMinute, gSecond] = timeValue.split(':');
+        var seconds = getTimeStampInSeconds(gYear, gMonth, gDay, gHour, gMinute, gSecond);
+        $('#rangeEnd').val(seconds);
+    }
+
+    // setYear DB 함수 연도 클릭시
+    function fn_setYear() {
         $.post(
-          $('#contextRoot').val() + '/tool/dataSensorAjax',
-          {
-            sdate: $('.dt-list div.on').attr('data-dd')
-          },
-          function(d) {
-            $('.snsr-list').html('');
-            for (let i = 0; i < d.length; i++) {
-              if(d[i].WARN2 > 0) d[i].cls = 'warn2';
-              else if(d[i].WARN1 > 0) d[i].cls = 'warn1';
-              $('.snsr-list').append($.tmpl('data-snsr', d[i]));
-            }
-            $('.snsr-list div:first-child').addClass('on');
-          });
-      }
+            $('#contextRoot').val() + '/tool/dataYearAjax',
+            {},
+            function (d) {
+                let cur = new Date();
+                $('#year').html('');
+                for (let i = 0; i < d.length; i++) {
+                    if (i == 0 && (cur.getFullYear() - d[i].year) == 0) {
+                        let temp = {year: cur.getFullYear(), tbl: 'ORG'}
+                        $('#year').append($.tmpl('data-year', temp));
+                    }
+                    d[i].tbl = 'BCK';
+                    $('#year').append($.tmpl('data-year', d[i]));
+                }
+                $('#year option:first-child').attr('selected', true);
+                fn_setMonth();
+            });
+    }
 
-      function fn_dateToString(d) {
+    // setMonth DB 함수 월 클릭시
+    function fn_setMonth() {
+        $.post(
+            $('#contextRoot').val() + '/tool/dataMonthAjax',
+            {
+                year: $('#year option:selected').val()
+                , tbl: $('#year option:selected').attr('data-tbl')
+            },
+            function (d) {
+                $('#month').html('');
+                let minmm = 1;
+                let maxmm = 0;
+                if (d && d.length > 0) {
+                    minmm = d[0].MINMM.split(',')[1];
+                    maxmm = d[0].MAXMM.split(',')[1];
+                }
+                for (let i = maxmm; i >= minmm; i--) {
+                    let o = {MM: ('0' + i).substr(-2)}
+                    $('#month').append($.tmpl('data-month', o));
+                }
+                $('#month option:first-child').attr('selected', true);
+                fn_setDate();
+            });
+    }
+
+    // setDate DB 함수 날짜 클릭시
+    function fn_setDate() {
+        $.post(
+            $('#contextRoot').val() + '/tool/dataDateAjax',
+            {
+                year: $('#year option:selected').val()
+                , month: $('#month option:selected').val()
+            },
+            function (d) {
+                $('.dt-list').html('');
+                for (let i = 0; i < d.length; i++) {
+                    if (d[i].WARN2 > 0) d[i].cls = 'warn2';
+                    else if (d[i].WARN1 > 0) d[i].cls = 'warn1';
+                    $('.dt-list').append($.tmpl('data-date', d[i]));
+                }
+                $('.dt-list div:first-child').addClass('on');
+                fn_setSensor();
+            });
+    }
+
+    // setSensor DB 함수 센서 목록 클릭시
+    function fn_setSensor() {
+        $.post(
+            $('#contextRoot').val() + '/tool/dataSensorAjax',
+            {
+                sdate: $('.dt-list div.on').attr('data-dd')
+            },
+            function (d) {
+                $('.snsr-list').html('');
+                for (let i = 0; i < d.length; i++) {
+                    if (d[i].WARN2 > 0) {
+                        d[i].cls = 'warn2';
+                    } else if (d[i].WARN1 > 0) d[i].cls = 'warn1';
+                    $('.snsr-list').append($.tmpl('data-snsr', d[i]));
+                }
+                $('.snsr-list div:first-child').addClass('on');
+            });
+    }
+
+    // setTaggingData DB 함수 태그 리스트 불러오기
+    function fn_setTaggingData() {
+        $.post(
+            $('#contextRoot').val() + '/tool/dataTaggingAjax',
+            function (d) {
+                $('.tag-list').html('');
+                for (let i = 0; i < d.length; i++) {
+                    $('.tag-list').append($.tmpl('data-tag', d[i]));
+                }
+            });
+    }
+
+    function fn_dateToString(d) {
         return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) +
-          ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
-      }
+            ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+    }
 
-      function fn_initSnsrChart() {
+    // 분석차트 불러오기 시작 함수
+    function fn_Analysis_getChart(snsrId, snsrName, getDate) {
+        if (snsrId == '' || snsrId == null) return;
+        if (snsrId.length !== 0) {
+            fn_Analysis_setEvtChart(snsrId, getDate);
+        } else {
+            fn_Analysis_setNoDataChart();
+        }
+    }
+    // 분석차트 생성
+    function fn_Analysis_setEvtChart(snsrId, getDate) {
+        $.post(
+            $('#contextRoot').val() + '/tool/Analysis_ListEvtChart',
+            {snsrId: "'" + snsrId + "'", getDate: "'" + getDate + "'"},
+            function (d) {
+                if (d) {
+                    let date = new Date();
+                    let ampereData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+                    let igrData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+                    let igcData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+                    let igoData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+                    let regData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+                    let l = d[0];
+                    if (l !== null) {
+                        window.categoryData = [];
+
+                        for (let i = 0; i < d.length; i++) {
+                            let index = i;
+
+                            ampereData[index] = d[i].AMPERE;
+                            igrData[index] = d[i].IGO;
+                            igcData[index] = d[i].IGR;
+                            igoData[index] = d[i].IGC;
+                            regData[index] = d[i].REG;
+
+                            // x축 데이터를 배열에 추가
+                            window.categoryData.push(d[i].HH);
+                        }
+                        window.series = [
+                            {
+                                name: '전류(AMP)',
+                                type: 'line',
+                                data: ampereData
+                            }, {
+                                name: '저항성 누설전류(IGR)',
+                                type: 'line',
+                                data: igrData
+                            }, {
+                                name: '용량성 누설전류(IGC)',
+                                type: 'line',
+                                data: igcData
+                            }, {
+                                name: '누설전류 총합(IGO)',
+                                type: 'line',
+                                data: igoData
+                            }, {
+                                name: '절연저항',
+                                type: 'line',
+                                data: regData
+                            }
+                        ]
+                        if (window.dataChart !== undefined) window.dataChart.destroy();
+                        // 변수 초기화
+                        var rangeStart = null;
+                        var rangeEnd = null;
+                        var ckflag = 0;
+
+                        // 차트생성
+                        window.dataChart = new ApexCharts(document.querySelector('#data-chart2'), {
+                            series: window.series,
+                            title: {text: 'Analysis Chart', type: 'line', align: 'left'},
+                            chart: {
+                                height: 300,
+                                id: 'data_chart2',
+                                animations: {
+                                    enabled: true,
+                                },
+                                events: {
+                                    // 분석차트 클릭 이벤트
+                                    click(event, chartContext, config) {
+                                        if (config.dataPointIndex == -1) {
+                                            function zoomed(event, chartContext) {
+                                                const xaxis = chartContext.xaxis || [];
+                                                if (xaxis.length > 0) {
+                                                    const {min, max} = xaxis[0];
+                                                    dataChart.updateOptions({
+                                                        xaxis: {min, max},
+                                                    });
+                                                }
+                                            }
+                                            zoomed(event, chartContext);
+                                        } else {
+                                            ckflag++;
+                                            if (ckflag === 1) {
+                                                rangeStart = config.dataPointIndex.toString();
+                                                if (rangeStart < 10) {
+                                                    document.getElementById("start").value = "0" + rangeStart + ":00:00";
+                                                    document.getElementById("end").value = null;
+                                                } else {
+                                                    document.getElementById("start").value = rangeStart + ":00:00";
+                                                    document.getElementById("end").value = null;
+                                                }
+                                                dataChart.updateOptions({
+                                                    title: {
+                                                        text: 'Analysis Chart'
+                                                    },
+                                                    // 분석 차트 1번 클릭시 음영 초기화
+                                                    annotations: {
+                                                        xaxis: [{
+                                                            x: rangeStart,
+                                                            x2: rangeStart,
+                                                            fillColor: '#133bff',
+                                                            opacity: 0.5,
+                                                            label: {
+                                                                text: ' ',
+                                                                position: 'center',
+                                                                offsetY: -10
+                                                            }
+                                                        }]
+                                                    }
+                                                })
+                                                // 분석차트 1번째 클릭시 시작시간 INPUT 박스 변경
+                                                startTimeChange();
+                                            } else if (ckflag === 2) {
+                                                rangeEnd = config.dataPointIndex.toString();
+                                                if (rangeEnd < 10) {
+                                                    document.getElementById("end").value = "0" + rangeEnd + ":00:00";
+                                                } else {
+                                                    document.getElementById("end").value = rangeEnd + ":00:00";
+                                                }
+                                                dataChart.updateOptions({title: {text: 'Analysis Chart'}})
+                                                ckflag = 0;
+                                                // 분석차트 2번째 클릭시 종료시간 INPUT 박스 변경
+                                                endTimeChange();
+
+                                                // 하단차트범위 수정 버튼 클릭이벤트 실행
+                                                document.getElementById("chartBtn2").click();
+                                            }
+                                        }
+                                    },
+                                }
+                            },
+                            stroke: {width: 2},
+                            dataLabels: {enabled: false},
+                            tooltip: {
+                                enabled: true,
+                                intersect: false,
+                                marker: {show: true},
+                            },
+                            xaxis: {
+                                categories: window.categoryData
+                            },
+                            yaxis: {
+                                lines: {show: true},
+                                // tooltip: {enabled: false},
+                                labels: {
+                                    formatter: function (val) {
+                                        if (typeof val !== 'undefined' && val !== null) {
+                                            return val.toFixed(2);
+                                        }
+                                        return null;
+                                    }
+                                }
+                            },
+                            legend: {position: 'bottom'}
+                        });
+                        window.dataChart.render();
+                    }
+                }
+            });
+    }
+
+    // 분석차트 NoDataChart
+    function fn_Analysis_setNoDataChart() {
+        let date = new Date();
+        if (window.dataChart !== undefined) window.dataChart.destroy();
+        window.dataChart = new ApexCharts(document.querySelector('#data-chart2'), {
+            series: [],
+            title: {text: 'Analysis Chart', type: 'line', align: 'left'},
+            chart: {height: 200, id: 'data_chart2', animations: {enabled: false}},
+            noData: {text: '데이터가 없습니다.', style: {fontSize: '15px'}},
+            stroke: {width: 2},
+            dataLabels: {enabled: false},
+            tooltip: {
+                enabled: true,
+                marker: {show: true},
+            },
+            xaxis: {categories: window.categoryData},
+            yaxis: {
+                lines: {show: true},
+                tooltip: {enabled: true},
+            },
+            legend: {position: 'bottom'}
+        });
+
+        window.dataChart.render();
+    }
+
+    // 태깅차트 / 상단 차트 범위 수정 버튼 클릭 이벤트
+    document.querySelector('#chartBtn1').addEventListener('click', () => {
+
+        const chartA = window.chart1;
+        const startTimestamp = $('#rangeStart').val();
+        const endTimestamp = $('#rangeEnd').val();
+
+        chartA.updateOptions({
+            title: {
+                text: 'Tagging Chart'
+            },
+            annotations: {
+                xaxis: [{
+                    x: startTimestamp,
+                    x2: endTimestamp,
+                    fillColor: '#e500ff',
+                    opacity: 0.5,
+                    label: {
+                        text: 'X-axis range',
+                        position: 'center',
+                        offsetY: -10
+                    }
+                }]
+            }
+        })
+    });
+
+    // 하단 차트 범위 수정 버튼 클릭 이벤트
+    document.querySelector('#chartBtn2').addEventListener('click', () => {
+        var startTimeValue = document.getElementById('start').value;
+        var [startHour, startMinute, startSecond] = startTimeValue.split(':');
+        var endTimeValue = document.getElementById('end').value;
+        var [endHour, endMinute, endSecond] = endTimeValue.split(':');
+
+        const chartB = window.dataChart;
+        chartB.updateOptions({
+            title: {
+                text: '분석차트'
+            },
+            annotations: {
+                xaxis: [{
+                    x: startHour,
+                    x2: endHour,
+                    fillColor: '#f60707',
+                    opacity: 0.5,
+                    label: {
+                        text: 'X-axis range',
+                        position: 'center',
+                        offsetY: -10
+                    }
+                }]
+            }
+        })
+    });
+
+    // 초단위 데이터를 변환하는 함수
+    function formatDateTime(timestamp, area) {
+
+        const date = new Date(timestamp);
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        const hours = ('0' + date.getHours()).slice(-2);
+        const minutes = ('0' + date.getMinutes()).slice(-2);
+        const seconds = ('0' + date.getSeconds()).slice(-2);
+        if (area == "start") document.getElementById("start").value = hours + ":" + minutes + ":" + seconds;
+        if (area == "end") document.getElementById("end").value = hours + ":" + minutes + ":" + seconds;
+        if (area == "tag") return `${year}-${month}-${day}`;
+        if (area == "time") return `${hours}:${minutes}:${seconds}`;
+
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    }
+    /**
+     * 분석 차트 코드 카피 analysis chart
+     */
+
+    // TAGGING CHART INIT
+    function fn_Tagging_initChart() {
         window.chart1 = null;
         window.datadt = null;
         window.dataset = null;
         window.val = null;
 
         if ($('#prm_almtype').val()) {
-          $('[name=dataname][value="' + $('#prm_almtype').val() + '"]').prop('checked', true);
+            $('[name=dataname][value="' + $('#prm_almtype').val() + '"]').prop('checked', true);
+            $('#tagDataType').val("aaaaaaaaaaaaa");
         } else {
-          $('[name=dataname][value="IGO"]').prop('checked', true);
-          $('[name=dataname][value="IGR"]').prop('checked', true);
-          $('[name=dataname][value="IGC"]').prop('checked', true);
+            // $('[name=dataname][value="IGO"]').prop('checked', true); // 누설전류 총합(IGO)
+            $('[name=dataname][value="IGR"]').prop('checked', true); // 저항성 누설전류(IGR)
+            // $('[name=dataname][value="IGC"]').prop('checked', true); // 용량성 누설전류(IGC)
+            // $('[name=dataname][value="KWH"]').prop('checked', true); // 누적전력량(KWH)
+            // $('[name=dataname][value="WATT"]').prop('checked', true); //일률(WATT)
+            // $('[name=dataname][value="VOLT"]').prop('checked', true); // 전압(VOLT)
+            // $('[name=dataname][value="AMPERE"]').prop('checked', true); // 전류(AMP)
+            // $('[name=dataname][value="HZ"]').prop('checked', true); // 주파수(HZ)
+            // $('[name=dataname][value="PF"]').prop('checked', true); // 역률(PF)
+            // $('[name=dataname][value="REG"]').prop('checked', true); // 절연저항
+            $('#tagDataType').val("IGR");
+        }
+    }
+
+    function fn_Tagging_initDataset() {
+        let dns = $('[name=dataname]');
+
+        window.val = {};
+        window.datadt = {min: null, max: null};
+        window.dataset = {};
+
+        for (let i = 0; i < dns.length; i++) {
+            window.val[dns[i].value] = {min: null, max: null};
+            window.dataset[dns[i].value] = [];
+        }
+    }
+
+    function fn_Tagging_updateDataset(d) {
+        let ret = false; // 데이터 갱신 여부
+        let dns = $('[name=dataname]');
+
+        let datatype_nulldata = {
+            real: 1000 * 60 * 60 * 2,
+            h: 1000 * 60 * 60 * 2,
+            d: 1000 * 60 * 60 * 24 * 2,
+            m: 1000 * 60 * 60 * 24 * 60
+        };
+        let nulldata = datatype_nulldata[$('#datatype option:selected').val()];
+
+        for (let i = 0; i < d.length; i++) {
+            let curdt = new Date(d[i].REGDT);
+
+            for (let j = 0; j < dns.length; j++) {
+                if (window.dataset[dns[j].value].length < 1) {
+                    // dataset 비어 있을 때
+                    window.datadt.min = curdt;
+                    window.datadt.max = curdt;
+
+                    window.val[dns[j].value].min = d[i][dns[j].value];
+                    window.val[dns[j].value].max = d[i][dns[j].value];
+
+                    window.dataset[dns[j].value].push([d[i].REGDT, d[i][dns[j].value]]);
+
+                    ret = true;
+                } else {
+                    if (window.datadt.min > curdt) {
+                        // 이전 데이터가 들어온경우
+                        // 이전 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
+                        if ((window.datadt.min.getTime() - curdt.getTime()) > nulldata)
+                            window.dataset[dns[j].value].unshift([d[i].REGDT + 1, null]);
+
+                        window.dataset[dns[j].value].unshift([d[i].REGDT, d[i][dns[j].value]]);
+                        ret = true;
+                    } else if (window.datadt.max < curdt) {
+                        // 이후 데이터가 들어온경우
+                        // 이후 데이터가 8시간 이상 신호가 없으면 null 값 입력 (선차트에서 연결되지 않게)
+                        if ((curdt.getTime() - window.datadt.max.getTime()) > nulldata)
+                            window.dataset[dns[j].value].push([d[i].REGDT - 1, null]);
+
+                        window.dataset[dns[j].value].push([d[i].REGDT, d[i][dns[j].value]]);
+                        ret = true;
+                    }
+
+                    // 최소, 최대값 수정 (차트에서 최소, 최대값 필요)
+                    if (window.val[dns[j].value].min > d[i][dns[j].value])
+                        window.val[dns[j].value].min = d[i][dns[j].value];
+
+                    if (window.val[dns[j].value].max < d[i][dns[j].value])
+                        window.val[dns[j].value].max = d[i][dns[j].value];
+                }
+            }
+
+            // 데이터 날짜 최소, 최대값 수정
+            if (window.datadt.min > curdt) window.datadt.min = curdt;
+            if (window.datadt.max < curdt) window.datadt.max = curdt;
         }
 
-        $('#regdt').val(fn_dateToString(new Date()).slice(0, 10));
-        fn_getStoreSensor();
-      }
+        // 차트 24시간 보이기
+        if ($('#termtype option:selected').val() == 'd') {
+            if (new Date(window.datadt.min).getHours() > 0)
+                var getDate = document.querySelector('.dt-list .on').getAttribute('data-dd');
+            for (let i = 0; i < dns.length; i++)
+                window.dataset[dns[i].value].unshift([new Date(getDate + 'T00:00:00').getTime(), null]);
 
-      function fn_setChart() {
-        let opt = {
-          series: [],
-          chart: {
-            height: 400,
-            type: line,
-            id: 'chart',
-            animations: { enabled: false },
-          },
-          colors: [],
-          stroke: { width: 3 },
-          dataLabels: { enabled: false },
-          annotations: fn_setAnnotations(),
-          tooltip: {
-            enabled: true, marker: { show: true }, fixed: { enabled: true, position: 'topLeft' },
-            x: { format: 'yyyy년 MM월 dd일 HH:mm:ss' },
-            y: { formatter: function (val) { return (val) ? val.toFixed(2) : null; } }
-          },
-          xaxis: {
-            type: 'datetime',
-            lines: { show: true },
-            tooltip: { enabled: true },
-            labels: { datetimeUTC: false, datetimeFormatter: { year: 'yyyy년', month: 'yyyy년 MM월', day: 'MM월 dd일', hour: 'HH:mm' } }
-          },
-          yaxis: {
-            lines: { show: true }, tooltip: { enabled: true }, min: null, max: null,
-            labels: { formatter: function(val) { return (val) ? val.toFixed(2) : null; } }
-          }
+            if (new Date(window.datadt.max).getHours() < 23)
+                for (let i = 0; i < dns.length; i++)
+                    window.dataset[dns[i].value].push([new Date(getDate + 'T23:59:59').getTime(), null]);
+        }
+
+        return ret;
+    }
+
+
+    // [태깅 데이터 저장] 버튼클릭 이벤트
+    document.querySelector('#insertBtn').addEventListener('click', () => tagging_DataSaveAjax());
+
+    /**
+     * @Method Name : tagging_DataSaveAjax
+     * @작성일 : 2023-03-22
+     * @작성자 : Wang Ji Hyeong
+     * @변경이력 :
+     * @Method 설명 : 버튼 클릭시 태깅 데이터 INSERT
+     * @return String
+     */
+    function tagging_DataSaveAjax() {
+        var prm = {
+            snsrid: getSnsrid,
+            strcode: getStrcode,
+            snsrseq: getSnsrseq,
+            datatype: $('#tagDataType').val(),
+            starttime: getDate + " " + $('#start').val(),
+            endtime: getDate + " " + $('#end').val(),
+            comment: $('#tagComment').val()
         };
+        if (!prm.comment || prm.comment.trim() === '') {
+            alert("Comment DATA NULL");
+        } else {
+            $.post(
+                $('#contextRoot').val() + '/tool/taggingDataSaveAjax',
+                prm,
+                function (d) {
+                    if (d == 'success') {
+                        alert(' 등록 되었습니다.');
+                        fn_setTaggingData();
+                    } else {
+                        alert(' 등록을 실패하였습니다.');
+                    }
+                    // fn_mcstc_offLoading();
+                });
+        }
+    };
 
-        let colorset = {
-          IGO: '#d3372d', IGR: '#518d45', IGC: '#4475e0', KWH: '#ff6272', WATT: '#ff8040', VOLT: '#800000', AMPERE: '#0080ff', HZ: '#8000ff', PF: '#800080', REG: '#ff0080'
+    // 태깅 차트 DB 정보 불러오기
+    function fn_Tagging_getData(termtype, regdt, dtsize, order, isinit, snsrid, strcode) {
+        // fn_mcstc_onLoading();
+
+        var prm = {
+            strcode: strcode,
+            datatype: 'real',
+            termtype: 'd',
+            snsrid: snsrid,
+            regdt: regdt
+        };
+        if (termtype) prm.termtype = termtype;
+        if (regdt) prm.regdt = regdt;
+        if (dtsize) prm.dtsize = dtsize;
+        if (order) prm.order = order;
+
+        $.post(
+            $('#contextRoot').val() + '/tool/listElectricityData',
+            prm,
+            function (d) {
+                if (d && d.length > 0 && d[0] != null) {
+                    if (!isinit)
+                        fn_Tagging_initDataset();
+                    if (fn_Tagging_updateDataset(d))
+                        fn_Tagging_setChart();
+                } else {
+                    if (!order)
+                        alert('no data');
+                }
+
+                // fn_mcstc_offLoading();
+            });
+    };
+
+    // 범례 변경시 데이터 값에 따라 Y축으로 주의, 경고 음영 영역 변경
+    function fn_Tagging_setAnnotations() {
+        let a1 = null, a2 = null;
+        let ret = {yaxis: []};
+
+        if ($('[name=dataname]:checked').length > 1)
+            return ret;
+
+        let dataname = $('[name=dataname]:checked').val();
+        $('#tagDataType').val(dataname);
+        if (dataname == 'IGO') {
+            a1 = 15, a2 = 18;
+        }
+        if (dataname == 'IGR') {
+            a1 = 3, a2 = 5;
+        }
+        if (dataname == 'IGC') {
+            a1 = 0, a2 = 0;
+        }
+        if (dataname == 'KWH') {
+            a1 = 0, a2 = 0;
+        }
+        if (dataname == 'WATT') {
+            a1 = 0, a2 = 0;
+        }
+        if (dataname == 'VOLT') {
+            a1 = 0, a2 = 0;
+        }
+        if (dataname == 'AMPERE') {
+            a1 = 0, a2 = 0;
+        }
+        if (dataname == 'HZ') {
+            a1 = 0, a2 = 0;
+        }
+        if (dataname == 'PF') {
+            a1 = 0, a2 = 0;
+        }
+        if (dataname == 'REG') {
+            a1 = 0, a2 = 0;
+        }
+
+        if (!a1 && !a2) {
+            return ret;
+        }
+        if (a1) {
+            ret.yaxis.push({
+                y: a1, y2: a2, borderColor: '#ffa454', fillColor: '#ffa454', opacity: 0.3,
+                label: {style: {color: '#ffa454'}, text: '주의', textAnchor: 'start', position: 'left', offsetY: 50}
+            });
+        }
+
+        if (a2) {
+            ret.yaxis.push({
+                y: a2, y2: 65, borderColor: '#ff6272', fillColor: '#ff6272', opacity: 0.3,
+                label: {style: {color: '#ff6272'}, text: '경고', textAnchor: 'start', position: 'left', offsetY: 50}
+            });
+        }
+        return ret;
+
+    }
+
+    // TAGGING CHART 생성
+    function fn_Tagging_setChart() {
+        var rangeStart = null;
+        var rangeEnd = null;
+        var ckflag = 0;
+
+        let opt = {
+            series: [],
+            title: {text: 'Tagging Chart', type: 'line', align: 'left'},
+            chart: {
+                height: 300,
+                type: 'line',
+                id: 'data-chart',
+                animations: {enabled: false},
+                events: {
+                    click(event, chartContext, config) {
+                        if (config.dataPointIndex == -1) {
+                            function zoomed(event, chartContext) {
+                                const xaxis = chartContext.xaxis || [];
+                                if (xaxis.length > 0) {
+                                    const {min, max} = xaxis[0];
+                                    chart1.updateOptions({
+                                        xaxis: {min, max},
+                                    });
+                                }
+                            }
+                            zoomed(event, chartContext);
+                        } else {
+                            ckflag++;
+                            if (ckflag === 1) {
+                                config.labels = opt.xaxis.categories;
+                                rangeStart = config.dataPointIndex.toString();
+                                rangeStart = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
+                                $('#rangeStart').val(rangeStart);
+                                formatDateTime(rangeStart, "start")
+                                chart1.updateOptions({
+                                    title: {
+                                        text: 'Tagging Chart'
+                                    },
+                                })
+                            } else if (ckflag === 2) {
+                                rangeEnd = config.dataPointIndex.toString();
+                                rangeEnd = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
+                                $('#rangeEnd').val(rangeEnd);
+                                formatDateTime(rangeEnd, "end")
+                                chart1.updateOptions({title: {text: 'Tagging Chart'}})
+                                ckflag = 0;
+                                document.getElementById("chartBtn1").click();
+                            }
+                        }
+                    },
+                }
+            },
+            colors: [],
+            stroke: {width: 3},
+            dataLabels: {enabled: false},
+            annotations: fn_Tagging_setAnnotations(),
+            tooltip: {
+                enabled: true, marker: {show: true}, fixed: {enabled: true, position: 'topLeft'},
+                x: {format: 'yyyy년 MM월 dd일 HH:mm:ss'},
+                y: {
+                    formatter: function (val) {
+                        return (val) ? val.toFixed(2) : null;
+                    }
+                }
+            },
+            xaxis: {
+                type: 'datetime',
+                lines: {show: true},
+                tooltip: {enabled: true},
+                labels: {
+                    datetimeUTC: false,
+                    datetimeFormatter: {year: 'yyyy년', month: 'yyyy년 MM월', day: 'MM월 dd일', hour: 'HH:mm'}
+                }
+            },
+            yaxis: {
+                lines: {show: true}, tooltip: {enabled: true}, min: null, max: null,
+                labels: {
+                    formatter: function (val) {
+                        return (val) ? val.toFixed(2) : null;
+                    }
+                }
+            }
         };
 
         let $dns = $('[name=dataname]:checked');
         let series = [];
 
+        let colorset = {
+            IGO: '#d3372d',
+            IGR: '#518d45',
+            IGC: '#4475e0',
+            KWH: '#ff6272',
+            WATT: '#ff8040',
+            VOLT: '#800000',
+            AMPERE: '#0080ff',
+            HZ: '#8000ff',
+            PF: '#800080',
+            REG: '#ff0080'
+        };
+
         for (let i = 0; i < $dns.length; i++) {
-          let dns = $dns[i].value;
-          series.push({ name: $($dns[i]).parent('div').text().trim(), data: window.dataset[dns] });
-          opt.colors.push(colorset[dns]);
+            let dns = $dns[i].value;
+            series.push({name: $($dns[i]).parent('div').text().trim(), data: window.dataset[dns]});
+            opt.colors.push(colorset[dns]);
 
-          let min = window.val[dns].min * 0.95;
-          let max = window.val[dns].max * 1.4;
+            let min = window.val[dns].min * 0.95;
+            let max = window.val[dns].max * 1.4;
 
-          if (opt.yaxis.min == null || opt.yaxis.min > min) opt.yaxis.min = min;
-          if (opt.yaxis.max == null || opt.yaxis.max < max) opt.yaxis.max = max;
+            if (opt.yaxis.min == null || opt.yaxis.min > min) opt.yaxis.min = min;
+            if (opt.yaxis.max == null || opt.yaxis.max < max) opt.yaxis.max = max;
         }
 
         if (window.dataset['IGO'].length < 100)
-          opt.markers = { size: 1, strokeWidth: 0, hover: { size: 5 } };
+            opt.markers = {size: 1, strokeWidth: 0, hover: {size: 5}};
         else
-          opt.markers = { size: 0, hover: { size: 0 } };
-
+            opt.markers = {size: 0, hover: {size: 0}};
         if (series.length > 0) {
-          $('#data-chart').css('visibility', 'visible');
+            $('#data-chart').css('visibility', 'visible');
+            if (window.chart1) {
+                opt.chart.type = 'line';
+                opt.annotations = fn_Tagging_setAnnotations();
+                window.chart1.updateOptions(opt);
+                window.chart1.updateSeries(series);
+            } else {
+                opt.series = series;
+                $('#data-chart').html('');
 
-          if (window.chart1) {
-            opt.chart.type = $('#charttype option:selected').val();
-            opt.annotations = fn_mcstc_setAnnotations();
-
-            window.chart1.updateOptions(opt);
-            window.chart1.updateSeries(series);
-          } else {
-            opt.series = series;
-            $('#data-chart').html('');
-
-            window.chart1 = new ApexCharts(document.querySelector("#chart"), opt);
-            window.chart1.render().then(function() {});
-          }
+                window.chart1 = new ApexCharts(document.querySelector("#data-chart"), opt);
+                window.chart1.render().then(function () {
+                });
+            }
         } else {
-          $('#data-chart').css('visibility', 'hidden');
+            $('#data-chart').css('visibility', 'hidden');
         }
-      }
-
-      function fn_setAnnotations() {
-        let a1 = null, a2 = null;
-        let ret = { yaxis: [] };
-
-        if ($('[name=dataname]:checked').length > 1)
-          return ret;
-
-        let dataname = $('[name=dataname]:checked').val();
-
-        if (dataname == 'AMPERE') { a1 = 20, a2 = 26; }
-        if (dataname == 'IGO') { a1 = 15, a2 = 18; }
-        if (dataname == 'IGR') { a1 = 3, a2 = 5; }
-
-        if (a1) {
-          ret.yaxis.push({
-            y: a1, y2: a2, borderColor: '#ffa454', fillColor: '#ffa454', opacity: 0.3,
-            label: { style: { color: '#ffa454' }, text: '주의', textAnchor: 'start', position: 'left', offsetY: 50 }
-          });
-        }
-
-        if (a2) {
-          ret.yaxis.push({
-            y: a2, y2: 65, borderColor: '#ff6272', fillColor: '#ff6272', opacity: 0.3,
-            label: { style: { color: '#ff6272' }, text: '경고', textAnchor: 'start', position: 'left', offsetY: 50 }
-          });
-
-          return ret;
-        }
-      }
-    </script>
-  </body>
+    }
+</script>
+</body>
 </html>

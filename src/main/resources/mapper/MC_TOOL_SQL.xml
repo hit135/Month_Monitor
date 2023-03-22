@@ -40,7 +40,8 @@
     <select id="LIST_DATA_SENSOR" resultType="map">
         SELECT A.SNSRID
             ,A.SNSRNICK
-            ,B.STRCODE
+            ,A.SNSRSEQ AS SNSRSEQ
+            ,B.STRCODE AS STRCODE
             ,B.STRNAME
             ,C.AREACODE
             ,C.AREANAME
@@ -64,4 +65,133 @@
             ,B.STRNAME
             ,A.SNSRNICK
     </select>
+
+<!--20220317WJH-->
+    <select id="ANALYSIS_LIST_SNSR_EVT_CHART" resultType="map">
+        <![CDATA[
+        SELECT
+            DATE_FORMAT(D.SNSRRCVTIME, '%H') AS HH
+             , AVG(D.SNSRAMPERE) AS AMPERE
+             , AVG(D.SNSRIGO) AS IGO
+             , AVG(D.SNSRIGR) AS IGR
+             , AVG(D.SNSRIGC) AS IGC
+             , AVG(D.SNSRREG) AS REG
+        FROM
+            (SELECT
+                 STRCODE, SNSRID
+             FROM
+                 F_SENSOR_INFO
+             WHERE
+                 CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+               AND
+                 SNSRID = ${ snsrId }
+            ) I
+                LEFT JOIN F_STORE S
+                          ON I.STRCODE = S.STRCODE
+                LEFT JOIN (SELECT
+                               SNSRID, SNSRRCVTIME, SNSRKWH, SNSRWATT, SNSRVOLT, SNSRAMPERE, SNSRHZ, SNSRPF, SNSRIGO, SNSRIGR, SNSRIGC, SNSRREG
+                           FROM
+                               F_SENSOR_DATA
+                           WHERE
+                               SNSRRCVTIME BETWEEN CONCAT(DATE_FORMAT(${date}, '%Y-%m-%d'), ' 00:00:00') AND
+                                   CONCAT(DATE_FORMAT(${date}, '%Y-%m-%d'), ' 23:59:59')
+            ) D
+                          ON I.SNSRID = D.SNSRID
+        WHERE
+            CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+        GROUP BY
+            1
+        ORDER BY
+            HH
+        ]]>
+    </select>
+<!--20230320WJH-->
+    <select id="TAG_SELECT_F_SENSOR_DATA_INFO" parameterType="map" resultType="map">
+        SELECT
+            A.BACKUPYEAR, MIN(A.MINDATE) AS MINDATE, MAX(A.MAXDATE) AS MAXDATE
+        FROM
+                (SELECT '' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG
+        UNION
+        SELECT '_2022' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2022
+        UNION
+        SELECT '_2021' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2021
+        UNION
+        SELECT '_2020' AS BACKUPYEAR, DATE(MIN(REGDATE)) AS MINDATE, DATE(MAX(REGDATE)) AS MAXDATE FROM F_SENSOR_LOG_2020
+            ) A
+        WHERE
+            #{regdt} BETWEEN A.MINDATE AND A.MAXDATE
+    </select>
+
+
+    <select id="TAG_LIST_STORE_SENSOR_DATA" parameterType="map" resultType="map">
+        SELECT
+        <choose>
+            <when test='datatype == "m"'>STR_TO_DATE(DATE_FORMAT(D.SNSRRCVTIME, '%Y-%m'), '%Y-%m-%d')</when>
+            <when test='datatype == "d"'>STR_TO_DATE(DATE(D.SNSRRCVTIME), '%Y-%m-%d')</when>
+            <when test='datatype == "h"'>STR_TO_DATE(DATE_FORMAT(D.SNSRRCVTIME, '%Y-%m-%d %H'), '%Y-%m-%d %H')</when>
+            <otherwise>D.SNSRRCVTIME</otherwise>
+        </choose> AS REGDT
+        , AVG(D.SNSRKWH) AS KWH
+        , AVG(D.SNSRWATT) AS WATT
+        , AVG(D.SNSRVOLT) AS VOLT
+        , AVG(D.SNSRAMPERE) AS AMPERE
+        , AVG(D.SNSRHZ) AS HZ
+        , AVG(D.SNSRPF) AS PF
+        , AVG(D.SNSRIGO) AS IGO
+        , AVG(D.SNSRIGR) AS IGR
+        , AVG(D.SNSRIGC) AS IGC
+        , AVG(D.SNSRREG) AS REG
+        FROM
+        (SELECT
+        STRCODE, SNSRID
+        FROM
+        F_SENSOR_INFO
+        WHERE
+        CONCAT(DELYN, STRCODE) LIKE 'NFS_STR_%'
+        AND STRCODE = #{strcode}
+        <if test="!@org.thymeleaf.util.StringUtils@isEmptyOrWhitespace(snsrid)">AND SNSRID = #{snsrid}</if>
+        ) I
+        LEFT JOIN F_STORE S
+        ON I.STRCODE = S.STRCODE
+        LEFT JOIN (SELECT
+        SNSRID, SNSRRCVTIME, SNSRKWH, SNSRWATT, SNSRVOLT, SNSRAMPERE, SNSRHZ, SNSRPF, SNSRIGO, SNSRIGR, SNSRIGC, SNSRREG
+        FROM
+        <choose>
+            <when test='"F_SENSOR_DATA_2023".equals(tblSensorData)'>F_SENSOR_DATA_2023</when>
+            <when test='"F_SENSOR_DATA_2022".equals(tblSensorData)'>F_SENSOR_DATA_2022</when>
+            <when test='"F_SENSOR_DATA_2021".equals(tblSensorData)'>F_SENSOR_DATA_2021</when>
+            <when test='"F_SENSOR_DATA_2020".equals(tblSensorData)'>F_SENSOR_DATA_2020</when>
+            <otherwise>F_SENSOR_DATA</otherwise>
+        </choose>
+        WHERE
+        SNSRRCVTIME BETWEEN CONCAT(#{regdt}, ' 00:00:00') AND
+        <choose>
+            <when test='termtype == "m"'>CONCAT(LAST_DAY(#{regdt}), ' 23:59:59')</when>
+            <otherwise>CONCAT(#{regdt}, ' 23:59:59')</otherwise>
+        </choose>) D
+        ON I.SNSRID = D.SNSRID
+        WHERE
+        CONCAT(S.USEYN, S.DELYN, S.GRPCODE) = 'YN042'
+        GROUP BY
+        1
+        ORDER BY
+        1 <choose>
+        <when test='"asc".equals(order)'>ASC</when>
+        <when test='"desc".equals(order)'>DESC</when>
+    </choose>
+    </select>
+
+
+    <!--Tagging Data Query-->
+    <insert id="TAG_INSERT_TAGGING_DATA_SAVE" parameterType="map">
+        INSERT INTO F_ELEC_DATA_TAG (SNSRID, STRCODE, SNSRSEQ, DATATYPE, STARTTIME, ENDTIME, COMMENT)
+        VALUES ( #{snsrid}, #{strcode}, #{snsrseq}, #{datatype}, #{starttime}, #{endtime}, #{comment})
+    </insert>
+
+    <select id="TAG_SELECT_LIST_DATA" resultType="map">
+        SELECT *
+        FROM F_ELEC_DATA_TAG
+        ORDER BY REGDT DESC
+    </select>
+
 </mapper>
