@@ -952,7 +952,6 @@
                     tagno: tagNo
                 },
                 function (d) {
-                    console.log("통신여부 : ", d);
                     if(d == true){
                         alert("태그가 삭제되었습니다.")
                         // 센서 목록 새로고침
@@ -1071,7 +1070,6 @@
                                 config.labels = opt.xaxis.categories;
                                 rangeStart = config.dataPointIndex.toString();
                                 rangeStart = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
-                                console.log("rangeStart : ", rangeStart);
                                 $('#rangeStart').val(rangeStart);
                                 formatDateTime(rangeStart, "start")
                                 chart1.updateOptions({
@@ -1096,7 +1094,6 @@
                             } else if (ckflag === 2) {
                                 rangeEnd = config.dataPointIndex.toString();
                                 rangeEnd = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
-                                console.log("rangeStart : ", rangeEnd);
                                 $('#rangeEnd').val(rangeEnd);
                                 formatDateTime(rangeEnd, "end")
                                 chart1.updateOptions({title: {text: 'Tagging Chart'}})
