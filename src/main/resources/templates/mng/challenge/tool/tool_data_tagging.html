@@ -109,6 +109,13 @@
         .load-chart {
             display: none;
         }
+
+        .data-ctrl {
+            text-align: center;
+        }
+        .data-ctrl .ib {
+            margin-right: 20px;
+        }
     </style>
 </head>
 <body>
@@ -128,24 +135,31 @@
     </button>
 </div>
 <div class="z-index-ground">
-    <div class="ib scl" style="width:10%;">
+    <div class="ib scl dtList" style="width:10%;">
         <div class="dt-ctrl">
             <div class="ib"><select id="year"></select><span>년</span></div>
             <div class="ib"><select id="month"></select><span>월</span></div>
         </div>
         <div class="dt-list"></div>
     </div>
-    <div class="ib scl" style="width:20%;">
+    <div class="ib scl sclList" style="width:20%;">
         <div class="snsr-list"></div>
     </div>
     <!-- 20230327HGP 가로 스크롤 숨기기 -->
     <div class="ib scl" style="width:48%; overflow-x: hidden">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                <!--h4 class="font-weight-bold">선택된 태그 정보</h4-->
+                <!--span class="font-weight-light text-secondary"><h5 class="nowTagInfo" style="margin-top: 0.5%">현재 선택된 태그 없음</h5></span-->
+                <h3 class="nowTagInfo" style="margin-top: 0.5%">현재 선택된 태그 없음</h3>
+            </div>
+        </div>
         <div class="data-ctrl">
             <br>
             <div class="ib"><input type="radio" name="dataname" value="IGO"/> 누설전류 총합(IGO)</div>
             <div class="ib"><input type="radio" name="dataname" value="IGR"/> 저항성 누설전류(IGR)</div>
             <div class="ib"><input type="radio" name="dataname" value="IGC"/> 용량성 누설전류(IGC)</div>
-            <div class="ib"><input type="radio" name="dataname" value="KWH"/> 누적전력량(KWH)</div>
+            <div class="ib"><input type="radio" name="dataname" value="KWH"/> 누적전력량(KWH)</div><br/>
             <div class="ib"><input type="radio" name="dataname" value="WATT"/> 일률(WATT)</div>
             <div class="ib"><input type="radio" name="dataname" value="VOLT"/> 전압(VOLT)</div>
             <div class="ib"><input type="radio" name="dataname" value="AMPERE"/> 전류(AMP)</div>
@@ -181,7 +195,7 @@
                     </button>
                 </div>
                 <div>
-                    <button id="deleteBtn" type="button" class="btn btn-sm btn-success waves-effect waves-themed m-1">태깅 데이터 삭제
+                    <button id="deleteBtn" type="button" class="btn btn-sm btn-danger waves-effect waves-themed m-1">태깅 데이터 삭제
                     </button>
                 </div>
             </div>
@@ -251,6 +265,10 @@
             $('#end').val("");
             $('#tagComment').val("");
             $('#prm_regdate').val(getDate);
+
+            // 20230327HGP 상단 정보에 센서 정보 입력
+            let nowTagHtml = "[" + window.getDate + "] " + document.querySelector('.snsr-list .on').innerHTML;
+            $(".nowTagInfo").html(nowTagHtml);
         });
 
         // 태그 클릭 이벤트
@@ -282,8 +300,9 @@
             $('#tagComment').val(tagComment);
             $('[name=dataname][value="' + tagType + '"]').prop('checked', true);
 
-            // 차트 로딩 후 음영 칠하기( 로딩이 짧으면 에러발생하며 음영이 생기지 않음 )
             // 20230324HGP fn_Tagging_getData() 함수 마지막에 클릭 이벤트 적용
+            // 20230327HGP 태그의 날짜, 센서, 전류종류 표시 및 스크롤 이동 함수
+            fn_NowTag_Info();
         });
 
         // 차트 범례 라디어 버튼 클릭 이벤트
@@ -372,23 +391,56 @@
     }
 
     // setDate DB 함수 날짜 클릭시
+    // 20230327HGP 태그 클릭시 특정 날짜 셀렉하게 오버로딩
     function fn_setDate() {
-        $.post(
-            $('#contextRoot').val() + '/tool/dataDateAjax',
-            {
-                year: $('#year option:selected').val()
-                , month: $('#month option:selected').val()
-            },
-            function (d) {
-                $('.dt-list').html('');
-                for (let i = 0; i < d.length; i++) {
-                    if (d[i].WARN2 > 0) d[i].cls = 'warn2';
-                    else if (d[i].WARN1 > 0) d[i].cls = 'warn1';
-                    $('.dt-list').append($.tmpl('data-date', d[i]));
-                }
-                $('.dt-list div:first-child').addClass('on');
-                fn_setSensor();
-            });
+        // 변수가 들어오지 않거나, 체인지 이벤트(object)로 들어올 경우
+        if(arguments.length == 0
+            || arguments.length == 1 && typeof arguments[0] == "object"){
+            // 센서리스트 0번째로 이동
+            $('.sclList').scrollTop(0);
+            $.post(
+                $('#contextRoot').val() + '/tool/dataDateAjax',
+                {
+                    year: $('#year option:selected').val()
+                    , month: $('#month option:selected').val()
+                },
+                function (d) {
+                    $('.dt-list').html('');
+                    for (let i = 0; i < d.length; i++) {
+                        if (d[i].WARN2 > 0) d[i].cls = 'warn2';
+                        else if (d[i].WARN1 > 0) d[i].cls = 'warn1';
+                        $('.dt-list').append($.tmpl('data-date', d[i]));
+                    }
+                    $('.dt-list div:first-child').addClass('on');
+                    fn_setSensor();
+                });
+        }
+        // 태그 클릭 후, 변수로 날짜가 들어올 시
+        let seletced_Date = arguments[0];
+        if(arguments.length == 1 && typeof arguments[0] == "string"){
+            $.post(
+                $('#contextRoot').val() + '/tool/dataDateAjax',
+                {
+                    year: $('#year option:selected').val()
+                    , month: $('#month option:selected').val()
+                },
+                function (d) {
+                    $('.dt-list').html('');
+                    for (let i = 0; i < d.length; i++) {
+                        if (d[i].WARN2 > 0) d[i].cls = 'warn2';
+                        else if (d[i].WARN1 > 0) d[i].cls = 'warn1';
+                        $('.dt-list').append($.tmpl('data-date', d[i]));
+                    }
+                    // 태그 체크한 날짜에 on클래스 추가
+                    $(".dt-list").children().each(function (i, item) {
+                        if($(item).attr('data-dd') == seletced_Date){
+                            seletced_Date = $(item)
+                            seletced_Date.addClass('on');
+                        }
+                    });
+                });
+        }
+
     }
 
     // setSensor DB 함수 센서 목록 클릭시
@@ -564,15 +616,15 @@
                                                     title: {
                                                         text: 'Analysis Chart'
                                                     },
-                                                    // 분석 차트 1번 클릭시 음영 초기화
+                                                    // 20230327HGP 분석 차트 첫 클릭시 표시
                                                     annotations: {
                                                         xaxis: [{
-                                                            x: rangeStart,
-                                                            x2: rangeStart,
-                                                            fillColor: '#133bff',
+                                                            x: rangeStart * 36,
+                                                            x2: rangeStart * 37,
+                                                            fillColor: '#f60707',
                                                             opacity: 0.5,
                                                             label: {
-                                                                text: ' ',
+                                                                text: 'X-axis range',
                                                                 position: 'center',
                                                                 offsetY: -10
                                                             }
@@ -892,14 +944,12 @@
                     } else {
                         alert(' 등록을 실패하였습니다.');
                     }
-                    // fn_mcstc_offLoading();
                 });
         }
     };
 
     // 태깅 차트 DB 정보 불러오기
     function fn_Tagging_getData(termtype, regdt, dtsize, order, isinit, snsrid, strcode) {
-        // fn_mcstc_onLoading();
 
         var prm = {
             strcode: strcode,
@@ -1216,7 +1266,7 @@
 
     // 20230324HGP 로딩 이미지만 보이게 하기
     function fn_mcstc_onLoading() {
-        $('.ib.scl').each(function (i, item) {
+        $('.ib.scl').each(function (i) {
             if(i == 1 || i == 2) $(this).css('visibility', 'hidden');
         });
         $('#data-chart').css('visibility', 'hidden');
@@ -1225,11 +1275,50 @@
 
     // 20230324HGP 로딩 이미지 안 보이게 하기
     function fn_mcstc_offLoading() {
-        $('.ib.scl').each(function (i, item) {
+        $('.ib.scl').each(function (i) {
             if(i == 1 || i == 2) $(this).css('visibility', 'visible');
         });
         $('#data-chart').css('visibility', 'visible');
         $('.load-chart').hide();
+    }
+
+    // 20230327HGP 태그의 날짜, 센서, 전류종류 표시 및 스크롤 이동 함수
+    function fn_NowTag_Info() {
+        // 현재 센서
+        let nowSensor = "";
+        let selectDate = formatDateTime(tagStartDate / 1, "tag");
+        // 등록 날짜 가져오기
+        let regDate = $('.tag-list div.on').html().substr(0, 10);
+
+        // 선택된 태그의 센서 객체 불러오기
+        $(".snsr-list").children().each(function (i, item) {
+            if(window.tagSnsrid == $(item).attr("data-snsrid")
+                && window.tagStrcode == $(item).attr("data-strcode")
+                && window.tagSnsrseq == $(item).attr("data-snsrseq")){
+                nowSensor = $(item);
+            }
+        });
+        // 년도, 월 세팅 먼저
+        $('#year').val(selectDate.substr(0,4)).prop("selected", true);
+        $('#month').val(selectDate.substr(5,2)).prop("selected", true);
+        fn_setDate(selectDate);
+
+        // nowTagInfo 정보 바꾸기
+        //let nowTagHtml = window.tagDate + "(차트날짜),&nbsp;" + nowSensor.html() + "(센서명),&nbsp;" + window.tagType + "(타입),&nbsp;";
+        let nowTagHtml = "[" + window.tagDate + "] " + nowSensor.html();
+        $(".nowTagInfo").html(nowTagHtml);
+
+        // 센서 리스트 초기화 및 스크롤 이동
+        $('.snsr-list div.on').removeClass('on');
+        nowSensor.addClass('on');
+
+        // 객체로 센서, 날짜 스크롤 이동
+        $('.sclList').scrollTop(0);
+        $('.sclList').scrollTop(nowSensor.offset().top);
+        // 날짜 이동 이벤트
+        $('.dtList').scrollTop(0);
+        $('.dtList').scrollTop($('.dt-list div.on').offset().top);
+
     }
 </script>
 </body>
