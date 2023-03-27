@@ -194,4 +194,10 @@
         ORDER BY REGDT DESC
     </select>
 
+    <!--Delete Tagging Data-->
+    <delete id="TAG_DELETE_TAGGING_DATA" parameterType="String">
+        DELETE FROM F_ELEC_DATA_TAG
+        WHERE TAGNO = #{tagNo}
+    </delete>
+
 </mapper>

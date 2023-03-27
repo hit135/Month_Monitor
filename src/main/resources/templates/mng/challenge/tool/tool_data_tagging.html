@@ -121,8 +121,13 @@
 <input type="hidden" id="rangeStart"/>
 <input type="hidden" id="rangeEnd"/>
 
-
-<div>
+<div class="load-chart position-absolute w-100 h-100 bg-white z-index-water" style="left: 0; top: 0; text-align: center;">
+    <button class="btn btn-info waves-effect waves-themed align-self-center" type="button" disabled=""
+            style="margin-top: 100px;">
+        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Loading...
+    </button>
+</div>
+<div class="z-index-ground">
     <div class="ib scl" style="width:10%;">
         <div class="dt-ctrl">
             <div class="ib"><select id="year"></select><span>년</span></div>
@@ -133,7 +138,8 @@
     <div class="ib scl" style="width:20%;">
         <div class="snsr-list"></div>
     </div>
-    <div class="ib scl" style="width:48%;">
+    <!-- 20230327HGP 가로 스크롤 숨기기 -->
+    <div class="ib scl" style="width:48%; overflow-x: hidden">
         <div class="data-ctrl">
             <br>
             <div class="ib"><input type="radio" name="dataname" value="IGO"/> 누설전류 총합(IGO)</div>
@@ -150,27 +156,35 @@
         <div id="data-chart" style="width:100%; height:200px;">
         </div>
         <div id="data-chart2" style="width:100%; height:300px;"></div>
-        <div class="load-chart position-absolute w-100 h-100 bg-white" style="left: 0; top: 0; text-align: center;">
-            <button class="btn btn-info waves-effect waves-themed align-self-center" type="button" disabled=""
-                    style="margin-top: 100px;">
-                <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Loading...
-            </button>
-        </div>
-        <div class="data-tagging">
-            <div class="ib"><span>시작</span><input type="time" id="start" step="1"/></div>
-            <div class="ib"><span>끝</span><input type="time" id="end" step="1"/></div>
-            <div><span>TAG DATA TYPE  </span><input type="text" id="tagDataType" readonly/></div>
-            <div><span>TAG COMMENT  </span><input type="text" id="tagComment"/></div>
-
-            <button id="chartBtn1" type="button" class="btn btn-sm btn-success waves-effect waves-themed">상단 차트 범위 수정
-            </button>
-
-            <button id="chartBtn2" type="button" class="btn btn-sm btn-success waves-effect waves-themed">하단 차트 범위 수정
-            </button>
-
-            <button id="insertBtn" type="button" class="btn btn-sm btn-success waves-effect waves-themed">태깅 데이터 저장
-            </button>
-
+        <div class="data-tagging row">
+            <div class="row col-md-12 d-flex justify-content-center">
+                <div class="ib m-1"><span class="m-2">시작</span><input type="time" id="start" step="1"/></div>
+                <div class="ib m-1"><span class="m-2">끝</span><input type="time" id="end" step="1"/></div>
+            </div>
+            <div class="row col-md-12 d-flex justify-content-center">
+                <div><span class="m-2">TAG DATA TYPE</span><input type="text" id="tagDataType" readonly/></div>
+            </div>
+            <div class="row col-md-12 d-flex justify-content-center">
+                <div><span class="m-2">TAG COMMENT</span><input type="text" id="tagComment"/></div>
+            </div>
+            <div class="row col-md-12 d-flex justify-content-center">
+                <div>
+                    <button id="chartBtn1" type="button" class="btn btn-sm btn-success waves-effect waves-themed m-1">상단 차트 범위 수정
+                    </button>
+                </div>
+                <div>
+                    <button id="chartBtn2" type="button" class="btn btn-sm btn-success waves-effect waves-themed m-1">하단 차트 범위 수정
+                    </button>
+                </div>
+                <div>
+                    <button id="insertBtn" type="button" class="btn btn-sm btn-success waves-effect waves-themed m-1">태깅 데이터 저장
+                    </button>
+                </div>
+                <div>
+                    <button id="deleteBtn" type="button" class="btn btn-sm btn-success waves-effect waves-themed m-1">태깅 데이터 삭제
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
     <div class="ib scl" style="width:20%;">
@@ -194,7 +208,7 @@
         $.template('data-month', '<option value="{{html MM}}">{{html MM}}</option>');
         $.template('data-date', '<div class="{{html cls}}" data-dd="{{html DD}}">{{html DD}}</div>');
         $.template('data-snsr', '<div class="{{html cls}}" data-snsrid="{{html SNSRID}}" data-strcode="{{html STRCODE}}" data-snsrseq="{{html SNSRSEQ}}">{{html NICKNAME}}</div>');
-        $.template('data-tag', '<div class="{{html DATATYPE}}" tag-type="{{html DATATYPE}}" tag-snsrid="{{html SNSRID}}" tag-strcode="{{html STRCODE}}" tag-snsrseq="{{html SNSRSEQ}}" tag-starttime="{{html STARTTIME}}" tag-endtime="{{html ENDTIME}}">{{html formatDateTime(REGDT,"tag")}} : {{html COMMENT}}</div>');
+        $.template('data-tag', '<div class="{{html DATATYPE}}" tag-no="{{html TAGNO}}" tag-type="{{html DATATYPE}}" tag-snsrid="{{html SNSRID}}" tag-strcode="{{html STRCODE}}" tag-snsrseq="{{html SNSRSEQ}}" tag-starttime="{{html STARTTIME}}" tag-endtime="{{html ENDTIME}}">{{html formatDateTime(REGDT,"tag")}} : {{html COMMENT}}</div>');
 
         //초기 리스트 불러오기
         fn_setYear();
@@ -202,9 +216,13 @@
         //태그 리스트 불러오기
         fn_setTaggingData();
 
+        // 하단의 태깅 데이터 버튼 클릭 이벤트
+        fn_Insert_Evnet_TaggingBtn();
+
         // 날짜 클릭 이벤트
         $('.dt-list').on('click', 'div', function () {
             $('.dt-list div.on').removeClass('on');
+            $('.tag-list div.on').removeClass('on');
             $(this).addClass('on');
             fn_setSensor();
         });
@@ -212,6 +230,7 @@
         // 센서 클릭 이벤트
         $('.snsr-list').on('click', 'div', function () {
             $('.snsr-list div.on').removeClass('on');
+            $('.tag-list div.on').removeClass('on');
             $(this).addClass('on');
 
             //20230317WJH
@@ -264,9 +283,7 @@
             $('[name=dataname][value="' + tagType + '"]').prop('checked', true);
 
             // 차트 로딩 후 음영 칠하기( 로딩이 짧으면 에러발생하며 음영이 생기지 않음 )
-            setTimeout(() => {
-                document.getElementById("chartBtn1").click();
-            }, 500);
+            // 20230324HGP fn_Tagging_getData() 함수 마지막에 클릭 이벤트 적용
         });
 
         // 차트 범례 라디어 버튼 클릭 이벤트
@@ -376,6 +393,8 @@
 
     // setSensor DB 함수 센서 목록 클릭시
     function fn_setSensor() {
+        // 20230324HGP 비동기 Beforsend 세팅 주기
+        fn_Ajax_BeforeSend_Setting();
         $.post(
             $('#contextRoot').val() + '/tool/dataSensorAjax',
             {
@@ -389,20 +408,38 @@
                     } else if (d[i].WARN1 > 0) d[i].cls = 'warn1';
                     $('.snsr-list').append($.tmpl('data-snsr', d[i]));
                 }
-                $('.snsr-list div:first-child').addClass('on');
+                // 20230324HGP 화면 데이터 받아온 후 디폴트 차트 띄우기 (클릭 이벤트)
+                $(".snsr-list div:first-child").trigger("click");
             });
     }
 
     // setTaggingData DB 함수 태그 리스트 불러오기
     function fn_setTaggingData() {
-        $.post(
-            $('#contextRoot').val() + '/tool/dataTaggingAjax',
-            function (d) {
-                $('.tag-list').html('');
-                for (let i = 0; i < d.length; i++) {
-                    $('.tag-list').append($.tmpl('data-tag', d[i]));
-                }
-            });
+        // 20230327HGP 함수에 들어온 파라미터가 1개이면서 스트링이라면 (함수 오버로딩)
+        if(arguments.length == 1 && typeof arguments[0] == "string"){
+            $.post(
+                $('#contextRoot').val() + '/tool/dataTaggingAjax',
+                function (d) {
+                    $('.tag-list').html('');
+                    for (let i = 0; i < d.length; i++) {
+                        $('.tag-list').append($.tmpl('data-tag', d[i]));
+                    }
+                    // 첫번째 태그 클릭
+                    $(".tag-list div:first-child").trigger("click");
+                });
+        }
+
+        // 20230327HGP 함수에 들어온 파라미터가 0개이면 (함수 오버로딩)
+        if(arguments.length == 0){
+            $.post(
+                $('#contextRoot').val() + '/tool/dataTaggingAjax',
+                function (d) {
+                    $('.tag-list').html('');
+                    for (let i = 0; i < d.length; i++) {
+                        $('.tag-list').append($.tmpl('data-tag', d[i]));
+                    }
+                });
+        }
     }
 
     function fn_dateToString(d) {
@@ -421,6 +458,8 @@
     }
     // 분석차트 생성
     function fn_Analysis_setEvtChart(snsrId, getDate) {
+        // 20230324HGP 비동기 complete 세팅 주기
+        fn_Ajax_Complete_Setting();
         $.post(
             $('#contextRoot').val() + '/tool/Analysis_ListEvtChart',
             {snsrId: "'" + snsrId + "'", getDate: "'" + getDate + "'"},
@@ -487,6 +526,14 @@
                                 animations: {
                                     enabled: true,
                                 },
+                                // 20230327HGP 드래그 확대 기능, 차트 선택 움직이기 기능 제거
+                                toolbar: {
+                                    show: true,
+                                    tools: {
+                                        zoom: false,
+                                        pan: false
+                                    }
+                                },
                                 events: {
                                     // 분석차트 클릭 이벤트
                                     click(event, chartContext, config) {
@@ -500,6 +547,7 @@
                                                     });
                                                 }
                                             }
+
                                             zoomed(event, chartContext);
                                         } else {
                                             ckflag++;
@@ -798,8 +846,19 @@
     }
 
 
-    // [태깅 데이터 저장] 버튼클릭 이벤트
-    document.querySelector('#insertBtn').addEventListener('click', () => tagging_DataSaveAjax());
+    // 20230324HGP 저장, 삭제 버튼에 이벤트 주는 함수
+    function fn_Insert_Evnet_TaggingBtn(){
+        // [태깅 데이터 저장] 버튼클릭 이벤트
+        document.querySelector('#insertBtn').addEventListener('click', () => tagging_DataSaveAjax());
+        // 20230324HGP [태깅 데이터 삭제] 버튼 클릭 이벤트
+        document.querySelector('#deleteBtn').addEventListener('click', function(){
+            if(document.querySelector('.tag-list .on') == null){
+                alert("태그가 선택되지 않았습니다! 선택 후에 삭제해주세요.");
+            } else {
+                fn_Tagging_DataDeleteAjax(document.querySelector('.tag-list .on').getAttribute('tag-no'));
+            }
+        });
+    }
 
     /**
      * @Method Name : tagging_DataSaveAjax
@@ -828,7 +887,8 @@
                 function (d) {
                     if (d == 'success') {
                         alert(' 등록 되었습니다.');
-                        fn_setTaggingData();
+                        // 20230327HGP 태그 등록 후 첫번째 태그 클릭
+                        fn_setTaggingData(d);
                     } else {
                         alert(' 등록을 실패하였습니다.');
                     }
@@ -867,9 +927,46 @@
                         alert('no data');
                 }
 
-                // fn_mcstc_offLoading();
+                // 20230324HGP 태그 범위 나오게 하기 >> 함수 마지막에 클릭 이벤트 적용
+                document.getElementById("chartBtn1").click();
+                document.getElementById("chartBtn2").click();
             });
     };
+
+
+
+    /**
+     * @Method Name : fn_Tagging_setAnnotations
+     * @작성일 : 2023-03-24
+     * @작성자 : Hyng Goo Park
+     * @변경이력 :
+     * @Parameter : tagNo(int)
+     * @Method 설명 : 버튼 클릭시 태깅 데이터 DELETE
+     * @return
+     */
+    function fn_Tagging_DataDeleteAjax(tagNo){
+        if(confirm("정말로 삭제하시겠습니까?")){
+            $.post(
+                $('#contextRoot').val() + '/tool/taggingDataDeleteAjax',
+                {
+                    tagno: tagNo
+                },
+                function (d) {
+                    console.log("통신여부 : ", d);
+                    if(d == true){
+                        alert("태그가 삭제되었습니다.")
+                        // 센서 목록 새로고침
+                        fn_setTaggingData();
+                        // 차트 초기화
+                        $(".snsr-list div:first-child").trigger("click");
+                    } else {
+                        alert("삭제 통신 오류")
+                    }
+                });
+        } else {
+            return;
+        }
+    }
 
     // 범례 변경시 데이터 값에 따라 Y축으로 주의, 경고 음영 영역 변경
     function fn_Tagging_setAnnotations() {
@@ -946,6 +1043,14 @@
                 type: 'line',
                 id: 'data-chart',
                 animations: {enabled: false},
+                // 20230324HGP 드래그 확대 기능, 차트 선택 움직이기 기능 제거
+                toolbar: {
+                    show: true,
+                    tools: {
+                        zoom: false,
+                        pan: false
+                        }
+                    },
                 events: {
                     click(event, chartContext, config) {
                         if (config.dataPointIndex == -1) {
@@ -958,6 +1063,7 @@
                                     });
                                 }
                             }
+
                             zoomed(event, chartContext);
                         } else {
                             ckflag++;
@@ -965,16 +1071,32 @@
                                 config.labels = opt.xaxis.categories;
                                 rangeStart = config.dataPointIndex.toString();
                                 rangeStart = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
+                                console.log("rangeStart : ", rangeStart);
                                 $('#rangeStart').val(rangeStart);
                                 formatDateTime(rangeStart, "start")
                                 chart1.updateOptions({
                                     title: {
                                         text: 'Tagging Chart'
                                     },
+                                    // 20230324HGP 태깅 차트 첫 클릭시 표시
+                                    annotations: {
+                                        xaxis: [{
+                                            x: rangeStart,
+                                            x2: rangeStart + 300000,
+                                            fillColor: '#e500ff',
+                                            opacity: 0.5,
+                                            label: {
+                                                text: 'X-axis range',
+                                                position: 'center',
+                                                offsetY: -10
+                                            }
+                                        }]
+                                    }
                                 })
                             } else if (ckflag === 2) {
                                 rangeEnd = config.dataPointIndex.toString();
                                 rangeEnd = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
+                                console.log("rangeStart : ", rangeEnd);
                                 $('#rangeEnd').val(rangeEnd);
                                 formatDateTime(rangeEnd, "end")
                                 chart1.updateOptions({title: {text: 'Tagging Chart'}})
@@ -1067,6 +1189,50 @@
         } else {
             $('#data-chart').css('visibility', 'hidden');
         }
+    }
+
+    /**
+     * @Method Name : fn_Ajax_BeforeSend_Setting
+     * @작성일 : 2023-03-24
+     * @작성자 : Hyng Goo Park
+     * @변경이력 :
+     * @Method 설명 : $.post 통신 beforeSend 설정
+     * @return
+     */
+    function fn_Ajax_BeforeSend_Setting(){
+        $.ajaxSetup({
+           beforeSend : fn_mcstc_onLoading()
+        });
+    }
+
+    /**
+     * @Method Name : fn_Ajax_Complete_Setting
+     * @작성일 : 2023-03-24
+     * @작성자 : Hyng Goo Park
+     * @변경이력 :
+     * @Method 설명 : $.post 통신 complete 설정
+     * @return
+     */
+    function fn_Ajax_Complete_Setting(){
+        complete : fn_mcstc_offLoading()
+    }
+
+    // 20230324HGP 로딩 이미지만 보이게 하기
+    function fn_mcstc_onLoading() {
+        $('.ib.scl').each(function (i, item) {
+            if(i == 1 || i == 2) $(this).css('visibility', 'hidden');
+        });
+        $('#data-chart').css('visibility', 'hidden');
+        $('.load-chart').show();
+    }
+
+    // 20230324HGP 로딩 이미지 안 보이게 하기
+    function fn_mcstc_offLoading() {
+        $('.ib.scl').each(function (i, item) {
+            if(i == 1 || i == 2) $(this).css('visibility', 'visible');
+        });
+        $('#data-chart').css('visibility', 'visible');
+        $('.load-chart').hide();
     }
 </script>
 </body>

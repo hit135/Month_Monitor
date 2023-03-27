@@ -21,9 +21,11 @@ public interface MCToolRepo {
     HashMap<String, Object> TAG_SELECT_F_SENSOR_DATA_INFO(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> TAG_SELECT_LIST_DATA(Map<String, Object> param) throws Exception;
     List<HashMap<String, Object>> TAG_LIST_STORE_SENSOR_DATA(Map<String, Object> param) throws Exception;
+    void TAG_DELETE_TAGGING_DATA(String tagNo) throws Exception;
 
     // ANALYSIS
     List<HashMap<String, Object>> ANALYSIS_LIST_SNSR_EVT_CHART(Map<String, Object> param) throws Exception;
+
 
 
 }

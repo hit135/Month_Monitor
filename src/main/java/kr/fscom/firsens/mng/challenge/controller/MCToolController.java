@@ -235,4 +235,30 @@ public class MCToolController {
         return null;
     }
 
+    /**
+     * @Method Name : taggingDataDeleteAjax
+     * @작성일 : 2023-03-24
+     * @작성자 : Hyng Goo Park
+     * @변경이력 :
+     * @Method 설명 : 태깅 데이터 삭제
+     * @param req
+     * @return boolean
+     */
+    @RequestMapping(value = "/taggingDataDeleteAjax")
+    @ResponseBody
+    public boolean taggingDataDeleteAjax(HttpServletRequest req){
+        String tagNo = req.getParameter("tagno");
+
+        try {
+            mcToolRepo.TAG_DELETE_TAGGING_DATA(tagNo);
+        } catch (SQLException sqe) {
+            LOG.debug(sqe.getMessage());
+            return false;
+        } catch (Exception e) {
+            LOG.debug(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
 }
