@@ -289,7 +289,6 @@
             $('#tagComment').val(tagComment);
             $('[name=dataname][value="' + tagType + '"]').prop('checked', true);
 
-            // 차트 로딩 후 음영 칠하기( 로딩이 짧으면 에러발생하며 음영이 생기지 않음 )
             // 20230324HGP fn_Tagging_getData() 함수 마지막에 클릭 이벤트 적용
             // 20230327HGP 태그의 날짜, 센서, 전류종류 표시 및 스크롤 이동 함수
             fn_NowTag_Info();
@@ -383,6 +382,7 @@
     // setDate DB 함수 날짜 클릭시
     // 20230327HGP 태그 클릭시 특정 날짜 셀렉하게 오버로딩
     function fn_setDate() {
+        // 변수가 들어오지 않거나, 체인지 이벤트(object)로 들어올 경우
         if(arguments.length == 0
             || arguments.length == 1 && typeof arguments[0] == "object"){
             $.post(
@@ -931,14 +931,12 @@
                     } else {
                         alert(' 등록을 실패하였습니다.');
                     }
-                    // fn_mcstc_offLoading();
                 });
         }
     };
 
     // 태깅 차트 DB 정보 불러오기
     function fn_Tagging_getData(termtype, regdt, dtsize, order, isinit, snsrid, strcode) {
-        // fn_mcstc_onLoading();
 
         var prm = {
             strcode: strcode,
