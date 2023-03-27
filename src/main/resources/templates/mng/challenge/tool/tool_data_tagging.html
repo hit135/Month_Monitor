@@ -265,6 +265,10 @@
             $('#end').val("");
             $('#tagComment').val("");
             $('#prm_regdate').val(getDate);
+
+            // 20230327HGP 상단 정보에 센서 정보 입력
+            let nowTagHtml = "[" + window.getDate + "] " + document.querySelector('.snsr-list .on').innerHTML;
+            $(".nowTagInfo").html(nowTagHtml);
         });
 
         // 태그 클릭 이벤트
@@ -392,6 +396,8 @@
         // 변수가 들어오지 않거나, 체인지 이벤트(object)로 들어올 경우
         if(arguments.length == 0
             || arguments.length == 1 && typeof arguments[0] == "object"){
+            // 센서리스트 0번째로 이동
+            $('.sclList').scrollTop(0);
             $.post(
                 $('#contextRoot').val() + '/tool/dataDateAjax',
                 {
