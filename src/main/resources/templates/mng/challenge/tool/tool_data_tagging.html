@@ -1031,6 +1031,7 @@
         var rangeStart = null;
         var rangeEnd = null;
         var ckflag = 0;
+        let nowScrolled = false;
 
         let opt = {
             series: [],
@@ -1045,60 +1046,69 @@
                     show: true,
                     tools: {
                         zoom: false,
-                        pan: false
+                        // pan: false
                         }
                     },
                 events: {
+                    // 20230328HGP 태깅 차트 스크롤 시 클릭이벤트 막기
+                    scrolled: function(chartContext, { xaxis }) {
+                        nowScrolled = true;
+                    },
                     click(event, chartContext, config) {
-                        if (config.dataPointIndex == -1) {
-                            function zoomed(event, chartContext) {
-                                const xaxis = chartContext.xaxis || [];
-                                if (xaxis.length > 0) {
-                                    const {min, max} = xaxis[0];
+                        // 스크롤 중이 아니라면 클릭 이벤트 주기
+                        if(nowScrolled == false){
+                            if (config.dataPointIndex == -1) {
+                                function zoomed(event, chartContext) {
+                                    const xaxis = chartContext.xaxis || [];
+                                    if (xaxis.length > 0) {
+                                        const {min, max} = xaxis[0];
+                                        chart1.updateOptions({
+                                            xaxis: {min, max},
+                                        });
+                                    }
+                                }
+
+                                zoomed(event, chartContext);
+                            } else {
+                                ckflag++;
+                                if (ckflag === 1) {
+                                    config.labels = opt.xaxis.categories;
+                                    rangeStart = config.dataPointIndex.toString();
+                                    rangeStart = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
+                                    $('#rangeStart').val(rangeStart);
+                                    formatDateTime(rangeStart, "start")
                                     chart1.updateOptions({
-                                        xaxis: {min, max},
-                                    });
+                                        title: {
+                                            text: 'Tagging Chart'
+                                        },
+                                        // 20230324HGP 태깅 차트 첫 클릭시 표시
+                                        annotations: {
+                                            xaxis: [{
+                                                x: rangeStart,
+                                                x2: rangeStart + 300000,
+                                                fillColor: '#e500ff',
+                                                opacity: 0.5,
+                                                label: {
+                                                    text: 'X-axis range',
+                                                    position: 'center',
+                                                    offsetY: -10
+                                                }
+                                            }]
+                                        }
+                                    })
+                                } else if (ckflag === 2) {
+                                    rangeEnd = config.dataPointIndex.toString();
+                                    rangeEnd = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
+                                    $('#rangeEnd').val(rangeEnd);
+                                    formatDateTime(rangeEnd, "end")
+                                    chart1.updateOptions({title: {text: 'Tagging Chart'}})
+                                    ckflag = 0;
+                                    document.getElementById("chartBtn1").click();
                                 }
                             }
-
-                            zoomed(event, chartContext);
-                        } else {
-                            ckflag++;
-                            if (ckflag === 1) {
-                                config.labels = opt.xaxis.categories;
-                                rangeStart = config.dataPointIndex.toString();
-                                rangeStart = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
-                                $('#rangeStart').val(rangeStart);
-                                formatDateTime(rangeStart, "start")
-                                chart1.updateOptions({
-                                    title: {
-                                        text: 'Tagging Chart'
-                                    },
-                                    // 20230324HGP 태깅 차트 첫 클릭시 표시
-                                    annotations: {
-                                        xaxis: [{
-                                            x: rangeStart,
-                                            x2: rangeStart + 300000,
-                                            fillColor: '#e500ff',
-                                            opacity: 0.5,
-                                            label: {
-                                                text: 'X-axis range',
-                                                position: 'center',
-                                                offsetY: -10
-                                            }
-                                        }]
-                                    }
-                                })
-                            } else if (ckflag === 2) {
-                                rangeEnd = config.dataPointIndex.toString();
-                                rangeEnd = config.config.series[config.seriesIndex].data[config.dataPointIndex][0];
-                                $('#rangeEnd').val(rangeEnd);
-                                formatDateTime(rangeEnd, "end")
-                                chart1.updateOptions({title: {text: 'Tagging Chart'}})
-                                ckflag = 0;
-                                document.getElementById("chartBtn1").click();
-                            }
                         }
+                        // 스크롤 이벤트(클릭 땠을 때 발생) 끝
+                        nowScrolled = false;
                     },
                 }
             },
