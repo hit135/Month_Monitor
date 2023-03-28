@@ -575,81 +575,28 @@
                             chart: {
                                 height: 300,
                                 id: 'data_chart2',
+                                type: 'line',
                                 animations: {
                                     enabled: true,
                                 },
-                                // 20230327HGP 드래그 확대 기능, 차트 선택 움직이기 기능 제거
+                                // 20230327HGP 드래그 확대 기능 제거, 차트 선택 움직이기 기능 유지
                                 toolbar: {
                                     show: true,
                                     tools: {
                                         zoom: false,
-                                        pan: false
+                                        // pan: false
                                     }
                                 },
                                 events: {
-                                    // 분석차트 클릭 이벤트
-                                    click(event, chartContext, config) {
-                                        if (config.dataPointIndex == -1) {
-                                            function zoomed(event, chartContext) {
-                                                const xaxis = chartContext.xaxis || [];
-                                                if (xaxis.length > 0) {
-                                                    const {min, max} = xaxis[0];
-                                                    dataChart.updateOptions({
-                                                        xaxis: {min, max},
-                                                    });
-                                                }
-                                            }
-
-                                            zoomed(event, chartContext);
-                                        } else {
-                                            ckflag++;
-                                            if (ckflag === 1) {
-                                                rangeStart = config.dataPointIndex.toString();
-                                                if (rangeStart < 10) {
-                                                    document.getElementById("start").value = "0" + rangeStart + ":00:00";
-                                                    document.getElementById("end").value = null;
-                                                } else {
-                                                    document.getElementById("start").value = rangeStart + ":00:00";
-                                                    document.getElementById("end").value = null;
-                                                }
-                                                dataChart.updateOptions({
-                                                    title: {
-                                                        text: 'Analysis Chart'
-                                                    },
-                                                    // 20230327HGP 분석 차트 첫 클릭시 표시
-                                                    annotations: {
-                                                        xaxis: [{
-                                                            x: rangeStart * 36,
-                                                            x2: rangeStart * 37,
-                                                            fillColor: '#f60707',
-                                                            opacity: 0.5,
-                                                            label: {
-                                                                text: 'X-axis range',
-                                                                position: 'center',
-                                                                offsetY: -10
-                                                            }
-                                                        }]
-                                                    }
-                                                })
-                                                // 분석차트 1번째 클릭시 시작시간 INPUT 박스 변경
-                                                startTimeChange();
-                                            } else if (ckflag === 2) {
-                                                rangeEnd = config.dataPointIndex.toString();
-                                                if (rangeEnd < 10) {
-                                                    document.getElementById("end").value = "0" + rangeEnd + ":00:00";
-                                                } else {
-                                                    document.getElementById("end").value = rangeEnd + ":00:00";
-                                                }
-                                                dataChart.updateOptions({title: {text: 'Analysis Chart'}})
-                                                ckflag = 0;
-                                                // 분석차트 2번째 클릭시 종료시간 INPUT 박스 변경
-                                                endTimeChange();
-
-                                                // 하단차트범위 수정 버튼 클릭이벤트 실행
-                                                document.getElementById("chartBtn2").click();
-                                            }
-                                        }
+                                    // 20230328HGP zoom 했을 시
+                                    zoomed: function(chartContext, { xaxis, yaxis }) {
+                                        fn_Analyze_Chart_Tag(xaxis);
                                     },
+                                    // 20230328HGP pan으로 이동 시
+                                    scrolled: function(chartContext, { xaxis }) {
+                                        fn_Analyze_Chart_Tag(xaxis);
+                                    },
+                                    // 20230328HGP 분석차트 클릭이벤트 삭제
                                 }
                             },
                             stroke: {width: 2},
@@ -733,6 +680,8 @@
                 }]
             }
         })
+        // 하단 차트 수정버튼 클릭 이벤트
+        document.getElementById("chartBtn2").click();
     });
 
     // 하단 차트 범위 수정 버튼 클릭 이벤트
@@ -741,7 +690,6 @@
         var [startHour, startMinute, startSecond] = startTimeValue.split(':');
         var endTimeValue = document.getElementById('end').value;
         var [endHour, endMinute, endSecond] = endTimeValue.split(':');
-
         const chartB = window.dataChart;
         chartB.updateOptions({
             title: {
@@ -1318,7 +1266,54 @@
         // 날짜 이동 이벤트
         $('.dtList').scrollTop(0);
         $('.dtList').scrollTop($('.dt-list div.on').offset().top);
+    }
 
+    // 20230328HGP 분석 차트 이벤트 태깅 업데이트 하는 함수
+    function fn_Analyze_Chart_Tag(xaxis) {
+        let startTimeValue = document.getElementById('start').value;
+        let endTimeValue = document.getElementById('end').value;
+        // 스타트 타임, 앤드타임 값이 있다면
+        if(startTimeValue != '' && endTimeValue != ''){
+            let startHour = startTimeValue.split(':')[0];
+            let endHour = endTimeValue.split(':')[0];
+            // 시작, 끝 숫자 빌드
+            if(parseInt(startHour) > parseInt(endHour)){
+                startHour = endHour;
+                endHour = startTimeValue.split(':')[0];
+            }
+            // 문자열 개수에 따라 음영 셋팅에 넣을 값 지정
+            if( (xaxis.min -1 ) > parseInt(startHour) ){
+                if( ((xaxis.min -1).toString()).length == 1 ){
+                    startHour = "0" + (xaxis.min -1);
+                } else {
+                    startHour = (xaxis.min -1).toString();
+                }
+            }
+            // 문자열 개수에 따라 음영 셋팅에 넣을 값 지정
+            if( (xaxis.max -1 ) < parseInt(endHour) ){
+                if( ((xaxis.max -1).toString()).length == 1 ){
+                    endHour = "0" + (xaxis.max -1);
+                } else {
+                    endHour = (xaxis.max -1).toString();
+                }
+            }
+            // 음영 셋팅
+            dataChart.updateOptions({
+                annotations: {
+                    xaxis: [{
+                        x: startHour,
+                        x2: endHour,
+                        fillColor: '#f60707',
+                        opacity: 0.5,
+                        label: {
+                            text: 'X-axis range',
+                            position: 'center',
+                            offsetY: -10
+                        }
+                    }]
+                }
+            })
+        }
     }
 </script>
 </body>
