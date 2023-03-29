@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <script th:src="@{/fs/js/jquery.js}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
+
+    <style>
+        .load-chart {
+            display: none;
+        }
+        .btn.btn-info.waves-effect {
+            width: 20%;
+            height: 100px;
+            font-size: xxx-large;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="container">
+    <!-- 로딩 이미지 -->
+    <div class="load-chart position-absolute w-100 h-100 bg-white z-index-water" style="left: 0; top: 0; text-align: center;">
+        <button class="btn btn-info waves-effect waves-themed align-self-center" type="button" disabled=""
+                style="margin-top: 200px;">
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>Loading...
+        </button>
+    </div>
+
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <h1>
+                <span class="text-primary">자치구별</span>
+                <span class="text-danger">전기위험</span>
+                <span>관리현황</span>
+            </h1>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-1">
+            <select class="form-select year" aria-label="year">
+                <option selected value="">년</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+            </select>
+        </div>
+        <div class="col-1">
+            <select class="form-select month" aria-label="month">
+                <option selected value="">월</option>
+                <option value="01">1월</option><option value="02">2월</option><option value="03">3월</option>
+                <option value="04">4월</option><option value="05">5월</option><option value="06">6월</option>
+                <option value="07">7월</option><option value="08">8월</option><option value="09">9월</option>
+                <option value="10">10월</option><option value="11">11월</option><option value="12">12월</option>
+            </select>
+        </div>
+    </div>
+    <!-- 대덕구 관제 테이블 -->
+    <div class="row">
+        <div class="row">
+            <div class="col-2">
+                <button id="getDataDaedeok" class="btn btn-dark" type="button">대덕구 위험 데이터</button>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">대덕구</th>
+                <th scope="col">자치구</th>
+                <th scope="col">구분</th>
+                <th scope="col">최종수량</th>
+                <th scope="col">주의(누전)</th>
+                <th scope="col">경고(누전)</th>
+                <th scope="col">주의(과전)</th>
+                <th scope="col">주의(경고)</th>
+            </tr>
+            </thead>
+            <tbody id="Daedeok">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 동구 관제 테이블 -->
+    <div class="row">
+        <div class="row">
+            <div class="col-2">
+                <button id="getDataDong" class="btn btn-dark" type="button">동구 위험 데이터</button>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">동구</th>
+                <th scope="col">자치구</th>
+                <th scope="col">구분</th>
+                <th scope="col">최종수량</th>
+                <th scope="col">주의(누전)</th>
+                <th scope="col">경고(누전)</th>
+                <th scope="col">주의(과전)</th>
+                <th scope="col">주의(경고)</th>
+            </tr>
+            </thead>
+            <tbody id="Dong">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 서구 관제 테이블 -->
+    <div class="row">
+        <div class="row">
+            <div class="col-2">
+                <button id="getDataSeo" class="btn btn-dark" type="button">서구 위험 데이터</button>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">서구</th>
+                <th scope="col">자치구</th>
+                <th scope="col">구분</th>
+                <th scope="col">최종수량</th>
+                <th scope="col">주의(누전)</th>
+                <th scope="col">경고(누전)</th>
+                <th scope="col">주의(과전)</th>
+                <th scope="col">주의(경고)</th>
+            </tr>
+            </thead>
+            <tbody id="Seo">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 유성구 관제 테이블 -->
+    <div class="row">
+        <div class="row">
+            <div class="col-2">
+                <button id="getDataYuseong" class="btn btn-dark" type="button">유성구 위험 데이터</button>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">유성구</th>
+                <th scope="col">자치구</th>
+                <th scope="col">구분</th>
+                <th scope="col">최종수량</th>
+                <th scope="col">주의(누전)</th>
+                <th scope="col">경고(누전)</th>
+                <th scope="col">주의(과전)</th>
+                <th scope="col">주의(경고)</th>
+            </tr>
+            </thead>
+            <tbody id="Yuseong">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 중구 관제 테이블 -->
+    <div class="row">
+        <div class="row">
+            <div class="col-2">
+                <button id="getDataJung" class="btn btn-dark" type="button">중구 위험 데이터</button>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">중구</th>
+                <th scope="col">자치구</th>
+                <th scope="col">구분</th>
+                <th scope="col">최종수량</th>
+                <th scope="col">주의(누전)</th>
+                <th scope="col">경고(누전)</th>
+                <th scope="col">주의(과전)</th>
+                <th scope="col">주의(경고)</th>
+            </tr>
+            </thead>
+            <tbody id="Jung">
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+
+    <script>
+        // 콘텍스트패스
+        function getContextPath() {
+            var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+            return location.href.substring( hostIndex, location.href.indexOf('/', hostIndex + 1) );
+        };
+
+        function fn_Get_Month_Monitor(area) {
+            // 년도와 월을 선택 안했으면 alert
+            if($(".year option:selected").val() == null || $(".year option:selected").val() == "" ||
+                $(".month option:selected").val() == null || $(".month option:selected").val() == ""){
+                alert("년도와 월을 모두 선택해주세요");
+                return;
+            }
+            let year = $(".year option:selected").val();
+            let month = $(".month option:selected").val();
+
+            $('.load-chart').show();
+            let addArr = [];
+
+            // 지역에 따라 다른 배열
+            switch (area) {
+                case "Daedeok":
+                    addArr = ["법동시장", "중리시장", "오정농수산물도매시장", "코오롱제약㈜",
+                        "삼양패키징", "티지엘", "동양정밀", "법동종합사회복지관", "대전종합사회복지관",
+                        "대덕종합사회복지관", "대전광역시립_체육재활원", "무지개복지공장", "로뎀"];
+                    break;
+                case "Dong":
+                    addArr = ["중앙시장(예비)", "역전시장", "중앙시장(1,2차)", "역전지하상가",
+                        "신도꼼지락시장", "용운종합사회복지관", "산내종합사회복지관",
+                        "동구정다운어르신복지관", "동구행복한어르신복지관", "사랑의집", "동구아름다운복지관"];
+                    break;
+                case "Seo":
+                    addArr = ["도마큰시장", "한민시장", "한스산업㈜", "월평종합사회복지관", "관저종합사회복지관",
+                        "서구노인복지관", "유등노인복지관", "연광자립원"];
+                    break;
+                case "Yuseong": // 비엠시스는 구내식당이 분리돼 있음!!!!
+                    addArr = ["대전정보문화산업진흥원", "송강시장", "비엠시스", "비엠시스_구내식당", "지에스나노셀", "스킨메드", "퓨어시스",
+                        "연", "유성구노인복지관", "유성실버복지센터", "대전광역시립_장애인종합복지관", "성세_재활자립원"];
+                    break;
+                case "Jung":
+                    addArr = ["대전오류동시장", "산성시장", "태평시장", "부사시장", "문창시장",
+                        "용두시장", "대전광역시노인복지관"];
+                    break;
+            }
+
+
+            setTimeout(function () {
+                $.ajax({
+                    type: "POST",
+                    url: getContextPath() + "/getData",
+                    traditional: true,
+                    data : {
+                        "addArr": addArr,
+                        "year" : year,
+                        "month" : month
+                    } ,
+                    success: function(data) {
+                        console.log(data);
+
+                        // 테이블에 해당 정보 업데이트
+                        fn_Sign_JSON_ForTable(data, area, addArr);
+                    },
+                    error: function (e) {
+                        console.log("통신실패");
+                    },
+                    async:false,
+                    complete: function () {
+                        $('.load-chart').hide();
+                    }
+                });
+            }, 50);
+        }
+        
+        // JSON 데이터 테이블로 뿌리기
+        function fn_Sign_JSON_ForTable(JSON, area, addArr) {
+            let tempHtml = "";
+            let nowArea = "";
+            switch (area) {
+                case "Daedeok":
+                    nowArea = "대덕구"
+                    break;
+                case "Dong":
+                    nowArea = "동구"
+                    break;
+                case "Seo":
+                    nowArea = "서구"
+                    break;
+                case "Yuseong":
+                    nowArea = "유성구"
+                    break;
+                case "Jung":
+                    nowArea = "중구"
+                    break;
+            }
+            // 총합
+            let totalSensor = 0, warnShort = 0, dangerShort = 0, warnExa = 0, dangerExa = 0;
+
+            // 테이블 바디 생성
+            for(let i = 0; i < addArr.length; i++){
+                if(JSON[addArr[i]] != null){
+                    tempHtml
+                        += "<tr>"
+                        + "<th scope='row'>" + (i+1) + "</th>"
+                        + "<td>" + nowArea +"</td>"
+                        + "<td>" + JSON[addArr[i]]["AREANAME"].toLocaleString('ko-KR') +"</td>"
+                        + "<td>" + JSON[addArr[i]]["최종수량"].toLocaleString('ko-KR') +"</td>"
+                        + "<td>" + JSON[addArr[i]]["주의(누전)"].toLocaleString('ko-KR') +"</td>"
+                        + "<td>" + JSON[addArr[i]]["경고(누전)"].toLocaleString('ko-KR') +"</td>"
+                        + "<td>" + JSON[addArr[i]]["주의(과전)"].toLocaleString('ko-KR') +"</td>"
+                        + "<td>" + JSON[addArr[i]]["경고(과전)"].toLocaleString('ko-KR') +"</td>"
+                        + "</tr>"
+
+                    // 합계
+                    totalSensor += parseInt(JSON[addArr[i]]["최종수량"]);
+                    warnShort += parseInt(JSON[addArr[i]]["주의(누전)"]);
+                    dangerShort += parseInt(JSON[addArr[i]]["경고(누전)"]);
+                    warnExa += parseInt(JSON[addArr[i]]["주의(과전)"]);
+                    dangerExa += parseInt(JSON[addArr[i]]["경고(과전)"]);
+                }
+
+            }
+            console.log("total : ", totalSensor);
+
+            tempHtml
+                += "<tr class='table-success'>"
+                    + "<th scope='row'>" + "총합" + "</th>"
+                    + "<td>" + nowArea +"</td>"
+                    + "<td>" +  +"</td>"
+                    + "<td>" + totalSensor.toLocaleString('ko-KR') +"</td>"
+                    + "<td>" + warnShort.toLocaleString('ko-KR') +"</td>"
+                    + "<td>" + dangerShort.toLocaleString('ko-KR') +"</td>"
+                    + "<td>" + warnExa.toLocaleString('ko-KR') +"</td>"
+                    + "<td>" + dangerExa.toLocaleString('ko-KR') +"</td>"
+                    + "</tr>"
+
+            console.log("tempHtml : ", tempHtml);
+            // 테이블에 붙여주기
+            $("#"+area).empty();
+            $("#"+area).append(tempHtml);
+
+        }
+
+        // 셀렉 박스가 변하면 전기위험 관리현황 초기화
+        function fn_Change_SelectBox() {
+            $(".year").on("change", function () {
+                let areaArr = ["Daedeok", "Dong", "Seo", "Yuseong", "Jung"];
+                for(area of areaArr){
+                    $("#"+area).empty();
+                }
+            });
+            $(".month").on("change", function () {
+                let areaArr = ["Daedeok", "Dong", "Seo", "Yuseong", "Jung"];
+                for(area of areaArr){
+                    $("#"+area).empty();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            // 버튼 클릭 이벤트
+            $("#getDataDaedeok").on("click", function () {
+                fn_Get_Month_Monitor("Daedeok");
+            });
+            $("#getDataDong").on("click", function () {
+                fn_Get_Month_Monitor("Dong");
+            });
+            $("#getDataSeo").on("click", function () {
+                fn_Get_Month_Monitor("Seo");
+            });
+            $("#getDataYuseong").on("click", function () {
+                fn_Get_Month_Monitor("Yuseong");
+            });
+            $("#getDataJung").on("click", function () {
+                fn_Get_Month_Monitor("Jung");
+            });
+
+            // 로딩 바 스크롤 따라 다니게
+            let currentPosition = parseInt($(".load-chart").css("top"));
+            $(window).scroll(function() {
+                var position = $(window).scrollTop();
+                $(".load-chart").stop().animate({"top":position+currentPosition+"px"},100);
+            });
+
+            // 셀렉박스 변환시 테이블 비우기
+            fn_Change_SelectBox();
+
+        });
+    </script>
+</body>
+</html>

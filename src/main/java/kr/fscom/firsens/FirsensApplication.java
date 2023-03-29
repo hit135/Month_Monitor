@@ -22,7 +22,7 @@ public class FirsensApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         try {
             SpringApplication.run(FirsensApplication.class, args);
-            LOG.info("▶▶▶▶▶▶▶▶▶▶ 스마트시티 챌린지 관제 시작");
+            LOG.info("▶▶▶▶▶▶▶▶▶▶ 챌린지 자치구별 매월 관리현황");
         } catch (NullPointerException e) {
             LOG.debug(e.getMessage());
         } catch (InternalError e) {
