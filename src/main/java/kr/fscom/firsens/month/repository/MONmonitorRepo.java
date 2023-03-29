@@ -63,4 +63,18 @@ public interface MONmonitorRepo {
      * @return Map
      */
     HashMap<String, Object> getNullData(String s);
+
+    /**
+     * get area electrical hazard then null at '비엠시스'
+     * @autor HGP
+     * @return Map
+     */
+    HashMap<String, Object> getNullDataBMSis();
+
+    /**
+     * get area electrical hazard then null at '비엠시스_구내식당'
+     * @autor HGP
+     * @return Map
+     */
+    HashMap<String, Object> getNullDataBMSisRes();
 }

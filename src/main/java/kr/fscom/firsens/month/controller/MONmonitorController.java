@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 @RestController
@@ -44,8 +47,17 @@ public class MONmonitorController {
                     // 비엠시스는 구내식당과 나눠져 있음
                     if(arrList[i].equals("비엠시스")){
                         tempMap = monMonitorRepo.getDataBMSis(arrList[i], year, month);
+                        if(tempMap == null){
+                            // 비엠시스 null 처리
+                            tempMap = monMonitorRepo.getNullDataBMSis();
+                        }
                     } else if(arrList[i].equals("비엠시스_구내식당")) {
                         tempMap = monMonitorRepo.getDataBMSisRes(arrList[i], year, month);
+                        if(tempMap == null){
+                            // 비엠시스_구내식당 null 처리
+                            tempMap = monMonitorRepo.getNullDataBMSisRes();
+                        }
+                        tempMap.put("AREANAME", "비엠시스_구내식당");
                     } else if(arrList[i].equals("중앙시장(예비)")){
                         tempMap = monMonitorRepo.getDataJungSpare(year, month);
                     } else if(arrList[i].equals("중앙시장(1,2차)")){
@@ -53,6 +65,7 @@ public class MONmonitorController {
                     } else {
                         tempMap = monMonitorRepo.getData(arrList[i], year, month);
                     }
+                    // 결과값이 빈값이라면!
                     if(tempMap == null){
                         tempMap = monMonitorRepo.getNullData(arrList[i]);
                     }
