@@ -11,14 +11,13 @@
             SUM(FF.`경고(누전)`)                AS '경고(누전)',
             SUM(FF.`주의(과전)`)                AS '주의(과전)',
             SUM(FF.`경고(과전)`)                AS '경고(과전)',
-            SUM(FF.최종수량)                    AS '최종수량'
+            CS2.totalCount                     AS '최종수량'
         FROM (
                  SELECT FL_FLA.AREANAME                                            AS 'AREANAME',
                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)), 0) AS '경고(누전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)), 0)  AS '주의(과전)',
-                        COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)',
-                        0                                                          AS '최종수량'
+                        COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)'
                  FROM F_SENSOR_LOG FL
                           LEFT JOIN F_SENSOR_INFO FL_FSI ON FL.SNSRID = FL_FSI.SNSRID
                           LEFT JOIN F_STORE FL_FS on FL_FSI.STRCODE = FL_FS.STRCODE
@@ -29,33 +28,32 @@
                    AND FL_FSI.DELYN = 'N'
                  GROUP BY FL_FLA.AREANAME
                  UNION ALL
-                 SELECT CS.AREANAME                                                 AS 'AREANAME',
+                 SELECT FLA.AREANAME                                                 AS 'AREANAME',
                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)), 0) AS '경고(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)), 0)  AS '주의(과전)',
-                        COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)',
-                        CS.totalCount                                               AS '최종수량'
+                        COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)'
                  FROM F_SENSOR_LOG_${year} FSL
                           LEFT JOIN F_SENSOR_INFO FSI ON FSL.SNSRID = FSI.SNSRID
                           LEFT JOIN F_STORE FS on FSI.STRCODE = FS.STRCODE
                           LEFT JOIN F_LEVEL_AREA FLA on FS.AREACODE = FLA.AREACODE
-                          LEFT JOIN F_GROUP FG on FLA.GRPCODE = FG.GRPCODE,
-                      (
-                          SELECT COUNT(CFSI.snsrid) AS totalCount,
-                                 CFLA.AREANAME      AS AREANAME
-                          FROM F_SENSOR_INFO CFSI
-                                   LEFT JOIN F_STORE CFS ON CFSI.STRCODE = CFS.STRCODE
-                                   LEFT JOIN F_LEVEL_AREA CFLA on CFS.AREACODE = CFLA.AREACODE
-                          WHERE CFLA.AREANAME = #{area}
-                            AND CFSI.DELYN = 'N'
-                          ORDER BY CFSI.SNSRNICK
-                      ) CS
+                          LEFT JOIN F_GROUP FG on FLA.GRPCODE = FG.GRPCODE
                  WHERE DATE_FORMAT(FSL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
                    AND FLA.AREANAME IN
                        (#{area})
                    AND FSI.DELYN = 'N'
                  GROUP BY FLA.AREANAME
-             ) FF
+             ) FF,
+             (
+                 SELECT COUNT(CFSI.snsrid) AS totalCount,
+                        CFLA.AREANAME      AS AREANAME
+                 FROM F_SENSOR_INFO CFSI
+                          LEFT JOIN F_STORE CFS ON CFSI.STRCODE = CFS.STRCODE
+                          LEFT JOIN F_LEVEL_AREA CFLA on CFS.AREACODE = CFLA.AREACODE
+                 WHERE CFLA.AREANAME = #{area}
+                   AND CFSI.DELYN = 'N'
+                 ORDER BY CFSI.SNSRNICK
+             ) CS2
     </select>
 
     <!-- 비엠시스 전기위험 데이터 가져오기 -->
@@ -66,14 +64,13 @@
             SUM(FF.`경고(누전)`)    AS '경고(누전)',
             SUM(FF.`주의(과전)`)    AS '주의(과전)',
             SUM(FF.`경고(과전)`)    AS '경고(과전)',
-            SUM(FF.최종수량)        AS '최종수량'
+            CS2.totalCount         AS '최종수량'
         FROM (
                  SELECT FL_FLA.AREANAME                                             AS 'AREANAME',
                          COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)), 0) AS '주의(누전)',
                          COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)), 0) AS '경고(누전)',
                          COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)), 0)  AS '주의(과전)',
-                         COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)',
-                         0                                                          AS '최종수량'
+                         COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)'
                   FROM F_SENSOR_LOG FL
                            LEFT JOIN F_SENSOR_INFO FL_FSI ON FL.SNSRID = FL_FSI.SNSRID
                            LEFT JOIN F_STORE FL_FS on FL_FSI.STRCODE = FL_FS.STRCODE
@@ -91,25 +88,12 @@
                          COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
                          COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
                          COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
-                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)',
-                         CS.totalCount AS '최종수량'
+                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                   FROM F_SENSOR_LOG_${year} FSL
                            LEFT JOIN F_SENSOR_INFO FSI ON FSL.SNSRID = FSI.SNSRID
                            LEFT JOIN F_STORE FS on FSI.STRCODE = FS.STRCODE
                            LEFT JOIN F_LEVEL_AREA FLA on FS.AREACODE = FLA.AREACODE
-                           LEFT JOIN F_GROUP FG on FLA.GRPCODE = FG.GRPCODE,
-                       (
-                           SELECT COUNT(CFSI.snsrid) AS totalCount
-                           FROM F_SENSOR_INFO CFSI
-                                    LEFT JOIN F_STORE CFS ON CFSI.STRCODE = CFS.STRCODE
-                                    LEFT JOIN F_LEVEL_AREA CFLA on CFS.AREACODE = CFLA.AREACODE
-                           WHERE CFLA.AREANAME = #{area}
-                               AND CFSI.DELYN = 'N'
-                               AND CFSI.STRCODE = 'FS_STR_0000000002240' OR CFSI.STRCODE = 'FS_STR_0000000002241'
-                              OR CFSI.STRCODE = 'FS_STR_0000000002242' OR CFSI.STRCODE = 'FS_STR_0000000002243'
-                              OR CFSI.STRCODE = 'FS_STR_0000000002244'
-                           ORDER BY CFSI.SNSRNICK
-                       ) CS
+                           LEFT JOIN F_GROUP FG on FLA.GRPCODE = FG.GRPCODE
                   WHERE DATE_FORMAT(FSL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
                       AND FLA.AREANAME IN (#{area})
                       AND FSI.DELYN = 'N'
@@ -117,7 +101,19 @@
                      OR FSI.STRCODE = 'FS_STR_0000000002242' OR FSI.STRCODE = 'FS_STR_0000000002243'
                      OR FSI.STRCODE = 'FS_STR_0000000002244'
                   GROUP BY FLA.AREANAME
-             ) FF
+             ) FF,
+             (
+                 SELECT COUNT(CFSI.snsrid) AS totalCount
+                 FROM F_SENSOR_INFO CFSI
+                          LEFT JOIN F_STORE CFS ON CFSI.STRCODE = CFS.STRCODE
+                          LEFT JOIN F_LEVEL_AREA CFLA on CFS.AREACODE = CFLA.AREACODE
+                 WHERE CFLA.AREANAME = #{area}
+                     AND CFSI.DELYN = 'N'
+                     AND CFSI.STRCODE = 'FS_STR_0000000002240' OR CFSI.STRCODE = 'FS_STR_0000000002241'
+                    OR CFSI.STRCODE = 'FS_STR_0000000002242' OR CFSI.STRCODE = 'FS_STR_0000000002243'
+                    OR CFSI.STRCODE = 'FS_STR_0000000002244'
+                 ORDER BY CFSI.SNSRNICK
+             ) CS2
     </select>
 
     <!-- 비엠시스_구내식당 전기위험 데이터 가져오기 -->
@@ -128,14 +124,13 @@
             SUM(FF.`경고(누전)`)    AS '경고(누전)',
             SUM(FF.`주의(과전)`)    AS '주의(과전)',
             SUM(FF.`경고(과전)`)    AS '경고(과전)',
-            SUM(FF.최종수량)        AS '최종수량'
+            CS2.totalCount         AS '최종수량'
         FROM (
                  SELECT FL_FLA.AREANAME                                             AS 'AREANAME',
                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)), 0) AS '경고(누전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)), 0)  AS '주의(과전)',
-                        COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)',
-                        0                                                          AS '최종수량'
+                        COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)'
                  FROM F_SENSOR_LOG FL
                           LEFT JOIN F_SENSOR_INFO FL_FSI ON FL.SNSRID = FL_FSI.SNSRID
                           LEFT JOIN F_STORE FL_FS on FL_FSI.STRCODE = FL_FS.STRCODE
@@ -151,29 +146,28 @@
                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
-                        COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)',
-                        CS.totalCount AS '최종수량'
+                        COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG_${year} FSL
                           LEFT JOIN F_SENSOR_INFO FSI ON FSL.SNSRID = FSI.SNSRID
                           LEFT JOIN F_STORE FS on FSI.STRCODE = FS.STRCODE
                           LEFT JOIN F_LEVEL_AREA FLA on FS.AREACODE = FLA.AREACODE
-                          LEFT JOIN F_GROUP FG on FLA.GRPCODE = FG.GRPCODE,
-                      (
-                          SELECT COUNT(CFSI.snsrid) AS totalCount
-                          FROM F_SENSOR_INFO CFSI
-                                   LEFT JOIN F_STORE CFS ON CFSI.STRCODE = CFS.STRCODE
-                                   LEFT JOIN F_LEVEL_AREA CFLA on CFS.AREACODE = CFLA.AREACODE
-                          WHERE CFLA.AREANAME = #{area}
-                              AND CFSI.DELYN = 'N'
-                              AND CFSI.STRCODE = 'FS_STR_0000000002239'
-                          ORDER BY CFSI.SNSRNICK
-                      ) CS
+                          LEFT JOIN F_GROUP FG on FLA.GRPCODE = FG.GRPCODE
                  WHERE DATE_FORMAT(FSL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
                      AND FLA.AREANAME IN (#{area})
                      AND FSI.DELYN = 'N'
                      AND FSI.STRCODE = 'FS_STR_0000000002239'
                  GROUP BY FLA.AREANAME
-             ) FF
+             ) FF,
+             (
+                 SELECT COUNT(CFSI.snsrid) AS totalCount
+                 FROM F_SENSOR_INFO CFSI
+                          LEFT JOIN F_STORE CFS ON CFSI.STRCODE = CFS.STRCODE
+                          LEFT JOIN F_LEVEL_AREA CFLA on CFS.AREACODE = CFLA.AREACODE
+                 WHERE CFLA.AREANAME = #{area}
+                   AND CFSI.DELYN = 'N'
+                   AND CFSI.STRCODE = 'FS_STR_0000000002239'
+                 ORDER BY CFSI.SNSRNICK
+             ) CS2
     </select>
 
     <!-- 중앙시장(예비) 전기위험 데이터 가져오기 -->
@@ -184,14 +178,13 @@
             SUM(FF.`경고(누전)`)    AS '경고(누전)',
             SUM(FF.`주의(과전)`)    AS '주의(과전)',
             SUM(FF.`경고(과전)`)    AS '경고(과전)',
-            SUM(FF.최종수량)        AS '최종수량'
+            CS2.totalCount         AS '최종수량'
         FROM (
                  SELECT '중앙시장(예비)' AS 'AREANAME',
                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
-                        COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)',
-                        CS.totalCount AS '최종수량'
+                        COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG_${year} FSL,
                       (
                           SELECT
@@ -210,25 +203,7 @@
                             AND FSI.COMPTYPE = 0
                             AND FSI.DELYN = 'N'
                           ORDER BY AREANAME
-                      ) FSS,
-                      (
-                          SELECT
-                              COUNT(FSI.SNSRID) AS totalCount
-                          FROM (
-                                   SELECT *
-                                   FROM F_LEVEL_AREA
-                                   WHERE UPAREACODE = 'AREA_000003'
-                                       AND AREANAME = '원동국제시장' OR AREANAME = '자유도매시장' OR AREANAME = '정원시장' OR AREANAME = '중동번영회' OR AREANAME = '중앙도매시장'
-                                      OR AREANAME = '중앙상가시장' OR AREANAME = '중앙종합시장' OR AREANAME = '주차타워' OR AREANAME = '제1주차장화장실'
-                               ) FLA,
-                               F_STORE FS,
-                               F_SENSOR_INFO FSI
-                          WHERE FSI.STRCODE = FS.STRCODE
-                            AND FS.LEVELAREACODE = FLA.AREACODE
-                            AND FSI.COMPTYPE = 0
-                            AND FSI.DELYN = 'N'
-                          ORDER BY AREANAME
-                      ) CS
+                      ) FSS
                  WHERE FSL.SNSRID = FSS.SNSRID
                    AND DATE_FORMAT(FSL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
                  UNION ALL
@@ -236,8 +211,7 @@
                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
-                        COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)',
-                        0 AS '최종수량'
+                        COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG FL,
                       (
                           SELECT
@@ -256,28 +230,28 @@
                             AND FL_FSI.COMPTYPE = 0
                             AND FL_FSI.DELYN = 'N'
                           ORDER BY AREANAME
-                      ) FL_FSS,
-                      (
-                          SELECT
-                              COUNT(FL_FSI.SNSRID) AS totalCount
-                          FROM (
-                                   SELECT *
-                                   FROM F_LEVEL_AREA
-                                   WHERE UPAREACODE = 'AREA_000003'
-                                       AND AREANAME = '원동국제시장' OR AREANAME = '자유도매시장' OR AREANAME = '정원시장' OR AREANAME = '중동번영회' OR AREANAME = '중앙도매시장'
-                                      OR AREANAME = '중앙상가시장' OR AREANAME = '중앙종합시장' OR AREANAME = '주차타워' OR AREANAME = '제1주차장화장실'
-                               ) FL_FLA,
-                               F_STORE FL_FS,
-                               F_SENSOR_INFO FL_FSI
-                          WHERE FL_FSI.STRCODE = FL_FS.STRCODE
-                            AND FL_FS.LEVELAREACODE = FL_FLA.AREACODE
-                            AND FL_FSI.COMPTYPE = 0
-                            AND FL_FSI.DELYN = 'N'
-                          ORDER BY AREANAME
-                      ) CS
+                      ) FL_FSS
                  WHERE FL.SNSRID = FL_FSS.SNSRID
                    AND DATE_FORMAT(FL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
-             )FF
+             )FF,
+             (
+                 SELECT
+                     COUNT(FSI.SNSRID) AS totalCount
+                 FROM (
+                          SELECT *
+                          FROM F_LEVEL_AREA
+                          WHERE UPAREACODE = 'AREA_000003'
+                              AND AREANAME = '원동국제시장' OR AREANAME = '자유도매시장' OR AREANAME = '정원시장' OR AREANAME = '중동번영회' OR AREANAME = '중앙도매시장'
+                             OR AREANAME = '중앙상가시장' OR AREANAME = '중앙종합시장' OR AREANAME = '주차타워' OR AREANAME = '제1주차장화장실'
+                      ) FLA,
+                      F_STORE FS,
+                      F_SENSOR_INFO FSI
+                 WHERE FSI.STRCODE = FS.STRCODE
+                   AND FS.LEVELAREACODE = FLA.AREACODE
+                   AND FSI.COMPTYPE = 0
+                   AND FSI.DELYN = 'N'
+                 ORDER BY AREANAME
+             ) CS2
     </select>
 
     <!-- 중앙시장(1,2차) 전기위험 데이터 가져오기 -->
@@ -288,14 +262,13 @@
             SUM(FF.`경고(누전)`)    AS '경고(누전)',
             SUM(FF.`주의(과전)`)    AS '주의(과전)',
             SUM(FF.`경고(과전)`)    AS '경고(과전)',
-            SUM(FF.최종수량)        AS '최종수량'
+            CS2.totalCount         AS '최종수량'
         FROM (
                  SELECT '중앙시장(1,2차)' AS 'AREANAME',
                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
-                        COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)',
-                        CS.totalCount AS '최종수량'
+                        COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG_${year} FSL,
                       (
                           SELECT
@@ -314,25 +287,7 @@
                             AND FSI.COMPTYPE BETWEEN 1 AND 2
                             AND FSI.DELYN = 'N'
                           ORDER BY AREANAME
-                      ) FSS,
-                      (
-                          SELECT
-                              COUNT(FSI.SNSRID) AS totalCount
-                          FROM (
-                                   SELECT *
-                                   FROM F_LEVEL_AREA
-                                   WHERE UPAREACODE = 'AREA_000003'
-                                       AND AREANAME = '원동국제시장' OR AREANAME = '자유도매시장' OR AREANAME = '정원시장' OR AREANAME = '중동번영회' OR AREANAME = '중앙도매시장'
-                                      OR AREANAME = '중앙상가시장' OR AREANAME = '중앙종합시장' OR AREANAME = '주차타워' OR AREANAME = '제1주차장화장실'
-                               ) FLA,
-                               F_STORE FS,
-                               F_SENSOR_INFO FSI
-                          WHERE FSI.STRCODE = FS.STRCODE
-                            AND FS.LEVELAREACODE = FLA.AREACODE
-                            AND FSI.COMPTYPE BETWEEN 1 AND 2
-                            AND FSI.DELYN = 'N'
-                          ORDER BY AREANAME
-                      ) CS
+                      ) FSS
                  WHERE FSL.SNSRID = FSS.SNSRID
                    AND DATE_FORMAT(FSL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
                  UNION ALL
@@ -340,8 +295,7 @@
                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
-                        COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)',
-                        0 AS '최종수량'
+                        COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG FL,
                       (
                           SELECT
@@ -360,28 +314,28 @@
                             AND FL_FSI.COMPTYPE BETWEEN 1 AND 2
                             AND FL_FSI.DELYN = 'N'
                           ORDER BY AREANAME
-                      ) FL_FSS,
-                      (
-                          SELECT
-                              COUNT(FL_FSI.SNSRID) AS totalCount
-                          FROM (
-                                   SELECT *
-                                   FROM F_LEVEL_AREA
-                                   WHERE UPAREACODE = 'AREA_000003'
-                                       AND AREANAME = '원동국제시장' OR AREANAME = '자유도매시장' OR AREANAME = '정원시장' OR AREANAME = '중동번영회' OR AREANAME = '중앙도매시장'
-                                      OR AREANAME = '중앙상가시장' OR AREANAME = '중앙종합시장' OR AREANAME = '주차타워' OR AREANAME = '제1주차장화장실'
-                               ) FL_FLA,
-                               F_STORE FL_FS,
-                               F_SENSOR_INFO FL_FSI
-                          WHERE FL_FSI.STRCODE = FL_FS.STRCODE
-                            AND FL_FS.LEVELAREACODE = FL_FLA.AREACODE
-                            AND FL_FSI.COMPTYPE BETWEEN 1 AND 2
-                            AND FL_FSI.DELYN = 'N'
-                          ORDER BY AREANAME
-                      ) CS
+                      ) FL_FSS
                  WHERE FL.SNSRID = FL_FSS.SNSRID
                    AND DATE_FORMAT(FL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
-             )FF
+             )FF,
+             (
+                 SELECT
+                     COUNT(FSI.SNSRID) AS totalCount
+                 FROM (
+                          SELECT *
+                          FROM F_LEVEL_AREA
+                          WHERE UPAREACODE = 'AREA_000003'
+                              AND AREANAME = '원동국제시장' OR AREANAME = '자유도매시장' OR AREANAME = '정원시장' OR AREANAME = '중동번영회' OR AREANAME = '중앙도매시장'
+                             OR AREANAME = '중앙상가시장' OR AREANAME = '중앙종합시장' OR AREANAME = '주차타워' OR AREANAME = '제1주차장화장실'
+                      ) FLA,
+                      F_STORE FS,
+                      F_SENSOR_INFO FSI
+                 WHERE FSI.STRCODE = FS.STRCODE
+                   AND FS.LEVELAREACODE = FLA.AREACODE
+                   AND FSI.COMPTYPE BETWEEN 1 AND 2
+                   AND FSI.DELYN = 'N'
+                 ORDER BY AREANAME
+             ) CS2
     </select>
 
     <!-- map의 값이 비어있다면 -->
