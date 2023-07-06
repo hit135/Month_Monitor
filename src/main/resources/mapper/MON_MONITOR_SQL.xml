@@ -14,8 +14,9 @@
             CS2.totalCount                     AS '최종수량'
         FROM (
                  SELECT FL_FLA.AREANAME                                            AS 'AREANAME',
-                        COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)), 0) AS '주의(누전)',
-                        COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                       AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)), 0)  AS '주의(과전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)'
                  FROM F_SENSOR_LOG FL
@@ -29,8 +30,9 @@
                  GROUP BY FL_FLA.AREANAME
                  UNION ALL
                  SELECT FLA.AREANAME                                                 AS 'AREANAME',
-                        COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)), 0) AS '주의(누전)',
-                        COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                         AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)), 0)  AS '주의(과전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)'
                  FROM F_SENSOR_LOG_${year} FSL
@@ -67,8 +69,9 @@
             CS2.totalCount         AS '최종수량'
         FROM (
                  SELECT FL_FLA.AREANAME                                             AS 'AREANAME',
-                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)), 0) AS '주의(누전)',
-                         COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)), 0) AS '경고(누전)',
+                         COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                         COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                        AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                          COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)), 0)  AS '주의(과전)',
                          COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)'
                   FROM F_SENSOR_LOG FL
@@ -79,14 +82,15 @@
                   WHERE DATE_FORMAT(FL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
                       AND FL_FLA.AREANAME IN (#{area})
                       AND FL_FSI.DELYN = 'N'
-                      AND FL_FSI.STRCODE = 'FS_STR_0000000002240' OR FL_FSI.STRCODE = 'FS_STR_0000000002241'
+                      AND (FL_FSI.STRCODE = 'FS_STR_0000000002240' OR FL_FSI.STRCODE = 'FS_STR_0000000002241'
                      OR FL_FSI.STRCODE = 'FS_STR_0000000002242' OR FL_FSI.STRCODE = 'FS_STR_0000000002243'
-                     OR FL_FSI.STRCODE = 'FS_STR_0000000002244'
+                     OR FL_FSI.STRCODE = 'FS_STR_0000000002244')
                   GROUP BY FL_FLA.AREANAME
                  UNION ALL
                  SELECT FLA.AREANAME,
-                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
-                         COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
+                         COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                         COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                          AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                          COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
                          COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                   FROM F_SENSOR_LOG_${year} FSL
@@ -97,9 +101,9 @@
                   WHERE DATE_FORMAT(FSL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
                       AND FLA.AREANAME IN (#{area})
                       AND FSI.DELYN = 'N'
-                      AND FSI.STRCODE = 'FS_STR_0000000002240' OR FSI.STRCODE = 'FS_STR_0000000002241'
+                      AND (FSI.STRCODE = 'FS_STR_0000000002240' OR FSI.STRCODE = 'FS_STR_0000000002241'
                      OR FSI.STRCODE = 'FS_STR_0000000002242' OR FSI.STRCODE = 'FS_STR_0000000002243'
-                     OR FSI.STRCODE = 'FS_STR_0000000002244'
+                     OR FSI.STRCODE = 'FS_STR_0000000002244')
                   GROUP BY FLA.AREANAME
              ) FF,
              (
@@ -127,8 +131,9 @@
             CS2.totalCount         AS '최종수량'
         FROM (
                  SELECT FL_FLA.AREANAME                                             AS 'AREANAME',
-                        COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)), 0) AS '주의(누전)',
-                        COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                       AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)), 0)  AS '주의(과전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)), 0)  AS '경고(과전)'
                  FROM F_SENSOR_LOG FL
@@ -143,8 +148,9 @@
                  GROUP BY FL_FLA.AREANAME
                  UNION ALL
                  SELECT FLA.AREANAME,
-                        COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
-                        COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                         AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG_${year} FSL
@@ -181,8 +187,9 @@
             CS2.totalCount         AS '최종수량'
         FROM (
                  SELECT '중앙시장(예비)' AS 'AREANAME',
-                        COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
-                        COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                         AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG_${year} FSL,
@@ -208,8 +215,9 @@
                    AND DATE_FORMAT(FSL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
                  UNION ALL
                  SELECT '중앙시장(예비)' AS 'AREANAME',
-                        COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
-                        COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                       AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG FL,
@@ -265,8 +273,9 @@
             CS2.totalCount         AS '최종수량'
         FROM (
                  SELECT '중앙시장(1,2차)' AS 'AREANAME',
-                        COALESCE((COUNT(CASE WHEN FSL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
-                        COALESCE((COUNT(CASE WHEN FSL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FSL.IGRALM = '1' OR FSL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                         AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
                         COALESCE((COUNT(CASE WHEN FSL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG_${year} FSL,
@@ -292,8 +301,9 @@
                    AND DATE_FORMAT(FSL.REGDATE, '%Y-%m') = CONCAT(#{year}, '-', #{month})
                  UNION ALL
                  SELECT '중앙시장(1,2차)' AS 'AREANAME',
-                        COALESCE((COUNT(CASE WHEN FL.IGRALM = '1' THEN 1 END)),0) AS '주의(누전)',
-                        COALESCE((COUNT(CASE WHEN FL.IGRALM = '2' THEN 1 END)),0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 10 THEN 1 END)), 0) AS '경고(누전)',
+                        COALESCE((COUNT(CASE WHEN (FL.IGRALM = '1' OR FL.IGRALM = '2') AND CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) >= 5
+                                                                                       AND 10 > CAST(SUBSTRING(LCAUSE, INSTR(LCAUSE, '■ Igr 누설전류') + 19, 4) AS DECIMAL(10, 2)) THEN 1 END)), 0) AS '주의(누전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '1' THEN 1 END)),0) AS '주의(과전)',
                         COALESCE((COUNT(CASE WHEN FL.OCALM = '2' THEN 1 END)),0) AS '경고(과전)'
                  FROM F_SENSOR_LOG FL,
